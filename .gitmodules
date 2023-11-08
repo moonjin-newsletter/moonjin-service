@@ -1,3 +1,0 @@
-[submodule "apps/apps/server"]
-	path = apps/apps/server
-	url = https://github.com/moonjin-newsletter/moonjin-service
