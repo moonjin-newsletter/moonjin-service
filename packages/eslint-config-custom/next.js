@@ -12,31 +12,37 @@ const project = resolve(process.cwd(), "tsconfig.json");
  */
 
 module.exports = {
+  plugins: ["react", "@typescript-eslint", "prettier"],
   extends: [
-    "@vercel/style-guide/eslint/node",
-    "@vercel/style-guide/eslint/browser",
-    "@vercel/style-guide/eslint/typescript",
-    "@vercel/style-guide/eslint/react",
-    "@vercel/style-guide/eslint/next",
-    "eslint-config-turbo",
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "plugin:tailwindcss/recommended",
   ].map(require.resolve),
+  parser: "@typescript-eslint/parser",
   parserOptions: {
-    project,
+    ecmaFeatures: {
+      jsx: true,
+    },
+    ecmaVersion: 12,
+    sourceType: "module",
   },
   globals: {
     React: true,
     JSX: true,
   },
   settings: {
-    "import/resolver": {
-      typescript: {
-        project,
-      },
+    react: {
+      version: "detect",
     },
   },
   ignorePatterns: ["node_modules/", "dist/"],
   // add rules configurations here
   rules: {
-    "import/no-default-export": "off",
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
   },
 };
