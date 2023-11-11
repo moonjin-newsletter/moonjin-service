@@ -4,6 +4,6 @@ import * as process from 'process';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.SERVER_PORT);
+  await app.listen(Number(process.env.SERVER_PORT));
 }
 bootstrap();
