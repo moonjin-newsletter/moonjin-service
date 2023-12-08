@@ -1036,6 +1036,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nestjs/mapped-types@npm:2.0.3":
+  version: 2.0.3
+  resolution: "@nestjs/mapped-types@npm:2.0.3"
+  peerDependencies:
+    "@nestjs/common": ^8.0.0 || ^9.0.0 || ^10.0.0
+    class-transformer: ^0.4.0 || ^0.5.0
+    class-validator: ^0.13.0 || ^0.14.0
+    reflect-metadata: ^0.1.12
+  peerDependenciesMeta:
+    class-transformer:
+      optional: true
+    class-validator:
+      optional: true
+  checksum: 575d530683664a753d389fcdd5c1c770744efc3797051aa8585ed1b02862796fbf14fe9f2b017a1e3c6c47c94287c45f79ff94d2b05294fb65139373506dd257
+  languageName: node
+  linkType: hard
+
 "@nestjs/platform-express@npm:^10.0.0":
   version: 10.2.8
   resolution: "@nestjs/platform-express@npm:10.2.8"
@@ -1064,6 +1081,33 @@ __metadata:
   peerDependencies:
     typescript: ">=4.8.2"
   checksum: d63962581826025e41c9c66874ecc788cf19f7df35c6ba943c46d11a929896516b9b365b6387e9c071138b592a4172628207b63bbd684e6d8f9ec97cff4af1e9
+  languageName: node
+  linkType: hard
+
+"@nestjs/swagger@npm:^7.1.16":
+  version: 7.1.16
+  resolution: "@nestjs/swagger@npm:7.1.16"
+  dependencies:
+    "@nestjs/mapped-types": "npm:2.0.3"
+    js-yaml: "npm:4.1.0"
+    lodash: "npm:4.17.21"
+    path-to-regexp: "npm:3.2.0"
+    swagger-ui-dist: "npm:5.9.1"
+  peerDependencies:
+    "@fastify/static": ^6.0.0
+    "@nestjs/common": ^9.0.0 || ^10.0.0
+    "@nestjs/core": ^9.0.0 || ^10.0.0
+    class-transformer: "*"
+    class-validator: "*"
+    reflect-metadata: ^0.1.12
+  peerDependenciesMeta:
+    "@fastify/static":
+      optional: true
+    class-transformer:
+      optional: true
+    class-validator:
+      optional: true
+  checksum: 09b318985943d0b50dc44f26c2fb094674bfa2d5de9743102e4b2cdeeb16349a5cface6e747fb7eae8c00c98b0da2ae09718de78ebe455947992b0b3c768f09b
   languageName: node
   linkType: hard
 
@@ -1324,6 +1368,34 @@ __metadata:
     picocolors: "npm:^1.0.0"
     tslib: "npm:^2.6.0"
   checksum: 7c3e68f6405a1d4c51f418d8d580e71d7bade2683d5db07e8413d8e57f7e389047eda44a2341f77a1b3085895fca7676a9d45e8812a58312524f8c4c65d501be
+  languageName: node
+  linkType: hard
+
+"@prisma/client@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "@prisma/client@npm:5.6.0"
+  dependencies:
+    "@prisma/engines-version": "npm:5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee"
+  peerDependencies:
+    prisma: "*"
+  peerDependenciesMeta:
+    prisma:
+      optional: true
+  checksum: 21f5840833dbd88cf60d6d3585faab192481a8caf16a6ee2cba8ec8720d8995bc0eee13d66e3bbe31b6f3809c832fd95cf2d2993aaa2dc1ca354e37685852aef
+  languageName: node
+  linkType: hard
+
+"@prisma/engines-version@npm:5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee":
+  version: 5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee
+  resolution: "@prisma/engines-version@npm:5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee"
+  checksum: 06a0e9126213cb881ef15e6d13b2ba29be1d31c65aca6bf070b5182ce82a04de3b93b721549a27be3ddb551e003aa94fa0ca61b78736d5bd3579b9114ba96b49
+  languageName: node
+  linkType: hard
+
+"@prisma/engines@npm:5.6.0":
+  version: 5.6.0
+  resolution: "@prisma/engines@npm:5.6.0"
+  checksum: 587cf254da9628ddfd21a8f519b841c5c7713f2e3208e65cae3ec0ef812a67a001bee4ffe19d8ba71a867419a3f8540b64d7998c63696b951270397732d08886
   languageName: node
   linkType: hard
 
@@ -6536,6 +6608,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js-yaml@npm:4.1.0, js-yaml@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "js-yaml@npm:4.1.0"
+  dependencies:
+    argparse: "npm:^2.0.1"
+  bin:
+    js-yaml: bin/js-yaml.js
+  checksum: 184a24b4eaacfce40ad9074c64fd42ac83cf74d8c8cd137718d456ced75051229e5061b8633c3366b8aada17945a7a356b337828c19da92b51ae62126575018f
+  languageName: node
+  linkType: hard
+
 "js-yaml@npm:^3.13.1":
   version: 3.14.1
   resolution: "js-yaml@npm:3.14.1"
@@ -6545,17 +6628,6 @@ __metadata:
   bin:
     js-yaml: bin/js-yaml.js
   checksum: 6746baaaeac312c4db8e75fa22331d9a04cccb7792d126ed8ce6a0bbcfef0cedaddd0c5098fade53db067c09fe00aa1c957674b4765610a8b06a5a189e46433b
-  languageName: node
-  linkType: hard
-
-"js-yaml@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "js-yaml@npm:4.1.0"
-  dependencies:
-    argparse: "npm:^2.0.1"
-  bin:
-    js-yaml: bin/js-yaml.js
-  checksum: 184a24b4eaacfce40ad9074c64fd42ac83cf74d8c8cd137718d456ced75051229e5061b8633c3366b8aada17945a7a356b337828c19da92b51ae62126575018f
   languageName: node
   linkType: hard
 
@@ -8041,6 +8113,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prisma@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "prisma@npm:5.6.0"
+  dependencies:
+    "@prisma/engines": "npm:5.6.0"
+  bin:
+    prisma: build/index.js
+  checksum: 8d8069295cf7402f6eb103fa1d5c511c1006fc78057fa180e9b0688076703b33301ce6b04a30575d8b01f0bbe9a26b3c196d0bc4f9253eca9ee780e0800ce602
+  languageName: node
+  linkType: hard
+
 "proc-log@npm:^3.0.0":
   version: 3.0.0
   resolution: "proc-log@npm:3.0.0"
@@ -8776,7 +8859,9 @@ __metadata:
     "@nestjs/core": "npm:^10.0.0"
     "@nestjs/platform-express": "npm:^10.0.0"
     "@nestjs/schematics": "npm:^10.0.0"
+    "@nestjs/swagger": "npm:^7.1.16"
     "@nestjs/testing": "npm:^10.0.0"
+    "@prisma/client": "npm:^5.6.0"
     "@types/express": "npm:^4.17.17"
     "@types/jest": "npm:^29.5.2"
     "@types/node": "npm:^20.3.1"
@@ -8791,6 +8876,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.0.0"
     jest: "npm:^29.5.0"
     prettier: "npm:^3.0.0"
+    prisma: "npm:^5.6.0"
     reflect-metadata: "npm:^0.1.13"
     rxjs: "npm:^7.8.1"
     source-map-support: "npm:^0.5.21"
@@ -9327,6 +9413,13 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 6c4032340701a9950865f7ae8ef38578d8d7053f5e10518076e6554a9381fa91bd9c6850193695c141f32b21f979c985db07265a758867bac95de05f7d8aeb39
+  languageName: node
+  linkType: hard
+
+"swagger-ui-dist@npm:5.9.1":
+  version: 5.9.1
+  resolution: "swagger-ui-dist@npm:5.9.1"
+  checksum: dee9f8b9e21b95a659ce3ecc63c71b11e1e4353b972772057a0ad88aa7a1a26eadab82996ef021b71bb8d6a4cc0212fd2fe45e5f72f4ffc57dd4df39993a1c1f
   languageName: node
   linkType: hard
 
