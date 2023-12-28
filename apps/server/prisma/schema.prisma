@@ -6,34 +6,27 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(255)
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  content   String?
-  published Boolean  @default(false)
-  authorId  Int
-  user      User     @relation(fields: [authorId], references: [id])
-  tags      Tag[]
-}
-
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  userId Int     @unique
-  user   User    @relation(fields: [userId], references: [id])
-}
 
 model User {
-  id      Int      @id @default(autoincrement())
-  name    String?  @db.VarChar(255)
-  email   String   @unique @db.VarChar(255)
-  post    Post[]
-  profile Profile?
+  id          Int         @id @default(autoincrement())
+  email       String      @db.VarChar(32) @unique
+  password    String?     @db.Char(64)
+  nickname    String      @db.VarChar(16) @unique
+  role        Int
+  createdAt   DateTime    @default(now())
+  deletedAt   DateTime?
+  oauth       Oauth?
+  writerInfo  WriterInfo?
 }
 
-model Tag {
-  id    Int    @id @default(autoincrement())
-  name  String
-  posts Post[]
+model Oauth {
+  id          String      @id @db.VarChar(64)
+  userId      Int         @unique
+  user        User        @relation(fields: [userId], references: [id])
+}
+
+model WriterInfo {
+  id            Int       @id
+  moonjinEmail  String    @unique @db.VarChar(32)
+  user          User      @relation(fields: [id], references: [id])
 }
