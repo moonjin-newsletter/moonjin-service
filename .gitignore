@@ -11,7 +11,14 @@ coverage
 # next.js
 .next/
 out/
+
+
+
+# compiled output
+*.tsbuildinfo
+out
 build
+dist
 
 # misc
 .DS_Store
