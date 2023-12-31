@@ -938,9 +938,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@moonjin/types@workspace:^, @moonjin/types@workspace:packages/types":
+"@moonjin/api-types@workspace:^, @moonjin/api-types@workspace:packages/api-types":
   version: 0.0.0-use.local
-  resolution: "@moonjin/types@workspace:packages/types"
+  resolution: "@moonjin/api-types@workspace:packages/api-types"
   dependencies:
     tsconfig: "npm:*"
     typescript: "npm:latest"
@@ -9174,7 +9174,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "server@workspace:apps/server"
   dependencies:
-    "@moonjin/types": "workspace:^"
+    "@moonjin/api-types": "workspace:^"
     "@nestjs/cli": "npm:^10.0.0"
     "@nestjs/common": "npm:^10.0.0"
     "@nestjs/config": "npm:^3.1.1"
