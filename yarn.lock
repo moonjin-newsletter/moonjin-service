@@ -938,7 +938,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@moonjin/types@workspace:packages/types":
+"@moonjin/types@workspace:^, @moonjin/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@moonjin/types@workspace:packages/types"
   dependencies:
@@ -9174,6 +9174,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "server@workspace:apps/server"
   dependencies:
+    "@moonjin/types": "workspace:^"
     "@nestjs/cli": "npm:^10.0.0"
     "@nestjs/common": "npm:^10.0.0"
     "@nestjs/config": "npm:^3.1.1"
