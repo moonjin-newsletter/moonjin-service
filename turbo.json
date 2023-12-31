@@ -1,8 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
+    "preinstall": {
+      "cache": false
+    },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^preinstall"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "lint": {},
@@ -10,10 +13,6 @@
       "cache": false,
       "persistent": true,
       "dependsOn": ["^build"]
-    },
-    "preinstall": {
-      "cache": false,
-      "persistent": true
     }
   }
 }
