@@ -11,7 +11,7 @@ export const NESTIA_CONFIG: SDK.INestiaConfig = {
      *
      * If not configured, you can't build the SDK library.
      */
-    output: 'src/api',
+    output: 'src/api-sdk',
 
     /**
      * Whether to assert parameter types or not.
