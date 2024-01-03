@@ -12,9 +12,9 @@ module.exports = {
   ],
   theme: {
     screens: {
-      sm: { min: "0px", max: "600px" },
-      md: { min: "601px", max: "1023px" },
-      lg: { min: "1024px" },
+      mobile: { min: "0px", max: "600px" },
+      tablet: { min: "601px", max: "1023px" },
+      desktop: { min: "1024px" },
     },
 
     extend: {},
