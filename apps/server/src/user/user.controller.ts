@@ -1,10 +1,11 @@
-import {Body, Controller, Post} from '@nestjs/common';
-import {CreateUser} from "@moonjin/api-types";
+import {Controller } from '@nestjs/common';
+import {TypedBody, TypedRoute} from '@nestia/core';
+import { ICreateUser} from "./api-types/createUser.type";
 
 @Controller('user')
 export class UserController {
-  @Post()
-  async createUser(@Body() createUserData: CreateUser) {
+  @TypedRoute.Post()
+  async createUser(@TypedBody() createUserData: ICreateUser) {
     return createUserData;
   }
 }
