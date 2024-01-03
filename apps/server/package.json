@@ -20,7 +20,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "ts-patch install && typia patch",
-    "swagger": "npx nestia swagger"
+    "swagger": "npx nestia swagger",
+    "sdk:build": "npx nestia sdk && npx tsc -p tsconfig.api.json",
+    "sdk:publish": "cd ./api-sdk && npm publish --access=public"
   },
   "dependencies": {
     "@moonjin/api-types": "workspace:^",
