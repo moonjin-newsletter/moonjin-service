@@ -1,14 +1,20 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoginModal from "../auth/LoginModal";
 
+import { usePathname } from "next/navigation";
+
 export default function Header() {
+  const pathName = usePathname();
   const [isActive, setIsActive] = useState<boolean>(false);
 
-  console.log(isActive);
+  useEffect(() => {
+    setIsActive(false);
+  }, [pathName]);
+
   return (
-    <header className="fixed top-0 left-0 w-full flex h-16  items-center justify-center bg-white/10">
+    <header className="sticky top-0 left-0 w-full flex h-16  items-center justify-center bg-white/10">
       <div className="flex  w-[1024px] h-full items-center justify-between">
         <Link href="/" className="flex items-center h-full">
           <h1>Moonjin</h1>

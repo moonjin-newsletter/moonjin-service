@@ -31,7 +31,7 @@ const getErrorMessage: BeforeErrorHook = async (error) => {
   return error;
 };
 
-assert(process.env.NEXT_PUBLIC_SERVER_URL, "NEXT_PUBLIC_API_URL is not set");
+assert(process.env.NEXT_PUBLIC_SERVER_URL, "NEXT_PUBLIC_SERVER_URL is not set");
 const csr = ky.create({
   prefixUrl: process.env.NEXT_PUBLIC_SERVER_URL,
   credentials: "include",
