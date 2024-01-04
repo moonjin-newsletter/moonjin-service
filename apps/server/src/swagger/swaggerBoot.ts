@@ -1,13 +1,14 @@
 import { INestApplication } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
+import { readFileSync } from "fs";
+import * as path from "path";
 
 export function swaggerBoot(app: INestApplication<any>) {
-  const config = new DocumentBuilder()
-    .setTitle('Moonjin Service')
-    .setDescription('This is the API description')
-    .setVersion('1.0')
-    .addTag('Moonjin')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  try {
+    const swaggerConfig = readFileSync(path.join(__dirname, '../../swagger.json'), 'utf8');
+    SwaggerModule.setup('swagger', app, JSON.parse(swaggerConfig));
+  } catch (e){
+    const swaggerConfig = readFileSync(path.join(__dirname, '../../../swagger.json'), 'utf8');
+    SwaggerModule.setup('swagger', app, JSON.parse(swaggerConfig));
+  }
 }
