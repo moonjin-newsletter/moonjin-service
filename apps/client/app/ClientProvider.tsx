@@ -1,3 +1,4 @@
+"use client";
 import { Toaster } from "react-hot-toast";
 import { SWRConfig } from "swr";
 import { HTTPError } from "ky";
@@ -22,7 +23,7 @@ export default function ClientProvider({ children }: PropsWithChildren) {
             if (arrayIncludes(["auth/isLogin", "user"], key)) return; // Never retry for a specific key.
             setTimeout(() => revalidate({ retryCount }), 5 * 1000); // Retry after 5 seconds.
           },
-          fetcher: (url) => csr.get(url).json(),
+          // fetcher: (url) => csr.get(url).json(),
         }}
       >
         {children}

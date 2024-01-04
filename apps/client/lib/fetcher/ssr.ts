@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
  */
 
 const ssr = ky.create({
-  prefixUrl: process.env.NEXT_PUBLIC_API_URL,
+  prefixUrl: process.env.NEXT_PUBLIC_SERVER_URL,
   credentials: "include",
   timeout: 10000,
   next: { revalidate: 0 },

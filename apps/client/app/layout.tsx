@@ -1,6 +1,5 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import Header from "../components/layout/Header";
 import ClientProvider from "./ClientProvider";
 
@@ -16,7 +15,7 @@ export default function RootLayout({
 }): JSX.Element {
   return (
     <html lang="en">
-      <body className="flex w-full h-full">
+      <body className="flex flex-col w-full h-full">
         <ClientProvider>
           <Header />
           {children}

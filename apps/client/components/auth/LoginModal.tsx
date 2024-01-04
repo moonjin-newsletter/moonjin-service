@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import Link from "next/link";
+import * as I from "components/icons";
 
 export default function LoginModal({ setIsActive }: { setIsActive: any }) {
   const {
@@ -24,7 +25,7 @@ export default function LoginModal({ setIsActive }: { setIsActive: any }) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className=" flex flex-col items-center pb-16  rounded-lg w-full max-w-[600px] h-full max-h-[480px] bg-white py-10 px-20"
+        className=" flex flex-col items-center pb-16  rounded-lg w-full max-w-[600px] h-fit  bg-white py-10 px-20"
       >
         <div className="flex w-full justify-end">
           <button onClick={() => setIsActive(false)} className="">
@@ -69,11 +70,33 @@ export default function LoginModal({ setIsActive }: { setIsActive: any }) {
           </form>
 
           <div className="flex justify-end w-full mt-3 text-sm items-center gap-x-2">
-            <Link href="">아이디/비밀번호 찾기</Link>
+            <Link href="/auth/signup">아이디/비밀번호 찾기</Link>
             <div className="w-[1px] h-3 bg-gray-900" />
-            <Link href="">회원가입</Link>
+            <Link href="/auth/signup">회원가입</Link>
           </div>
-          <div className="flex flex-col items-center"></div>
+          <div className="flex w-full h-fit gap-y-2 flex-col items-center">
+            <Link
+              href=""
+              className="relative w-full h-12 flex items-center justify-center bg-yellow-400"
+            >
+              <I.Kakao className="absolute left-2" />
+              <span>카카오톡</span>
+            </Link>
+            <Link
+              href=""
+              className="relative w-full h-12 flex items-center justify-center bg-yellow-400"
+            >
+              <I.Google className="absolute left-2" />
+              <span>구글 로그인</span>
+            </Link>
+            <Link
+              href=""
+              className="relative w-full h-12 flex items-center justify-center bg-yellow-400"
+            >
+              <I.Naver className="absolute left-2" />
+              <span>네이버 로그인</span>
+            </Link>
+          </div>
         </section>
       </div>
     </div>
