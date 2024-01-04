@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import Link from "next/link";
 
 export default function LoginModal({ setIsActive }: { setIsActive: any }) {
   const {
@@ -32,39 +33,48 @@ export default function LoginModal({ setIsActive }: { setIsActive: any }) {
         </div>
         <h1 className="text-2xl font-bold">로그인</h1>
         <hr className="mt-3 w-full text-gray-700" />
-        <form
-          className="max-w-[320px] mt-8 flex w-full flex-col  gap-y-4"
-          onSubmit={handleSubmit(onClickLogin)}
-        >
-          <input
-            type="email"
-            placeholder="이메일"
-            className="w-full h-10 border rounded-lg px-2 placeholder:text-sm"
-            {...register("email", { required: "이메일을 입력해주세요" })}
-          />
-          {errors.email?.message && (
-            <span className="text-xs text-rose-500 ">{`${errors.email?.message}`}</span>
-          )}
-          <input
-            type="password"
-            placeholder="비밀번호"
-            className="w-full h-10 border rounded-lg px-2 placeholder:text-sm"
-            {...register("password", {
-              required: "비밀번호를 입력해주세요",
-              minLength: 1,
-              maxLength: 16,
-            })}
-          />
-          {errors.password?.message && (
-            <span className="text-xs text-rose-500 ">{`${errors.password?.message}`}</span>
-          )}
-          <button
-            type="submit"
-            className="w-full h-10 rounded-2xl bg-[#7b0000] text-white"
+        <section className="flex flex-col items-center px-10 w-full">
+          <form
+            className="max-w-[320px] mt-8 flex w-full flex-col  gap-y-4"
+            onSubmit={handleSubmit(onClickLogin)}
           >
-            로그인
-          </button>
-        </form>
+            <input
+              type="email"
+              placeholder="이메일"
+              className="w-full h-10 border rounded-lg px-2 placeholder:text-sm"
+              {...register("email", { required: "이메일을 입력해주세요" })}
+            />
+            {errors.email?.message && (
+              <span className="text-xs text-rose-500 ">{`${errors.email?.message}`}</span>
+            )}
+            <input
+              type="password"
+              placeholder="비밀번호"
+              className="w-full h-10 border rounded-lg px-2 placeholder:text-sm"
+              {...register("password", {
+                required: "비밀번호를 입력해주세요",
+                minLength: 1,
+                maxLength: 16,
+              })}
+            />
+            {errors.password?.message && (
+              <span className="text-xs text-rose-500 ">{`${errors.password?.message}`}</span>
+            )}
+            <button
+              type="submit"
+              className="w-full h-10 rounded-2xl bg-[#7b0000] text-white"
+            >
+              로그인
+            </button>
+          </form>
+
+          <div className="flex justify-end w-full mt-3 text-sm items-center gap-x-2">
+            <Link href="">아이디/비밀번호 찾기</Link>
+            <div className="w-[1px] h-3 bg-gray-900" />
+            <Link href="">회원가입</Link>
+          </div>
+          <div className="flex flex-col items-center"></div>
+        </section>
       </div>
     </div>
   );
