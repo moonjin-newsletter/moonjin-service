@@ -1,24 +1,35 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
+import {localSignUp} from "../api-sdk/functional/user";
+import * as process from "process";
+import {ILocalSignUp} from "../api-sdk/structures/ILocalSignUp";
+import typia from "typia";
 
-describe('AppController (e2e)', () => {
+describe('AppController Test (e2e)', () => {
+  const host= 'http://localhost:8080'
   let app: INestApplication;
+  let testingModule : TestingModule;
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+    testingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
+    app = testingModule.createNestApplication();
+    await (await app.init()).listen(Number(process.env.SERVER_PORT));
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  afterAll(async () => {
+    await app.close();
   });
+
+  describe("API AUTH TEST", () => {
+    it('/user (GET)', async () => {
+      const signUpResponse = await localSignUp({host}, typia.random<ILocalSignUp>());
+      console.log(signUpResponse);
+      if (signUpResponse.result)
+        expect(signUpResponse.data.id).toBeDefined();
+    });
+  })
 });

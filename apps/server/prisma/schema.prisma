@@ -8,25 +8,27 @@ datasource db {
 }
 
 model User {
-  id          Int         @id @default(autoincrement())
-  email       String      @db.VarChar(32) @unique
-  password    String?     @db.Char(64)
-  nickname    String      @db.VarChar(16) @unique
-  role        Int
-  createdAt   DateTime    @default(now())
-  deletedAt   DateTime?
-  oauth       Oauth?
-  writerInfo  WriterInfo?
+  id         Int         @id @default(autoincrement())
+  email      String      @unique @db.VarChar(32)
+  password   String?     @db.Char(64)
+  nickname   String      @unique @db.VarChar(16)
+  role       Int         @default(0)
+  createdAt  DateTime    @default(now())
+  deletedAt  DateTime?
+  oauth      Oauth?
+  writerInfo WriterInfo?
 }
 
 model Oauth {
-  id          String      @id @db.VarChar(64)
-  userId      Int         @unique
-  user        User        @relation(fields: [userId], references: [id])
+  id      Int    @id @default(autoincrement())
+  oauthId String @unique @db.Char(64)
+  userId  Int    @unique
+  user    User   @relation(fields: [userId], references: [id])
 }
 
 model WriterInfo {
-  id            Int       @id
-  moonjinEmail  String    @unique @db.VarChar(32)
-  user          User      @relation(fields: [id], references: [id])
+  id           Int    @id @default(autoincrement())
+  moonjinEmail String @unique @db.VarChar(32)
+  userId       Int    @unique
+  user         User   @relation(fields: [userId], references: [id])
 }

@@ -1,17 +1,13 @@
-import {User} from "@prisma/client";
-
-export class UserDto{
+export class UserDto {
     id: number;
     email: string;
-    password: string;
     nickname: string;
     role: number;
 
-    constructor(userEntity : User) {
-        this.id = userEntity.id;
-        this.email= userEntity.email;
-        this.password= userEntity.password || "";
-        this.nickname= userEntity.nickname;
-        this.role = userEntity.role;
+    constructor(id:number, email:string, nickname: string, role: number) {
+        this.id = id;
+        this.email = email;
+        this.nickname = nickname;
+        this.role = role;
     }
 }

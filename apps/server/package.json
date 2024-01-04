@@ -7,6 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "preinstall": "prisma generate",
+    "prisma:buiid": "dotenv -e ../../.env.local npx prisma migrate dev --name init",
+    "prisma:create": "dotenv -e ../../.env.local yarn prisma migrate dev --create-only --name init",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -34,8 +36,6 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.16",
     "@prisma/client": "^5.6.0",
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.0",
     "entity": "*",
     "prisma": "^5.6.0",
     "reflect-metadata": "^0.1.13",

@@ -19,7 +19,7 @@ export const NESTIA_CONFIG: SDK.INestiaConfig = {
      *
      * If you configure this property to be `true`, all of the function parameters would be
      * checked through the [typia](https://github.com/samchon/typia#runtime-type-checkers).
-     * This option would make your SDK library slower, but would enahcne the type safety even
+     * This option would make your SDK library slower, but would enahcne the types safety even
      * in the runtime level.
      *
      * @default false
@@ -38,15 +38,15 @@ export const NESTIA_CONFIG: SDK.INestiaConfig = {
     // json: true,
 
     /**
-     * Whether to wrap DTO by primitive type.
+     * Whether to wrap DTO by primitive types.
      *
      * If you don't configure this property as `false`, all of DTOs in the
-     * SDK library would be automatically wrapped by {@link Primitive} type.
+     * SDK library would be automatically wrapped by {@link Primitive} types.
      *
-     * For refenrece, if a DTO type be capsuled by the {@link Primitive} type,
-     * all of methods in the DTO type would be automatically erased. Also, if
-     * the DTO has a `toJSON()` method, the DTO type would be automatically
-     * converted to return type of the `toJSON()` method.
+     * For refenrece, if a DTO types be capsuled by the {@link Primitive} types,
+     * all of methods in the DTO types would be automatically erased. Also, if
+     * the DTO has a `toJSON()` method, the DTO types would be automatically
+     * converted to return types of the `toJSON()` method.
      *
      * @default true
      */
