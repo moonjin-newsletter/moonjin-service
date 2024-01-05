@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import {JwtService} from "@nestjs/jwt";
 import * as bcrypt from 'bcryptjs';
+import {ExceptionList} from "../response/error/errorInstances";
+
 
 @Injectable()
 export class UtilService {
     constructor(private readonly jwtService: JwtService) {
+
     }
 
     async getHashCode(inputString: string): Promise<string> {
@@ -23,9 +26,23 @@ export class UtilService {
         return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
     }
 
-    generateJwtToken(payload: any, time:number): string{
+    generateJwtToken(payload: any, time = 60*60*14): string{
         return this.jwtService.sign(payload, {
             expiresIn: time,
         });
+    }
+
+    /**
+     * @summary jwtToken의 payload를 가져오는 함수.
+     *
+     * @param jwtToken
+     * @throws INVALID_TOKEN
+     */
+    getDataFromJwtToken<T>(jwtToken: string): T {
+        try {
+            return this.jwtService.decode<T>(jwtToken);
+        } catch (error){
+            throw ExceptionList.INVALID_TOKEN;
+        }
     }
 }

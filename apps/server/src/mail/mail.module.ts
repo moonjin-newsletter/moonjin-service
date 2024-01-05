@@ -7,5 +7,6 @@ import { UtilModule } from 'src/util/util.module';
   imports: [UtilModule],
   controllers: [MailController],
   providers: [MailService],
+  exports: [MailService]
 })
 export class MailModule {}

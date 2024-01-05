@@ -25,6 +25,7 @@ export class MailController {
 
   @OnEvent('mail-verification')
   handleMailVerification(payload: { email: string; accessLink: string }) {
-    this.mailService.sendVerificationMail(payload.email, payload.accessLink);
+    console.log("send " + payload.accessLink + " To " + payload.email);
+    // this.mailService.sendVerificationMail(payload.email, payload.accessLink);
   }
 }

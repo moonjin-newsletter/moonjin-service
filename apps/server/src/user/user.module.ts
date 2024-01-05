@@ -3,14 +3,15 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import {PrismaModule} from "../prisma/prisma.module";
 import {UtilModule} from "../util/util.module";
-import {EventEmitter2} from "@nestjs/event-emitter";
+import {MailModule} from "../mail/mail.module";
 
 @Module({
   imports: [
       PrismaModule,
-      UtilModule
+      UtilModule,
+      MailModule
   ],
   controllers: [UserController],
-  providers: [UserService, EventEmitter2]
+  providers: [UserService]
 })
 export class UserModule {}

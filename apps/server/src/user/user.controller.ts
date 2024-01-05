@@ -1,61 +1,70 @@
-import {Controller, Req, Res, UnauthorizedException, UseGuards} from '@nestjs/common';
+import {Controller, Query, Res} from '@nestjs/common';
 import {TypedBody, TypedRoute} from '@nestia/core';
 import {ILocalSignUp} from "./api-types/ILocalSignUp";
 import {UserService} from "./user.service";
 import {createResponseForm} from "../response/responseForm";
-import {UserDto} from "./dto/user.dto";
 import {UtilService} from "../util/util.service";
-import {Request, Response} from 'express';
+import { Response} from 'express';
 import {TryCatch} from "../response/tryCatch";
+import {MailService} from "../mail/mail.service";
+import {EmailVerificationPayloadDto} from "./dto/emailVerificationPayload.dto";
+import {INVALID_TOKEN, TOKEN_NOT_FOUND} from "../response/error/auth/jwtToken.error";
 import {
   MAIL_ALREADY_EXIST,
   MOONJIN_EMAIL_ALREADY_EXIST,
-  NICKNAME_ALREADY_EXIST,
-  SIGNUP_ERROR, WRITER_SIGNUP_ERROR
-} from "../response/error/business-error";
-import {AuthGuard} from "@nestjs/passport";
-import * as process from "process";
-import {EventEmitter2} from "@nestjs/event-emitter";
+  NICKNAME_ALREADY_EXIST, WRITER_SIGNUP_ERROR, SIGNUP_ERROR
+} from "../response/error/user/signup.error";
+import {EMAIL_NOT_EXIST} from "../response/error/mail/mail.error";
+import {ExceptionList} from "../response/error/errorInstances";
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService : UserService, private readonly utilSerivce: UtilService,
-              private eventEmitter: EventEmitter2) {}
+  constructor(private readonly userService : UserService,
+              private readonly utilService: UtilService,
+              private readonly mailService: MailService) {}
 
+  /**
+   * @summary 로걸 회원가입 기능
+   * 회원 가입에 필요한 정보를 입력 받아, 유효성 및 중복 검사 확인 후, 유저를 저장한다.
+   * 회원은 작가일 수도, 독자일 수도 있다. (role = 0 독자 / role = 1 작가)
+   * 성공 시, 회원 가입 메일을 전송한다.
+   *
+   * @param localSignUpData
+   * @return 200 : 메일이 전송되었다는 메시지 or Error
+   */
   @TypedRoute.Post()
   async localSignUp(@TypedBody() localSignUpData: ILocalSignUp, @Res() res:Response) : Promise<TryCatch<
-      string, MAIL_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | SIGNUP_ERROR | WRITER_SIGNUP_ERROR>> {
+      string, MAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SIGNUP_ERROR | WRITER_SIGNUP_ERROR | EMAIL_NOT_EXIST>> {
+
     const signUpRole = localSignUpData.role;
-    localSignUpData.role = -1; // 계정 비활성화
-    const signUpResponse = await this.userService.localSignUp(localSignUpData);
-    if (signUpResponse instanceof UserDto){
+    const signUpResponse = await this.userService.localSignUp({...localSignUpData, role:-1});
 
-      const emailVerificationToken = this.utilSerivce.generateJwtToken({email: signUpResponse.email, role: signUpRole}, 60*60*24)
-      const accessLink = process.env.SERVER_URL + "/user/email/verification"
-      this.eventEmitter.emit('mail-verification', {
-        email: signUpResponse.email,
-        accessLink,
-      });
+    const payload: EmailVerificationPayloadDto = {id: signUpResponse.id,email : signUpResponse.email, role: signUpRole};
+    const emailVerificationToken = this.utilService.generateJwtToken(payload, 60*60*24);
+    await this.mailService.sendVerificationMail(signUpResponse.email, emailVerificationToken);
 
-      res.cookie('email_verification_token', emailVerificationToken);
-      res.send(createResponseForm("메일이 전송 되었습니다."));
-      return createResponseForm(emailVerificationToken);
-    } else{
-      res.send(signUpResponse.data);
-      return signUpResponse;
-    }
+    res.send(createResponseForm("메일이 전송되었습니다."))
+    return createResponseForm(emailVerificationToken);
+
   }
 
+  /**
+   * @Summary 인증 메일에서 링크를 눌렀을 때 일어나는 인증 과정
+   * 메일에서 링크 클릭 시, 해당 링크에 있는 code를 jwt 로 열어 데이터 확인 후 인증
+   * 인증이 완료되면 메일 인증 완료 페이지로 이동
+   *
+   * @query code
+   */
   @TypedRoute.Get("email/verification")
-  @UseGuards(AuthGuard('jwt-cookie'))
-  async emailVerification(@Req() req: Request, @Res() res: Response){
-    const emailVerificationCode = req?.cookies?.email_verification_token;
-    if(!emailVerificationCode)
-      throw new UnauthorizedException("다시 가입해주세요");
-    if(req.user.email && req.user.role){
-      const user = this.userService.activateUser(req.user.email ,req.user.role);
-      res.send(user)
+  async emailVerification(@Query('code') code: string)
+  : Promise<TryCatch<string, TOKEN_NOT_FOUND | INVALID_TOKEN | EMAIL_NOT_EXIST>>
+  {
+    if (!code){
+      throw ExceptionList.TOKEN_NOT_FOUND;
     }
+      const dataFromToken = this.utilService.getDataFromJwtToken<EmailVerificationPayloadDto>(code);
+      console.log(dataFromToken);
+      await this.userService.emailVerification(dataFromToken);
+      return createResponseForm("인증이 완료되었습니다. 다시 로그인 해주세요");
   }
-
 }
