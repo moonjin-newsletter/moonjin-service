@@ -1,4 +1,4 @@
-import {Controller, Query, Res} from '@nestjs/common';
+import {Body, Controller, Query, Res} from '@nestjs/common';
 import {TypedBody, TypedRoute} from '@nestia/core';
 import {ILocalSignUp} from "./api-types/ILocalSignUp";
 import {UserService} from "./user.service";
@@ -8,9 +8,8 @@ import { Response} from 'express';
 import {TryCatch} from "../response/tryCatch";
 import {MailService} from "../mail/mail.service";
 import {EmailVerificationPayloadDto} from "./dto/emailVerificationPayload.dto";
-import {INVALID_TOKEN, TOKEN_NOT_FOUND} from "../response/error/auth/jwtToken.error";
 import {
-  MAIL_ALREADY_EXIST,
+  EMAIL_ALREADY_EXIST,
   MOONJIN_EMAIL_ALREADY_EXIST,
   NICKNAME_ALREADY_EXIST, WRITER_SIGNUP_ERROR, SIGNUP_ERROR
 } from "../response/error/user/signup.error";
@@ -30,11 +29,12 @@ export class UserController {
    * 성공 시, 회원 가입 메일을 전송한다.
    *
    * @param localSignUpData
+   * @param res
    * @return 200 : 메일이 전송되었다는 메시지 or Error
    */
   @TypedRoute.Post()
   async localSignUp(@TypedBody() localSignUpData: ILocalSignUp, @Res() res:Response) : Promise<TryCatch<
-      string, MAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SIGNUP_ERROR | WRITER_SIGNUP_ERROR | EMAIL_NOT_EXIST>> {
+      string, EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SIGNUP_ERROR | WRITER_SIGNUP_ERROR | EMAIL_NOT_EXIST>> {
 
     const signUpRole = localSignUpData.role;
     const signUpResponse = await this.userService.localSignUp({...localSignUpData, role:-1});
@@ -48,6 +48,13 @@ export class UserController {
 
   }
 
+  @TypedRoute.Post("email/uniqueness")
+  async checkEmailExist(@Body('email') email:string){
+    const response = await this.userService.isEmailUnique(email);
+    if(response) return createResponseForm("해당 메일을 사용하실 수 있습니다.")
+    else throw ExceptionList.EMAIL_ALREADY_EXIST
+  }
+
   /**
    * @Summary 인증 메일에서 링크를 눌렀을 때 일어나는 인증 과정
    * 메일에서 링크 클릭 시, 해당 링크에 있는 code를 jwt 로 열어 데이터 확인 후 인증
@@ -56,15 +63,19 @@ export class UserController {
    * @query code
    */
   @TypedRoute.Get("email/verification")
-  async emailVerification(@Query('code') code: string)
-  : Promise<TryCatch<string, TOKEN_NOT_FOUND | INVALID_TOKEN | EMAIL_NOT_EXIST>>
+  async emailVerification(@Query() code: string, @Res() res:Response)
   {
-    if (!code){
-      throw ExceptionList.TOKEN_NOT_FOUND;
-    }
+    try {
+      if (!code){
+        throw ExceptionList.TOKEN_NOT_FOUND;
+      }
       const dataFromToken = this.utilService.getDataFromJwtToken<EmailVerificationPayloadDto>(code);
-      console.log(dataFromToken);
       await this.userService.emailVerification(dataFromToken);
-      return createResponseForm("인증이 완료되었습니다. 다시 로그인 해주세요");
+      res.redirect("https://naver.com");
+    }catch (e){
+      res.redirect("https://google.com");
+    }
   }
+
+
 }

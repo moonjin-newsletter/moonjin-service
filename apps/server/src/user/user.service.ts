@@ -56,7 +56,7 @@ export class UserService {
                     const errorField = (error.meta.target as string[])[0]
                     switch (errorField){
                         case "email":
-                            throw ExceptionList.MAIL_ALREADY_EXIST;
+                            throw ExceptionList.EMAIL_ALREADY_EXIST;
                         case "nickname":
                             throw ExceptionList.NICKNAME_ALREADY_EXIST;
                         case "moonjinEmail":
@@ -69,6 +69,23 @@ export class UserService {
             }
             console.error(error)
             throw ExceptionList.SIGNUP_ERROR;
+        }
+    }
+
+    /**
+     * @summary email이 사용중인지 체크. true 면 unique
+     * @param email
+     */
+    async isEmailUnique(email : string){
+        try {
+            const user = await this.prismaService.user.findFirst({
+                where:{
+                    email
+                }
+            })
+            return !user;
+        }catch (error) {
+            return true
         }
     }
 

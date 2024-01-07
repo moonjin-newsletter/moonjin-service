@@ -1,7 +1,7 @@
 import { ErrorCodeEnum } from "../enum/errorCode.enum";
 import {ERROR} from "../index";
 
-export interface MAIL_ALREADY_EXIST extends ERROR {
+export interface EMAIL_ALREADY_EXIST extends ERROR {
     result : false;
     code: ErrorCodeEnum.MAIL_ALREADY_EXIST;
     httpStatus: 403;
