@@ -12,6 +12,8 @@ import { SignupDataDto } from './dto/signupData.dto';
 import {UserWithWriterInfo} from "./types/userWithWriterInfo.type";
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
+import {localLoginDto} from "./dto/localLogin.dto";
+import {UserAccessTokensDto} from "./dto/userAccessTokens.dto";
 
 @Injectable()
 export class UserService {
@@ -25,6 +27,7 @@ export class UserService {
      */
     async localSignUp(signUpData : SignupDataDto): Promise<ReaderDto | WriterDto> {
         try {
+            signUpData.password = this.utilService.getHashCode(signUpData.password);
             const {moonjinEmail, ...data} = signUpData;
             if (moonjinEmail) { // 작가 회원가입
                 const createdWriter:UserWithWriterInfo = await this.prismaService.user.create({
@@ -72,9 +75,36 @@ export class UserService {
         }
     }
 
+    async localLogin(loginData : localLoginDto) : Promise<UserDto> {
+        try {
+            const user = await this.prismaService.user.findFirst({
+                where:{
+                    email: loginData.email,
+                }
+            })
+            if(user && user.password){
+                const isValidPassword = this.utilService.compareHash(loginData.password, user.password)
+                if (isValidPassword){
+                    return new UserDto(user.id, user.email, user.nickname, user.role);
+                }else{
+                    throw ExceptionList.INVALID_PASSWORD;
+                }
+            } else{
+                throw ExceptionList.USER_NOT_FOUND;
+            }
+        } catch (error) {
+            console.error(error)
+            if(error instanceof PrismaClientKnownRequestError){
+                throw ExceptionList.LOGIN_ERROR;
+            }
+            throw error;
+        }
+    }
+
     /**
      * @summary email이 사용중인지 체크. true 면 unique
      * @param email
+     * @return boolean
      */
     async isEmailUnique(email : string){
         try {
@@ -114,7 +144,7 @@ export class UserService {
 
     }
 
-    getAccessTokens(userData: ReaderDto | WriterDto){
+    getAccessTokens(userData: ReaderDto | WriterDto) : UserAccessTokensDto {
         const accessToken = this.utilService.generateJwtToken(userData,60 * 15);
         const refreshToken = this.utilService.generateJwtToken(userData, 60 * 60 * 24 * 7);
         return {accessToken, refreshToken}

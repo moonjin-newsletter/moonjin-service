@@ -1,25 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import {JwtService} from "@nestjs/jwt";
-import * as bcrypt from 'bcryptjs';
 import {ExceptionList} from "../response/error/errorInstances";
+import * as crypto from "crypto";
 
 
 @Injectable()
 export class UtilService {
-    constructor(private readonly jwtService: JwtService) {
+    constructor(private readonly jwtService: JwtService) {}
 
+    getHashCode(inputString: string): string {
+        return crypto.createHash('sha256').update(inputString).digest('base64');
     }
 
-    async getHashCode(inputString: string): Promise<string> {
-        const salt = await bcrypt.genSalt();
-        return await bcrypt.hash(inputString, salt);
-    }
-
-    async compareHash(
+    compareHash(
         inputString: string,
         hashedString: string
-    ): Promise<boolean> {
-        return await bcrypt.compare(inputString, hashedString);
+    ): boolean {
+        return this.getHashCode(inputString).trim() === hashedString.trim()
     }
 
     getRandomNumberIn6digits() {
@@ -27,7 +24,7 @@ export class UtilService {
     }
 
     generateJwtToken(payload: any, time = 60*60*14): string{
-        return this.jwtService.sign(payload, {
+        return this.jwtService.sign({payload}, {
             expiresIn: time,
         });
     }

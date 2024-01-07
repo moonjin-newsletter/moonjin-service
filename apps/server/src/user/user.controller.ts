@@ -1,5 +1,5 @@
-import {Body, Controller, Query, Res} from '@nestjs/common';
-import {TypedBody, TypedRoute} from '@nestia/core';
+import {Controller, Res} from '@nestjs/common';
+import {TypedBody, TypedQuery, TypedRoute} from '@nestia/core';
 import {ILocalSignUp} from "./api-types/ILocalSignUp";
 import {UserService} from "./user.service";
 import {createResponseForm} from "../response/responseForm";
@@ -15,6 +15,9 @@ import {
 } from "../response/error/user/signup.error";
 import {EMAIL_NOT_EXIST} from "../response/error/mail/mail.error";
 import {ExceptionList} from "../response/error/errorInstances";
+import {ILocalLogin} from "./api-types/ILocalLogin";
+import {ICheckEmailExist} from "./api-types/ICheckEmailExist";
+import {IEmailVerification} from "./api-types/IEmailVerification";
 
 @Controller('user')
 export class UserController {
@@ -43,16 +46,34 @@ export class UserController {
     const emailVerificationToken = this.utilService.generateJwtToken(payload, 60*60*24);
     await this.mailService.sendVerificationMail(signUpResponse.email, emailVerificationToken);
 
-    res.send(createResponseForm("메일이 전송되었습니다."))
+    res.send(createResponseForm({
+      message:"메일이 전송되었습니다."
+    }))
     return createResponseForm(emailVerificationToken);
 
   }
 
   @TypedRoute.Post("email/uniqueness")
-  async checkEmailExist(@Body('email') email:string){
-    const response = await this.userService.isEmailUnique(email);
-    if(response) return createResponseForm("해당 메일을 사용하실 수 있습니다.")
+  async checkEmailExist(@TypedBody() payload:ICheckEmailExist){
+    const response = await this.userService.isEmailUnique(payload.email);
+    if(response) return createResponseForm({
+      message:"해당 메일을 사용하실 수 있습니다."
+    })
     else throw ExceptionList.EMAIL_ALREADY_EXIST
+  }
+
+  @TypedRoute.Post("auth")
+  async localLogin(@TypedBody() localLoginData: ILocalLogin, @Res() res:Response){
+    const user = await this.userService.localLogin(localLoginData);
+    if(user.role < 0){
+      throw ExceptionList.EMAIL_NOT_VERIFIED;
+    }
+    const jwtTokens = this.userService.getAccessTokens(user);
+    res.cookie('accessToken', jwtTokens.accessToken)
+    res.cookie('refreshToken', jwtTokens.refreshToken)
+    res.send(createResponseForm({
+      message: "로그인이 완료되었습니다"
+    }))
   }
 
   /**
@@ -63,19 +84,18 @@ export class UserController {
    * @query code
    */
   @TypedRoute.Get("email/verification")
-  async emailVerification(@Query() code: string, @Res() res:Response)
+  async emailVerification(@TypedQuery() payload: IEmailVerification, @Res() res:Response)
   {
     try {
-      if (!code){
+      if (!payload.code){
         throw ExceptionList.TOKEN_NOT_FOUND;
       }
-      const dataFromToken = this.utilService.getDataFromJwtToken<EmailVerificationPayloadDto>(code);
+      const dataFromToken = this.utilService.getDataFromJwtToken<EmailVerificationPayloadDto>(payload.code);
+      console.log(dataFromToken)
       await this.userService.emailVerification(dataFromToken);
       res.redirect("https://naver.com");
     }catch (e){
       res.redirect("https://google.com");
     }
   }
-
-
 }

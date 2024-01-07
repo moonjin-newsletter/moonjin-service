@@ -1,6 +1,5 @@
-
 export enum ErrorCodeEnum {
-    MAIL_ALREADY_EXIST = '0001',
+    EMAIL_ALREADY_EXIST = '0001',
     NICKNAME_ALREADY_EXIST = "0002",
     MOONJIN_EMAIL_ALREADY_EXIST = "0003",
     SIGNUP_ERROR = "0004",
@@ -8,4 +7,8 @@ export enum ErrorCodeEnum {
     EMAIL_NOT_EXIST = '0010',
     TOKEN_NOT_FOUND = '0020',
     INVALID_TOKEN = '0021',
+    USER_NOT_FOUND = '0030',
+    INVALID_PASSWORD = '0031',
+    LOGIN_ERROR = "0032",
+    EMAIL_NOT_VERIFIED = "0033"
 }
