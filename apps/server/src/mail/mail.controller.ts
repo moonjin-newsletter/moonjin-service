@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Get,
   Post,
@@ -7,13 +6,14 @@ import {
 import { MailService } from './mail.service';
 import { OnEvent } from '@nestjs/event-emitter';
 import { newsLetterValidationDto } from './dto/mail.dto';
+import {TypedBody} from "@nestia/core";
 
 @Controller('api/mail')
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 
   @Post('newsletter')
-  async sendNewsLetter(@Body('') emailInfo: newsLetterValidationDto) {
+  async sendNewsLetter(@TypedBody() emailInfo: newsLetterValidationDto) {
     await this.mailService.sendNewsLetter(emailInfo);
     return 'News letters sended';
   }

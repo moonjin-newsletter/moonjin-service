@@ -4,7 +4,11 @@ export interface ERROR {
     result: false;
     code: string; // 4000 ~ 4999
     httpStatus: number;
-    data: string; // error Message
+    data: ErrorData; // error Message
+}
+
+export interface ErrorData{
+    message:string
 }
 
 export class Exception extends HttpException {
