@@ -144,6 +144,26 @@ export class UserService {
 
     }
 
+    async deleteUserById(id: number, role: number): Promise<void>{
+        try {
+            console.log(id,role);
+            if(role > 0){
+                this.prismaService.writerInfo.delete({
+                    where:{
+                        userId : id
+                    }
+                })
+            }
+            await this.prismaService.user.delete({
+                where : {
+                    id : id
+                },
+            })
+        }catch (error){
+            console.error(error)
+        }
+    }
+
     getAccessTokens(userData: ReaderDto | WriterDto) : UserAccessTokensDto {
         const accessToken = this.utilService.generateJwtToken(userData,60 * 15);
         const refreshToken = this.utilService.generateJwtToken(userData, 60 * 60 * 24 * 7);

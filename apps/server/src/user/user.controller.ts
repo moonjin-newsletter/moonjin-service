@@ -44,16 +44,26 @@ export class UserController {
   async localSignUp(@TypedBody() localSignUpData: ILocalSignUp, @Res() res:Response) : Promise<TryCatch<string,
       | EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SIGNUP_ERROR | WRITER_SIGNUP_ERROR | EMAIL_NOT_EXIST>> {
     const signUpRole = localSignUpData.role;
-    const signUpResponse = await this.userService.localSignUp({...localSignUpData, role:-1});
+    let rollbackFlag = 0;
+    try {
+      const signUpResponse = await this.userService.localSignUp({...localSignUpData, role:-1});
+      rollbackFlag = signUpResponse.id;
 
-    const payload: EmailVerificationPayloadDto = {id: signUpResponse.id,email : signUpResponse.email, role: signUpRole};
-    const emailVerificationToken = this.utilService.generateJwtToken(payload, 60*60*24);
-    await this.mailService.sendVerificationMail(signUpResponse.email, emailVerificationToken);
+      throw ExceptionList.SIGNUP_ERROR;
+      const payload: EmailVerificationPayloadDto = {id: signUpResponse.id,email : signUpResponse.email, role: signUpRole};
+      const emailVerificationToken = this.utilService.generateJwtToken(payload, 60*60*24);
+      await this.mailService.sendVerificationMail(signUpResponse.email, emailVerificationToken);
 
-    res.send(createResponseForm({
-      message:"메일이 전송되었습니다."
-    }))
-    return createResponseForm(emailVerificationToken);
+      res.send(createResponseForm({
+        message:"메일이 전송되었습니다."
+      }))
+      return createResponseForm(emailVerificationToken);
+    }catch (error){
+      console.log(rollbackFlag)
+      if(rollbackFlag > 0)
+        await this.userService.deleteUserById(rollbackFlag, signUpRole);
+      throw error
+    }
   }
 
   /**
