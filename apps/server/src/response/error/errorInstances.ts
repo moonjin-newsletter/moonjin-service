@@ -24,4 +24,3 @@ export const ExceptionList = {
     LOGIN_ERROR : new Exception(typia.random<LOGIN_ERROR>()),
     EMAIL_NOT_VERIFIED : new Exception(typia.random<EMAIL_NOT_VERIFIED>())
 }
-

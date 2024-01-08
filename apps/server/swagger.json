@@ -1,1 +1,1544 @@
-{"openapi":"3.0.1","servers":[{"url":"https://github.com/samchon/nestia","description":"insert your server url"}],"info":{"version":"0.0.1","title":"server","description":"","license":{"name":"UNLICENSED"}},"paths":{"/":{"get":{"tags":[],"parameters":[],"responses":{"200":{"description":"","content":{"application/json":{"schema":{"type":"string"}}},"x-nestia-encrypted":false}},"x-nestia-namespace":"getHello","x-nestia-jsDocTags":[],"x-nestia-method":"GET"}},"/api/mail/newsletter":{"post":{"tags":[],"parameters":[],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/newsLetterValidationDto"}}},"required":true,"x-nestia-encrypted":false},"responses":{"201":{"description":"","content":{"application/json":{"schema":{"type":"string"}}},"x-nestia-encrypted":false}},"x-nestia-namespace":"api.mail.newsletter.sendNewsLetter","x-nestia-jsDocTags":[],"x-nestia-method":"POST"}},"/api/mail/test":{"get":{"tags":[],"parameters":[],"responses":{"200":{"description":"","content":{"application/json":{"schema":{"type":"string"}}},"x-nestia-encrypted":false}},"x-nestia-namespace":"api.mail.test.mailTest","x-nestia-jsDocTags":[],"x-nestia-method":"GET"}},"/user":{"post":{"tags":[],"parameters":[],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ILocalSignUp"}}},"required":true,"x-nestia-encrypted":false},"responses":{"201":{"description":"200 : 메일이 전송되었다는 메시지 or Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TryCatchstringMAIL_ALREADY_EXISTNICKNAME_ALREADY_EXISTMOONJIN_EMAIL_ALREADY_EXISTSIGNUP_ERRORWRITER_SIGNUP_ERROREMAIL_NOT_EXIST"}}},"x-nestia-encrypted":false}},"x-nestia-namespace":"user.localSignUp","x-nestia-jsDocTags":[{"name":"summary","text":[{"text":"로걸 회원가입 기능\n회원 가입에 필요한 정보를 입력 받아, 유효성 및 중복 검사 확인 후, 유저를 저장한다.\n회원은 작가일 수도, 독자일 수도 있다. (role = 0 독자 / role = 1 작가)\n성공 시, 회원 가입 메일을 전송한다.","kind":"text"}]},{"name":"param","text":[{"text":"localSignUpData","kind":"text"}]},{"name":"return","text":[{"text":"200 : 메일이 전송되었다는 메시지 or Error","kind":"text"}]}],"x-nestia-method":"POST"}},"/user/email/verification":{"get":{"tags":[],"parameters":[{"name":"code","in":"query","schema":{"type":"string"},"description":"","required":true}],"responses":{"200":{"description":"","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TryCatchstringEMAIL_NOT_EXISTTOKEN_NOT_FOUNDINVALID_TOKEN"}}},"x-nestia-encrypted":false}},"x-nestia-namespace":"user.email.verification.emailVerification","x-nestia-jsDocTags":[{"name":"Summary","text":[{"text":"인증 메일에서 링크를 눌렀을 때 일어나는 인증 과정\n메일에서 링크 클릭 시, 해당 링크에 있는 code를 jwt 로 열어 데이터 확인 후 인증\n인증이 완료되면 메일 인증 완료 페이지로 이동","kind":"text"}]},{"name":"query","text":[{"text":"code","kind":"text"}]}],"x-nestia-method":"GET"}}},"components":{"schemas":{"newsLetterValidationDto":{"type":"object","properties":{"emailList":{"x-typia-required":true,"x-typia-optional":false,"type":"array","items":{"x-typia-required":true,"x-typia-optional":false,"type":"string"}},"senderName":{"x-typia-required":true,"x-typia-optional":false,"type":"string"},"senderMailAddress":{"x-typia-required":true,"x-typia-optional":false,"type":"string"},"subject":{"x-typia-required":true,"x-typia-optional":false,"type":"string"},"templateName":{"x-typia-required":true,"x-typia-optional":false,"type":"string"}},"nullable":false,"required":["emailList","senderName","senderMailAddress","subject","templateName"],"x-typia-jsDocTags":[]},"ILocalSignUp":{"type":"object","properties":{"email":{"x-typia-required":true,"x-typia-optional":false,"type":"string","format":"email","maxLength":32,"x-typia-typeTags":[{"target":"string","name":"Format<\"email\">","kind":"format","value":"email","validate":"/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)","exclusive":["format","pattern"]},{"target":"string","name":"MaxLength<32>","kind":"maxLength","value":32,"validate":"$input.length <= 32","exclusive":true}]},"password":{"x-typia-required":true,"x-typia-optional":false,"type":"string","maxLength":16,"minLength":4,"x-typia-typeTags":[{"target":"string","name":"MinLength<4>","kind":"minLength","value":4,"validate":"4 <= $input.length","exclusive":true},{"target":"string","name":"MaxLength<16>","kind":"maxLength","value":16,"validate":"$input.length <= 16","exclusive":true}]},"nickname":{"x-typia-required":true,"x-typia-optional":false,"type":"string","maxLength":16,"minLength":2,"x-typia-typeTags":[{"target":"string","name":"MinLength<2>","kind":"minLength","value":2,"validate":"2 <= $input.length","exclusive":true},{"target":"string","name":"MaxLength<16>","kind":"maxLength","value":16,"validate":"$input.length <= 16","exclusive":true}]},"role":{"x-typia-required":true,"x-typia-optional":false,"type":"number","maximum":1,"minimum":0,"x-typia-typeTags":[{"target":"number","name":"Minimum<0>","kind":"minimum","value":0,"validate":"0 <= $input","exclusive":["minimum","exclusiveMinimum"]},{"target":"number","name":"Maximum<1>","kind":"maximum","value":1,"validate":"$input <= 1","exclusive":["maximum","exclusiveMaximum"]}]},"moonjinEmail":{"x-typia-required":false,"x-typia-optional":true,"type":"string","format":"email","maxLength":32,"x-typia-typeTags":[{"target":"string","name":"Format<\"email\">","kind":"format","value":"email","validate":"/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)","exclusive":["format","pattern"]},{"target":"string","name":"MaxLength<32>","kind":"maxLength","value":32,"validate":"$input.length <= 32","exclusive":true}]}},"nullable":false,"required":["email","password","nickname","role"],"x-typia-jsDocTags":[]},"TryCatchstringMAIL_ALREADY_EXISTNICKNAME_ALREADY_EXISTMOONJIN_EMAIL_ALREADY_EXISTSIGNUP_ERRORWRITER_SIGNUP_ERROREMAIL_NOT_EXIST":{"oneOf":[{"$ref":"#/components/schemas/MAIL_ALREADY_EXIST"},{"$ref":"#/components/schemas/NICKNAME_ALREADY_EXIST"},{"$ref":"#/components/schemas/MOONJIN_EMAIL_ALREADY_EXIST"},{"$ref":"#/components/schemas/SIGNUP_ERROR"},{"$ref":"#/components/schemas/WRITER_SIGNUP_ERROR"},{"$ref":"#/components/schemas/EMAIL_NOT_EXIST"},{"$ref":"#/components/schemas/ResponseFormstring"}]},"MAIL_ALREADY_EXIST":{"type":"object","properties":{"result":{"x-typia-required":true,"x-typia-optional":false,"type":"boolean","enum":[false]},"code":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["0001"]},"httpStatus":{"x-typia-required":true,"x-typia-optional":false,"type":"number","enum":[403]},"data":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["이미 존재하는 메일입니다."]}},"nullable":false,"required":["result","code","httpStatus","data"],"x-typia-jsDocTags":[]},"NICKNAME_ALREADY_EXIST":{"type":"object","properties":{"result":{"x-typia-required":true,"x-typia-optional":false,"type":"boolean","enum":[false]},"code":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["0002"]},"httpStatus":{"x-typia-required":true,"x-typia-optional":false,"type":"number","enum":[403]},"data":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["이미 존재하는 닉네임 입니다."]}},"nullable":false,"required":["result","code","httpStatus","data"],"x-typia-jsDocTags":[]},"MOONJIN_EMAIL_ALREADY_EXIST":{"type":"object","properties":{"result":{"x-typia-required":true,"x-typia-optional":false,"type":"boolean","enum":[false]},"code":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["0003"]},"httpStatus":{"x-typia-required":true,"x-typia-optional":false,"type":"number","enum":[403]},"data":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["이미 존재하는 문진 이메일입니다."]}},"nullable":false,"required":["result","code","httpStatus","data"],"x-typia-jsDocTags":[]},"SIGNUP_ERROR":{"type":"object","properties":{"result":{"x-typia-required":true,"x-typia-optional":false,"type":"boolean","enum":[false]},"code":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["0004"]},"httpStatus":{"x-typia-required":true,"x-typia-optional":false,"type":"number","enum":[406]},"data":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["회원가입을 진행할 수 없습니다."]}},"nullable":false,"required":["result","code","httpStatus","data"],"x-typia-jsDocTags":[]},"WRITER_SIGNUP_ERROR":{"type":"object","properties":{"result":{"x-typia-required":true,"x-typia-optional":false,"type":"boolean","enum":[false]},"code":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["0005"]},"httpStatus":{"x-typia-required":true,"x-typia-optional":false,"type":"number","enum":[406]},"data":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["작가 가입을 진행할 수 없습니다."]}},"nullable":false,"required":["result","code","httpStatus","data"],"x-typia-jsDocTags":[]},"EMAIL_NOT_EXIST":{"type":"object","properties":{"result":{"x-typia-required":true,"x-typia-optional":false,"type":"boolean","enum":[false]},"code":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["0010"]},"httpStatus":{"x-typia-required":true,"x-typia-optional":false,"type":"number","enum":[404]},"data":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["해당 메일이 존재하지 않습니다."]}},"nullable":false,"required":["result","code","httpStatus","data"],"x-typia-jsDocTags":[]},"ResponseFormstring":{"type":"object","properties":{"result":{"x-typia-required":true,"x-typia-optional":false,"type":"boolean","enum":[true]},"code":{"x-typia-required":true,"x-typia-optional":false,"type":"number","enum":[200]},"data":{"x-typia-required":true,"x-typia-optional":false,"type":"string"}},"nullable":false,"required":["result","code","data"],"x-typia-jsDocTags":[]},"TryCatchstringEMAIL_NOT_EXISTTOKEN_NOT_FOUNDINVALID_TOKEN":{"oneOf":[{"$ref":"#/components/schemas/EMAIL_NOT_EXIST"},{"$ref":"#/components/schemas/ResponseFormstring"},{"$ref":"#/components/schemas/TOKEN_NOT_FOUND"},{"$ref":"#/components/schemas/INVALID_TOKEN"}]},"TOKEN_NOT_FOUND":{"type":"object","properties":{"result":{"x-typia-required":true,"x-typia-optional":false,"type":"boolean","enum":[false]},"code":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["0020"]},"httpStatus":{"x-typia-required":true,"x-typia-optional":false,"type":"number","enum":[404]},"data":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["토큰을 찾을 수 없습니다."]}},"nullable":false,"required":["result","code","httpStatus","data"],"x-typia-jsDocTags":[]},"INVALID_TOKEN":{"type":"object","properties":{"result":{"x-typia-required":true,"x-typia-optional":false,"type":"boolean","enum":[false]},"code":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["0021"]},"httpStatus":{"x-typia-required":true,"x-typia-optional":false,"type":"number","enum":[401]},"data":{"x-typia-required":true,"x-typia-optional":false,"type":"string","enum":["유효하지 않은 토큰입니다."]},"response":{"x-typia-required":true,"x-typia-optional":false},"status":{"x-typia-required":true,"x-typia-optional":false},"options":{"x-typia-required":true,"x-typia-optional":true},"cause":{"x-typia-required":true,"x-typia-optional":false},"name":{"x-typia-required":true,"x-typia-optional":false,"type":"string"},"message":{"x-typia-required":true,"x-typia-optional":false,"type":"string"},"stack":{"x-typia-required":false,"x-typia-optional":true,"type":"string"}},"nullable":false,"required":["result","code","httpStatus","data","response","status","cause","name","message"],"x-typia-jsDocTags":[]}}}}
+{
+  "openapi": "3.0.1",
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local Server"
+    }
+  ],
+  "info": {
+    "version": "0.0.1",
+    "title": "server",
+    "description": "",
+    "license": {
+      "name": "UNLICENSED"
+    }
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "getHello",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "GET"
+      }
+    },
+    "/api/mail/newsletter": {
+      "post": {
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/newsLetterValidationDto"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "api.mail.newsletter.sendNewsLetter",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "POST"
+      }
+    },
+    "/api/mail/test": {
+      "get": {
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "api.mail.test.mailTest",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "GET"
+      }
+    },
+    "/user": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "description": "회원가입 정보",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ILocalSignUp"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "\"메일이 전송되었습니다.\"",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ResponseFormstring"
+                    },
+                    {
+                      "$ref": "#/components/schemas/EMAIL_NOT_EXIST"
+                    },
+                    {
+                      "$ref": "#/components/schemas/WRITER_SIGNUP_ERROR"
+                    },
+                    {
+                      "$ref": "#/components/schemas/SIGNUP_ERROR"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MOONJIN_EMAIL_ALREADY_EXIST"
+                    },
+                    {
+                      "$ref": "#/components/schemas/NICKNAME_ALREADY_EXIST"
+                    },
+                    {
+                      "$ref": "#/components/schemas/EMAIL_ALREADY_EXIST"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "user.localSignUp",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "로걸 회원가입 기능",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "localSignUpData",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "회원가입 정보",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "res",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "\"메일이 전송되었습니다.\"",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "throws",
+            "text": [
+              {
+                "text": "EMAIL_ALREADY_EXIST",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "throws",
+            "text": [
+              {
+                "text": "NICKNAME_ALREADY_EXIST",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "throws",
+            "text": [
+              {
+                "text": "MOONJIN_EMAIL_ALREADY_EXIST",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "throws",
+            "text": [
+              {
+                "text": "SIGNUP_ERROR",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "throws",
+            "text": [
+              {
+                "text": "WRITER_SIGNUP_ERROR",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "throws",
+            "text": [
+              {
+                "text": "EMAIL_NOT_EXIST",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
+        "x-nestia-method": "POST"
+      }
+    },
+    "/user/email/uniqueness": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "description": "이메일이 담긴 객체",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ICheckEmailExist"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "\"해당 메일을 사용하실 수 있습니다.\"",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/EMAIL_ALREADY_EXIST"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm__type"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "user.email.uniqueness.checkEmailExist",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "메일 중복 확인",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "payload",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "이메일이 담긴 객체",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "\"해당 메일을 사용하실 수 있습니다.\"",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "throws",
+            "text": [
+              {
+                "text": "EMAIL_ALREADY_EXIST",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
+        "x-nestia-method": "POST"
+      }
+    },
+    "/user/auth": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "description": "로그인 정보",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ILocalLogin"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "\"로그인이 완료되었습니다\"",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TryCatch__typeLOGIN_ERRORINVALID_PASSWORDUSER_NOT_FOUNDEMAIL_NOT_VERIFIED"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "user.auth.localLogin",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "로그인 기능",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "localLoginData",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "로그인 정보",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "res",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "\"로그인이 완료되었습니다\"",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "throws",
+            "text": [
+              {
+                "text": "LOGIN_ERROR",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "throws",
+            "text": [
+              {
+                "text": "INVALID_PASSWORD",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "throws",
+            "text": [
+              {
+                "text": "USER_NOT_FOUND",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "throws",
+            "text": [
+              {
+                "text": "EMAIL_NOT_VERIFIED",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
+        "x-nestia-method": "POST"
+      }
+    },
+    "/user/email/verification": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "payload",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/IEmailVerification"
+            },
+            "description": "이메일 인증 code가 담긴 객체",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "메일 인증 결과 페이지로 redirect",
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "user.email.verification.emailVerification",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "Summary",
+            "text": [
+              {
+                "text": "인증 메일에서 링크를 눌렀을 때 일어나는 인증 과정",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "payload",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "이메일 인증 code가 담긴 객체",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "res",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "메일 인증 결과 페이지로 redirect",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
+        "x-nestia-method": "GET"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "newsLetterValidationDto": {
+        "type": "object",
+        "properties": {
+          "emailList": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "x-typia-required": true,
+              "x-typia-optional": false,
+              "type": "string"
+            }
+          },
+          "senderName": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "senderMailAddress": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "subject": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "templateName": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "emailList",
+          "senderName",
+          "senderMailAddress",
+          "subject",
+          "templateName"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ILocalSignUp": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "email",
+            "maxLength": 32,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "Format<\"email\">",
+                "kind": "format",
+                "value": "email",
+                "validate": "/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)",
+                "exclusive": [
+                  "format",
+                  "pattern"
+                ]
+              },
+              {
+                "target": "string",
+                "name": "MaxLength<32>",
+                "kind": "maxLength",
+                "value": 32,
+                "validate": "$input.length <= 32",
+                "exclusive": true
+              }
+            ]
+          },
+          "password": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "maxLength": 16,
+            "minLength": 4,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MinLength<4>",
+                "kind": "minLength",
+                "value": 4,
+                "validate": "4 <= $input.length",
+                "exclusive": true
+              },
+              {
+                "target": "string",
+                "name": "MaxLength<16>",
+                "kind": "maxLength",
+                "value": 16,
+                "validate": "$input.length <= 16",
+                "exclusive": true
+              }
+            ]
+          },
+          "nickname": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "maxLength": 16,
+            "minLength": 2,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MinLength<2>",
+                "kind": "minLength",
+                "value": 2,
+                "validate": "2 <= $input.length",
+                "exclusive": true
+              },
+              {
+                "target": "string",
+                "name": "MaxLength<16>",
+                "kind": "maxLength",
+                "value": 16,
+                "validate": "$input.length <= 16",
+                "exclusive": true
+              }
+            ]
+          },
+          "role": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "maximum": 1,
+            "minimum": 0,
+            "x-typia-typeTags": [
+              {
+                "target": "number",
+                "name": "Minimum<0>",
+                "kind": "minimum",
+                "value": 0,
+                "validate": "0 <= $input",
+                "exclusive": [
+                  "minimum",
+                  "exclusiveMinimum"
+                ]
+              },
+              {
+                "target": "number",
+                "name": "Maximum<1>",
+                "kind": "maximum",
+                "value": 1,
+                "validate": "$input <= 1",
+                "exclusive": [
+                  "maximum",
+                  "exclusiveMaximum"
+                ]
+              }
+            ]
+          },
+          "moonjinEmail": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "format": "email",
+            "maxLength": 32,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "Format<\"email\">",
+                "kind": "format",
+                "value": "email",
+                "validate": "/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)",
+                "exclusive": [
+                  "format",
+                  "pattern"
+                ]
+              },
+              {
+                "target": "string",
+                "name": "MaxLength<32>",
+                "kind": "maxLength",
+                "value": 32,
+                "validate": "$input.length <= 32",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "email",
+          "password",
+          "nickname",
+          "role"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ResponseFormstring": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              201
+            ]
+          },
+          "data": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "EMAIL_NOT_EXIST": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "0010"
+            ]
+          },
+          "httpStatus": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              404
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "type": "string",
+                "enum": [
+                  "해당 메일이 존재하지 않습니다."
+                ]
+              }
+            },
+            "nullable": false,
+            "required": [
+              "message"
+            ],
+            "x-typia-jsDocTags": []
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "httpStatus",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "WRITER_SIGNUP_ERROR": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "0005"
+            ]
+          },
+          "httpStatus": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              406
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "type": "string",
+                "enum": [
+                  "작가 가입을 진행할 수 없습니다."
+                ]
+              }
+            },
+            "nullable": false,
+            "required": [
+              "message"
+            ],
+            "x-typia-jsDocTags": []
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "httpStatus",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "SIGNUP_ERROR": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "0004"
+            ]
+          },
+          "httpStatus": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              406
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "type": "string",
+                "enum": [
+                  "회원가입을 진행할 수 없습니다."
+                ]
+              }
+            },
+            "nullable": false,
+            "required": [
+              "message"
+            ],
+            "x-typia-jsDocTags": []
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "httpStatus",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "MOONJIN_EMAIL_ALREADY_EXIST": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "0003"
+            ]
+          },
+          "httpStatus": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              403
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "type": "string",
+                "enum": [
+                  "이미 존재하는 문진 이메일입니다."
+                ]
+              }
+            },
+            "nullable": false,
+            "required": [
+              "message"
+            ],
+            "x-typia-jsDocTags": []
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "httpStatus",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "NICKNAME_ALREADY_EXIST": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "0002"
+            ]
+          },
+          "httpStatus": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              403
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "type": "string",
+                "enum": [
+                  "이미 존재하는 닉네임 입니다."
+                ]
+              }
+            },
+            "nullable": false,
+            "required": [
+              "message"
+            ],
+            "x-typia-jsDocTags": []
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "httpStatus",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "EMAIL_ALREADY_EXIST": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "0001"
+            ]
+          },
+          "httpStatus": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              403
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "type": "string",
+                "enum": [
+                  "이미 존재하는 메일입니다."
+                ]
+              }
+            },
+            "nullable": false,
+            "required": [
+              "message"
+            ],
+            "x-typia-jsDocTags": []
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "httpStatus",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ICheckEmailExist": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "email",
+            "maxLength": 32,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "Format<\"email\">",
+                "kind": "format",
+                "value": "email",
+                "validate": "/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)",
+                "exclusive": [
+                  "format",
+                  "pattern"
+                ]
+              },
+              {
+                "target": "string",
+                "name": "MaxLength<32>",
+                "kind": "maxLength",
+                "value": 32,
+                "validate": "$input.length <= 32",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "email"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ResponseForm__type": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              201
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "type": "string"
+              }
+            },
+            "nullable": false,
+            "required": [
+              "message"
+            ],
+            "x-typia-jsDocTags": []
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ILocalLogin": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "email",
+            "maxLength": 32,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "Format<\"email\">",
+                "kind": "format",
+                "value": "email",
+                "validate": "/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)",
+                "exclusive": [
+                  "format",
+                  "pattern"
+                ]
+              },
+              {
+                "target": "string",
+                "name": "MaxLength<32>",
+                "kind": "maxLength",
+                "value": 32,
+                "validate": "$input.length <= 32",
+                "exclusive": true
+              }
+            ]
+          },
+          "password": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "maxLength": 16,
+            "minLength": 4,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MinLength<4>",
+                "kind": "minLength",
+                "value": 4,
+                "validate": "4 <= $input.length",
+                "exclusive": true
+              },
+              {
+                "target": "string",
+                "name": "MaxLength<16>",
+                "kind": "maxLength",
+                "value": 16,
+                "validate": "$input.length <= 16",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "email",
+          "password"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "TryCatch__typeLOGIN_ERRORINVALID_PASSWORDUSER_NOT_FOUNDEMAIL_NOT_VERIFIED": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/LOGIN_ERROR"
+          },
+          {
+            "$ref": "#/components/schemas/INVALID_PASSWORD"
+          },
+          {
+            "$ref": "#/components/schemas/USER_NOT_FOUND"
+          },
+          {
+            "$ref": "#/components/schemas/EMAIL_NOT_VERIFIED"
+          },
+          {
+            "$ref": "#/components/schemas/ResponseForm__type.o1"
+          }
+        ]
+      },
+      "LOGIN_ERROR": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "0032"
+            ]
+          },
+          "httpStatus": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              406
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "type": "string",
+                "enum": [
+                  "로그인할 수 없습니다."
+                ]
+              }
+            },
+            "nullable": false,
+            "required": [
+              "message"
+            ],
+            "x-typia-jsDocTags": []
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "httpStatus",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "INVALID_PASSWORD": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "0031"
+            ]
+          },
+          "httpStatus": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              401
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "type": "string",
+                "enum": [
+                  "패스워드가 다릅니다."
+                ]
+              }
+            },
+            "nullable": false,
+            "required": [
+              "message"
+            ],
+            "x-typia-jsDocTags": []
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "httpStatus",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "USER_NOT_FOUND": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "0030"
+            ]
+          },
+          "httpStatus": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              404
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "type": "string",
+                "enum": [
+                  "해당 유저를 찾을 수 없습니다."
+                ]
+              }
+            },
+            "nullable": false,
+            "required": [
+              "message"
+            ],
+            "x-typia-jsDocTags": []
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "httpStatus",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "EMAIL_NOT_VERIFIED": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "0033"
+            ]
+          },
+          "httpStatus": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              401
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "type": "string",
+                "enum": [
+                  "메일이 인증되지 않았습니다. 메일 인증을 해주세요"
+                ]
+              }
+            },
+            "nullable": false,
+            "required": [
+              "message"
+            ],
+            "x-typia-jsDocTags": []
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "httpStatus",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ResponseForm__type.o1": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              201
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "type": "string"
+              }
+            },
+            "nullable": false,
+            "required": [
+              "message"
+            ],
+            "x-typia-jsDocTags": []
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "IEmailVerification": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "maxLength": 64,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<64>",
+                "kind": "maxLength",
+                "value": 64,
+                "validate": "$input.length <= 64",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "code"
+        ],
+        "x-typia-jsDocTags": []
+      }
+    }
+  }
+}

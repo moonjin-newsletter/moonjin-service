@@ -9,7 +9,6 @@ export interface USER_NOT_FOUND extends ERROR {
     data: {
         message:"해당 유저를 찾을 수 없습니다."
     }
-
 }
 
 export interface INVALID_PASSWORD extends ERROR {

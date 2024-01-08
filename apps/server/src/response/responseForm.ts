@@ -1,13 +1,13 @@
 export interface ResponseForm<T> {
     result: true;
-    code: 200;
+    code: 201;
     data: T;
 }
 
 export function createResponseForm<T>(data: T): ResponseForm<T> {
     return {
         result: true,
-        code: 200,
+        code: 201,
         data,
     } as const;
 }

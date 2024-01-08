@@ -65,6 +65,11 @@ export const NESTIA_CONFIG: SDK.INestiaConfig = {
          * Otherwise you've configured the full path with file name and extension, the
          * `swagger.json` file would be renamed to it.
          */
+        beautify:true,
+        servers:[{
+            url: "http://localhost:8080",
+            description :"Local Server"
+        }],
         output: 'swagger.json',
     }
 };
