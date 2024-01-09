@@ -11,3 +11,7 @@ export function createResponseForm<T>(data: T): ResponseForm<T> {
         data,
     } as const;
 }
+
+export interface ResponseMessage {
+    message: string
+}

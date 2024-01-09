@@ -1,31 +1,89 @@
 import {Injectable} from '@nestjs/common';
-import {ReaderDto} from "./dto/reader.dto";
 import {PrismaService} from "../prisma/prisma.service";
 import {User} from "@prisma/client";
 import * as console from "console";
-import {WriterDto} from "./dto/writer.dto";
 import {UtilService} from "../util/util.service";
 import {UserDto} from "./dto/user.dto";
-import {EmailVerificationPayloadDto} from "./dto/emailVerificationPayload.dto";
 import {Exception} from "../response/error";
 import { SignupDataDto } from './dto/signupData.dto';
-import {UserWithWriterInfo} from "./types/userWithWriterInfo.type";
+import {UserWithWriterInfo} from "./scheme/user.scheme";
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
-import {localLoginDto} from "./dto/localLogin.dto";
+import {UserLocalLoginDto} from "./dto/userLocalLogin.dto";
 import {UserAccessTokensDto} from "./dto/userAccessTokens.dto";
+import {UserUniqueDataDto} from "./dto/userUniqueData.dto";
 
 @Injectable()
 export class UserService {
     constructor(private readonly prismaService: PrismaService, private readonly utilService: UtilService) {}
 
     /**
+     * @summary user의 가입 정보 중 중복되는 것 에러 발생
+     * @param userData
+     * @throws EMAIL_ALREADY_EXIST
+     * @throws NICKNAME_ALREADY_EXIST
+     * @throws MOONJIN_EMAIL_ALREADY_EXIST
+     */
+    async assertUserDataUnique(userData : UserUniqueDataDto){
+        await this.assertEmailUnique(userData.email);
+        await this.assertNicknameUnique(userData.nickname)
+        if(userData.moonjinEmail)
+            await this.assertMoonjinEmailUnique(userData.moonjinEmail)
+    }
+
+    /**
+     * @summary email이 unique 한지 확인
+     * @param email
+     * @throws EMAIL_ALREADY_EXIST
+     */
+    async assertEmailUnique(email : string) : Promise<void>{
+        const user = await this.prismaService.user.findUnique({
+            where:{
+                email
+            }
+        })
+        if(user) throw ExceptionList.EMAIL_ALREADY_EXIST;
+    }
+    /**
+     * @summary nickname이 unique 한지 확인
+     * @param nickname
+     * @throws NICKNAME_ALREADY_EXIST
+     */
+    async assertNicknameUnique(nickname : string) : Promise<void>{
+        const user = await this.prismaService.user.findUnique({
+            where:{
+                nickname
+            }
+        })
+        if(user) throw ExceptionList.NICKNAME_ALREADY_EXIST;
+    }
+    /**
+     * @summary moonjinEmail이 unique 한지 확인
+     * @param moonjinEmail
+     * @throws MOONJIN_EMAIL_ALREADY_EXIST
+     */
+    async assertMoonjinEmailUnique(moonjinEmail : string) : Promise<void>{
+        const user = await this.prismaService.writerInfo.findUnique({
+            where:{
+                moonjinEmail
+            }
+        })
+        if(user) throw ExceptionList.MOONJIN_EMAIL_ALREADY_EXIST;
+    }
+
+
+    /**
      * @summary 작가 | 독자의 회원가입을 진행하는 기능
      *
      * @param signUpData
-     * @throws MAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SIGNUP_ERROR | WRITER_SIGNUP_ERROR
+     * @returns UserDto | WriterDto
+     * @throws MAIL_ALREADY_EXIST
+     * @throws NICKNAME_ALREADY_EXIST
+     * @throws MOONJIN_EMAIL_ALREADY_EXIST
+     * @throws SIGNUP_ERROR
+     * @throws WRITER_SIGNUP_ERROR
      */
-    async localSignUp(signUpData : SignupDataDto): Promise<ReaderDto | WriterDto> {
+    async localSignUp(signUpData : SignupDataDto): Promise<UserDto> {
         try {
             signUpData.password = this.utilService.getHashCode(signUpData.password);
             const {moonjinEmail, ...data} = signUpData;
@@ -43,16 +101,16 @@ export class UserService {
                         writerInfo: true
                     }
                 })
-                const {writerInfo, ...createdUser} = createdWriter;
+                const {writerInfo, createdAt, deletedAt,password, ...createdUser} = createdWriter;
                 if(writerInfo)
-                    return new WriterDto(new ReaderDto(createdUser), writerInfo);
+                    return createdUser
                 else
                     throw ExceptionList.WRITER_SIGNUP_ERROR;
-            }else{
+            }else{ // 독자 회원가입
                 const createdUser : User = await this.prismaService.user.create({data});
-                return new ReaderDto(createdUser);
+                const {deletedAt, createdAt, password ,...userData} = createdUser;
+                return userData;
             }
-
         }catch(error){
             if (error instanceof PrismaClientKnownRequestError){
                 if (error.code == "P2002" && error.meta){
@@ -75,19 +133,32 @@ export class UserService {
         }
     }
 
-    async localLogin(loginData : localLoginDto) : Promise<UserDto> {
+    /**
+     * @summary 로컬 로그인을 진행하는 함수
+     * @param loginData 로그인할 유저 정보
+     * @returns UserDto
+     * @throws SOCIAL_USER_ERROR
+     * @throws INVALID_PASSWORD
+     * @throws USER_NOT_FOUND
+     * @throws LOGIN_ERROR
+     */
+    async localLogin(loginData : UserLocalLoginDto) : Promise<UserDto> {
         try {
-            const user = await this.prismaService.user.findFirst({
+            const user : User | null = await this.prismaService.user.findUnique({
                 where:{
                     email: loginData.email,
                 }
             })
-            if(user && user.password){
-                const isValidPassword = this.utilService.compareHash(loginData.password, user.password)
-                if (isValidPassword){
-                    return new UserDto(user.id, user.email, user.nickname, user.role);
-                }else{
-                    throw ExceptionList.INVALID_PASSWORD;
+            if(user){
+                if(!user.password) { // 소셜 유저
+                    throw ExceptionList.SOCIAL_USER_ERROR;
+                } else{
+                    const {deletedAt, createdAt, password,...userData} = user;
+                    const isValidPassword = this.utilService.compareHash(loginData.password, password)
+                    if (isValidPassword)
+                        return userData;
+                    else
+                        throw ExceptionList.INVALID_PASSWORD;
                 }
             } else{
                 throw ExceptionList.USER_NOT_FOUND;
@@ -102,48 +173,10 @@ export class UserService {
     }
 
     /**
-     * @summary email이 사용중인지 체크. true 면 unique
-     * @param email
-     * @return boolean
+     * @summary 해당 하는 유저를 삭제.
+     * @param id 유저 id
+     * @param role 작가라면 작가 정보도 삭제
      */
-    async isEmailUnique(email : string){
-        try {
-            const user = await this.prismaService.user.findFirst({
-                where:{
-                    email
-                }
-            })
-            return !user;
-        }catch (error) {
-            return true
-        }
-    }
-
-    /**
-     * @summary 이메일 인증이 완료되어, 새로 인증 받은 이메일을 업데이트
-     *
-     * @param emailPayload
-     * @throws MAIL_NOT_EXIST
-     */
-    async emailVerification(emailPayload: EmailVerificationPayloadDto):Promise<UserDto>{
-        try{
-            const user:User = await this.prismaService.user.update({
-                where:{
-                    id:emailPayload.id,
-                },
-                data:{
-                    email : emailPayload.email,
-                    role: emailPayload.role
-                }
-            })
-            return new UserDto(user.id, user.email, user.nickname, user.role);
-        } catch (error) {
-            console.log(error)
-            throw ExceptionList.EMAIL_NOT_EXIST
-        }
-
-    }
-
     async deleteUserById(id: number, role: number): Promise<void>{
         try {
             console.log(id,role);
@@ -159,12 +192,12 @@ export class UserService {
                     id : id
                 },
             })
-        }catch (error){
+        } catch (error){
             console.error(error)
         }
     }
 
-    getAccessTokens(userData: ReaderDto | WriterDto) : UserAccessTokensDto {
+    getAccessTokens(userData: UserDto) : UserAccessTokensDto {
         const accessToken = this.utilService.generateJwtToken(userData,60 * 15);
         const refreshToken = this.utilService.generateJwtToken(userData, 60 * 60 * 24 * 7);
         return {accessToken, refreshToken}

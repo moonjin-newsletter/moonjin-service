@@ -1,4 +1,4 @@
 export interface UserAccessTokensDto {
-    accessToken : string,
-    refreshToken : string
+    accessToken : string;
+    refreshToken : string;
 }

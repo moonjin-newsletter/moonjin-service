@@ -8,6 +8,11 @@ import * as crypto from "crypto";
 export class UtilService {
     constructor(private readonly jwtService: JwtService) {}
 
+    /**
+     * @summary inputString을 해시화
+     * @param inputString
+     * @returns hashedString
+     */
     getHashCode(inputString: string): string {
         return crypto.createHash('sha256').update(inputString).digest('base64');
     }
@@ -23,8 +28,8 @@ export class UtilService {
         return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
     }
 
-    generateJwtToken(payload: any, time = 60*60*14): string{
-        return this.jwtService.sign({payload}, {
+    generateJwtToken<T extends object>(payload: T, time = 60*60*24): string{
+        return this.jwtService.sign(payload, {
             expiresIn: time,
         });
     }
