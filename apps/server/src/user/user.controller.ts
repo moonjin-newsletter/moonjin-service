@@ -24,9 +24,9 @@ import {ISocialLogin} from "./api-types/ISocialLogin";
 import {
   INVALID_PASSWORD,
   LOGIN_ERROR,
-  SOCIAL_LOGIN_ERROR,
+  SOCIAL_LOGIN_ERROR, SOCIAL_PROFILE_NOT_FOUND,
   SOCIAL_USER_ERROR,
-  USER_NOT_FOUND
+  USER_NOT_FOUND, USER_NOT_FOUND_IN_SOCIAL
 } from "../response/error/user/login.error";
 import {SignupDataDto} from "./dto/signupData.dto";
 
@@ -135,17 +135,52 @@ export class UserController {
     });
   }
 
+  /**
+   * @summary 소셜 로그인 페이지로 이동
+   * @param inputData
+   * @param res
+   */
   @TypedRoute.Get("oauth/url")
   async redirectToSocialPlatform(@TypedQuery() inputData : ISocialRedirect, @Res() res:Response){
     res.redirect(this.oauthService.getSocialOauthUrl(inputData.social));
   }
 
+  /**
+   * @summary 소셜 로그인 후 redirectUrl에서 진행하는 본 서비스 로그인처리
+   * @param socialLoginData
+   * @param res
+   * @returns redirect 메시지
+   */
   @TypedRoute.Get("oauth")
-  async socialLogin(@TypedQuery() socialLoginData : ISocialLogin) : Promise<TryCatch<
+  async socialLogin(@TypedQuery() socialLoginData : ISocialLogin, @Res() res:Response) : Promise<TryCatch<
       ResponseMessage,
-      SOCIAL_LOGIN_ERROR>>{
+      SOCIAL_LOGIN_ERROR | USER_NOT_FOUND_IN_SOCIAL | SOCIAL_PROFILE_NOT_FOUND>>{
     const userData = await this.oauthService.socialLogin(socialLoginData);
-    console.log(userData);
-    return createResponseForm({message:"hihi"})
+    if(userData.result){ // login 처리
+      const jwtTokens = this.userService.getAccessTokens(userData.data);
+      res.cookie('accessToken', jwtTokens.accessToken)
+      res.cookie('refreshToken', jwtTokens.refreshToken)
+      res.send(createResponseForm({
+        message: "로그인이 완료되었습니다"
+      }))
+      return createResponseForm({
+        message: "로그인이 완료되었습니다"
+      })
+    } else { // 추가 정보 입력 페이지로 이동
+      res.cookie('socialSignupToken', this.utilService.generateJwtToken(userData.data));
+      res.send(createResponseForm({ //TODO: redirect를 어디로 시킬 것인지
+        message: "추가 정보를 입력하여 회원가입을 완료해주세요."
+      }))
+      return createResponseForm({
+        message: "추가 정보를 입력하여 회원가입을 완료해주세요.",
+        email : userData.data.email
+      })
+    }
   }
+
+  @TypedRoute.Post('oauth')
+  async socialSignup(){
+
+  }
+
 }

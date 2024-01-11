@@ -7,6 +7,7 @@ import { HttpService } from "@nestjs/axios";
 import {UserSocialProfileDto} from "./dto/userSocialProfile.dto";
 import {PrismaService} from "../prisma/prisma.service";
 import {OauthWithUser} from "./scheme/user.scheme";
+import {UserDto} from "./dto/user.dto";
 
 @Injectable()
 export class OauthService {
@@ -45,9 +46,9 @@ export class OauthService {
      */
     async getAccessTokenFromSocialOauth(socialLoginData : SocialLoginDto) : Promise<string>{
         const socialOauthUrlList = {
-            [SocialProviderEnum.NAVER]: `https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${process.env.NAVER_OAUTH_CLIENT_ID}&client_secret=${process.env.NAVER_OAUTH_CLIENT_SECRET}&redirect_uri=${process.env.SERVER_URL}/api/auth/signup?social=naver&code=${socialLoginData.oauthCode}&state=RANDOM_STATE`,
-            [SocialProviderEnum.KAKAO]: `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.KAKAO_REST_API_KEY}&redirect_url=${process.env.SERVER_URL}/api/auth/signup?social=kakao&code=${socialLoginData.oauthCode}`,
-            [SocialProviderEnum.GOOGLE]: `https://oauth2.googleapis.com/token?code=${socialLoginData.oauthCode}&client_id=${process.env.GOOGLE_OAUTH_CLIENT_ID}&client_secret=${process.env.GOOGLE_OAUTH_SECRET}&redirect_uri=${process.env.OAUTH_REDIRECT_URL}?social=google&grant_type=authorization_code`,
+            [SocialProviderEnum.NAVER]: `https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${process.env.NAVER_OAUTH_CLIENT_ID}&client_secret=${process.env.NAVER_OAUTH_CLIENT_SECRET}&redirect_uri=${process.env.SERVER_URL}/api/auth/signup?social=naver&code=${socialLoginData.code}&state=RANDOM_STATE`,
+            [SocialProviderEnum.KAKAO]: `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.KAKAO_REST_API_KEY}&redirect_url=${process.env.SERVER_URL}/api/auth/signup?social=kakao&code=${socialLoginData.code}`,
+            [SocialProviderEnum.GOOGLE]: `https://oauth2.googleapis.com/token?code=${socialLoginData.code}&client_id=${process.env.GOOGLE_OAUTH_CLIENT_ID}&client_secret=${process.env.GOOGLE_OAUTH_SECRET}&redirect_uri=${process.env.OAUTH_REDIRECT_URL}?social=google&grant_type=authorization_code`,
         };
 
         try {
@@ -107,7 +108,15 @@ export class OauthService {
         }
     }
 
-    async socialLogin(socialLoginData : SocialLoginDto) {
+    /**
+     * @summary 소셜 로그인을 진행하는 함수
+     * @param socialLoginData
+     * @returns 유저 존재 시 유저 정보 반환, 실패 시 유저 email 반환
+     * @throws USER_NOT_FOUND_IN_SOCIAL
+     * @throws SOCIAL_PROFILE_NOT_FOUND
+     * @throws SOCIAL_LOGIN_ERROR
+     */
+    async socialLogin(socialLoginData : SocialLoginDto) : Promise<{result:true, data:UserDto} | {result:false, data : UserSocialProfileDto}> {
         // 1. oauthCode로 accessToken 받아오기
         const oauthAccessToken = await this.getAccessTokenFromSocialOauth(socialLoginData);
 
@@ -126,15 +135,21 @@ export class OauthService {
             })
             if(userWithOauth){ // social login
                 return {
-                    id: userWithOauth.userId,
-                    email :userWithOauth.user.email,
-                    nickname : userWithOauth.user.nickname,
-                    role : userWithOauth.user.role
+                    result : true,
+                    data : {
+                        id: userWithOauth.userId,
+                        email :userWithOauth.user.email,
+                        nickname : userWithOauth.user.nickname,
+                        role : userWithOauth.user.role
+                    }
                 }
             } else{ //social signup 진행 페이지로 이동
                 return {
-                    oauthId : userProfile.oauthId,
-                    email : userProfile.email
+                    result : false,
+                    data : {
+                        email : userProfile.email,
+                        oauthId : userProfile.oauthId,
+                    }
                 }
             }
         } catch (error){

@@ -197,6 +197,11 @@ export class UserService {
         }
     }
 
+    /**
+     * @summary userData가 담긴 atk, rtk을 발급
+     * @param userData
+     * @returns {atk, rtk}
+     */
     getAccessTokens(userData: UserDto) : UserAccessTokensDto {
         const accessToken = this.utilService.generateJwtToken(userData,60 * 15);
         const refreshToken = this.utilService.generateJwtToken(userData, 60 * 60 * 24 * 7);

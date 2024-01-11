@@ -28,6 +28,12 @@ export class UtilService {
         return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
     }
 
+    /**
+     * @summary jwtToken 생성
+     * @param payload extends object
+     * @param time 기본값 1 day
+     * @returns jwtToken
+     */
     generateJwtToken<T extends object>(payload: T, time = 60*60*24): string{
         return this.jwtService.sign(payload, {
             expiresIn: time,
