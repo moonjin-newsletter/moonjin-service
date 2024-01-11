@@ -83,7 +83,7 @@ export class UserController {
       const {accessToken, refreshToken} = this.userService.getAccessTokens(user)
       res.cookie('accessToken',accessToken)
       res.cookie('refreshToken', refreshToken)
-      res.redirect("http://localhost:8080/user/test");
+      res.redirect(process.env.CLIENT_URL + "");
     }catch (e){
       res.redirect("https://google.com");
     }
@@ -168,9 +168,9 @@ export class UserController {
       res.cookie('refreshToken', jwtTokens.refreshToken)
       res.redirect("https://naver.com")
     } else { // 추가 정보 입력 페이지로 이동
-      console.log(process.env.SERVER_URL + "/user/success?email=" + userData.data.email)
+      console.log(process.env.SERVER_URL + "/auth/social?email=" + userData.data.email)
       res.cookie('socialSignupToken', this.utilService.generateJwtToken(userData.data));
-      res.redirect(process.env.SERVER_URL + "/user/success?email=" + userData.data.email)
+      res.redirect(process.env.SERVER_URL + "/auth/social?email=" + userData.data.email)
     }
   }
 
@@ -197,10 +197,5 @@ export class UserController {
     return createResponseForm({
       message: "회원가입이 완료되었습니다."
     })
-  }
-
-  @TypedRoute.Get("success")
-  async test(){
-    return "hi"
   }
 }
