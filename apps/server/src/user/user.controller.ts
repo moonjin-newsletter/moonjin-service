@@ -152,35 +152,21 @@ export class UserController {
    * @returns redirect 메시지
    */
   @TypedRoute.Get("oauth")
-  async socialLogin(@TypedQuery() socialLoginData : ISocialLogin, @Res() res:Response) : Promise<TryCatch<
-      ResponseMessage,
-      SOCIAL_LOGIN_ERROR | USER_NOT_FOUND_IN_SOCIAL | SOCIAL_PROFILE_NOT_FOUND>>{
+  async socialLogin(@TypedQuery() socialLoginData : ISocialLogin, @Res() res:Response) : Promise<
+      void | SOCIAL_LOGIN_ERROR | USER_NOT_FOUND_IN_SOCIAL | SOCIAL_PROFILE_NOT_FOUND>{
     const userData = await this.oauthService.socialLogin(socialLoginData);
     if(userData.result){ // login 처리
       const jwtTokens = this.userService.getAccessTokens(userData.data);
       res.cookie('accessToken', jwtTokens.accessToken)
       res.cookie('refreshToken', jwtTokens.refreshToken)
-      res.send(createResponseForm({
-        message: "로그인이 완료되었습니다"
-      }))
-      return createResponseForm({
-        message: "로그인이 완료되었습니다"
-      })
+      res.redirect(process.env.CLIENT_URL + "/")
     } else { // 추가 정보 입력 페이지로 이동
       res.cookie('socialSignupToken', this.utilService.generateJwtToken(userData.data));
-      res.send(createResponseForm({ //TODO: redirect를 어디로 시킬 것인지
-        message: "추가 정보를 입력하여 회원가입을 완료해주세요."
-      }))
-      return createResponseForm({
-        message: "추가 정보를 입력하여 회원가입을 완료해주세요.",
-        email : userData.data.email
-      })
+      res.redirect(process.env.CLIENT_URL + "/socialSignup?email=" + userData.data.email)
     }
   }
 
   @TypedRoute.Post('oauth')
-  async socialSignup(){
-
-  }
+  async socialSignup(){}
 
 }
