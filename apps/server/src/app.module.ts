@@ -5,8 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UtilModule } from './util/util.module';
-import {MailModule} from "./mail/mail.module";
-import {EventEmitterModule} from "@nestjs/event-emitter";
+import { MailModule } from './mail/mail.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
