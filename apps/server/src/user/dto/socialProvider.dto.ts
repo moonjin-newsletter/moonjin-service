@@ -1,3 +1,3 @@
 export interface SocialProviderDto{
-    socialProvider : string
+    social : string
 }

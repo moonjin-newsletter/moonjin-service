@@ -12,7 +12,7 @@ import {EventEmitterModule} from "@nestjs/event-emitter";
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '../../.env.local',
+      envFilePath: '../../.env.dev.local',
     }),
     UserModule,
     PrismaModule,

@@ -85,19 +85,22 @@ export class OauthService {
                 case SocialProviderEnum.NAVER:
                     userSocialProfile = {
                         oauthId : socialProfileData.response.id,
-                        email : socialProfileData.response.email
+                        email : socialProfileData.response.email,
+                        social : social
                     }
                     break;
                 case SocialProviderEnum.KAKAO:
                     userSocialProfile = {
                         oauthId : '' + socialProfileData.id,
-                        email : socialProfileData.kakao_account.email
+                        email : socialProfileData.kakao_account.email,
+                        social : social
                     }
                     break;
                 case SocialProviderEnum.GOOGLE:
                     userSocialProfile = {
                         oauthId : socialProfileData.id,
-                        email : socialProfileData.email
+                        email : socialProfileData.email,
+                        social : social
                     }
                     break;
             }
@@ -149,6 +152,7 @@ export class OauthService {
                     data : {
                         email : userProfile.email,
                         oauthId : userProfile.oauthId,
+                        social: socialLoginData.social
                     }
                 }
             }

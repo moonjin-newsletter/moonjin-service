@@ -12,6 +12,7 @@ import {ExceptionList} from "../response/error/errorInstances";
 import {UserLocalLoginDto} from "./dto/userLocalLogin.dto";
 import {UserAccessTokensDto} from "./dto/userAccessTokens.dto";
 import {UserUniqueDataDto} from "./dto/userUniqueData.dto";
+import {SocialSignupDto} from "./dto/socialSignup.dto";
 
 @Injectable()
 export class UserService {
@@ -65,7 +66,7 @@ export class UserService {
     async assertMoonjinEmailUnique(moonjinEmail : string) : Promise<void>{
         const user = await this.prismaService.writerInfo.findUnique({
             where:{
-                moonjinEmail
+                moonjinEmail : moonjinEmail + "@moonjin.site"
             }
         })
         if(user) throw ExceptionList.MOONJIN_EMAIL_ALREADY_EXIST;
@@ -93,7 +94,7 @@ export class UserService {
                         ...data,
                         writerInfo: {
                             create: {
-                                moonjinEmail
+                                moonjinEmail : moonjinEmail + "@moonjin.site"
                             }
                         }
                     },
@@ -112,20 +113,8 @@ export class UserService {
                 return userData;
             }
         }catch(error){
-            if (error instanceof PrismaClientKnownRequestError){
-                if (error.code == "P2002" && error.meta){
-                    const errorField = (error.meta.target as string[])[0]
-                    switch (errorField){
-                        case "email":
-                            throw ExceptionList.EMAIL_ALREADY_EXIST;
-                        case "nickname":
-                            throw ExceptionList.NICKNAME_ALREADY_EXIST;
-                        case "moonjinEmail":
-                            throw ExceptionList.MOONJIN_EMAIL_ALREADY_EXIST;
-                    }
-                }
-            }
-            else if(error instanceof Exception){
+            this.prismaSignupErrorHandling(error);
+            if(error instanceof Exception){
                 throw error;
             }
             console.error(error)
@@ -173,34 +162,87 @@ export class UserService {
     }
 
     /**
-     * @summary 해당 하는 유저를 삭제.
-     * @param id 유저 id
-     * @param role 작가라면 작가 정보도 삭제
+     * @summary 소셜 회원가입을 진행하는 함수
+     * @param socialSignupData
+     * @returns UserDto
+     * @throws SOCIAL_SIGNUP_ERROR
+     * @throws EMAIL_ALREADY_EXIST
+     * @throws NICKNAME_ALREADY_EXIST
+     * @throws MOONJIN_EMAIL_ALREADY_EXIST
      */
-    async deleteUserById(id: number, role: number): Promise<void>{
+    async socialSignup(socialSignupData : SocialSignupDto): Promise<UserDto> {
         try {
-            console.log(id,role);
-            if(role > 0){
-                this.prismaService.writerInfo.delete({
-                    where:{
-                        userId : id
+            const {oauthId, email, social, nickname, role, moonjinEmail} = socialSignupData;
+            if(moonjinEmail){ // 작가 회원가입
+                const createdUser = await this.prismaService.user.create({
+                    data:{
+                        email,
+                        nickname,
+                        role,
+                        oauth : {
+                            create:{
+                                oauthId,
+                                social
+                            }
+                        },
+                        writerInfo : {
+                            create : {
+                                moonjinEmail : moonjinEmail + "@moonjin.site"
+                            }
+                        }
                     }
                 })
+                return {id: createdUser.id, email: createdUser.email, nickname:createdUser.nickname, role: createdUser.role}
+            } else { // 독자 회원가입
+                const createdUser = await this.prismaService.user.create({
+                    data:{
+                        email,
+                        nickname,
+                        role,
+                        oauth : {
+                            create:{
+                                oauthId,
+                                social
+                            }
+                        }
+                    }
+                })
+                return {id: createdUser.id, email: createdUser.email, nickname:createdUser.nickname, role: createdUser.role}
             }
-            await this.prismaService.user.delete({
-                where : {
-                    id : id
-                },
-            })
         } catch (error){
-            console.error(error)
+            this.prismaSignupErrorHandling(error);
+            console.error(error);
+            throw ExceptionList.SOCIAL_SIGNUP_ERROR;
+        }
+    }
+
+    /**
+     * @summary prisma 에서 signup 시 에러를 처리하는 함수
+     * @param error
+     * @throws EMAIL_ALREADY_EXIST
+     * @throws NICKNAME_ALREADY_EXIST
+     * @throws MOONJIN_EMAIL_ALREADY_EXIST
+     */
+    prismaSignupErrorHandling(error : Error){
+        if (error instanceof PrismaClientKnownRequestError){
+            if (error.code == "P2002" && error.meta){
+                const errorField = (error.meta.target as string[])[0]
+                switch (errorField){
+                    case "email":
+                        throw ExceptionList.EMAIL_ALREADY_EXIST;
+                    case "nickname":
+                        throw ExceptionList.NICKNAME_ALREADY_EXIST;
+                    case "moonjinEmail":
+                        throw ExceptionList.MOONJIN_EMAIL_ALREADY_EXIST;
+                }
+            }
         }
     }
 
     /**
      * @summary userData가 담긴 atk, rtk을 발급
      * @param userData
-     * @returns {atk, rtk}
+     * @returns {accessToken, refreshToken}
      */
     getAccessTokens(userData: UserDto) : UserAccessTokensDto {
         const accessToken = this.utilService.generateJwtToken(userData,60 * 15);

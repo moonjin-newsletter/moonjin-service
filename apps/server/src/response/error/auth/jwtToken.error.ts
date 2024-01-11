@@ -14,7 +14,7 @@ export interface INVALID_TOKEN extends ERROR {
 export interface TOKEN_NOT_FOUND extends ERROR {
     result : false;
     code : ErrorCodeEnum.TOKEN_NOT_FOUND;
-    httpStatus: 404;
+    httpStatus: HttpStatus.UNAUTHORIZED;
     data : {
         message:"토큰을 찾을 수 없습니다."
     }

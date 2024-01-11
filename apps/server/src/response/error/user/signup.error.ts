@@ -45,3 +45,21 @@ export interface WRITER_SIGNUP_ERROR extends ERROR {
         message:"작가 가입을 진행할 수 없습니다."
     }
 }
+
+export interface SOCIAL_SIGNUP_TOKEN_NOT_FOUND extends ERROR {
+    result : false;
+    code : ErrorCodeEnum.SOCIAL_SIGNUP_TOKEN_NOT_FOUND;
+    httpStatus: HttpStatus.UNAUTHORIZED,
+    data : {
+        message:"소셜 회원가입을 진행할 권한이 없습니다."
+    }
+}
+
+export interface SOCIAL_SIGNUP_ERROR extends ERROR {
+    result : false;
+    code : ErrorCodeEnum.SOCIAL_SIGNUP_ERROR;
+    httpStatus: HttpStatus.NOT_ACCEPTABLE,
+    data : {
+        message:"소셜 회원가입을 진행할 수 없습니다."
+    }
+}

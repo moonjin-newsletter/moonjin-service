@@ -7,8 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "preinstall": "prisma generate",
-    "prisma:buiid": "dotenv -e ../../.env.local npx prisma migrate dev --name init",
-    "prisma:create": "dotenv -e ../../.env.local yarn prisma migrate dev --create-only --name init",
+    "prisma:build": "dotenv -e ../../.env.dev.local npx prisma migrate dev --name init",
+    "prisma:create": "dotenv -e ../../.env.dev.local yarn prisma migrate dev --create-only --name init",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
