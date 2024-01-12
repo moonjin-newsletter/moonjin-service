@@ -871,7 +871,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-
 "@babel/plugin-transform-class-static-block@npm:^7.23.4":
   version: 7.23.4
   resolution: "@babel/plugin-transform-class-static-block@npm:7.23.4"
@@ -3093,6 +3092,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tailwindcss/forms@npm:^0.5.7":
+  version: 0.5.7
+  resolution: "@tailwindcss/forms@npm:0.5.7"
+  dependencies:
+    mini-svg-data-uri: "npm:^1.2.3"
+  peerDependencies:
+    tailwindcss: ">=3.0.0 || >= 3.0.0-alpha.1"
+  checksum: cd29e0c978402ae87a923ae802dcff43f7b050595666cb067321cac2e37a52f61b9d73385cb0a10455548581ddd0d3886815bd6c64a1da06247c0057fa9f4601
+  languageName: node
+  linkType: hard
+
 "@tootallnate/quickjs-emscripten@npm:^0.23.0":
   version: 0.23.0
   resolution: "@tootallnate/quickjs-emscripten@npm:0.23.0"
@@ -5184,12 +5194,14 @@ __metadata:
   dependencies:
     "@next/eslint-plugin-next": "npm:^13.4.19"
     "@svgr/webpack": "npm:^8.1.0"
+    "@tailwindcss/forms": "npm:^0.5.7"
     "@toss/assert": "npm:^1.1.12"
     "@toss/utils": "npm:^1.4.6"
     "@types/node": "npm:^17.0.12"
     "@types/react": "npm:^18.0.22"
     "@types/react-dom": "npm:^18.0.7"
     autoprefixer: "npm:^10.4.16"
+    dotenv-cli: "npm:^7.3.0"
     eslint-config-custom: "npm:*"
     ky: "npm:^1.1.3"
     next: "npm:^14.0.1"
@@ -5951,7 +5963,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv-expand@npm:10.0.0":
+"dotenv-cli@npm:^7.3.0":
+  version: 7.3.0
+  resolution: "dotenv-cli@npm:7.3.0"
+  dependencies:
+    cross-spawn: "npm:^7.0.3"
+    dotenv: "npm:^16.3.0"
+    dotenv-expand: "npm:^10.0.0"
+    minimist: "npm:^1.2.6"
+  bin:
+    dotenv: cli.js
+  checksum: 1fbad462078fe75c105ff47345671c0a38e8b5416db93a8c669e4e62dd26e3c1db6157aec0926ad6159bb176393395a493f0a23fd6a3e182191cf6d8380c6f16
+  languageName: node
+  linkType: hard
+
+"dotenv-expand@npm:10.0.0, dotenv-expand@npm:^10.0.0":
   version: 10.0.0
   resolution: "dotenv-expand@npm:10.0.0"
   checksum: 298f5018e29cfdcb0b5f463ba8e8627749103fbcf6cf81c561119115754ed582deee37b49dfc7253028aaba875ab7aea5fa90e5dac88e511d009ab0e6677924e
@@ -5965,7 +5991,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:16.3.1":
+"dotenv@npm:16.3.1, dotenv@npm:^16.3.0":
   version: 16.3.1
   resolution: "dotenv@npm:16.3.1"
   checksum: b95ff1bbe624ead85a3cd70dbd827e8e06d5f05f716f2d0cbc476532d54c7c9469c3bc4dd93ea519f6ad711cb522c00ac9a62b6eb340d5affae8008facc3fbd7
@@ -9636,6 +9662,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mini-svg-data-uri@npm:^1.2.3":
+  version: 1.4.4
+  resolution: "mini-svg-data-uri@npm:1.4.4"
+  bin:
+    mini-svg-data-uri: cli.js
+  checksum: 24545fa30b5a45449241bf19c25b8bc37594b63ec06401b3d563bd1c2e8a6abb7c18741f8b354e0064baa63c291be214154bf3a66f201ae71dfab3cc1a5e3191
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^3.0.4, minimatch@npm:^3.0.5, minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
   version: 3.1.2
   resolution: "minimatch@npm:3.1.2"
@@ -9796,6 +9831,7 @@ __metadata:
   dependencies:
     "@typescript-eslint/eslint-plugin": "npm:^6.10.0"
     "@typescript-eslint/parser": "npm:^6.10.0"
+    dotenv-cli: "npm:^7.3.0"
     eslint: "npm:^8.53.0"
     lru-cache: "npm:^10.0.2"
     prettier: "npm:^3.0.3"
@@ -11871,7 +11907,7 @@ __metadata:
     ts-jest: "npm:^29.1.0"
     ts-loader: "npm:^9.4.3"
     ts-node: "npm:^10.9.2"
-    ts-patch: "npm:^3.1.1"
+    ts-patch: "npm:^3.1.2"
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.3.2"
     typia: "npm:^5.3.7"
@@ -12905,9 +12941,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-patch@npm:^3.1.1":
-  version: 3.1.1
-  resolution: "ts-patch@npm:3.1.1"
+"ts-patch@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "ts-patch@npm:3.1.2"
   dependencies:
     chalk: "npm:^4.1.2"
     global-prefix: "npm:^3.0.0"
@@ -12918,7 +12954,7 @@ __metadata:
   bin:
     ts-patch: bin/ts-patch.js
     tspc: bin/tspc.js
-  checksum: 124273b0ead6a6d90438951dac7d688f271199cbe2b134636aedc1774edeaffcd83fae581ec5ac5d3033f71f5894a5a4b50266bf90ac4cbd75cd19ae336dd41c
+  checksum: 773f55de5cae7592af85ba9216b8b5baee9cd440ac085466152bcce7fbcfaeab0f2774b013f97a399f833a4c409646acc9579d7bb6c1f9b969b08bc492038a56
   languageName: node
   linkType: hard
 

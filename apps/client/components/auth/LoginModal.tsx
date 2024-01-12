@@ -3,6 +3,8 @@
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import * as I from "components/icons";
+import toast from "react-hot-toast";
+import csr from "../../lib/fetcher/csr";
 
 export default function LoginModal({ setIsActive }: { setIsActive: any }) {
   const {
@@ -13,7 +15,12 @@ export default function LoginModal({ setIsActive }: { setIsActive: any }) {
   } = useForm();
 
   async function onClickLogin(data: any) {
-    console.log(data);
+    csr
+      .post("user/auth", { json: data })
+      .then((res) => {
+        toast.success("로그인 완료!");
+      })
+      .catch((err) => alert("로그인 실패"));
   }
 
   return (
