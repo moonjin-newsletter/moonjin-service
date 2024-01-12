@@ -7,7 +7,7 @@ import {UtilService} from "../util/util.service";
 import { Response} from 'express';
 import {TryCatch} from "../response/tryCatch";
 import {MailService} from "../mail/mail.service";
-import {EMAIL_NOT_EXIST, EMAIL_NOT_VERIFIED} from "../response/error/mail";
+import {EMAIL_NOT_EXIST} from "../response/error/mail";
 import {ExceptionList} from "../response/error/errorInstances";
 import {ILocalLogin} from "./api-types/ILocalLogin";
 import {ICheckEmailExist} from "./api-types/ICheckEmailExist";
@@ -122,11 +122,8 @@ export class AuthController {
   @TypedRoute.Post("login")
   async localLogin(@TypedBody() localLoginData: ILocalLogin, @Res() res:Response):Promise<TryCatch<
       ResponseMessage,
-      LOGIN_ERROR | INVALID_PASSWORD | USER_NOT_FOUND | SOCIAL_USER_ERROR | EMAIL_NOT_VERIFIED>>{
+      LOGIN_ERROR | INVALID_PASSWORD | USER_NOT_FOUND | SOCIAL_USER_ERROR>>{
     const user = await this.userService.localLogin(localLoginData);
-    if(user.role < 0){
-      throw ExceptionList.EMAIL_NOT_VERIFIED;
-    }
     const jwtTokens = this.userService.getAccessTokens(user);
     res.cookie('accessToken', jwtTokens.accessToken)
     res.cookie('refreshToken', jwtTokens.refreshToken)
