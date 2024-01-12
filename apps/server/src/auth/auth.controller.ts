@@ -7,12 +7,7 @@ import {UtilService} from "../util/util.service";
 import { Response} from 'express';
 import {TryCatch} from "../response/tryCatch";
 import {MailService} from "../mail/mail.service";
-import {
-  EMAIL_ALREADY_EXIST,
-  MOONJIN_EMAIL_ALREADY_EXIST,
-  NICKNAME_ALREADY_EXIST, SOCIAL_SIGNUP_ERROR, SOCIAL_SIGNUP_TOKEN_NOT_FOUND
-} from "../response/error/auth/signup.error";
-import {EMAIL_NOT_EXIST, EMAIL_NOT_VERIFIED} from "../response/error/mail/mail.error";
+import {EMAIL_NOT_EXIST, EMAIL_NOT_VERIFIED} from "../response/error/mail";
 import {ExceptionList} from "../response/error/errorInstances";
 import {ILocalLogin} from "./api-types/ILocalLogin";
 import {ICheckEmailExist} from "./api-types/ICheckEmailExist";
@@ -26,13 +21,16 @@ import {
   LOGIN_ERROR,
   SOCIAL_LOGIN_ERROR, SOCIAL_PROFILE_NOT_FOUND,
   SOCIAL_USER_ERROR,
-  USER_NOT_FOUND, USER_NOT_FOUND_IN_SOCIAL
-} from "../response/error/auth/login.error";
+  USER_NOT_FOUND, USER_NOT_FOUND_IN_SOCIAL,
+  INVALID_TOKEN,
+  EMAIL_ALREADY_EXIST,
+  MOONJIN_EMAIL_ALREADY_EXIST,
+  NICKNAME_ALREADY_EXIST, SOCIAL_SIGNUP_ERROR, SOCIAL_SIGNUP_TOKEN_NOT_FOUND
+} from "../response/error/auth";
 import {SignupDataDto} from "./dto/signupData.dto";
 import {ISocialSignup} from "./api-types/ISocialSignup";
 import {RequestHeaderDto} from "./dto/requestHeader.dto";
 import {UserSocialProfileDto} from "./dto/userSocialProfile.dto";
-import {INVALID_TOKEN} from "../response/error/auth/jwtToken.error";
 import * as process from "process";
 
 @ApiTags('Auth')

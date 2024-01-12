@@ -1,4 +1,4 @@
-import { ERROR } from "./error"
+import { ERROR } from "./error/error"
 import {ResponseForm} from "./responseForm";
 
 export type Try<T> = ResponseForm<T>;

@@ -4,7 +4,7 @@ import {User} from "@prisma/client";
 import * as console from "console";
 import {UtilService} from "../util/util.service";
 import {UserDto} from "./dto/user.dto";
-import {Exception} from "../response/error";
+import {Exception} from "../response/error/error";
 import { SignupDataDto } from './dto/signupData.dto';
 import {UserWithWriterInfo} from "./scheme/user.scheme";
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
