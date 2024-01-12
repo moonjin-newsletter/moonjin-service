@@ -22,7 +22,8 @@ describe('AppController Test (e2e)', () => {
   });
 
   describe("API AUTH TEST", () => {
-    it('/user (POST)', async () => {});
+    it('/auth (POST)', async () => {
+    });
   })
 
 });

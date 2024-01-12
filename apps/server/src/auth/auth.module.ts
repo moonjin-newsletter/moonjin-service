@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import {PrismaModule} from "../prisma/prisma.module";
 import {UtilModule} from "../util/util.module";
 import {MailModule} from "../mail/mail.module";
@@ -14,7 +14,7 @@ import { HttpModule } from '@nestjs/axios';
       MailModule,
       HttpModule
   ],
-  controllers: [UserController],
-  providers: [UserService, OauthService]
+  controllers: [AuthController],
+  providers: [AuthService, OauthService]
 })
-export class UserModule {}
+export class AuthModule {}

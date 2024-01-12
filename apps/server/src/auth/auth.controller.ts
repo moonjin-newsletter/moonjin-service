@@ -1,7 +1,7 @@
 import {Controller, Res} from '@nestjs/common';
 import {TypedBody, TypedHeaders, TypedQuery, TypedRoute} from '@nestia/core';
 import {ILocalSignUp} from "./api-types/ILocalSignUp";
-import {UserService} from "./user.service";
+import {AuthService} from "./auth.service";
 import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {UtilService} from "../util/util.service";
 import { Response} from 'express';
@@ -11,7 +11,7 @@ import {
   EMAIL_ALREADY_EXIST,
   MOONJIN_EMAIL_ALREADY_EXIST,
   NICKNAME_ALREADY_EXIST, SOCIAL_SIGNUP_ERROR, SOCIAL_SIGNUP_TOKEN_NOT_FOUND
-} from "../response/error/user/signup.error";
+} from "../response/error/auth/signup.error";
 import {EMAIL_NOT_EXIST, EMAIL_NOT_VERIFIED} from "../response/error/mail/mail.error";
 import {ExceptionList} from "../response/error/errorInstances";
 import {ILocalLogin} from "./api-types/ILocalLogin";
@@ -27,7 +27,7 @@ import {
   SOCIAL_LOGIN_ERROR, SOCIAL_PROFILE_NOT_FOUND,
   SOCIAL_USER_ERROR,
   USER_NOT_FOUND, USER_NOT_FOUND_IN_SOCIAL
-} from "../response/error/user/login.error";
+} from "../response/error/auth/login.error";
 import {SignupDataDto} from "./dto/signupData.dto";
 import {ISocialSignup} from "./api-types/ISocialSignup";
 import {RequestHeaderDto} from "./dto/requestHeader.dto";
@@ -35,16 +35,16 @@ import {UserSocialProfileDto} from "./dto/userSocialProfile.dto";
 import {INVALID_TOKEN} from "../response/error/auth/jwtToken.error";
 import * as process from "process";
 
-@ApiTags('User')
-@Controller('user')
-export class UserController {
-  constructor(private readonly userService : UserService,
+@ApiTags('Auth')
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly userService : AuthService,
               private readonly utilService: UtilService,
               private readonly mailService: MailService,
               private readonly oauthService: OauthService) {}
 
   /**
-   * @summary 로걸 회원가입 버튼 눌렀을 시
+   * @summary 로컬 회원가입 버튼 눌렀을 시
    * @param localSignUpData 회원가입 정보
    * @returns "메일이 전송되었습니다."
    * @throws EMAIL_ALREADY_EXIST
@@ -54,7 +54,7 @@ export class UserController {
    * @throws WRITER_SIGNUP_ERROR
    * @throws EMAIL_NOT_EXIST
    */
-  @TypedRoute.Post()
+  @TypedRoute.Post('signup')
   async emailSignup(@TypedBody() localSignUpData: ILocalSignUp) : Promise<TryCatch<
       ResponseMessage,
       EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | EMAIL_NOT_EXIST>>{
@@ -121,7 +121,7 @@ export class UserController {
    * @throws SOCIAL_USER_ERROR
    * @throws EMAIL_NOT_VERIFIED
    */
-  @TypedRoute.Post("auth")
+  @TypedRoute.Post("login")
   async localLogin(@TypedBody() localLoginData: ILocalLogin, @Res() res:Response):Promise<TryCatch<
       ResponseMessage,
       LOGIN_ERROR | INVALID_PASSWORD | USER_NOT_FOUND | SOCIAL_USER_ERROR | EMAIL_NOT_VERIFIED>>{
@@ -145,7 +145,7 @@ export class UserController {
    * @param inputData
    * @param res
    */
-  @TypedRoute.Get("oauth/url")
+  @TypedRoute.Get("oauth")
   async redirectToSocialPlatform(@TypedQuery() inputData : ISocialRedirect, @Res() res:Response){
     res.redirect(this.oauthService.getSocialOauthUrl(inputData.social));
   }
@@ -156,7 +156,7 @@ export class UserController {
    * @param res
    * @returns redirect 메시지
    */
-  @TypedRoute.Get("oauth")
+  @TypedRoute.Get("oauth/login")
   async socialLogin(@TypedQuery() socialLoginData : ISocialLogin, @Res() res:Response) : Promise<
       void | SOCIAL_LOGIN_ERROR | USER_NOT_FOUND_IN_SOCIAL | SOCIAL_PROFILE_NOT_FOUND>{
     console.log(socialLoginData);
@@ -166,7 +166,7 @@ export class UserController {
       const jwtTokens = this.userService.getAccessTokens(userData.data);
       res.cookie('accessToken', jwtTokens.accessToken)
       res.cookie('refreshToken', jwtTokens.refreshToken)
-      res.redirect("https://naver.com")
+      res.redirect(process.env.CLIENT_URL + "");
     } else { // 추가 정보 입력 페이지로 이동
       console.log(process.env.SERVER_URL + "/auth/social?email=" + userData.data.email)
       res.cookie('socialSignupToken', this.utilService.generateJwtToken(userData.data));
@@ -174,7 +174,7 @@ export class UserController {
     }
   }
 
-  @TypedRoute.Post('oauth')
+  @TypedRoute.Post('oauth/signup')
   async socialSignup(@TypedBody() socialSignupData : ISocialSignup, @TypedHeaders() header:RequestHeaderDto, @Res() res:Response):
       Promise<TryCatch<ResponseMessage,
       SOCIAL_SIGNUP_TOKEN_NOT_FOUND | INVALID_TOKEN | EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SOCIAL_SIGNUP_ERROR>>
@@ -185,8 +185,7 @@ export class UserController {
     if(!cookie) throw ExceptionList.SOCIAL_SIGNUP_TOKEN_NOT_FOUND;
 
     const socialSignupToken = cookie.split("=")[1];
-    const dataFromToken = this.utilService.getDataFromJwtToken<UserSocialProfileDto & {iat:number,exp: number}>(socialSignupToken);
-    const {iat,exp,...userSocialData} = dataFromToken;
+    const {iat,exp,...userSocialData} = this.utilService.getDataFromJwtToken<UserSocialProfileDto & {iat:number,exp: number}>(socialSignupToken);
     const user = await this.userService.socialSignup({...userSocialData, ...socialSignupData});
     const {accessToken, refreshToken} = this.userService.getAccessTokens(user)
     res.cookie('accessToken', accessToken)

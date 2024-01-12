@@ -25,7 +25,7 @@ export class MailService {
     email: string,
     code : string
   ): Promise<void> {
-    const accessLink = process.env.SERVER_URL + "/user/email/verification?code=" + code;
+    const accessLink = process.env.SERVER_URL + "/auth/email/verification?code=" + code;
     try {
       await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
         from: `문진 <admin@${this.MAILGUN_DOMAIN}>`,

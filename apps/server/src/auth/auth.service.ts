@@ -15,7 +15,7 @@ import {UserUniqueDataDto} from "./dto/userUniqueData.dto";
 import {SocialSignupDto} from "./dto/socialSignup.dto";
 
 @Injectable()
-export class UserService {
+export class AuthService {
     constructor(private readonly prismaService: PrismaService, private readonly utilService: UtilService) {}
 
     /**
@@ -33,7 +33,7 @@ export class UserService {
     }
 
     /**
-     * @summary email이 unique 한지 확인
+     * @summary email 이 unique 한지 확인
      * @param email
      * @throws EMAIL_ALREADY_EXIST
      */
@@ -77,7 +77,7 @@ export class UserService {
      * @summary 작가 | 독자의 회원가입을 진행하는 기능
      *
      * @param signUpData
-     * @returns UserDto | WriterDto
+     * @returns UserDto
      * @throws MAIL_ALREADY_EXIST
      * @throws NICKNAME_ALREADY_EXIST
      * @throws MOONJIN_EMAIL_ALREADY_EXIST

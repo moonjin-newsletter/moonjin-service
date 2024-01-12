@@ -6,7 +6,7 @@ import {
     MOONJIN_EMAIL_ALREADY_EXIST,
     NICKNAME_ALREADY_EXIST,
     SIGNUP_ERROR, SOCIAL_SIGNUP_ERROR, SOCIAL_SIGNUP_TOKEN_NOT_FOUND, WRITER_SIGNUP_ERROR
-} from "./user/signup.error";
+} from "./auth/signup.error";
 import {INVALID_TOKEN, TOKEN_NOT_FOUND} from "./auth/jwtToken.error";
 import {
     INVALID_PASSWORD,
@@ -14,7 +14,7 @@ import {
     LOGIN_ERROR, SOCIAL_LOGIN_ERROR, SOCIAL_PROFILE_NOT_FOUND, SOCIAL_USER_ERROR,
     USER_NOT_FOUND,
     USER_NOT_FOUND_IN_SOCIAL
-} from "./user/login.error";
+} from "./auth/login.error";
 
 export const ExceptionList= {
     EMAIL_ALREADY_EXIST: new Exception(typia.random<EMAIL_ALREADY_EXIST>()),

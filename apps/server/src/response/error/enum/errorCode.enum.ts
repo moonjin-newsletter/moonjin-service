@@ -1,5 +1,5 @@
 export enum ErrorCodeEnum {
-    // user/signup
+    // auth/signup
     EMAIL_ALREADY_EXIST = '0001',
     NICKNAME_ALREADY_EXIST = "0002",
     MOONJIN_EMAIL_ALREADY_EXIST = "0003",
@@ -10,7 +10,7 @@ export enum ErrorCodeEnum {
     // auth/jwtToken
     TOKEN_NOT_FOUND = '0020',
     INVALID_TOKEN = '0021',
-    // user/login
+    // auth/login
     USER_NOT_FOUND = '0030',
     INVALID_PASSWORD = '0031',
     LOGIN_ERROR = "0032",
