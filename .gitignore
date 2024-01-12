@@ -12,8 +12,6 @@ coverage
 .next/
 out/
 
-
-
 # compiled output
 *.tsbuildinfo
 out
@@ -30,8 +28,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env.local
-.env.local
+.env.dev.local
 .env.development.local
 .env.test.local
 .env.production.local
