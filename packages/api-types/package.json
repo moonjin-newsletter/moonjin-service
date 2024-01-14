@@ -3,6 +3,8 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
+    "@nestjs/common": "^10.3.0",
+    "class-validator": "^0.14.1",
     "tsconfig": "*"
   },
   "devDependencies": {
