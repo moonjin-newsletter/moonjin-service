@@ -2,7 +2,11 @@
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
+import * as I from "components/icons";
 import csr from "../../../lib/fetcher/csr";
+import { ErrorCodeEnum } from "@moonjin/api-types";
+import Background from "public/images/background.png";
+import Image from "next/image";
 
 export default function Page() {
   const {
@@ -18,18 +22,24 @@ export default function Page() {
   async function onClickSignup(data: any) {
     if (data.password !== data.passwordCheck)
       return toast.error("비밀번호를 확인해주세요");
+
     delete data["passwordCheck"];
+
     const auth = {
       ...data,
       role: parseInt(data.role),
     };
 
     await csr
-      .post("user", { json: auth })
+      .post("auth/signup", { json: auth })
       .then((res) => {
         toast.success("메일을 확인해주세요!");
       })
-      .catch((err) => alert("회원가입 실패"));
+      .catch((err) => {
+        if (err.code === ErrorCodeEnum.EMAIL_ALREADY_EXIST)
+          return alert(err.data.message);
+        alert("회원가입 실패");
+      });
   }
 
   useEffect(() => {
@@ -37,11 +47,17 @@ export default function Page() {
   }, [role]);
 
   return (
-    <div className="w-full h-full  flex flex-col items-center ">
-      <section className="w-full max-w-[1024px]  flex flex-col items-center">
-        <div className=" my-20 flex w-full py-8 px-20 rounded-xl border border-gray-200 max-w-[600px] gap-y-3 flex-col items-center">
-          <h1 className="text-2xl font-bold ">회원가입</h1>
-          <hr className=" w-full py-0 mt-4 text-gray-700" />
+    <div className="relative flex items-center justify-center w-full h-full min-h-screen">
+      <section className="flex-1 w-1/2 h-full min-h-screen bg-gray-600">
+        <Image
+          className="absolute top-0 left-0 z-0 w-screen h-screen object-cover"
+          src={Background}
+          alt="백그라운드 이미지"
+        />
+      </section>
+      <section className="z-10  bg-white flex-1 w-1/2 h-full min-h-screen flex flex-col items-center justify-center">
+        <div className="  flex w-full max-w-[680px] px-20 gap-y-3 flex-col items-center">
+          <I.AuthLogo />
           <form
             onSubmit={handleSubmit(onClickSignup)}
             className="w-full h-fit flex flex-col items-start gap-y-3"
@@ -153,7 +169,7 @@ export default function Page() {
             <button
               disabled={!isValid}
               type="submit"
-              className="mt-2 disabled:bg-gray-600 w-full h-10 rounded-2xl bg-[#7b0000] text-white"
+              className="mt-2 disabled:bg-gray-900 w-full h-10 rounded-2xl bg-[#7b0000] text-white"
             >
               회원가입
             </button>

@@ -4,9 +4,10 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 import * as I from "components/icons";
 import toast from "react-hot-toast";
-import csr from "../../lib/fetcher/csr";
+import csr from "../../../lib/fetcher/csr";
+import { useRouter } from "next/router";
 
-export default function LoginModal({ setIsActive }: { setIsActive: any }) {
+export default function Page() {
   const {
     register,
     setValue,
@@ -16,31 +17,19 @@ export default function LoginModal({ setIsActive }: { setIsActive: any }) {
 
   async function onClickLogin(data: any) {
     csr
-      .post("user/auth", { json: data })
+      .post("auth/login", { json: data })
       .then((res) => {
-        toast.success("로그인 완료!");
+        window.location.href = "/";
       })
       .catch((err) => alert("로그인 실패"));
   }
 
   return (
-    <div
-      onClick={(e) => {
-        setIsActive(false);
-      }}
-      className="fixed top-0 bottom-0 w-full h-full flex items-center justify-center bg-black/30"
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className=" flex flex-col items-center pb-16  rounded-lg w-full max-w-[600px] h-fit  bg-white py-10 px-20"
-      >
-        <div className="flex w-full justify-end">
-          <button onClick={() => setIsActive(false)} className="">
-            x
-          </button>
-        </div>
-        <h1 className="text-2xl font-bold">로그인</h1>
-        <hr className="mt-3 w-full text-gray-700" />
+    <div className="flex items-center justify-center w-full h-full min-h-screen">
+      <section className="flex-1 w-1/2 h-full min-h-screen bg-gray-600"></section>
+      <section className=" flex-1 flex flex-col items-center   rounded-lg w-1/2 h-fit  bg-white  ">
+        <I.AuthLogo />
+
         <section className="flex flex-col items-center px-10 w-full">
           <form
             className="max-w-[320px] mt-8 flex w-full flex-col  gap-y-4"
@@ -76,36 +65,33 @@ export default function LoginModal({ setIsActive }: { setIsActive: any }) {
             </button>
           </form>
 
-          <div className="flex justify-end w-full mt-3 text-sm items-center gap-x-2">
+          <div className="flex justify-center w-full mt-10 text-sm items-center gap-x-2">
             <Link href="/auth/signup">아이디/비밀번호 찾기</Link>
             <div className="w-[1px] h-3 bg-gray-900" />
             <Link href="/auth/signup">회원가입</Link>
           </div>
-          <div className="flex w-full h-fit gap-y-2 flex-col items-center">
+          <div className="flex w-full h-fit mt-4 justify-center gap-x-8 items-center">
             <Link
               href=""
-              className="relative w-full h-12 flex items-center justify-center bg-yellow-400"
+              className="h-fit w-fit flex items-center justify-center rounded-full border border-yellow-200 "
             >
-              <I.Kakao className="absolute left-2" />
-              <span>카카오톡</span>
+              <I.Kakao />
             </Link>
             <Link
               href=""
-              className="relative w-full h-12 flex items-center justify-center bg-yellow-400"
+              className="h-fit w-fit flex items-center justify-center rounded-full border border-gray-200 "
             >
-              <I.Google className="absolute left-2" />
-              <span>구글 로그인</span>
+              <I.Google />
             </Link>
             <Link
               href=""
-              className="relative w-full h-12 flex items-center justify-center bg-yellow-400"
+              className="h-fit w-fit flex items-center justify-center rounded-full border border-green-500 "
             >
-              <I.Naver className="absolute left-2" />
-              <span>네이버 로그인</span>
+              <I.Naver />
             </Link>
           </div>
         </section>
-      </div>
+      </section>
     </div>
   );
 }

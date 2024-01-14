@@ -13,6 +13,7 @@
     "@tailwindcss/forms": "^0.5.7",
     "@toss/assert": "^1.1.12",
     "@toss/utils": "^1.4.6",
+    "cookies-next": "^4.1.0",
     "dotenv-cli": "^7.3.0",
     "eslint-config-custom": "*",
     "ky": "^1.1.3",

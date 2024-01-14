@@ -27,8 +27,8 @@ const refresh: BeforeRetryHook = async ({ error, retryCount }) => {
 
 const getErrorMessage: BeforeErrorHook = async (error) => {
   const body = await error.response?.json();
-  error.message = body?.message ?? error.message;
-  return error;
+  error.message = body?.data.message ?? error.message;
+  return body;
 };
 
 assert(process.env.NEXT_PUBLIC_SERVER_URL, "NEXT_PUBLIC_SERVER_URL is not set");
