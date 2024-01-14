@@ -81,9 +81,9 @@ export class AuthController {
       const {accessToken, refreshToken} = this.authService.getAccessTokens(user)
       res.cookie('accessToken',accessToken)
       res.cookie('refreshToken', refreshToken)
-      res.redirect(process.env.CLIENT_URL + ""); // TODO : redirect to success page
+      res.redirect(process.env.CLIENT_URL + "/");
     }catch (e){
-      res.redirect("https://google.com"); // TODO : redirect to error page
+      res.redirect(process.env.CLIENT_URL + "/auth/signup");
     }
   }
 
