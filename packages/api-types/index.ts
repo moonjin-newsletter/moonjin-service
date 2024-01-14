@@ -1,6 +1,5 @@
 export * from './src/response/responseForm';
 export * from './src/response/error/error';
-export * from './src/response/error/errorInstances';
 export * from './src/response/error/enum/errorCode.enum';
 
 export * from './src/response/error/mail/index';

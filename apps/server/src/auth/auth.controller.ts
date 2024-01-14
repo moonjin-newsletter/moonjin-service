@@ -36,7 +36,7 @@ import * as process from "process";
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly userService : AuthService,
+  constructor(private readonly authService : AuthService,
               private readonly utilService: UtilService,
               private readonly mailService: MailService,
               private readonly oauthService: OauthService) {}
@@ -57,7 +57,7 @@ export class AuthController {
       ResponseMessage,
       EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | EMAIL_NOT_EXIST>>{
     const {password, role, ...userUniqueData} = localSignUpData;
-    await this.userService.assertUserDataUnique(userUniqueData);
+    await this.authService.assertUserDataUnique(userUniqueData);
 
     const emailVerificationCode = this.utilService.generateJwtToken(localSignUpData);
     await this.mailService.sendVerificationMail(localSignUpData.email, emailVerificationCode);
@@ -77,19 +77,14 @@ export class AuthController {
     try {
       const dataFromToken = this.utilService.getDataFromJwtToken<SignupDataDto & {iat:number,exp: number}>(payload.code);
       const {iat,exp,...userSignUpData} = dataFromToken;
-      const user = await this.userService.localSignUp(userSignUpData);
-      const {accessToken, refreshToken} = this.userService.getAccessTokens(user)
+      const user = await this.authService.localSignUp(userSignUpData);
+      const {accessToken, refreshToken} = this.authService.getAccessTokens(user)
       res.cookie('accessToken',accessToken)
       res.cookie('refreshToken', refreshToken)
-      res.redirect(process.env.CLIENT_URL + "");
+      res.redirect(process.env.CLIENT_URL + ""); // TODO : redirect to success page
     }catch (e){
-      res.redirect("https://google.com");
+      res.redirect("https://google.com"); // TODO : redirect to error page
     }
-  }
-
-  @TypedRoute.Get('test')
-  async userTest(){
-    return "hi"
   }
 
   /**
@@ -102,7 +97,7 @@ export class AuthController {
   async checkEmailExist(@TypedBody() payload:ICheckEmailExist): Promise<TryCatch<
       ResponseMessage,
       EMAIL_ALREADY_EXIST>> {
-    await this.userService.assertEmailUnique(payload.email);
+    await this.authService.assertEmailUnique(payload.email);
     return createResponseForm({
       message:"해당 메일을 사용하실 수 있습니다."
     })
@@ -120,19 +115,16 @@ export class AuthController {
    * @throws EMAIL_NOT_VERIFIED
    */
   @TypedRoute.Post("login")
-  async localLogin(@TypedBody() localLoginData: ILocalLogin, @Res() res:Response):Promise<TryCatch<
-      ResponseMessage,
-      LOGIN_ERROR | INVALID_PASSWORD | USER_NOT_FOUND | SOCIAL_USER_ERROR>>{
-    const user = await this.userService.localLogin(localLoginData);
-    const jwtTokens = this.userService.getAccessTokens(user);
+  async localLogin(@TypedBody() localLoginData: ILocalLogin, @Res() res:Response):Promise<
+      void |
+      LOGIN_ERROR | INVALID_PASSWORD | USER_NOT_FOUND | SOCIAL_USER_ERROR>{
+    const user = await this.authService.localLogin(localLoginData);
+    const jwtTokens = this.authService.getAccessTokens(user);
     res.cookie('accessToken', jwtTokens.accessToken)
     res.cookie('refreshToken', jwtTokens.refreshToken)
     res.send(createResponseForm({
       message: "로그인이 완료되었습니다"
     }))
-    return createResponseForm({
-      message: "로그인이 완료되었습니다"
-    });
   }
 
   /**
@@ -141,7 +133,7 @@ export class AuthController {
    * @param res
    */
   @TypedRoute.Get("oauth")
-  async redirectToSocialPlatform(@TypedQuery() inputData : ISocialRedirect, @Res() res:Response){
+  async redirectToSocialPlatform(@TypedQuery() inputData : ISocialRedirect, @Res() res:Response) : Promise<void>{
     res.redirect(this.oauthService.getSocialOauthUrl(inputData.social));
   }
 
@@ -153,26 +145,27 @@ export class AuthController {
    */
   @TypedRoute.Get("oauth/login")
   async socialLogin(@TypedQuery() socialLoginData : ISocialLogin, @Res() res:Response) : Promise<
-      void | SOCIAL_LOGIN_ERROR | USER_NOT_FOUND_IN_SOCIAL | SOCIAL_PROFILE_NOT_FOUND>{
+      void | SOCIAL_LOGIN_ERROR | USER_NOT_FOUND_IN_SOCIAL | SOCIAL_PROFILE_NOT_FOUND>
+  {
     console.log(socialLoginData);
     const userData = await this.oauthService.socialLogin(socialLoginData);
     console.log(userData)
     if(userData.result){ // login 처리
-      const jwtTokens = this.userService.getAccessTokens(userData.data);
+      const jwtTokens = this.authService.getAccessTokens(userData.data);
       res.cookie('accessToken', jwtTokens.accessToken)
       res.cookie('refreshToken', jwtTokens.refreshToken)
-      res.redirect(process.env.CLIENT_URL + "");
+      res.redirect(process.env.CLIENT_URL + ""); // TODO : redirect to success page
     } else { // 추가 정보 입력 페이지로 이동
       console.log(process.env.SERVER_URL + "/auth/social?email=" + userData.data.email)
       res.cookie('socialSignupToken', this.utilService.generateJwtToken(userData.data));
-      res.redirect(process.env.SERVER_URL + "/auth/social?email=" + userData.data.email)
+      res.redirect(process.env.CLIENT_URL + "/auth/social?email=" + userData.data.email) // TODO : redirect to success page
     }
   }
 
   @TypedRoute.Post('oauth/signup')
   async socialSignup(@TypedBody() socialSignupData : ISocialSignup, @TypedHeaders() header:RequestHeaderDto, @Res() res:Response):
-      Promise<TryCatch<ResponseMessage,
-      SOCIAL_SIGNUP_TOKEN_NOT_FOUND | INVALID_TOKEN | EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SOCIAL_SIGNUP_ERROR>>
+      Promise<void |
+      SOCIAL_SIGNUP_TOKEN_NOT_FOUND | INVALID_TOKEN | EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SOCIAL_SIGNUP_ERROR>
     {
       console.log(socialSignupData)
       console.log(header);
@@ -181,15 +174,12 @@ export class AuthController {
 
     const socialSignupToken = cookie.split("=")[1];
     const {iat,exp,...userSocialData} = this.utilService.getDataFromJwtToken<UserSocialProfileDto & {iat:number,exp: number}>(socialSignupToken);
-    const user = await this.userService.socialSignup({...userSocialData, ...socialSignupData});
-    const {accessToken, refreshToken} = this.userService.getAccessTokens(user)
+    const user = await this.authService.socialSignup({...userSocialData, ...socialSignupData});
+    const {accessToken, refreshToken} = this.authService.getAccessTokens(user)
     res.cookie('accessToken', accessToken)
     res.cookie('refreshToken', refreshToken)
     res.send(createResponseForm({
       message: "회원가입이 완료되었습니다."
     }));
-    return createResponseForm({
-      message: "회원가입이 완료되었습니다."
-    })
   }
 }
