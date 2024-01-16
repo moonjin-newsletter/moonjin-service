@@ -24,6 +24,19 @@ export class UtilService {
         return this.getHashCode(inputString).trim() === hashedString.trim()
     }
 
+    /**
+     * @summary 쿠키에서 토큰을 가져오는 함수.
+     * @param cookies
+     * @param cookieToFind
+     * @throws TOKEN_NOT_FOUND
+     * @returns token
+     */
+    getTokenFromCookie(cookies : string[], cookieToFind: string): string {
+        const token = cookies.find(cookie => cookie.includes(cookieToFind));
+        if(!token) throw ExceptionList.TOKEN_NOT_FOUND;
+        return token.split('=')[1];
+    }
+
     getRandomNumberIn6digits() {
         return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
     }

@@ -25,13 +25,14 @@ import {
   INVALID_TOKEN,
   EMAIL_ALREADY_EXIST,
   MOONJIN_EMAIL_ALREADY_EXIST,
-  NICKNAME_ALREADY_EXIST, SOCIAL_SIGNUP_ERROR, SOCIAL_SIGNUP_TOKEN_NOT_FOUND
+  NICKNAME_ALREADY_EXIST, SOCIAL_SIGNUP_ERROR, TOKEN_NOT_FOUND, PASSWORD_CHANGE_ERROR
 } from "../response/error/auth";
 import {SignupDataDto} from "./dto/signupData.dto";
 import {ISocialSignup} from "./api-types/ISocialSignup";
 import {RequestHeaderDto} from "./dto/requestHeader.dto";
 import {UserSocialProfileDto} from "./dto/userSocialProfile.dto";
 import * as process from "process";
+import {UserDto} from "./dto/user.dto";
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -84,6 +85,64 @@ export class AuthController {
       res.redirect(process.env.CLIENT_URL + "/");
     }catch (e){
       res.redirect(process.env.CLIENT_URL + "/auth/signup");
+    }
+  }
+
+  /**
+   * @summary 비밀번호 변경
+   * @param payload {password}
+   * @param header
+   * @returns "비밀번호가 변경되었습니다."
+   * @throws TOKEN_NOT_FOUND
+   * @throws INVALID_TOKEN
+   * @throws PASSWORD_CHANGE_ERROR
+   */
+  @TypedRoute.Patch("password")
+  async passwordChange(@TypedBody() payload: ILocalLogin, @TypedHeaders() header:RequestHeaderDto, @Res() res:Response):Promise<
+      void | TOKEN_NOT_FOUND | INVALID_TOKEN | PASSWORD_CHANGE_ERROR>{
+    const token = this.utilService.getTokenFromCookie(header.cookie, "passwordChangeToken");
+    const dataFromToken = this.utilService.getDataFromJwtToken<UserDto & {iat:number,exp: number}>(token);
+    await this.authService.passwordChange(dataFromToken.id, payload.password);
+    res.cookie("passwordChangeToken", "", {maxAge: 0}) // 쿠키 삭제
+    res.send(createResponseForm({message : "비밀번호가 변경되었습니다."}))
+  }
+
+  /**
+   * @summary 비밀번호 변경 메일 전송
+   * @param payload
+   * @returns "비밀번호 변경 메일이 전송되었습니다."
+   * @throws USER_NOT_FOUND
+   * @throws EMAIL_NOT_EXIST
+   */
+  @TypedRoute.Post("/password/change")
+  async sendPasswordChangeMail(@TypedBody() payload: ICheckEmailExist):Promise<TryCatch<
+      ResponseMessage,
+      USER_NOT_FOUND | EMAIL_NOT_EXIST>>{
+    const user = await this.authService.getUserByEmail(payload.email)
+    if(!user) throw ExceptionList.USER_NOT_FOUND;
+
+    const passwordChangeToken = this.utilService.generateJwtToken(user);
+    await this.mailService.sendPasswordChangeMail(payload.email, passwordChangeToken);
+    return createResponseForm({message : "비밀번호 변경 메일이 전송되었습니다."})
+  }
+
+  /**
+   * @Summary 인증 메일에서 링크를 눌렀을 때 일어나는 인증 과정
+   * @param payload 이메일 인증 code가 담긴 객체
+   * @param res
+   * @returns 메일 인증 결과 페이지로 redirect
+   */
+  @TypedRoute.Get("password/email/verification")
+  async emailVerificationForPasswordChange(@TypedQuery() payload: IEmailVerification, @Res() res:Response):Promise<void> {
+    try {
+      const dataFromToken = this.utilService.getDataFromJwtToken<UserDto & {iat:number,exp: number}>(payload.code);
+      const {iat,exp,...userData} = dataFromToken;
+      const passwordChangeToken = this.utilService.generateJwtToken(userData);
+      res.cookie('passwordChangeToken', passwordChangeToken)
+      res.redirect(process.env.CLIENT_URL + "/auth/password/new");
+    }catch (error){
+      console.log(error);
+      res.redirect(process.env.CLIENT_URL + "/auth/password/failed"); // TODO : redirect Page 변경 필요
     }
   }
 
@@ -145,34 +204,45 @@ export class AuthController {
    */
   @TypedRoute.Get("oauth/login")
   async socialLogin(@TypedQuery() socialLoginData : ISocialLogin, @Res() res:Response) : Promise<
-      void | SOCIAL_LOGIN_ERROR | USER_NOT_FOUND_IN_SOCIAL | SOCIAL_PROFILE_NOT_FOUND>
-  {
-    console.log(socialLoginData);
-    const userData = await this.oauthService.socialLogin(socialLoginData);
-    console.log(userData)
-    if(userData.result){ // login 처리
-      const jwtTokens = this.authService.getAccessTokens(userData.data);
-      res.cookie('accessToken', jwtTokens.accessToken)
-      res.cookie('refreshToken', jwtTokens.refreshToken)
-      res.redirect(process.env.CLIENT_URL + ""); // TODO : redirect to success page
-    } else { // 추가 정보 입력 페이지로 이동
-      console.log(process.env.SERVER_URL + "/auth/social?email=" + userData.data.email)
-      res.cookie('socialSignupToken', this.utilService.generateJwtToken(userData.data));
-      res.redirect(process.env.CLIENT_URL + "/auth/social?email=" + userData.data.email) // TODO : redirect to success page
+      void | SOCIAL_LOGIN_ERROR | USER_NOT_FOUND_IN_SOCIAL | SOCIAL_PROFILE_NOT_FOUND> {
+    try {
+      const userData = await this.oauthService.socialLogin(socialLoginData);
+      if(userData.result) { // login 처리
+        const jwtTokens = this.authService.getAccessTokens(userData.data);
+        res.cookie('accessToken', jwtTokens.accessToken)
+        res.cookie('refreshToken', jwtTokens.refreshToken)
+        res.redirect(process.env.CLIENT_URL + ""); // TODO : redirect to success page
+      }else { // 추가 정보 입력 페이지로 이동
+        console.log(process.env.SERVER_URL + "/auth/social?email=" + userData.data.email)
+        res.cookie('socialSignupToken', this.utilService.generateJwtToken(userData.data));
+        res.redirect(process.env.CLIENT_URL + "/auth/social?email=" + userData.data.email) // TODO : redirect to success page
+      }
+    }catch (error){ // 아예 인증이 안 됨
+      res.redirect(process.env.CLIENT_URL + "/auth/failed") // TODO : redirect to failed page
     }
   }
 
+  /**
+   * @summary 소셜 회원가입
+   * @param socialSignupData
+   * @param header
+   * @param res
+   * @returns 회원가입 완료 메시지
+   * @throws TOKEN_NOT_FOUND
+   * @throws INVALID_TOKEN
+   * @throws EMAIL_ALREADY_EXIST
+   * @throws NICKNAME_ALREADY_EXIST
+   * @throws MOONJIN_EMAIL_ALREADY_EXIST
+   * @throws SOCIAL_SIGNUP_ERROR
+   */
   @TypedRoute.Post('oauth/signup')
   async socialSignup(@TypedBody() socialSignupData : ISocialSignup, @TypedHeaders() header:RequestHeaderDto, @Res() res:Response):
       Promise<void |
-      SOCIAL_SIGNUP_TOKEN_NOT_FOUND | INVALID_TOKEN | EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SOCIAL_SIGNUP_ERROR>
-    {
-      console.log(socialSignupData)
-      console.log(header);
-    const cookie = header.cookie.find(cookie => cookie.includes("socialSignupToken"));
-    if(!cookie) throw ExceptionList.SOCIAL_SIGNUP_TOKEN_NOT_FOUND;
+      TOKEN_NOT_FOUND | INVALID_TOKEN | EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SOCIAL_SIGNUP_ERROR> {
+    console.log(socialSignupData)
+    console.log(header);
+    const socialSignupToken = this.utilService.getTokenFromCookie(header.cookie, "socialSignupToken");
 
-    const socialSignupToken = cookie.split("=")[1];
     const {iat,exp,...userSocialData} = this.utilService.getDataFromJwtToken<UserSocialProfileDto & {iat:number,exp: number}>(socialSignupToken);
     const user = await this.authService.socialSignup({...userSocialData, ...socialSignupData});
     const {accessToken, refreshToken} = this.authService.getAccessTokens(user)

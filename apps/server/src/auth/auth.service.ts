@@ -123,6 +123,43 @@ export class AuthService {
     }
 
     /**
+     * @summary 비밀번호 변경
+     * @param id
+     * @param password
+     * @throws PASSWORD_CHANGE_ERROR
+     * @returns void
+     */
+    async passwordChange(id : number, password : string): Promise<void> {
+        try {
+            await this.prismaService.user.update({
+                where:{
+                    id
+                },
+                data:{
+                    password : this.utilService.getHashCode(password)
+                }
+            })
+        } catch (error){
+            console.error(error)
+            throw ExceptionList.PASSWORD_CHANGE_ERROR;
+        }
+    }
+
+    async getUserByEmail(email : string): Promise<UserDto | null> {
+        const user : User | null = await this.prismaService.user.findUnique({
+            where:{
+                email
+            }
+        })
+        if(user){
+            const {deletedAt, createdAt, password, ...userData} = user;
+            return userData;
+        }else{
+            return null;
+        }
+    }
+
+    /**
      * @summary 로컬 로그인을 진행하는 함수
      * @param loginData 로그인할 유저 정보
      * @returns UserDto

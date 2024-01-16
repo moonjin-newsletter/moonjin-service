@@ -4,7 +4,7 @@ import typia from "typia";
 import {
     EMAIL_ALREADY_EXIST,
     MOONJIN_EMAIL_ALREADY_EXIST,
-    NICKNAME_ALREADY_EXIST,
+    NICKNAME_ALREADY_EXIST, PASSWORD_CHANGE_ERROR,
     SIGNUP_ERROR, SOCIAL_SIGNUP_ERROR, SOCIAL_SIGNUP_TOKEN_NOT_FOUND, WRITER_SIGNUP_ERROR
 } from "./auth";
 import {INVALID_TOKEN, TOKEN_NOT_FOUND} from "./auth";
@@ -35,5 +35,6 @@ export const ExceptionList= {
     SOCIAL_LOGIN_ERROR : new Exception(typia.random<SOCIAL_LOGIN_ERROR>()),
     SOCIAL_USER_ERROR : new Exception(typia.random<SOCIAL_USER_ERROR>()),
     SOCIAL_SIGNUP_TOKEN_NOT_FOUND : new Exception(typia.random<SOCIAL_SIGNUP_TOKEN_NOT_FOUND>()),
-    SOCIAL_SIGNUP_ERROR : new Exception(typia.random<SOCIAL_SIGNUP_ERROR>())
+    SOCIAL_SIGNUP_ERROR : new Exception(typia.random<SOCIAL_SIGNUP_ERROR>()),
+    PASSWORD_CHANGE_ERROR : new Exception(typia.random<PASSWORD_CHANGE_ERROR>()),
 }

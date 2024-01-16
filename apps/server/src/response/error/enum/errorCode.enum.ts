@@ -21,5 +21,9 @@ export enum ErrorCodeEnum {
     SOCIAL_LOGIN_ERROR = "0037",
     SOCIAL_USER_ERROR = "0038",
     SOCIAL_SIGNUP_TOKEN_NOT_FOUND = "0039",
-    SOCIAL_SIGNUP_ERROR = "0040"
+    // social
+    SOCIAL_SIGNUP_ERROR = "0040",
+
+    // auth
+    PASSWORD_CHANGE_ERROR = "0050",
 }
