@@ -8,15 +8,14 @@ datasource db {
 }
 
 model User {
-  id         Int         @id @default(autoincrement())
-  email      String      @unique @db.VarChar(32)
-  password   String?     @db.Char(64)
-  nickname   String      @unique @db.VarChar(16)
-  role       Int         @default(0)
-  createdAt  DateTime    @default(now())
-  deletedAt  DateTime?
-  oauth      Oauth?
-  writerInfo WriterInfo?
+  id        Int      @id @default(autoincrement())
+  email     String   @unique @db.VarChar(32)
+  password  String?  @db.Char(64)
+  nickname  String   @unique @db.VarChar(16)
+  role      Int      @default(0)
+  status    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  deleted   Boolean  @default(false)
 }
 
 model Oauth {
@@ -24,12 +23,40 @@ model Oauth {
   oauthId String @unique @db.Char(64)
   social  String @db.Char(8)
   userId  Int    @unique
-  user    User   @relation(fields: [userId], references: [id])
 }
 
 model WriterInfo {
-  id           Int    @id @default(autoincrement())
-  moonjinEmail String @unique @db.VarChar(32)
-  userId       Int    @unique
-  user         User   @relation(fields: [userId], references: [id])
+  id              Int      @id @default(autoincrement())
+  userId          Int      @unique
+  moonjinId       String   @unique @db.VarChar(32)
+  description     String   @default("") @db.VarChar(256)
+  newsletterCount Int      @default(0)
+  seriesCount     Int      @default(0)
+  followerCount   Int      @default(0)
+  status          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  deleted         Boolean  @default(false)
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(32)
+  writerId  Int
+  category  String   @db.Char(16)
+  cover     String?  @db.VarChar(128)
+  status    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  deleted   Boolean  @default(false)
+}
+
+model Series {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(32)
+  description String?  @db.VarChar(256)
+  writerId    Int
+  category    String   @db.Char(16)
+  cover       String?  @db.VarChar(128)
+  status      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  deleted     Boolean  @default(false)
 }

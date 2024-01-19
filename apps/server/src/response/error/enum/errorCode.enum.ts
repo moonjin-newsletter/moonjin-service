@@ -5,6 +5,7 @@ export enum ErrorCodeEnum {
     MOONJIN_EMAIL_ALREADY_EXIST = "0003",
     SIGNUP_ERROR = "0004",
     WRITER_SIGNUP_ERROR = "0005",
+    SIGNUP_ROLE_ERROR = "0006",
     // mail/mail
     EMAIL_NOT_EXIST = '0010',
     // auth/jwtToken

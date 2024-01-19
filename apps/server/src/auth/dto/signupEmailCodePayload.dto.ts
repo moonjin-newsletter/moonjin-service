@@ -1,4 +1,5 @@
-export interface SignupDataDto {
+
+export interface SignupEmailCodePayloadDto {
     email: string;
     hashedPassword: string;
     nickname: string;

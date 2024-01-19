@@ -6,8 +6,8 @@ import {ExceptionList} from "../response/error/errorInstances";
 import { HttpService } from "@nestjs/axios";
 import {UserSocialProfileDto} from "./dto/userSocialProfile.dto";
 import {PrismaService} from "../prisma/prisma.service";
-import {OauthWithUser} from "./scheme/user.scheme";
 import {UserDto} from "./dto/user.dto";
+import authDtoMapper from "./authDtoMapper";
 
 @Injectable()
 export class OauthService {
@@ -116,6 +116,7 @@ export class OauthService {
      * @param socialLoginData
      * @returns 유저 존재 시 유저 정보 반환, 실패 시 유저 email 반환
      * @throws USER_NOT_FOUND_IN_SOCIAL
+     * @throws USER_NOT_FOUND
      * @throws SOCIAL_PROFILE_NOT_FOUND
      * @throws SOCIAL_LOGIN_ERROR
      */
@@ -128,23 +129,24 @@ export class OauthService {
 
         try{
             // 3. 존재하는 유저인지 확인
-            const userWithOauth : OauthWithUser | null = await this.prismaService.oauth.findFirst({
+            const userWithOauth = await this.prismaService.oauth.findFirst({
                 where: {
-                    oauthId : userProfile.oauthId
-                },
-                include : {
-                    user : true
+                    oauthId : userProfile.oauthId,
                 }
             })
             if(userWithOauth){ // social login
-                return {
-                    result : true,
-                    data : {
-                        id: userWithOauth.userId,
-                        email :userWithOauth.user.email,
-                        nickname : userWithOauth.user.nickname,
-                        role : userWithOauth.user.role
+                const user = await this.prismaService.user.findFirst({
+                    where: {
+                        id : userWithOauth.userId
                     }
+                })
+                if(user){
+                    return {
+                        result : true,
+                        data : authDtoMapper.UserToUserDto(user)
+                    }
+                } else {
+                    throw ExceptionList.USER_NOT_FOUND;
                 }
             } else{ //social signup 진행 페이지로 이동
                 return {

@@ -6,6 +6,7 @@ import {UtilModule} from "../util/util.module";
 import {MailModule} from "../mail/mail.module";
 import {OauthService} from "./oauth.service";
 import { HttpModule } from '@nestjs/axios';
+import {AuthValidationService} from "./auth.validation.service";
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { HttpModule } from '@nestjs/axios';
       HttpModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, OauthService]
+  providers: [AuthService, OauthService, AuthValidationService]
 })
 export class AuthModule {}

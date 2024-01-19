@@ -6,119 +6,83 @@ import {UtilService} from "../util/util.service";
 import {UserDto} from "./dto/user.dto";
 import {Exception} from "../response/error/error";
 import { SignupDataDto } from './dto/signupData.dto';
-import {UserWithWriterInfo} from "./scheme/user.scheme";
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
-import {UserLocalLoginDto} from "./dto/userLocalLogin.dto";
+import {LocalLoginDto} from "./dto/localLogin.dto";
 import {UserAccessTokensDto} from "./dto/userAccessTokens.dto";
-import {UserUniqueDataDto} from "./dto/userUniqueData.dto";
 import {SocialSignupDto} from "./dto/socialSignup.dto";
+import {UserRoleEnum} from "./enum/userRole.enum";
+import {WriterSignupDto} from "./dto/writerSignup.dto";
+import {WriterInfoDto} from "./dto/writerInfo.dto";
+import AuthDtoMapper from "./authDtoMapper";
 
 @Injectable()
 export class AuthService {
     constructor(private readonly prismaService: PrismaService, private readonly utilService: UtilService) {}
 
     /**
-     * @summary user의 가입 정보 중 중복되는 것 에러 발생
-     * @param userData
-     * @throws EMAIL_ALREADY_EXIST
-     * @throws NICKNAME_ALREADY_EXIST
-     * @throws MOONJIN_EMAIL_ALREADY_EXIST
-     */
-    async assertUserDataUnique(userData : UserUniqueDataDto){
-        await this.assertEmailUnique(userData.email);
-        await this.assertNicknameUnique(userData.nickname)
-        if(userData.moonjinEmail)
-            await this.assertMoonjinEmailUnique(userData.moonjinEmail)
-    }
-
-    /**
-     * @summary email 이 unique 한지 확인
-     * @param email
-     * @throws EMAIL_ALREADY_EXIST
-     */
-    async assertEmailUnique(email : string) : Promise<void>{
-        const user = await this.prismaService.user.findUnique({
-            where:{
-                email
-            }
-        })
-        if(user) throw ExceptionList.EMAIL_ALREADY_EXIST;
-    }
-    /**
-     * @summary nickname이 unique 한지 확인
-     * @param nickname
-     * @throws NICKNAME_ALREADY_EXIST
-     */
-    async assertNicknameUnique(nickname : string) : Promise<void>{
-        const user = await this.prismaService.user.findUnique({
-            where:{
-                nickname
-            }
-        })
-        if(user) throw ExceptionList.NICKNAME_ALREADY_EXIST;
-    }
-    /**
-     * @summary moonjinEmail이 unique 한지 확인
-     * @param moonjinEmail
-     * @throws MOONJIN_EMAIL_ALREADY_EXIST
-     */
-    async assertMoonjinEmailUnique(moonjinEmail : string) : Promise<void>{
-        const user = await this.prismaService.writerInfo.findUnique({
-            where:{
-                moonjinEmail : moonjinEmail + "@moonjin.site"
-            }
-        })
-        if(user) throw ExceptionList.MOONJIN_EMAIL_ALREADY_EXIST;
-    }
-
-
-    /**
      * @summary 작가 | 독자의 회원가입을 진행하는 기능
      *
      * @param signUpData
      * @returns UserDto
-     * @throws MAIL_ALREADY_EXIST
+     * @throws EMAIL_ALREADY_EXIST
      * @throws NICKNAME_ALREADY_EXIST
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      * @throws SIGNUP_ERROR
      * @throws WRITER_SIGNUP_ERROR
      */
     async localSignUp(signUpData : SignupDataDto): Promise<UserDto> {
+        let userId = 0;
         try {
-            signUpData.password = this.utilService.getHashCode(signUpData.password);
-            const {moonjinEmail, ...data} = signUpData;
-            if (moonjinEmail) { // 작가 회원가입
-                const createdWriter:UserWithWriterInfo = await this.prismaService.user.create({
-                    data: {
-                        ...data,
-                        writerInfo: {
-                            create: {
-                                moonjinEmail : moonjinEmail + "@moonjin.site"
-                            }
-                        }
-                    },
-                    include: {
-                        writerInfo: true
+            const {moonjinId, hashedPassword ,...data} = signUpData;
+            // 회원가입
+            const createdUser : User = await this.prismaService.user.create({
+                data : {
+                    ...data,
+                    password : hashedPassword
+                }
+            });
+            userId = createdUser.id;
+            if(signUpData.role === UserRoleEnum.WRITER && moonjinId){ // 작가 회원가입
+                await this.writerSignup({userId, moonjinId});
+            }
+            return AuthDtoMapper.UserToUserDto(createdUser);
+        }catch(error){
+            if(userId > 0){ // writerSignup Error : user가 생성되었으니 transaction rollback
+                await this.prismaService.user.delete({
+                    where:{
+                        id : userId
                     }
                 })
-                const {writerInfo, createdAt, deletedAt,password, ...createdUser} = createdWriter;
-                if(writerInfo)
-                    return createdUser
-                else
-                    throw ExceptionList.WRITER_SIGNUP_ERROR;
-            }else{ // 독자 회원가입
-                const createdUser : User = await this.prismaService.user.create({data});
-                const {deletedAt, createdAt, password ,...userData} = createdUser;
-                return userData;
+                throw error;
             }
-        }catch(error){
             this.prismaSignupErrorHandling(error);
             if(error instanceof Exception){
                 throw error;
             }
             console.error(error)
             throw ExceptionList.SIGNUP_ERROR;
+        }
+    }
+
+    /**
+     * @summary 작가 회원가입을 진행하는 함수
+     * @param writerSignupData
+     * @returns WriterInfoDto
+     * @throws MOONJIN_EMAIL_ALREADY_EXIST
+     * @throws WRITER_SIGNUP_ERROR
+     */
+    async writerSignup(writerSignupData : WriterSignupDto) : Promise<WriterInfoDto>{
+        try {
+            const writer = await this.prismaService.writerInfo.create({
+                data:writerSignupData
+            })
+            return AuthDtoMapper.WriterInfoToWriterInfoDto(writer);
+        } catch (error){
+            if(error instanceof PrismaClientKnownRequestError){
+                throw ExceptionList.MOONJIN_EMAIL_ALREADY_EXIST;
+            }
+            throw ExceptionList.WRITER_SIGNUP_ERROR;
         }
     }
 
@@ -133,7 +97,8 @@ export class AuthService {
         try {
             await this.prismaService.user.update({
                 where:{
-                    id
+                    id,
+                    deleted : false
                 },
                 data:{
                     password : this.utilService.getHashCode(password)
@@ -146,17 +111,13 @@ export class AuthService {
     }
 
     async getUserByEmail(email : string): Promise<UserDto | null> {
-        const user : User | null = await this.prismaService.user.findUnique({
+        const user = await this.prismaService.user.findMany({
             where:{
-                email
+                email,
+                deleted : false
             }
         })
-        if(user){
-            const {deletedAt, createdAt, password, ...userData} = user;
-            return userData;
-        }else{
-            return null;
-        }
+        return user ? AuthDtoMapper.UserToUserDto(user[0]) : null;
     }
 
     /**
@@ -168,25 +129,25 @@ export class AuthService {
      * @throws USER_NOT_FOUND
      * @throws LOGIN_ERROR
      */
-    async localLogin(loginData : UserLocalLoginDto) : Promise<UserDto> {
+    async localLogin(loginData : LocalLoginDto) : Promise<UserDto> {
         try {
-            const user : User | null = await this.prismaService.user.findUnique({
+            const user = await this.prismaService.user.findUnique({
                 where:{
                     email: loginData.email,
                 }
             })
-            if(user){
+            if(user){ // 유저가 있는 경우
                 if(!user.password) { // 소셜 유저
                     throw ExceptionList.SOCIAL_USER_ERROR;
                 } else{
-                    const {deletedAt, createdAt, password,...userData} = user;
-                    const isValidPassword = this.utilService.compareHash(loginData.password, password)
+                    const userData = AuthDtoMapper.UserToUserDto(user);
+                    const isValidPassword = this.utilService.compareHash(loginData.password, user.password)
                     if (isValidPassword)
                         return userData;
-                    else
+                    else // 비밀번호가 틀린 경우
                         throw ExceptionList.INVALID_PASSWORD;
                 }
-            } else{
+            } else{ // 유저가 없는 경우
                 throw ExceptionList.USER_NOT_FOUND;
             }
         } catch (error) {
@@ -208,45 +169,41 @@ export class AuthService {
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      */
     async socialSignup(socialSignupData : SocialSignupDto): Promise<UserDto> {
+        let createdUserId = 0
+        let createdOauthId = 0
         try {
-            const {oauthId, email, social, nickname, role, moonjinEmail} = socialSignupData;
-            if(moonjinEmail){ // 작가 회원가입
-                const createdUser = await this.prismaService.user.create({
-                    data:{
-                        email,
-                        nickname,
-                        role,
-                        oauth : {
-                            create:{
-                                oauthId,
-                                social
-                            }
-                        },
-                        writerInfo : {
-                            create : {
-                                moonjinEmail : moonjinEmail + "@moonjin.site"
-                            }
-                        }
-                    }
-                })
-                return {id: createdUser.id, email: createdUser.email, nickname:createdUser.nickname, role: createdUser.role}
-            } else { // 독자 회원가입
-                const createdUser = await this.prismaService.user.create({
-                    data:{
-                        email,
-                        nickname,
-                        role,
-                        oauth : {
-                            create:{
-                                oauthId,
-                                social
-                            }
-                        }
-                    }
-                })
-                return {id: createdUser.id, email: createdUser.email, nickname:createdUser.nickname, role: createdUser.role}
+            const {oauthId, social, moonjinId, ...userSignupData} = socialSignupData;
+            const createdUser = await this.prismaService.user.create({
+                data: userSignupData
+            })
+            createdUserId = createdUser.id;
+            const createdOauth = await this.prismaService.oauth.create({
+                data:{
+                    oauthId,
+                    social,
+                    userId : createdUser.id
+                }
+            })
+            createdOauthId = createdOauth.id;
+            if(userSignupData.role === UserRoleEnum.WRITER && moonjinId){ // 작가 회원가입
+                await this.writerSignup({userId: createdUser.id, moonjinId});
             }
+            return AuthDtoMapper.UserToUserDto(createdUser)
         } catch (error){
+            if(createdOauthId > 0){ // transaction rollback
+                await this.prismaService.oauth.delete({
+                    where:{
+                        id : createdOauthId
+                    }
+                })
+            }
+            if(createdUserId > 0){ // transaction rollback
+                await this.prismaService.user.delete({
+                    where:{
+                        id : createdUserId
+                    }
+                })
+            }
             this.prismaSignupErrorHandling(error);
             console.error(error);
             throw ExceptionList.SOCIAL_SIGNUP_ERROR;
@@ -269,7 +226,7 @@ export class AuthService {
                         throw ExceptionList.EMAIL_ALREADY_EXIST;
                     case "nickname":
                         throw ExceptionList.NICKNAME_ALREADY_EXIST;
-                    case "moonjinEmail":
+                    case "moonjinId":
                         throw ExceptionList.MOONJIN_EMAIL_ALREADY_EXIST;
                 }
             }

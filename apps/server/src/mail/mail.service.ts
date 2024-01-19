@@ -25,7 +25,7 @@ export class MailService {
     email: string,
     code : string
   ): Promise<void> {
-    const accessLink = process.env.SERVER_URL + "/auth/email/verification?code=" + code;
+    const accessLink = process.env.SERVER_URL + "/auth/signup/email/verification?code=" + code;
     try {
       await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
         from: `문진 <admin@${this.MAILGUN_DOMAIN}>`,
@@ -47,7 +47,7 @@ export class MailService {
    * 해당 메일에 인증 code 가 담긴 링크를 보낸다.
    * @param email
    * @param code
-   * @throws MAIL_NOT_EXISTS
+   * @throws EMAIL_NOT_EXIST
    */
   async sendPasswordChangeMail(
       email: string,

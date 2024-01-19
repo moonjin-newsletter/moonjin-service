@@ -25,19 +25,22 @@ import {
   INVALID_TOKEN,
   EMAIL_ALREADY_EXIST,
   MOONJIN_EMAIL_ALREADY_EXIST,
-  NICKNAME_ALREADY_EXIST, SOCIAL_SIGNUP_ERROR, TOKEN_NOT_FOUND, PASSWORD_CHANGE_ERROR
+  NICKNAME_ALREADY_EXIST, SOCIAL_SIGNUP_ERROR, TOKEN_NOT_FOUND, PASSWORD_CHANGE_ERROR, SIGNUP_ROLE_ERROR
 } from "../response/error/auth";
-import {SignupDataDto} from "./dto/signupData.dto";
 import {ISocialSignup} from "./api-types/ISocialSignup";
 import {RequestHeaderDto} from "./dto/requestHeader.dto";
 import {UserSocialProfileDto} from "./dto/userSocialProfile.dto";
 import * as process from "process";
 import {UserDto} from "./dto/user.dto";
+import {AuthValidationService} from "./auth.validation.service";
+import {UserRoleEnum} from "./enum/userRole.enum";
+import {SignupEmailCodePayloadDto} from "./dto/signupEmailCodePayload.dto";
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService : AuthService,
+              private readonly authValidationService: AuthValidationService,
               private readonly utilService: UtilService,
               private readonly mailService: MailService,
               private readonly oauthService: OauthService) {}
@@ -52,15 +55,18 @@ export class AuthController {
    * @throws SIGNUP_ERROR
    * @throws WRITER_SIGNUP_ERROR
    * @throws EMAIL_NOT_EXIST
+   * @throws SIGNUP_ROLE_ERROR
    */
   @TypedRoute.Post('signup')
   async emailSignup(@TypedBody() localSignUpData: ILocalSignUp) : Promise<TryCatch<
       ResponseMessage,
-      EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | EMAIL_NOT_EXIST>>{
+      SIGNUP_ROLE_ERROR | EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | EMAIL_NOT_EXIST>>
+  {
     const {password, role, ...userUniqueData} = localSignUpData;
-    await this.authService.assertUserDataUnique(userUniqueData);
-
-    const emailVerificationCode = this.utilService.generateJwtToken(localSignUpData);
+    if((role === UserRoleEnum.WRITER && !userUniqueData.moonjinId) || (role === UserRoleEnum.READER && userUniqueData.moonjinId)) throw ExceptionList.SIGNUP_ROLE_ERROR;
+    await this.authValidationService.assertSignupDataUnique(userUniqueData);
+    const hashedPassword = this.utilService.getHashCode(localSignUpData.password);
+    const emailVerificationCode = this.utilService.generateJwtToken<SignupEmailCodePayloadDto>({...userUniqueData, role, hashedPassword});
     await this.mailService.sendVerificationMail(localSignUpData.email, emailVerificationCode);
 
     return createResponseForm({message : "메일이 전송되었습니다."})
@@ -71,40 +77,26 @@ export class AuthController {
    * @param payload 이메일 인증 code가 담긴 객체
    * @param res
    * @returns 메일 인증 결과 페이지로 redirect
+   * @throws INVALID_TOKEN
+   * @throws EMAIL_ALREADY_EXIST
+   * @throws NICKNAME_ALREADY_EXIST
+   * @throws MOONJIN_EMAIL_ALREADY_EXIST
+   * @throws SIGNUP_ERROR
+   * @throws WRITER_SIGNUP_ERROR
    */
-  @TypedRoute.Get("email/verification")
+  @TypedRoute.Get("signup/email/verification")
   async emailVerification(@TypedQuery() payload: IEmailVerification, @Res() res:Response):Promise<void>
   {
     try {
-      const dataFromToken = this.utilService.getDataFromJwtToken<SignupDataDto & {iat:number,exp: number}>(payload.code);
-      const {iat,exp,...userSignUpData} = dataFromToken;
-      const user = await this.authService.localSignUp(userSignUpData);
-      const {accessToken, refreshToken} = this.authService.getAccessTokens(user)
+      const {iat,exp,...userSignUpData} =  this.utilService.getDataFromJwtToken<SignupEmailCodePayloadDto & {iat:number,exp: number}>(payload.code);
+      const userData = await this.authService.localSignUp(userSignUpData);
+      const {accessToken, refreshToken} = this.authService.getAccessTokens(userData)
       res.cookie('accessToken',accessToken)
       res.cookie('refreshToken', refreshToken)
       res.redirect(process.env.CLIENT_URL + "/");
     }catch (e){
       res.redirect(process.env.CLIENT_URL + "/auth/signup");
     }
-  }
-
-  /**
-   * @summary 비밀번호 변경
-   * @param payload {password}
-   * @param header
-   * @returns "비밀번호가 변경되었습니다."
-   * @throws TOKEN_NOT_FOUND
-   * @throws INVALID_TOKEN
-   * @throws PASSWORD_CHANGE_ERROR
-   */
-  @TypedRoute.Patch("password")
-  async passwordChange(@TypedBody() payload: ILocalLogin, @TypedHeaders() header:RequestHeaderDto, @Res() res:Response):Promise<
-      void | TOKEN_NOT_FOUND | INVALID_TOKEN | PASSWORD_CHANGE_ERROR>{
-    const token = this.utilService.getTokenFromCookie(header.cookie, "passwordChangeToken");
-    const dataFromToken = this.utilService.getDataFromJwtToken<UserDto & {iat:number,exp: number}>(token);
-    await this.authService.passwordChange(dataFromToken.id, payload.password);
-    res.cookie("passwordChangeToken", "", {maxAge: 0}) // 쿠키 삭제
-    res.send(createResponseForm({message : "비밀번호가 변경되었습니다."}))
   }
 
   /**
@@ -131,12 +123,13 @@ export class AuthController {
    * @param payload 이메일 인증 code가 담긴 객체
    * @param res
    * @returns 메일 인증 결과 페이지로 redirect
+   * @throws INVALID_TOKEN
+   *
    */
   @TypedRoute.Get("password/email/verification")
   async emailVerificationForPasswordChange(@TypedQuery() payload: IEmailVerification, @Res() res:Response):Promise<void> {
     try {
-      const dataFromToken = this.utilService.getDataFromJwtToken<UserDto & {iat:number,exp: number}>(payload.code);
-      const {iat,exp,...userData} = dataFromToken;
+      const {iat,exp,...userData} = this.utilService.getDataFromJwtToken<UserDto & {iat:number,exp: number}>(payload.code);
       const passwordChangeToken = this.utilService.generateJwtToken(userData);
       res.cookie('passwordChangeToken', passwordChangeToken)
       res.redirect(process.env.CLIENT_URL + "/auth/password/new");
@@ -144,6 +137,26 @@ export class AuthController {
       console.log(error);
       res.redirect(process.env.CLIENT_URL + "/auth/password/failed"); // TODO : redirect Page 변경 필요
     }
+  }
+
+  /**
+   * @summary 비밀번호 변경
+   * @param payload {password}
+   * @param header
+   * @param res
+   * @returns "비밀번호가 변경되었습니다."
+   * @throws TOKEN_NOT_FOUND
+   * @throws INVALID_TOKEN
+   * @throws PASSWORD_CHANGE_ERROR
+   */
+  @TypedRoute.Patch("password")
+  async passwordChange(@TypedBody() payload: ILocalLogin, @TypedHeaders() header:RequestHeaderDto, @Res() res:Response):Promise<
+      void | TOKEN_NOT_FOUND | INVALID_TOKEN | PASSWORD_CHANGE_ERROR>{
+    const token = this.utilService.getTokenFromCookie(header.cookie, "passwordChangeToken");
+    const dataFromToken = this.utilService.getDataFromJwtToken<UserDto & {iat:number,exp: number}>(token);
+    await this.authService.passwordChange(dataFromToken.id, payload.password);
+    res.cookie("passwordChangeToken", "", {maxAge: 0}) // 쿠키 삭제
+    res.send(createResponseForm({message : "비밀번호가 변경되었습니다."}))
   }
 
   /**
@@ -156,7 +169,7 @@ export class AuthController {
   async checkEmailExist(@TypedBody() payload:ICheckEmailExist): Promise<TryCatch<
       ResponseMessage,
       EMAIL_ALREADY_EXIST>> {
-    await this.authService.assertEmailUnique(payload.email);
+    await this.authValidationService.assertEmailUnique(payload.email);
     return createResponseForm({
       message:"해당 메일을 사용하실 수 있습니다."
     })
@@ -228,6 +241,7 @@ export class AuthController {
    * @param header
    * @param res
    * @returns 회원가입 완료 메시지
+   * @throws SIGNUP_ROLE_ERROR
    * @throws TOKEN_NOT_FOUND
    * @throws INVALID_TOKEN
    * @throws EMAIL_ALREADY_EXIST
@@ -238,11 +252,10 @@ export class AuthController {
   @TypedRoute.Post('oauth/signup')
   async socialSignup(@TypedBody() socialSignupData : ISocialSignup, @TypedHeaders() header:RequestHeaderDto, @Res() res:Response):
       Promise<void |
-      TOKEN_NOT_FOUND | INVALID_TOKEN | EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SOCIAL_SIGNUP_ERROR> {
-    console.log(socialSignupData)
-    console.log(header);
+      TOKEN_NOT_FOUND | INVALID_TOKEN | EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SOCIAL_SIGNUP_ERROR>
+  {
+    if((socialSignupData.role === UserRoleEnum.WRITER && !socialSignupData.moonjinId) || (socialSignupData.role === UserRoleEnum.READER && socialSignupData.moonjinId)) throw ExceptionList.SIGNUP_ROLE_ERROR;
     const socialSignupToken = this.utilService.getTokenFromCookie(header.cookie, "socialSignupToken");
-
     const {iat,exp,...userSocialData} = this.utilService.getDataFromJwtToken<UserSocialProfileDto & {iat:number,exp: number}>(socialSignupToken);
     const user = await this.authService.socialSignup({...userSocialData, ...socialSignupData});
     const {accessToken, refreshToken} = this.authService.getAccessTokens(user)

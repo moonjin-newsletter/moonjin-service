@@ -1,4 +1,4 @@
-export interface UserLocalLoginDto {
+export interface LocalLoginDto {
     email: string;
     password: string;
 }

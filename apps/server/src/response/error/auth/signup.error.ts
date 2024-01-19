@@ -45,6 +45,15 @@ export interface WRITER_SIGNUP_ERROR extends ERROR {
     }
 }
 
+export interface SIGNUP_ROLE_ERROR extends ERROR {
+    result : false;
+    code : ErrorCodeEnum.SIGNUP_ROLE_ERROR;
+    httpStatus: 403,
+    data : {
+        message:"role과 moonjinEmail의 형식이 올바르지 않습니다."
+    }
+}
+
 export interface SOCIAL_SIGNUP_TOKEN_NOT_FOUND extends ERROR {
     result : false;
     code : ErrorCodeEnum.SOCIAL_SIGNUP_TOKEN_NOT_FOUND;
