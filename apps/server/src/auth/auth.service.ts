@@ -13,7 +13,7 @@ import {UserAccessTokensDto} from "./dto/userAccessTokens.dto";
 import {SocialSignupDto} from "./dto/socialSignup.dto";
 import {UserRoleEnum} from "./enum/userRole.enum";
 import {WriterSignupDto} from "./dto/writerSignup.dto";
-import {WriterInfoDto} from "./dto/writerInfo.dto";
+import {WriterDto} from "./dto/writer.dto";
 import AuthDtoMapper from "./authDtoMapper";
 
 @Injectable()
@@ -68,16 +68,16 @@ export class AuthService {
     /**
      * @summary 작가 회원가입을 진행하는 함수
      * @param writerSignupData
-     * @returns WriterInfoDto
+     * @returns WriterDto
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      * @throws WRITER_SIGNUP_ERROR
      */
-    async writerSignup(writerSignupData : WriterSignupDto) : Promise<WriterInfoDto>{
+    async writerSignup(writerSignupData : WriterSignupDto) : Promise<WriterDto>{
         try {
-            const writer = await this.prismaService.writerInfo.create({
+            const writer = await this.prismaService.writer.create({
                 data:writerSignupData
             })
-            return AuthDtoMapper.WriterInfoToWriterInfoDto(writer);
+            return AuthDtoMapper.WriterToWriterDto(writer);
         } catch (error){
             if(error instanceof PrismaClientKnownRequestError){
                 throw ExceptionList.MOONJIN_EMAIL_ALREADY_EXIST;

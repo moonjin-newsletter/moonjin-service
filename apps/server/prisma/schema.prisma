@@ -8,14 +8,15 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique @db.VarChar(32)
-  password  String?  @db.Char(64)
-  nickname  String   @unique @db.VarChar(16)
-  role      Int      @default(0)
-  status    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  deleted   Boolean  @default(false)
+  id        Int       @id @default(autoincrement())
+  email     String    @unique @db.VarChar(32)
+  password  String?   @db.Char(64)
+  nickname  String    @unique @db.VarChar(16)
+  role      Int       @default(0)
+  status    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  deleted   Boolean   @default(false)
+  deletedAt DateTime?
 }
 
 model Oauth {
@@ -25,7 +26,7 @@ model Oauth {
   userId  Int    @unique
 }
 
-model WriterInfo {
+model Writer {
   id              Int      @id @default(autoincrement())
   userId          Int      @unique
   moonjinId       String   @unique @db.VarChar(32)
@@ -39,24 +40,34 @@ model WriterInfo {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(32)
+  id        Int       @id @default(autoincrement())
+  title     String    @db.VarChar(32)
+  content   String    @db.Text
   writerId  Int
-  category  String   @db.Char(16)
-  cover     String?  @db.VarChar(128)
-  status    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  deleted   Boolean  @default(false)
+  category  String    @db.Char(16)
+  cover     String?   @db.VarChar(128)
+  status    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  deleted   Boolean   @default(false)
+  deletedAt DateTime?
 }
 
 model Series {
-  id          Int      @id @default(autoincrement())
-  title       String   @db.VarChar(32)
-  description String?  @db.VarChar(256)
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(32)
+  description String?   @db.VarChar(256)
   writerId    Int
-  category    String   @db.Char(16)
-  cover       String?  @db.VarChar(128)
-  status      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  deleted     Boolean  @default(false)
+  category    String    @db.Char(16)
+  cover       String?   @db.VarChar(128)
+  status      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  deleted     Boolean   @default(false)
+  deletedAt   DateTime?
+}
+
+model Follow {
+  id         Int      @id @default(autoincrement())
+  followerId Int
+  writerId   Int
+  createdAt  DateTime @default(now())
 }

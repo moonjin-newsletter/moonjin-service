@@ -54,7 +54,7 @@ export class AuthValidationService {
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      */
     async assertMoonjinEmailUnique(moonjinId : string) : Promise<void>{
-        const user = await this.prismaService.writerInfo.findUnique({
+        const user = await this.prismaService.writer.findUnique({
             where:{
                 moonjinId,
                 deleted : false

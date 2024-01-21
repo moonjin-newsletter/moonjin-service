@@ -1,4 +1,4 @@
-export interface WriterInfoDto {
+export interface WriterDto {
     id: number;
     userId : number;
     moonjinEmail: string;

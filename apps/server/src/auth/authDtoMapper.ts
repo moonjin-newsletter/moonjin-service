@@ -1,6 +1,6 @@
-import {User, WriterInfo} from "@prisma/client";
+import {User, Writer} from "@prisma/client";
 import {UserDto} from "./dto/user.dto";
-import {WriterInfoDto} from "./dto/writerInfo.dto";
+import {WriterDto} from "./dto/writer.dto";
 
 class AuthDtoMapperClass {
     UserToUserDto(user: User): UserDto {
@@ -8,10 +8,10 @@ class AuthDtoMapperClass {
         return userData;
     }
 
-    WriterInfoToWriterInfoDto(writerInfo : WriterInfo): WriterInfoDto{
-        const {deleted, createdAt, status, moonjinId,...writerInfoData} = writerInfo;
+    WriterToWriterDto(writer : Writer): WriterDto{
+        const {deleted, createdAt, status, moonjinId,...writerData} = writer;
         const moonjinEmail = moonjinId + "@" + process.env.MAILGUN_DOMAIN;
-        return {moonjinEmail, ...writerInfoData};
+        return {moonjinEmail, ...writerData};
     }
 }
 const AuthDtoMapper = new AuthDtoMapperClass();
