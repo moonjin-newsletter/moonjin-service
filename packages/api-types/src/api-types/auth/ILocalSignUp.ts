@@ -4,5 +4,5 @@ export interface ILocalSignUp {
     password: string;
     nickname: string;
     role: number;
-    moonjinEmail?: string
+    moonjinId?: string
 }

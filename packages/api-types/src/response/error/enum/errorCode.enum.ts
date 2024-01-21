@@ -5,6 +5,7 @@ export enum ErrorCodeEnum {
     MOONJIN_EMAIL_ALREADY_EXIST = "0003",
     SIGNUP_ERROR = "0004",
     WRITER_SIGNUP_ERROR = "0005",
+    SIGNUP_ROLE_ERROR = "0006",
     // mail/mail
     EMAIL_NOT_EXIST = '0010',
     // auth/jwtToken
@@ -21,5 +22,9 @@ export enum ErrorCodeEnum {
     SOCIAL_LOGIN_ERROR = "0037",
     SOCIAL_USER_ERROR = "0038",
     SOCIAL_SIGNUP_TOKEN_NOT_FOUND = "0039",
-    SOCIAL_SIGNUP_ERROR = "0040"
+    // social
+    SOCIAL_SIGNUP_ERROR = "0040",
+
+    // auth
+    PASSWORD_CHANGE_ERROR = "0050",
 }
