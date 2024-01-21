@@ -14,11 +14,11 @@ export class AuthValidationService {
      * @throws NICKNAME_ALREADY_EXIST
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      */
-    async assertSignupDataUnique(userData : UserUniqueDataDto){
+    async assertSignupDataUnique(userData : UserUniqueDataDto): Promise<void>{
         await this.assertEmailUnique(userData.email)
         await this.assertNicknameUnique(userData.nickname)
         if(userData.moonjinEmail)
-            await this.assertMoonjinEmailUnique(userData.moonjinEmail)
+            await this.assertMoonjinIdUnique(userData.moonjinEmail)
     }
 
     /**
@@ -53,7 +53,7 @@ export class AuthValidationService {
      * @param moonjinId
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      */
-    async assertMoonjinEmailUnique(moonjinId : string) : Promise<void>{
+    async assertMoonjinIdUnique(moonjinId : string) : Promise<void>{
         const user = await this.prismaService.writer.findUnique({
             where:{
                 moonjinId,

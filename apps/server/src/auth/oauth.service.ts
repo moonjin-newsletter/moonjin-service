@@ -12,7 +12,7 @@ import authDtoMapper from "./authDtoMapper";
 @Injectable()
 export class OauthService {
     socialLoginUrlList : Record<SocialProviderEnum, string>;
-    sociaProfileApiUrlList : Record<SocialProviderEnum, string>;
+    socialProfileApiUrlList : Record<SocialProviderEnum, string>;
     constructor(
         private readonly httpService: HttpService,
         private readonly prismaService: PrismaService
@@ -22,7 +22,7 @@ export class OauthService {
             [SocialProviderEnum.KAKAO]: `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.KAKAO_REST_API_KEY}&redirect_uri=${process.env.OAUTH_REDIRECT_URL}?social=kakao&response_type=code`,
             [SocialProviderEnum.GOOGLE]: `https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile&response_type=code&redirect_uri=${process.env.OAUTH_REDIRECT_URL}?social=google&client_id=${process.env.GOOGLE_OAUTH_CLIENT_ID}`,
         };
-        this.sociaProfileApiUrlList = {
+        this.socialProfileApiUrlList = {
             [SocialProviderEnum.NAVER]: 'https://openapi.naver.com/v1/nid/me',
             [SocialProviderEnum.KAKAO]: 'https://kapi.kakao.com/v2/user/me',
             [SocialProviderEnum.GOOGLE]: 'https://www.googleapis.com/oauth2/v2/userinfo',
@@ -72,7 +72,7 @@ export class OauthService {
     async getUserProfileFromSocialOauth(social:SocialProviderEnum, oauthAccessToken: string) : Promise<UserSocialProfileDto>{
         try {
             const profileSearchResponse = await firstValueFrom(
-                this.httpService.get(this.sociaProfileApiUrlList[social], {
+                this.httpService.get(this.socialProfileApiUrlList[social], {
                     headers : {
                         Authorization: `Bearer ${oauthAccessToken}`,
                     }

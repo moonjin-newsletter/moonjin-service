@@ -52,6 +52,13 @@ model Post {
   deletedAt DateTime?
 }
 
+model Newsletter {
+  id         Int      @id @default(autoincrement())
+  postId     Int
+  receiverId Int
+  sentAt     DateTime @default(now())
+}
+
 model Series {
   id          Int       @id @default(autoincrement())
   title       String    @db.VarChar(32)

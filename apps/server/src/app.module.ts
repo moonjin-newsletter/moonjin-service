@@ -7,6 +7,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UtilModule } from './util/util.module';
 import { MailModule } from './mail/mail.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     UtilModule,
     MailModule,
     EventEmitterModule.forRoot(),
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],
