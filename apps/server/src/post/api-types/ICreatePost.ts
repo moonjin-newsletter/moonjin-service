@@ -5,7 +5,7 @@ export interface ICreatePost {
     content: string & tags.MaxLength<2048>;
     category: string & tags.MaxLength<16>;
     cover?: string & tags.MaxLength<128>;
-    seriesId? : number;
+    seriesId? : number & tags.Minimum<0>;
     status?: boolean;
     releasedAt?: Date;
 }

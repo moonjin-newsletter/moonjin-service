@@ -10,7 +10,7 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique @db.VarChar(32)
-  password  String?  @db.Char(64)
+  password  String?  @db.VarChar(64)
   nickname  String   @unique @db.VarChar(16)
   role      Int      @default(0)
   status    Boolean  @default(true)
@@ -20,8 +20,8 @@ model User {
 
 model Oauth {
   id      Int    @id @default(autoincrement())
-  oauthId String @unique @db.Char(64)
-  social  String @db.Char(8)
+  oauthId String @unique @db.VarChar(64)
+  social  String @db.VarChar(8)
   userId  Int    @unique
 }
 
@@ -50,7 +50,7 @@ model Post {
   title      String    @db.VarChar(32)
   content    String    @db.Text
   writerId   Int
-  category   String    @db.Char(16)
+  category   String    @db.VarChar(16)
   cover      String?   @db.VarChar(128)
   seriesId   Int       @default(0)
   status     Boolean   @default(true)
@@ -71,7 +71,7 @@ model Series {
   title       String   @db.VarChar(32)
   description String?  @db.VarChar(256)
   writerId    Int
-  category    String   @db.Char(16)
+  category    String   @db.VarChar(16)
   cover       String?  @db.VarChar(128)
   status      Boolean  @default(true)
   createdAt   DateTime @default(now())
