@@ -1,7 +1,7 @@
-export interface WriterDto {
+export interface WriterInfoDto {
     id: number;
     userId : number;
-    moonjinEmail: string;
+    moonjinId: string;
     description: string;
     newsletterCount: number;
     seriesCount: number;

@@ -63,7 +63,7 @@ export class AuthController {
       SIGNUP_ROLE_ERROR | EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | EMAIL_NOT_EXIST>>
   {
     const {password, role, ...userUniqueData} = localSignUpData;
-    if((role === UserRoleEnum.WRITER && !userUniqueData.moonjinId) || (role === UserRoleEnum.READER && userUniqueData.moonjinId)) throw ExceptionList.SIGNUP_ROLE_ERROR;
+    if((role === UserRoleEnum.WRITER && !userUniqueData.moonjinId) || (role === UserRoleEnum.USER && userUniqueData.moonjinId)) throw ExceptionList.SIGNUP_ROLE_ERROR;
     await this.authValidationService.assertSignupDataUnique(userUniqueData);
     const hashedPassword = this.utilService.getHashCode(localSignUpData.password);
     const emailVerificationCode = this.utilService.generateJwtToken<SignupEmailCodePayloadDto>({...userUniqueData, role, hashedPassword});
@@ -191,9 +191,9 @@ export class AuthController {
       void |
       LOGIN_ERROR | INVALID_PASSWORD | USER_NOT_FOUND | SOCIAL_USER_ERROR>{
     const user = await this.authService.localLogin(localLoginData);
-    const jwtTokens = this.authService.getAccessTokens(user);
-    res.cookie('accessToken', jwtTokens.accessToken)
-    res.cookie('refreshToken', jwtTokens.refreshToken)
+    const {accessToken, refreshToken }= this.authService.getAccessTokens(user);
+    res.cookie('accessToken', accessToken)
+    res.cookie('refreshToken', refreshToken)
     res.send(createResponseForm({
       message: "로그인이 완료되었습니다"
     }))
@@ -254,10 +254,10 @@ export class AuthController {
       Promise<void |
       TOKEN_NOT_FOUND | INVALID_TOKEN | EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SOCIAL_SIGNUP_ERROR>
   {
-    if((socialSignupData.role === UserRoleEnum.WRITER && !socialSignupData.moonjinId) || (socialSignupData.role === UserRoleEnum.READER && socialSignupData.moonjinId)) throw ExceptionList.SIGNUP_ROLE_ERROR;
+    if((socialSignupData.role === UserRoleEnum.WRITER && !socialSignupData.moonjinId) || (socialSignupData.role === UserRoleEnum.USER && socialSignupData.moonjinId)) throw ExceptionList.SIGNUP_ROLE_ERROR;
     const socialSignupToken = this.utilService.getTokenFromCookie(header.cookie, "socialSignupToken");
     const {iat,exp,...userSocialData} = this.utilService.getDataFromJwtToken<UserSocialProfileDto & {iat:number,exp: number}>(socialSignupToken);
-    const user = await this.authService.socialSignup({...userSocialData, ...socialSignupData});
+    const user = await this.oauthService.socialSignup({...userSocialData, ...socialSignupData});
     const {accessToken, refreshToken} = this.authService.getAccessTokens(user)
     res.cookie('accessToken', accessToken)
     res.cookie('refreshToken', refreshToken)

@@ -83,7 +83,7 @@ describe('인증 서비스', () => {
                     email : payload.data.email,
                     nickname : payload.data.nickname,
                     password : payload.data.password,
-                    role : UserRoleEnum.READER,
+                    role : UserRoleEnum.USER,
                     status : true,
                     deleted : false,
                     createdAt : new Date(),
@@ -111,7 +111,7 @@ describe('인증 서비스', () => {
                 email : "reader@moonjin.site",
                 nickname : "reader",
                 hashedPassword : "test12test12test12test12",
-                role : UserRoleEnum.READER
+                role : UserRoleEnum.USER
             }
             const writerSignupData : SignupDataDto = {
                 email : "writer@moonjin.site",
