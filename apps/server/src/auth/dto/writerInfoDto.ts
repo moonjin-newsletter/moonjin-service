@@ -1,5 +1,4 @@
 export interface WriterInfoDto {
-    id: number;
     userId : number;
     moonjinId: string;
     description: string;

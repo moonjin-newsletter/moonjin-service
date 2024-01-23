@@ -68,7 +68,6 @@ export class AuthController {
     const hashedPassword = this.utilService.getHashCode(localSignUpData.password);
     const emailVerificationCode = this.utilService.generateJwtToken<SignupEmailCodePayloadDto>({...userUniqueData, role, hashedPassword});
     await this.mailService.sendVerificationMail(localSignUpData.email, emailVerificationCode);
-
     return createResponseForm({message : "메일이 전송되었습니다."})
   }
 
@@ -88,7 +87,7 @@ export class AuthController {
   async emailVerification(@TypedQuery() payload: IEmailVerification, @Res() res:Response):Promise<void>
   {
     try {
-      const {iat,exp,...userSignUpData} =  this.utilService.getDataFromJwtToken<SignupEmailCodePayloadDto & {iat:number,exp: number}>(payload.code);
+      const {iat,exp,...userSignUpData} =  this.utilService.getDataFromJwtToken<SignupEmailCodePayloadDto>(payload.code);
       const userData = await this.authService.localSignUp(userSignUpData);
       const {accessToken, refreshToken} = this.authService.getAccessTokens(userData)
       res.cookie('accessToken',accessToken)
@@ -124,12 +123,11 @@ export class AuthController {
    * @param res
    * @returns 메일 인증 결과 페이지로 redirect
    * @throws INVALID_TOKEN
-   *
    */
   @TypedRoute.Get("password/email/verification")
   async emailVerificationForPasswordChange(@TypedQuery() payload: IEmailVerification, @Res() res:Response):Promise<void> {
     try {
-      const {iat,exp,...userData} = this.utilService.getDataFromJwtToken<UserDto & {iat:number,exp: number}>(payload.code);
+      const {iat,exp,...userData} = this.utilService.getDataFromJwtToken<UserDto>(payload.code);
       const passwordChangeToken = this.utilService.generateJwtToken(userData);
       res.cookie('passwordChangeToken', passwordChangeToken)
       res.redirect(process.env.CLIENT_URL + "/auth/password/new");
@@ -153,7 +151,7 @@ export class AuthController {
   async passwordChange(@TypedBody() payload: ILocalLogin, @TypedHeaders() header:RequestHeaderDto, @Res() res:Response):Promise<
       void | TOKEN_NOT_FOUND | INVALID_TOKEN | PASSWORD_CHANGE_ERROR>{
     const token = this.utilService.getTokenFromCookie(header.cookie, "passwordChangeToken");
-    const dataFromToken = this.utilService.getDataFromJwtToken<UserDto & {iat:number,exp: number}>(token);
+    const {iat,exp,...dataFromToken} = this.utilService.getDataFromJwtToken<UserDto>(token);
     await this.authService.passwordChange(dataFromToken.id, payload.password);
     res.cookie("passwordChangeToken", "", {maxAge: 0}) // 쿠키 삭제
     res.send(createResponseForm({message : "비밀번호가 변경되었습니다."}))
@@ -226,12 +224,11 @@ export class AuthController {
         res.cookie('refreshToken', jwtTokens.refreshToken)
         res.redirect(process.env.CLIENT_URL + ""); // TODO : redirect to success page
       }else { // 추가 정보 입력 페이지로 이동
-        console.log(process.env.SERVER_URL + "/auth/social?email=" + userData.data.email)
         res.cookie('socialSignupToken', this.utilService.generateJwtToken(userData.data));
         res.redirect(process.env.CLIENT_URL + "/auth/social?email=" + userData.data.email) // TODO : redirect to success page
       }
     }catch (error){ // 아예 인증이 안 됨
-      res.redirect(process.env.CLIENT_URL + "/auth/failed") // TODO : redirect to failed page
+      res.redirect(process.env.CLIENT_URL + "/auth/failed?code=" + error.code) // TODO : redirect to failed page
     }
   }
 
@@ -256,7 +253,7 @@ export class AuthController {
   {
     if((socialSignupData.role === UserRoleEnum.WRITER && !socialSignupData.moonjinId) || (socialSignupData.role === UserRoleEnum.USER && socialSignupData.moonjinId)) throw ExceptionList.SIGNUP_ROLE_ERROR;
     const socialSignupToken = this.utilService.getTokenFromCookie(header.cookie, "socialSignupToken");
-    const {iat,exp,...userSocialData} = this.utilService.getDataFromJwtToken<UserSocialProfileDto & {iat:number,exp: number}>(socialSignupToken);
+    const {iat,exp,...userSocialData} = this.utilService.getDataFromJwtToken<UserSocialProfileDto>(socialSignupToken);
     const user = await this.oauthService.socialSignup({...userSocialData, ...socialSignupData});
     const {accessToken, refreshToken} = this.authService.getAccessTokens(user)
     res.cookie('accessToken', accessToken)

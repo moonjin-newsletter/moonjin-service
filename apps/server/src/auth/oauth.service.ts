@@ -6,7 +6,7 @@ import {ExceptionList} from "../response/error/errorInstances";
 import { HttpService } from "@nestjs/axios";
 import {UserSocialProfileDto} from "./dto/userSocialProfile.dto";
 import {PrismaService} from "../prisma/prisma.service";
-import {UserDto, WriterDto} from "./dto/user.dto";
+import {UserDto} from "./dto/user.dto";
 import {SocialSignupDto} from "./dto/socialSignup.dto";
 import {UserRoleEnum} from "./enum/userRole.enum";
 import AuthDtoMapper from "./authDtoMapper";
@@ -125,7 +125,7 @@ export class OauthService {
      * @throws SOCIAL_PROFILE_NOT_FOUND
      * @throws SOCIAL_LOGIN_ERROR
      */
-    async socialLogin(socialLoginData : SocialLoginDto) : Promise<{result:true, data:UserDto | WriterDto} | {result:false, data : UserSocialProfileDto}> {
+    async socialLogin(socialLoginData : SocialLoginDto) : Promise<{result:true, data:UserDto} | {result:false, data : UserSocialProfileDto}> {
         // 1. oauthCode로 accessToken 받아오기
         const oauthAccessToken = await this.getAccessTokenFromSocialOauth(socialLoginData);
 
@@ -134,30 +134,18 @@ export class OauthService {
 
         try{
             // 3. 존재하는 유저인지 확인
-            const oauth = await this.prismaService.oauth.findFirst({
+            const oauth = await this.prismaService.oauth.findUnique({
                 where: {
                     oauthId : userProfile.oauthId,
                 }
             })
             if(oauth){ // 유저 존재
-                const user = await this.prismaService.user.findFirst({
+                const user = await this.prismaService.user.findUnique({
                     where: {
                         id : oauth.userId
                     }
                 })
                 if(user){
-                    if(user.role === UserRoleEnum.WRITER) { // 작가인 경우
-                        const writerInfo = await this.prismaService.writerInfo.findUnique({
-                            where:{
-                                userId : user.id
-                            }
-                        })
-                        if(writerInfo)
-                            return {
-                                result : true,
-                                data : AuthDtoMapper.UserToWriterDto(user, writerInfo.moonjinId)
-                            }
-                    }
                     return {
                         result : true,
                         data : AuthDtoMapper.UserToUserDto(user)
@@ -191,9 +179,9 @@ export class OauthService {
      * @throws NICKNAME_ALREADY_EXIST
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      */
-    async socialSignup(socialSignupData : SocialSignupDto): Promise<UserDto | WriterDto> {
+    async socialSignup(socialSignupData : SocialSignupDto): Promise<UserDto> {
         let createdUserId = 0
-        let createdOauthId = 0
+        let createdOauthId = ""
         try {
             const {oauthId, social, moonjinId, ...userSignupData} = socialSignupData;
             const createdUser = await this.prismaService.user.create({
@@ -207,17 +195,16 @@ export class OauthService {
                     userId : createdUser.id
                 }
             })
-            createdOauthId = createdOauth.id;
+            createdOauthId = createdOauth.oauthId
             if(userSignupData.role === UserRoleEnum.WRITER && moonjinId){ // 작가 회원가입
                 await this.authService.writerSignup({userId: createdUser.id, moonjinId});
-                return AuthDtoMapper.UserToWriterDto(createdUser, moonjinId);
             }
             return AuthDtoMapper.UserToUserDto(createdUser)
         } catch (error){
-            if(createdOauthId > 0){ // transaction rollback
+            if(createdOauthId){ // transaction rollback
                 await this.prismaService.oauth.delete({
                     where:{
-                        id : createdOauthId
+                        oauthId : createdOauthId
                     }
                 })
             }

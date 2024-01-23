@@ -3,7 +3,7 @@ import {PrismaService} from "../prisma/prisma.service";
 import {User} from "@prisma/client";
 import * as console from "console";
 import {UtilService} from "../util/util.service";
-import {UserDto, WriterDto} from "./dto/user.dto";
+import {UserDto} from "./dto/user.dto";
 import {Exception} from "../response/error/error";
 import { SignupDataDto } from './dto/signupData.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
@@ -23,14 +23,14 @@ export class AuthService {
      * @summary 작가 | 독자의 회원가입을 진행하는 기능
      *
      * @param signUpData
-     * @returns UserDto | WriterDto
+     * @returns UserDto
      * @throws EMAIL_ALREADY_EXIST
      * @throws NICKNAME_ALREADY_EXIST
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      * @throws SIGNUP_ERROR
      * @throws WRITER_SIGNUP_ERROR
      */
-    async localSignUp(signUpData : SignupDataDto): Promise<UserDto | WriterDto> {
+    async localSignUp(signUpData : SignupDataDto): Promise<UserDto> {
         let userId = 0;
         try {
             const {moonjinId, hashedPassword ,...data} = signUpData;
@@ -43,8 +43,7 @@ export class AuthService {
             });
             userId = createdUser.id;
             if (signUpData.role === UserRoleEnum.WRITER && moonjinId){ // 작가 회원가입
-                const writerInfo = await this.writerSignup({userId, moonjinId});
-                return AuthDtoMapper.UserToWriterDto(createdUser, writerInfo.moonjinId);
+                await this.writerSignup({userId, moonjinId});
             }
             return AuthDtoMapper.UserToUserDto(createdUser);
         }catch(error){
@@ -111,13 +110,13 @@ export class AuthService {
     }
 
     async getUserByEmail(email : string): Promise<UserDto | null> {
-        const user = await this.prismaService.user.findMany({
+        const user = await this.prismaService.user.findUnique({
             where:{
                 email,
                 deleted : false
             }
         })
-        return user ? AuthDtoMapper.UserToUserDto(user[0]) : null;
+        return user ? AuthDtoMapper.UserToUserDto(user) : null;
     }
 
     /**
@@ -129,7 +128,7 @@ export class AuthService {
      * @throws USER_NOT_FOUND
      * @throws LOGIN_ERROR
      */
-    async localLogin(loginData : LocalLoginDto) : Promise<UserDto | WriterDto> {
+    async localLogin(loginData : LocalLoginDto) : Promise<UserDto> {
         try {
             const user = await this.prismaService.user.findUnique({
                 where:{
@@ -143,15 +142,6 @@ export class AuthService {
             if (!this.utilService.compareHash(loginData.password, user.password)) // 비밀번호 틀림
                 throw ExceptionList.INVALID_PASSWORD;
 
-            if(user.role === UserRoleEnum.WRITER){ // 작가인 경우
-                const writerInfo = await this.prismaService.writerInfo.findUnique({
-                    where:{
-                        userId : user.id
-                    }
-                })
-                if(writerInfo)
-                    return AuthDtoMapper.UserToWriterDto(user, writerInfo.moonjinId);
-            }
             return AuthDtoMapper.UserToUserDto(user);
         } catch (error) {
             console.error(error)
@@ -168,6 +158,7 @@ export class AuthService {
      * @throws EMAIL_ALREADY_EXIST
      * @throws NICKNAME_ALREADY_EXIST
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
+     * @throws SIGNUP_ERROR
      */
     prismaSignupErrorHandling(error : Error){
         if (error instanceof PrismaClientKnownRequestError){
@@ -180,6 +171,8 @@ export class AuthService {
                         throw ExceptionList.NICKNAME_ALREADY_EXIST;
                     case "moonjinId":
                         throw ExceptionList.MOONJIN_EMAIL_ALREADY_EXIST;
+                    default:
+                        throw ExceptionList.SIGNUP_ERROR;
                 }
             }
         }
@@ -190,13 +183,9 @@ export class AuthService {
      * @param userData
      * @returns {accessToken, refreshToken}
      */
-    getAccessTokens(userData: UserDto | WriterDto) : UserAccessTokensDto {
+    getAccessTokens(userData: UserDto) : UserAccessTokensDto {
         const accessToken = this.utilService.generateJwtToken(userData,60 * 15);
         const refreshToken = this.utilService.generateJwtToken(userData, 60 * 60 * 24 * 7);
         return {accessToken, refreshToken}
-    }
-
-    getUserAuthDataFromAccessToken(accessToken: string): UserDto | WriterDto {
-        return this.utilService.getDataFromJwtToken<UserDto | WriterDto>(accessToken);
     }
 }

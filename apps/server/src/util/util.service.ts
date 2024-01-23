@@ -59,9 +59,9 @@ export class UtilService {
      * @param jwtToken
      * @throws INVALID_TOKEN
      */
-    getDataFromJwtToken<T>(jwtToken: string): T {
+    getDataFromJwtToken<T>(jwtToken: string) : T & {iat:number,exp: number}{
         try {
-            return this.jwtService.decode<T>(jwtToken);
+            return this.jwtService.decode<T>(jwtToken) as T & {iat:number,exp: number};
         } catch (error){
             throw ExceptionList.INVALID_TOKEN;
         }

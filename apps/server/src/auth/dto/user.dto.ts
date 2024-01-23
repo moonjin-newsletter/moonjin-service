@@ -6,8 +6,3 @@ export class UserDto {
     nickname: string;
     role: UserRoleEnum
 }
-
-export interface WriterDto extends UserDto{
-    role: UserRoleEnum.WRITER;
-    moonjinId: string;
-}

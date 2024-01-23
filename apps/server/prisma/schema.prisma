@@ -19,15 +19,13 @@ model User {
 }
 
 model Oauth {
-  id      Int    @id @default(autoincrement())
-  oauthId String @unique @db.VarChar(64)
-  social  String @db.VarChar(8)
+  oauthId String @id @unique @db.VarChar(64)
   userId  Int    @unique
+  social  String @db.VarChar(8)
 }
 
 model WriterInfo {
-  id              Int      @id @default(autoincrement())
-  userId          Int      @unique
+  userId          Int      @id @unique
   moonjinId       String   @unique @db.VarChar(32)
   description     String   @default("") @db.VarChar(256)
   newsletterCount Int      @default(0)
