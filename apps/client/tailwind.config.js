@@ -11,6 +11,9 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    fontFamily: {
+      libre: ["var(--font-libre)"],
+    },
     screens: {
       mobile: { min: "0px", max: "600px" },
       tablet: { min: "601px", max: "1023px" },
