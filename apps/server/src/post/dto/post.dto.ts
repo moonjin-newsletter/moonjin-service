@@ -6,6 +6,5 @@ export interface PostDto {
     writerId: number;
     cover: string | null;
     seriesId : number;
-    status: boolean;
     releasedAt: Date | null;
 }

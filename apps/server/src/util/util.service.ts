@@ -24,6 +24,12 @@ export class UtilService {
         return this.getHashCode(inputString).trim() === hashedString.trim()
     }
 
+    getCurrentDateInKorea(): Date{
+        const date = new Date();
+        date.setHours(date.getHours() + 9);
+        return date;
+    }
+
     /**
      * @summary 쿠키에서 토큰을 가져오는 함수.
      * @param cookies

@@ -3,8 +3,8 @@ export interface CreatePostDto {
     content: string;
     category: string;
     writerId: number;
+    status: boolean;
     cover?: string;
     seriesId? : number;
-    status?: boolean;
     releasedAt?: Date;
 }

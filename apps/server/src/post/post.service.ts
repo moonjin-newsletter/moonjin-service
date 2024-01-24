@@ -9,13 +9,13 @@ import {PostDto} from "./dto/post.dto";
 @Injectable()
 export class PostService {
     constructor(
-        readonly prismaService: PrismaService,
+        private readonly prismaService: PrismaService
     ) {}
 
     /**
      * @summary 게시글 생성
      * @param postData
-     * @return Promise<PostDto
+     * @return Promise<PostDto>
      * @throws CREATE_POST_ERROR
      */
     async createPost(postData : CreatePostDto) : Promise<PostDto> {
@@ -32,5 +32,20 @@ export class PostService {
         }
     }
 
-
+    /**
+     * @summary 모든 게시글 가져오기
+     * @return Promise<PostDto[] | null>
+     */
+    async getPostAll(): Promise<PostDto[] | null> {
+        const post = await this.prismaService.post.findMany(
+            {
+                where: {
+                    deleted: false,
+                    status : true
+                },
+            }
+        );
+        if(!post) return null;
+        return PostDtoMapper.PostListToPostDtoList(post);
+    }
 }

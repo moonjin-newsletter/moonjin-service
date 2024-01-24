@@ -14,7 +14,7 @@ import {UserDto} from "../auth/dto/user.dto";
 @Controller('post')
 export class PostController {
     constructor(
-        private readonly postService: PostService,
+        private readonly postService: PostService
     ) {}
 
     /**
@@ -30,14 +30,20 @@ export class PostController {
         PostDto,
         CREATE_POST_ERROR>>
     {
-        console.log(user)
-        const post = await this.postService.createPost({writerId:user.id,...postData});
+        const post = await this.postService.createPost({writerId:user.id,status: false,...postData});
         return createResponseForm(post)
     }
 
-
-
-
+    /**
+     * @summary 모든 게시글 가져오기
+     * @return PostDto[] | []
+     */
+    @TypedRoute.Get()
+    async getPost() {
+        const postList = await this.postService.getPostAll();
+        if(postList === null) return createResponseForm([]);
+        return createResponseForm(postList);
+    }
 
 
 }
