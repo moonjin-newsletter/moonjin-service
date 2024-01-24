@@ -7,15 +7,25 @@ import {MailModule} from "../mail/mail.module";
 import {OauthService} from "./oauth.service";
 import { HttpModule } from '@nestjs/axios';
 import {AuthValidationService} from "./auth.validation.service";
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+      JwtModule.registerAsync({
+          imports: [ConfigModule],
+          inject: [ConfigService],
+          useFactory: (config: ConfigService) => ({
+              secret: config.get<string>('JWT_SECRET'),
+          }),
+      }),
       PrismaModule,
       UtilModule,
       MailModule,
       HttpModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, OauthService, AuthValidationService]
+  providers: [AuthService, OauthService, AuthValidationService],
+    exports : [AuthService, AuthValidationService]
 })
 export class AuthModule {}

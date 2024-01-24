@@ -11,7 +11,7 @@ import {
     INVALID_SOCIAL,
     LOGIN_ERROR, SOCIAL_LOGIN_ERROR, SOCIAL_PROFILE_NOT_FOUND, SOCIAL_USER_ERROR,
     USER_NOT_FOUND,
-    USER_NOT_FOUND_IN_SOCIAL, SIGNUP_ROLE_ERROR
+    USER_NOT_FOUND_IN_SOCIAL, SIGNUP_ROLE_ERROR, USER_NOT_WRITER
 } from "./auth";
 import {CREATE_POST_ERROR} from "./post/post.error";
 
@@ -37,5 +37,6 @@ export const ExceptionList= {
     SOCIAL_SIGNUP_TOKEN_NOT_FOUND : new Exception(typia.random<SOCIAL_SIGNUP_TOKEN_NOT_FOUND>()),
     SOCIAL_SIGNUP_ERROR : new Exception(typia.random<SOCIAL_SIGNUP_ERROR>()),
     PASSWORD_CHANGE_ERROR : new Exception(typia.random<PASSWORD_CHANGE_ERROR>()),
+    USER_NOT_WRITER : new Exception(typia.random<USER_NOT_WRITER>()),
     CREATE_POST_ERROR : new Exception(typia.random<CREATE_POST_ERROR>()),
 }

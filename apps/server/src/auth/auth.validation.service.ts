@@ -63,4 +63,20 @@ export class AuthValidationService {
         if(user) throw ExceptionList.MOONJIN_EMAIL_ALREADY_EXIST;
     }
 
+
+    /**
+     * @summary 작가인지 확인
+     * @param userId
+     * @throws USER_NOT_WRITER
+     */
+    async assertWriter(userId : number) {
+        const user = await this.prismaService.writerInfo.findUnique({
+            where: {
+                userId: userId
+            }
+        });
+        if (!user) {
+            throw ExceptionList.USER_NOT_WRITER
+        }
+    }
 }

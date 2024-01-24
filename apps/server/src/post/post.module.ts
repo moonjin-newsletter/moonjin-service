@@ -3,11 +3,13 @@ import { PostService } from './post.service';
 import { PostController } from './post.controller';
 import {PrismaModule} from "../prisma/prisma.module";
 import {UtilModule} from "../util/util.module";
+import {AuthModule} from "../auth/auth.module";
 
 @Module({
   imports: [
       PrismaModule,
-      UtilModule
+      UtilModule,
+      AuthModule
   ],
   providers: [PostService],
   controllers: [PostController]

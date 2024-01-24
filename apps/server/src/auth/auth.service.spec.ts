@@ -5,16 +5,17 @@ import {OauthService} from "./oauth.service";
 import {AuthValidationService} from "./auth.validation.service";
 import {PrismaService} from "../prisma/prisma.service";
 import {UtilModule} from "../util/util.module";
-import {ConfigModule} from "@nestjs/config";
+import {ConfigModule, ConfigService} from "@nestjs/config";
 import {HttpModule} from "@nestjs/axios";
 import {SignupDataDto} from "./dto/signupData.dto";
 import {UserRoleEnum} from "./enum/userRole.enum";
 import {WriterSignupDto} from "./dto/writerSignup.dto";
+import { JwtModule } from '@nestjs/jwt';
+import typia from 'typia';
 
 describe('인증 서비스', () => {
     let authService: AuthService;
     let authValidationService : AuthValidationService;
-    // let oauthService : OauthService;
     let prismaService: PrismaService
 
     beforeEach(async () => {
@@ -23,6 +24,13 @@ describe('인증 서비스', () => {
                 ConfigModule.forRoot({
                     isGlobal: true,
                     envFilePath: '../../.env.dev.local',
+                }),
+                JwtModule.registerAsync({
+                    imports: [ConfigModule],
+                    inject: [ConfigService],
+                    useFactory: (config: ConfigService) => ({
+                        secret: config.get<string>('JWT_SECRET'),
+                    }),
                 }),
                 HttpModule,
                 PrismaModule,
@@ -33,7 +41,6 @@ describe('인증 서비스', () => {
 
         authService = authModule.get<AuthService>(AuthService);
         authValidationService = authModule.get<AuthValidationService>(AuthValidationService);
-        // oauthService = authModule.get<OauthService>(OauthService);
         prismaService = authModule.get<PrismaService>(PrismaService);
     });
 
@@ -129,6 +136,30 @@ describe('인증 서비스', () => {
             expect(writer.email).toEqual(writerSignupData.email);
             await expect(authService.localSignUp(writerSignupData)).rejects.toThrow()
         })
+    })
+
+    describe("쿠키", () => {
+        it("쿠키에서 토큰 가져오기", () => {
+            const token = authService.getTokenFromCookie(['testCookie=1234', 'NotTestCookie=4321'], 'testCookie');
+            expect(token).toBe('1234');
+        })
+
+        it("쿠키에 찾는 토큰이 없는 경우", () => {
+            expect(() => authService.getTokenFromCookie(['testCookie=1234', 'NotTestCookie=4321'], 'notExistCookie')).toThrow();
+        })
+
+        it("JWT 쿠키 생성 및 정보 가져오기" ,() => {
+            interface payloadType {
+                nickname : string,
+                email : string,
+                id : number,
+            }
+            const payload = typia.random<payloadType>()
+            const jwtToken = authService.generateJwtToken(payload);
+            const {iat,exp,...dataFromJwtToken} = authService.getDataFromJwtToken<payloadType>(jwtToken);
+            expect(dataFromJwtToken).toEqual(payload);
+        })
+
     })
 
 });

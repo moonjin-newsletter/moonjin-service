@@ -26,7 +26,7 @@ export enum ErrorCodeEnum {
     SOCIAL_SIGNUP_ERROR = "0040",
     // auth
     PASSWORD_CHANGE_ERROR = "0050",
-
+    USER_NOT_WRITER = "0051",
     // post
     CREATE_POST_ERROR = "0100",
 }

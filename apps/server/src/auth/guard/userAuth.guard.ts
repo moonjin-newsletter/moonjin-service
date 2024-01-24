@@ -1,7 +1,7 @@
 import {CanActivate, ExecutionContext, Injectable} from "@nestjs/common";
 import {ExceptionList} from "../../response/error/errorInstances";
-import {UtilService} from "../../util/util.service";
 import {UserDto} from "../dto/user.dto";
+import {AuthService} from "../auth.service";
 
 /**
  * @summary 유저의 인증을 담당하는 Guard
@@ -13,14 +13,14 @@ import {UserDto} from "../dto/user.dto";
 @Injectable()
 export class UserAuthGuard implements CanActivate {
     constructor(
-        private readonly utilService: UtilService
+        private readonly authService: AuthService
     ) {}
     canActivate(context: ExecutionContext): boolean {
         const request = context.switchToHttp().getRequest();
         const accessToken = request.cookies["accessToken"];
         if(!accessToken) throw ExceptionList.TOKEN_NOT_FOUND;
 
-        const {iat, exp ,...userData} = this.utilService.getDataFromJwtToken<UserDto>(accessToken);
+        const {iat, exp ,...userData} = this.authService.getDataFromJwtToken<UserDto>(accessToken);
         request.user = userData;
         return true;
     }

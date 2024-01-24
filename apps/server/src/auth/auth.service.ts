@@ -14,10 +14,15 @@ import {UserRoleEnum} from "./enum/userRole.enum";
 import {WriterSignupDto} from "./dto/writerSignup.dto";
 import {WriterInfoDto} from "./dto/writerInfoDto";
 import AuthDtoMapper from "./authDtoMapper";
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly prismaService: PrismaService, private readonly utilService: UtilService) {}
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly utilService: UtilService,
+        private readonly jwtService: JwtService
+    ) {}
 
     /**
      * @summary 작가 | 독자의 회원가입을 진행하는 기능
@@ -178,14 +183,53 @@ export class AuthService {
         }
     }
 
+
+    /**
+     * @summary 쿠키에서 토큰을 가져오는 함수.
+     * @param cookies
+     * @param cookieToFind
+     * @throws TOKEN_NOT_FOUND
+     * @returns token
+     */
+    getTokenFromCookie(cookies : string[], cookieToFind: string): string {
+        const token = cookies.find(cookie => cookie.includes(cookieToFind));
+        if(!token) throw ExceptionList.TOKEN_NOT_FOUND;
+        return token.split('=')[1];
+    }
+
+    /**
+     * @summary jwtToken 생성
+     * @param payload extends object
+     * @param time 기본값 1 day
+     * @returns jwtToken
+     */
+    generateJwtToken<T extends object>(payload: T, time = 60*60*24): string{
+        return this.jwtService.sign(payload, {
+            expiresIn: time,
+        });
+    }
+
+    /**
+     * @summary jwtToken의 payload를 가져오는 함수.
+     * @param jwtToken
+     * @throws INVALID_TOKEN
+     */
+    getDataFromJwtToken<T>(jwtToken: string) : T & {iat:number,exp: number}{
+        try {
+            return this.jwtService.decode<T>(jwtToken) as T & {iat:number,exp: number};
+        } catch (error){
+            throw ExceptionList.INVALID_TOKEN;
+        }
+    }
+
     /**
      * @summary userData가 담긴 atk, rtk을 발급
      * @param userData
      * @returns {accessToken, refreshToken}
      */
     getAccessTokens(userData: UserDto) : UserAccessTokensDto {
-        const accessToken = this.utilService.generateJwtToken(userData,60 * 15);
-        const refreshToken = this.utilService.generateJwtToken(userData, 60 * 60 * 24 * 7);
+        const accessToken = this.generateJwtToken(userData,60 * 15);
+        const refreshToken = this.generateJwtToken(userData, 60 * 60 * 24 * 7);
         return {accessToken, refreshToken}
     }
 }
