@@ -228,6 +228,7 @@ export class AuthController {
         res.redirect(process.env.CLIENT_URL + "/auth/social?email=" + userData.data.email) // TODO : redirect to success page
       }
     }catch (error){ // 아예 인증이 안 됨
+      console.log(error)
       res.redirect(process.env.CLIENT_URL + "/auth/failed?code=" + error.code) // TODO : redirect to failed page
     }
   }
