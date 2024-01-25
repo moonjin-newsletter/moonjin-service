@@ -25,9 +25,9 @@ export class OauthService {
         private readonly utilService: UtilService
     ) {
         this.socialLoginUrlList = {
-            [SocialProviderEnum.NAVER]: `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${process.env.NAVER_OAUTH_CLIENT_ID}&redirect_uri=${process.env.OAUTH_REDIRECT_URL}?social=naver&state=RANDOM_STATE`,
-            [SocialProviderEnum.KAKAO]: `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.KAKAO_REST_API_KEY}&redirect_uri=${process.env.OAUTH_REDIRECT_URL}?social=kakao&response_type=code`,
-            [SocialProviderEnum.GOOGLE]: `https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile&response_type=code&redirect_uri=${process.env.OAUTH_REDIRECT_URL}?social=google&client_id=${process.env.GOOGLE_OAUTH_CLIENT_ID}`,
+            [SocialProviderEnum.NAVER]: `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${process.env.NAVER_OAUTH_CLIENT_ID}&redirect_uri=${process.env.SERVER_URL}/auth/oauth/login?social=naver&state=RANDOM_STATE`,
+            [SocialProviderEnum.KAKAO]: `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.KAKAO_REST_API_KEY}&redirect_uri=${process.env.SERVER_URL}/auth/oauth/login?social=kakao&response_type=code`,
+            [SocialProviderEnum.GOOGLE]: `https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile&response_type=code&redirect_uri=${process.env.SERVER_URL}/auth/oauth/login?social=google&client_id=${process.env.GOOGLE_OAUTH_CLIENT_ID}`,
         };
         this.socialProfileApiUrlList = {
             [SocialProviderEnum.NAVER]: 'https://openapi.naver.com/v1/nid/me',
