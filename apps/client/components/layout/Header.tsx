@@ -15,7 +15,12 @@ export default function Header() {
     userCookie ? setIsLogin(true) : setIsLogin(false);
   }, [userCookie]);
 
-  if (path.includes("login") || path.includes("signup")) return;
+  if (
+    path.includes("login") ||
+    path.includes("signup") ||
+    path.includes("auth/social")
+  )
+    return;
   return (
     <header className="fixed z-50 top-0 left-0 w-full flex h-16  items-center justify-center bg-black/40">
       <div className="flex  w-[1024px] h-full items-center justify-between font-normal">

@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
+const colors = require("tailwindcss/colors");
+
 module.exports = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -13,6 +15,7 @@ module.exports = {
   theme: {
     fontFamily: {
       libre: ["var(--font-libre)"],
+      serif: ["var(--font-serif)"],
     },
     screens: {
       mobile: { min: "0px", max: "600px" },
@@ -20,7 +23,26 @@ module.exports = {
       desktop: { min: "1024px" },
     },
 
-    extend: {},
+    extend: {
+      colors: {
+        ...colors,
+        transparent: "transparent",
+        current: "currentColor",
+        primary: {
+          DEFAULT: "#7B0000",
+        },
+        grayscale: {
+          0: "#FFFFFF",
+          100: "#F7F7F7",
+          200: "#E9E9E9",
+          300: "#DADADA",
+          400: "#999999",
+          500: "#777777",
+          600: "#333333",
+          700: "#111111",
+        },
+      },
+    },
   },
   plugins: [require("@tailwindcss/forms")],
 };

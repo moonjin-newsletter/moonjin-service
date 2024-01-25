@@ -2,7 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import Header from "../components/layout/Header";
 import ClientProvider from "./ClientProvider";
-import { Libre_Baskerville } from "next/font/google";
+import { Libre_Baskerville, Noto_Serif_KR } from "next/font/google";
 
 export const metadata: Metadata = {
   title: "moonjin",
@@ -15,8 +15,18 @@ const libre = Libre_Baskerville({
   weight: ["400", "700"],
 });
 
+const serif = Noto_Serif_KR({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  weight: ["200", "300", "400", "500", "600", "700", "900"],
+});
+
 const FontGoogleLayout = (props: { children: any }) => {
-  return <div className={libre.variable}>{props.children}</div>;
+  return (
+    <div className={libre.variable}>
+      <div className={serif.variable}>{props.children}</div>
+    </div>
+  );
 };
 
 export default function RootLayout({
