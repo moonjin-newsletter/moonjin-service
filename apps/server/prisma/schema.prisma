@@ -66,12 +66,14 @@ model Newsletter {
 }
 
 model Series {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(32)
   writerId    Int
-  category    String   @db.VarChar(16)
-  cover       String?  @db.VarChar(128)
+  category    String    @db.VarChar(16)
+  cover       String?   @db.VarChar(128)
   createdAt   DateTime
-  description String   @default("") @db.VarChar(256)
-  status      Boolean  @default(true)
-  deleted     Boolean  @default(false)
+  releasedAt  DateTime?
+  description String    @default("") @db.VarChar(256)
+  status      Boolean   @default(true)
+  deleted     Boolean   @default(false)
 }

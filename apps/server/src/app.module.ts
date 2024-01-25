@@ -9,6 +9,7 @@ import { MailModule } from './mail/mail.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
+import { SeriesModule } from './series/series.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UserModule } from './user/user.module';
     EventEmitterModule.forRoot(),
     PostModule,
     UserModule,
+    SeriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

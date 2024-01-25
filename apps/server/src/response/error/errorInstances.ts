@@ -13,8 +13,9 @@ import {
     USER_NOT_FOUND,
     USER_NOT_FOUND_IN_SOCIAL, SIGNUP_ROLE_ERROR, USER_NOT_WRITER
 } from "./auth";
-import {CREATE_POST_ERROR} from "./post/post.error";
-import {FOLLOW_ALREADY_ERROR, FOLLOW_MYSELF_ERROR} from "./user/follow.error";
+import {CREATE_POST_ERROR} from "./post";
+import {FOLLOW_ALREADY_ERROR, FOLLOW_MYSELF_ERROR} from "./user";
+import {CREATE_SERIES_ERROR} from "./series";
 
 export const ExceptionList= {
     EMAIL_ALREADY_EXIST: new Exception(typia.random<EMAIL_ALREADY_EXIST>()),
@@ -40,6 +41,7 @@ export const ExceptionList= {
     PASSWORD_CHANGE_ERROR : new Exception(typia.random<PASSWORD_CHANGE_ERROR>()),
     USER_NOT_WRITER : new Exception(typia.random<USER_NOT_WRITER>()),
     CREATE_POST_ERROR : new Exception(typia.random<CREATE_POST_ERROR>()),
+    CREATE_SERIES_ERROR : new Exception(typia.random<CREATE_SERIES_ERROR>()),
     FOLLOW_MYSELF_ERROR : new Exception(typia.random<FOLLOW_MYSELF_ERROR>()),
     FOLLOW_ALREADY_ERROR : new Exception(typia.random<FOLLOW_ALREADY_ERROR>()),
 }

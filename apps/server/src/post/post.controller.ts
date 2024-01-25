@@ -5,10 +5,10 @@ import {PostService} from "./post.service";
 import {PostDto} from "./dto/post.dto";
 import {createResponseForm} from "../response/responseForm";
 import {TryCatch} from "../response/tryCatch";
-import {CREATE_POST_ERROR} from "../response/error/post/post.error";
-import {UserAuthGuard} from "../auth/guard/userAuth.guard";
+import {CREATE_POST_ERROR} from "../response/error/post";
 import {User} from "../auth/decorator/user.decorator";
 import {UserDto} from "../auth/dto/user.dto";
+import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 
 
 @Controller('post')
@@ -25,7 +25,7 @@ export class PostController {
      * @throws CREATE_POST_ERROR
      */
     @TypedRoute.Post()
-    @UseGuards(UserAuthGuard)
+    @UseGuards(WriterAuthGuard)
     async createPost(@TypedBody() postData : ICreatePost, @User() user:UserDto): Promise<TryCatch<
         PostDto,
         CREATE_POST_ERROR>>
