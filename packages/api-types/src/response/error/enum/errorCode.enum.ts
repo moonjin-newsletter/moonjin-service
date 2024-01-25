@@ -24,7 +24,14 @@ export enum ErrorCodeEnum {
     SOCIAL_SIGNUP_TOKEN_NOT_FOUND = "0039",
     // social
     SOCIAL_SIGNUP_ERROR = "0040",
-
     // auth
     PASSWORD_CHANGE_ERROR = "0050",
+    USER_NOT_WRITER = "0051",
+    // post
+    CREATE_POST_ERROR = "0100",
+
+    // user
+    /// follow
+    FOLLOW_MYSELF_ERROR = "0200",
+    FOLLOW_ALREADY_ERROR = "0201",
 }

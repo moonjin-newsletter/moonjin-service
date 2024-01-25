@@ -37,10 +37,11 @@ model WriterInfo {
 }
 
 model Follow {
-  id         Int      @id @default(autoincrement())
   followerId Int
   writerId   Int
   createdAt  DateTime @default(now())
+
+  @@id([followerId, writerId])
 }
 
 model Post {
