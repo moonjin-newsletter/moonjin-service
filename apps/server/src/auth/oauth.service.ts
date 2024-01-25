@@ -53,8 +53,8 @@ export class OauthService {
      */
     async getAccessTokenFromSocialOauth(socialLoginData : SocialLoginDto) : Promise<string>{
         const socialOauthUrlList = {
-            [SocialProviderEnum.NAVER]: `https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${process.env.NAVER_OAUTH_CLIENT_ID}&client_secret=${process.env.NAVER_OAUTH_CLIENT_SECRET}&redirect_uri=${process.env.SERVER_URL}/api/auth/signup?social=naver&code=${socialLoginData.code}&state=RANDOM_STATE`,
-            [SocialProviderEnum.KAKAO]: `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.KAKAO_REST_API_KEY}&redirect_url=${process.env.SERVER_URL}/api/auth/signup?social=kakao&code=${socialLoginData.code}`,
+            [SocialProviderEnum.NAVER]: `https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${process.env.NAVER_OAUTH_CLIENT_ID}&client_secret=${process.env.NAVER_OAUTH_CLIENT_SECRET}&redirect_uri=${process.env.OAUTH_REDIRECT_URL}?social=naver&code=${socialLoginData.code}&state=RANDOM_STATE`,
+            [SocialProviderEnum.KAKAO]: `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.KAKAO_REST_API_KEY}&redirect_uri=${process.env.OAUTH_REDIRECT_URL}?social=kakao&code=${socialLoginData.code}`,
             [SocialProviderEnum.GOOGLE]: `https://oauth2.googleapis.com/token?code=${socialLoginData.code}&client_id=${process.env.GOOGLE_OAUTH_CLIENT_ID}&client_secret=${process.env.GOOGLE_OAUTH_SECRET}&redirect_uri=${process.env.OAUTH_REDIRECT_URL}?social=google&grant_type=authorization_code`,
         };
 
