@@ -30,7 +30,7 @@ export class PostController {
         PostDto,
         CREATE_POST_ERROR>>
     {
-        const post = await this.postService.createPost({writerId:user.id,status: false,...postData});
+        const post = await this.postService.createPost({writerId:user.id,...postData});
         return createResponseForm(post)
     }
 
@@ -44,6 +44,4 @@ export class PostController {
         if(postList === null) return createResponseForm([]);
         return createResponseForm(postList);
     }
-
-
 }

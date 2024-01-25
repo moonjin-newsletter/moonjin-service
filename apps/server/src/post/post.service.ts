@@ -5,11 +5,13 @@ import PostDtoMapper from "./postDtoMapper";
 import {Post} from "@prisma/client";
 import {ExceptionList} from "../response/error/errorInstances";
 import {PostDto} from "./dto/post.dto";
+import {UtilService} from "../util/util.service";
 
 @Injectable()
 export class PostService {
     constructor(
-        private readonly prismaService: PrismaService
+        private readonly prismaService: PrismaService,
+        private readonly utilService: UtilService,
     ) {}
 
     /**
@@ -20,9 +22,12 @@ export class PostService {
      */
     async createPost(postData : CreatePostDto) : Promise<PostDto> {
         try {
+            const releaseDate = postData.releasedAt ? postData.releasedAt : this.utilService.getCurrentDateInKorea()
             const post: Post = await this.prismaService.post.create({
                 data : {
                     ...postData,
+                    createdAt : this.utilService.getCurrentDateInKorea(),
+                    releasedAt : (postData.status) ? releaseDate : null
                 }
             })
             return PostDtoMapper.PostToPostDto(post);

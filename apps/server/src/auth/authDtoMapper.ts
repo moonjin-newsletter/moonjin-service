@@ -4,7 +4,7 @@ import {WriterInfoDto} from "./dto/writerInfoDto";
 
 class AuthDtoMapperClass {
     UserToUserDto(user: User): UserDto {
-        const {deleted, createdAt, password, status,...userData} = user;
+        const {deleted, createdAt, password,...userData} = user;
         return {...userData};
     }
 

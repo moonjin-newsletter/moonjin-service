@@ -12,9 +12,8 @@ model User {
   email     String   @unique @db.VarChar(32)
   password  String?  @db.VarChar(64)
   nickname  String   @unique @db.VarChar(16)
+  createdAt DateTime
   role      Int      @default(0)
-  status    Boolean  @default(true)
-  createdAt DateTime @default(now())
   deleted   Boolean  @default(false)
 }
 
@@ -27,19 +26,19 @@ model Oauth {
 model WriterInfo {
   userId          Int      @id @unique
   moonjinId       String   @unique @db.VarChar(32)
+  createdAt       DateTime
   description     String   @default("") @db.VarChar(256)
   newsletterCount Int      @default(0)
   seriesCount     Int      @default(0)
   followerCount   Int      @default(0)
   status          Boolean  @default(true)
-  createdAt       DateTime @default(now())
   deleted         Boolean  @default(false)
 }
 
 model Follow {
   followerId Int
   writerId   Int
-  createdAt  DateTime @default(now())
+  createdAt  DateTime
 
   @@id([followerId, writerId])
 }
@@ -51,28 +50,28 @@ model Post {
   writerId   Int
   category   String    @db.VarChar(16)
   cover      String?   @db.VarChar(128)
+  createdAt  DateTime
+  releasedAt DateTime?
   seriesId   Int       @default(0)
   status     Boolean   @default(true)
-  createdAt  DateTime  @default(now())
-  releasedAt DateTime?
   deleted    Boolean   @default(false)
 }
 
 model Newsletter {
-  id         Int      @id @default(autoincrement())
   postId     Int
   receiverId Int
-  sentAt     DateTime @default(now())
+  sentAt     DateTime
+
+  @@id([postId, receiverId])
 }
 
 model Series {
   id          Int      @id @default(autoincrement())
-  title       String   @db.VarChar(32)
-  description String?  @db.VarChar(256)
   writerId    Int
   category    String   @db.VarChar(16)
   cover       String?  @db.VarChar(128)
+  createdAt   DateTime
+  description String   @default("") @db.VarChar(256)
   status      Boolean  @default(true)
-  createdAt   DateTime @default(now())
   deleted     Boolean  @default(false)
 }

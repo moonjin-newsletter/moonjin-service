@@ -43,7 +43,8 @@ export class AuthService {
             const createdUser : User = await this.prismaService.user.create({
                 data : {
                     ...data,
-                    password : hashedPassword
+                    password : hashedPassword,
+                    createdAt : this.utilService.getCurrentDateInKorea()
                 }
             });
             userId = createdUser.id;
@@ -79,7 +80,10 @@ export class AuthService {
     async writerSignup(writerSignupData : WriterSignupDto) : Promise<WriterInfoDto>{
         try {
             const writerInfo = await this.prismaService.writerInfo.create({
-                data:writerSignupData
+                data:{
+                    ...writerSignupData,
+                    createdAt : this.utilService.getCurrentDateInKorea()
+                }
             })
             return AuthDtoMapper.WriterInfoToWriterInfoDto(writerInfo);
         } catch (error){

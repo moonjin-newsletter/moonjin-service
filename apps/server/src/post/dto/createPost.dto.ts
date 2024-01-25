@@ -4,7 +4,7 @@ export interface CreatePostDto {
     category: string;
     writerId: number;
     status: boolean;
+    releasedAt? : Date;
     cover?: string;
     seriesId? : number;
-    releasedAt?: Date;
 }

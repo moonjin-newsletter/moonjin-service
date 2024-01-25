@@ -3,12 +3,14 @@ import {AuthValidationService} from "../auth/auth.validation.service";
 import {PrismaService} from "../prisma/prisma.service";
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
+import {UtilService} from "../util/util.service";
 
 @Injectable()
 export class UserService {
     constructor(
        private readonly authValidationService : AuthValidationService,
        private readonly prismaService: PrismaService,
+       private readonly utilService: UtilService,
     ) {}
 
     /**
@@ -27,7 +29,8 @@ export class UserService {
             await this.prismaService.follow.create({
                 data: {
                     followerId,
-                    writerId
+                    writerId,
+                    createdAt : this.utilService.getCurrentDateInKorea()
                 }
             });
         }catch (error) {

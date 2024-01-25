@@ -12,6 +12,7 @@ import {UserRoleEnum} from "./enum/userRole.enum";
 import AuthDtoMapper from "./authDtoMapper";
 import console from "console";
 import {AuthService} from "./auth.service";
+import {UtilService} from "../util/util.service";
 
 @Injectable()
 export class OauthService {
@@ -20,7 +21,8 @@ export class OauthService {
     constructor(
         private readonly httpService: HttpService,
         private readonly prismaService: PrismaService,
-        private readonly authService: AuthService
+        private readonly authService: AuthService,
+        private readonly utilService: UtilService
     ) {
         this.socialLoginUrlList = {
             [SocialProviderEnum.NAVER]: `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${process.env.NAVER_OAUTH_CLIENT_ID}&redirect_uri=${process.env.OAUTH_REDIRECT_URL}?social=naver&state=RANDOM_STATE`,
@@ -185,7 +187,10 @@ export class OauthService {
         try {
             const {oauthId, social, moonjinId, ...userSignupData} = socialSignupData;
             const createdUser = await this.prismaService.user.create({
-                data: userSignupData
+                data: {
+                    ...userSignupData,
+                    createdAt : this.utilService.getCurrentDateInKorea()
+                }
             })
             createdUserId = createdUser.id;
             const createdOauth = await this.prismaService.oauth.create({

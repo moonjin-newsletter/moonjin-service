@@ -13,6 +13,11 @@ export class UserController {
         private readonly userService: UserService,
     ) {}
 
+    /**
+     * @summary 팔로우 기능
+     * @param body
+     * @param user
+     */
     @TypedRoute.Post("Follow")
     @UseGuards(UserAuthGuard)
     async follow(@TypedBody() body : IFollow, @User() user : UserDto) {
