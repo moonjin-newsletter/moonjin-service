@@ -29,9 +29,11 @@ export enum ErrorCodeEnum {
     USER_NOT_WRITER = "0051",
     // post
     CREATE_POST_ERROR = "0100",
+    // series
+    CREATE_SERIES_ERROR = "0201",
 
     // user
     /// follow
-    FOLLOW_MYSELF_ERROR = "0200",
-    FOLLOW_ALREADY_ERROR = "0201",
+    FOLLOW_MYSELF_ERROR = "0400",
+    FOLLOW_ALREADY_ERROR = "0401",
 }
