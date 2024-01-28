@@ -259,8 +259,21 @@ export class AuthController {
     const {accessToken, refreshToken} = this.authService.getAccessTokens(user)
     res.cookie('accessToken', accessToken)
     res.cookie('refreshToken', refreshToken)
+    res.cookie('socialSignupToken', "", {maxAge: 0})
     res.send(createResponseForm({
       message: "회원가입이 완료되었습니다."
     }));
   }
+
+  @TypedRoute.Post('logout')
+  async logout(@Res() res: Response):Promise<void>{
+    res.cookie('accessToken', "", {maxAge: 0})
+    res.cookie('refreshToken', "", {maxAge: 0})
+    res.send(createResponseForm({
+          message: "로그아웃이 완료되었습니다."
+    }))
+  }
+
+
+
 }
