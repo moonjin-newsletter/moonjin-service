@@ -31,6 +31,7 @@ export enum ErrorCodeEnum {
     CREATE_POST_ERROR = "0100",
     // series
     CREATE_SERIES_ERROR = "0201",
+    SERIES_NOT_FOUND = "0202",
 
     // user
     /// follow

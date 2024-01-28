@@ -12,6 +12,7 @@ import {UtilModule} from "../util/util.module";
       UtilModule
   ],
   providers: [SeriesService],
-  controllers: [SeriesController]
+  controllers: [SeriesController],
+    exports: [SeriesService]
 })
 export class SeriesModule {}

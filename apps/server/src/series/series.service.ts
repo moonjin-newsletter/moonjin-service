@@ -31,4 +31,20 @@ export class SeriesService {
     }
 
 
+    /**
+     * @summary 시리즈 존재 여부 확인
+     * @param seriesId
+     * @throws SERIES_NOT_FOUND
+     */
+    async assertSeriesExist(seriesId : number) : Promise<void>{
+        const series = await this.prismaService.series.findUnique({
+            where:{
+                id : seriesId,
+                deleted : false
+            }
+        })
+        if(!series) throw ExceptionList.SERIES_NOT_FOUND;
+    }
+
+
 }

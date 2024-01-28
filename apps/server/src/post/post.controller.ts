@@ -9,12 +9,14 @@ import {CREATE_POST_ERROR} from "../response/error/post";
 import {User} from "../auth/decorator/user.decorator";
 import {UserDto} from "../auth/dto/user.dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
+import {SeriesService} from "../series/series.service";
 
 
 @Controller('post')
 export class PostController {
     constructor(
-        private readonly postService: PostService
+        private readonly postService: PostService,
+        private readonly seriesService: SeriesService
     ) {}
 
     /**
@@ -23,6 +25,7 @@ export class PostController {
      * @param user
      * @return PostDto
      * @throws CREATE_POST_ERROR
+     * @throws SERIES_NOT_FOUND
      */
     @TypedRoute.Post()
     @UseGuards(WriterAuthGuard)
@@ -30,6 +33,7 @@ export class PostController {
         PostDto,
         CREATE_POST_ERROR>>
     {
+        if(postData.seriesId) await this.seriesService.assertSeriesExist(postData.seriesId);
         const post = await this.postService.createPost({writerId:user.id,...postData});
         return createResponseForm(post)
     }
