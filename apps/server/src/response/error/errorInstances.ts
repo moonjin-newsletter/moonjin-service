@@ -13,8 +13,8 @@ import {
     USER_NOT_FOUND,
     USER_NOT_FOUND_IN_SOCIAL, SIGNUP_ROLE_ERROR, USER_NOT_WRITER
 } from "./auth";
-import {CREATE_POST_ERROR} from "./post";
-import {FOLLOW_ALREADY_ERROR, FOLLOW_MYSELF_ERROR} from "./user";
+import {CREATE_POST_ERROR, NOT_ACCESSED_FOR_POST, POST_NOT_FOUND} from "./post";
+import {FOLLOW_ALREADY_ERROR, FOLLOW_MYSELF_ERROR, FOLLOWER_NOT_FOUND} from "./user";
 import {CREATE_SERIES_ERROR, SERIES_NOT_FOUND} from "./series";
 
 export const ExceptionList= {
@@ -41,8 +41,13 @@ export const ExceptionList= {
     PASSWORD_CHANGE_ERROR : new Exception(typia.random<PASSWORD_CHANGE_ERROR>()),
     USER_NOT_WRITER : new Exception(typia.random<USER_NOT_WRITER>()),
     CREATE_POST_ERROR : new Exception(typia.random<CREATE_POST_ERROR>()),
+    POST_NOT_FOUND : new Exception(typia.random<POST_NOT_FOUND>()),
+    NOT_ACCESSED_FOR_POST : new Exception(typia.random<NOT_ACCESSED_FOR_POST>()),
+
     CREATE_SERIES_ERROR : new Exception(typia.random<CREATE_SERIES_ERROR>()),
     SERIES_NOT_FOUND : new Exception(typia.random<SERIES_NOT_FOUND>()),
+
     FOLLOW_MYSELF_ERROR : new Exception(typia.random<FOLLOW_MYSELF_ERROR>()),
     FOLLOW_ALREADY_ERROR : new Exception(typia.random<FOLLOW_ALREADY_ERROR>()),
+    FOLLOWER_NOT_FOUND : new Exception(typia.random<FOLLOWER_NOT_FOUND>()),
 }

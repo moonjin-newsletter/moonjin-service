@@ -18,3 +18,12 @@ export interface FOLLOW_ALREADY_ERROR extends ERROR {
         message:"이미 팔로우한 작가입니다."
     }
 }
+
+export interface FOLLOWER_NOT_FOUND extends ERROR {
+    result : false;
+    code: ErrorCodeEnum.FOLLOWER_NOT_FOUND;
+    httpStatus: 404;
+    data: {
+        message:"팔로워가 없습니다."
+    }
+}

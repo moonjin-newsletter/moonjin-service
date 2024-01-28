@@ -1,5 +1,5 @@
 import {Controller, UseGuards} from '@nestjs/common';
-import {TypedBody, TypedRoute} from "@nestia/core";
+import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
 import {ICreatePost} from "./api-types/ICreatePost";
 import {PostService} from "./post.service";
 import {PostDto} from "./dto/post.dto";
@@ -47,5 +47,21 @@ export class PostController {
         const postList = await this.postService.getPostAll();
         if(postList === null) return createResponseForm([]);
         return createResponseForm(postList);
+    }
+
+
+    /**
+     * @summary 해당 글을 뉴스레터로 전송
+     * @param user
+     * @param postId
+     */
+    @TypedRoute.Post(':id/newsletter')
+    @UseGuards(WriterAuthGuard)
+    async sendNewsletter(@User() user:UserDto, @TypedParam('id') postId : number){
+        await this.postService.assertWriter(postId,user.id);
+        const sentCount = await this.postService.sendNewsletter(postId);
+        return createResponseForm({
+            sentCount : sentCount
+        })
     }
 }
