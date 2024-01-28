@@ -270,10 +270,7 @@ export class AuthController {
     res.cookie('accessToken', "", {maxAge: 0})
     res.cookie('refreshToken', "", {maxAge: 0})
     res.send(createResponseForm({
-          message: "로그아웃이 완료되었습니다."
+      message: "로그아웃이 완료되었습니다."
     }))
   }
-
-
-
 }

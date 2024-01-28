@@ -18,14 +18,19 @@ export class WriterAuthGuard implements CanActivate {
         private readonly authService: AuthService,
         private readonly authValidationService: AuthValidationService
     ) {}
-    canActivate(context: ExecutionContext): boolean {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const accessToken = request.cookies["accessToken"];
         if(!accessToken) throw ExceptionList.TOKEN_NOT_FOUND;
 
-        const {iat, exp ,...userData} = this.authService.getDataFromJwtToken<UserDto>(accessToken);
-        if(!this.authValidationService.assertWriter(userData.id)) throw ExceptionList.USER_NOT_WRITER;
-        request.user = userData;
-        return true;
+        try {
+            const {iat, exp ,...userData} = this.authService.getDataFromJwtToken<UserDto>(accessToken);
+            await this.authValidationService.assertWriter(userData.id)
+            request.user = userData;
+            return true;
+        } catch (error){
+            if(error === ExceptionList.USER_NOT_WRITER) throw error;
+            throw ExceptionList.INVALID_TOKEN;
+        }
     }
 }
