@@ -4,12 +4,14 @@ import { SeriesController } from './series.controller';
 import {AuthModule} from "../auth/auth.module";
 import {PrismaModule} from "../prisma/prisma.module";
 import {UtilModule} from "../util/util.module";
+import {UserModule} from "../user/user.module";
 
 @Module({
   imports: [
       PrismaModule,
       AuthModule,
-      UtilModule
+      UtilModule,
+      UserModule
   ],
   providers: [SeriesService],
   controllers: [SeriesController],

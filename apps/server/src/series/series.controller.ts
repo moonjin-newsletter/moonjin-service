@@ -6,6 +6,7 @@ import {ICreateSeries} from "./api-types/ICreateSeries";
 import {SeriesService} from "./series.service";
 import {createResponseForm} from "../response/responseForm";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
+import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 
 @Controller('series')
 export class SeriesController {
@@ -24,6 +25,16 @@ export class SeriesController {
     ){
         const series = await this.seriesService.createSeries({writerId: user.id,...seriesData});
         return createResponseForm(series)
+    }
+
+    /**
+     * @summary 구독 중인 시리즈 가져오기
+     */
+    @TypedRoute.Get('/following')
+    @UseGuards(UserAuthGuard)
+    async getSeries(@User() user: UserDto){
+        const seriesList = await this.seriesService.getSeriesByUserId(user.id);
+        return createResponseForm(seriesList)
     }
 
 }

@@ -39,4 +39,40 @@ export class UserService {
             }
         }
     }
+
+    /**
+     * @summary 해당 작가의 팔로워 목록을 가져오기
+     * @param writerId
+     * @returns userId[]
+     */
+    async getFollowerAllByUserId(writerId : number): Promise<number[] | null> {
+        const followerList = await this.prismaService.follow.findMany({ // TODO : 팔로워가 유저 삭제가 되었는지 확인 필요
+            where: {
+                writerId
+            },
+            select:{
+                followerId : true
+            }
+        })
+        if(!followerList) return null;
+        return followerList.map(follower => follower.followerId);
+    }
+
+    /**
+     * @summary 해당 유저의 팔로잉 목록을 가져오기
+     * @param followerId
+     * @returns userId[] | null
+     */
+    async getFollowingListByUserId(followerId : number): Promise<number[] | null> {
+        const followingList = await this.prismaService.follow.findMany({ // TODO : 작가가 삭제가 되었는지 확인 필요
+            where: {
+                followerId
+            },
+            select:{
+                writerId : true
+            }
+        })
+        if(!followingList) return null;
+        return followingList.map(following => following.writerId);
+    }
 }

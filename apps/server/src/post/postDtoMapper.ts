@@ -1,10 +1,10 @@
-import {Post} from "@prisma/client";
 import {PostDto} from "./dto/post.dto";
+import {Post} from "@prisma/client";
 
 
 class PostDtoMapperClass {
     PostToPostDto(post: Post):PostDto {
-        const {deleted, createdAt, status , ...postData} = post;
+        const {deleted, createdAt ,...postData} = post;
         return postData;
     }
 

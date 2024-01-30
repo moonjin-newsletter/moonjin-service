@@ -38,10 +38,10 @@ export class PostService {
     }
 
     /**
-     * @summary 모든 게시글 가져오기
+     * @summary 공개되어 있는 모든 게시글 가져오기
      * @return Promise<PostDto[] | null>
      */
-    async getPostAll(): Promise<PostDto[] | null> {
+    async getPublicPostAll(): Promise<PostDto[] | null> {
         const post = await this.prismaService.post.findMany(
             {
                 where: {
@@ -76,6 +76,7 @@ export class PostService {
      * @param postId
      * @return 전송된 뉴스레터 수
      * @throws POST_NOT_FOUND
+     * @throws FOLLOWER_NOT_FOUND
      */
     async sendNewsletter(postId : number) : Promise<number> {
 
@@ -87,7 +88,7 @@ export class PostService {
         })
         if(!post) throw ExceptionList.POST_NOT_FOUND;
 
-        const followers : Follow[] = await this.prismaService.follow.findMany({
+        const followers : Follow[] = await this.prismaService.follow.findMany({ // TODO : follower 가 deleted 아닌 지 join해서 확인하는 로직 추가
             where :{
                 writerId : post.writerId
             }

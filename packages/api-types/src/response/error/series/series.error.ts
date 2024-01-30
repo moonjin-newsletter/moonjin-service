@@ -9,3 +9,12 @@ export interface CREATE_SERIES_ERROR extends ERROR {
         message:"시리즈를 생성할 수 없습니다."
     }
 }
+
+export interface SERIES_NOT_FOUND extends ERROR {
+    result : false;
+    code: ErrorCodeEnum.SERIES_NOT_FOUND;
+    httpStatus: 404;
+    data: {
+        message:"해당하는 시리즈가 없습니다."
+    }
+}

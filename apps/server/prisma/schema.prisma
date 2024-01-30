@@ -50,6 +50,7 @@ model Post {
   writerId   Int
   category   String    @db.VarChar(16)
   cover      String?   @db.VarChar(128)
+  clicks     Int       @default(0)
   createdAt  DateTime
   releasedAt DateTime?
   seriesId   Int       @default(0)
@@ -71,6 +72,7 @@ model Series {
   writerId    Int
   category    String    @db.VarChar(16)
   cover       String?   @db.VarChar(128)
+  clicks      Int       @default(0)
   createdAt   DateTime
   releasedAt  DateTime?
   description String    @default("") @db.VarChar(256)

@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Post" ADD COLUMN     "clicks" INTEGER NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "Series" ADD COLUMN     "clicks" INTEGER NOT NULL DEFAULT 0;

@@ -44,7 +44,7 @@ export class PostController {
      */
     @TypedRoute.Get()
     async getPost() {
-        const postList = await this.postService.getPostAll();
+        const postList = await this.postService.getPublicPostAll();
         if(postList === null) return createResponseForm([]);
         return createResponseForm(postList);
     }
@@ -64,4 +64,5 @@ export class PostController {
             sentCount : sentCount
         })
     }
+
 }
