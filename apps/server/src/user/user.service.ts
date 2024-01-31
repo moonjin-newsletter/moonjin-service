@@ -103,4 +103,26 @@ export class UserService {
             }
         })
     }
+
+    /**
+     * @summary 유저 ID로 작가의 유저 정보를 가져오기
+     * @param writerIdList
+     * @returns {userId, nickname}[]
+     * @throws EMPTY_LIST_INPUT
+     */
+    async getUserIdentityDataListByWriterIdList(writerIdList : number[]) : Promise<UserIdentityDto[]> {
+        if (writerIdList.length === 0) throw ExceptionList.EMPTY_LIST_INPUT;
+        return this.prismaService.user.findMany({
+            where: {
+                id : {
+                    in : writerIdList
+                },
+                deleted : false,
+            },
+            select : {
+                id : true,
+                nickname : true,
+            }
+        })
+    }
 }

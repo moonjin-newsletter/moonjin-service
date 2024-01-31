@@ -5,13 +5,15 @@ import {PrismaModule} from "../prisma/prisma.module";
 import {UtilModule} from "../util/util.module";
 import {AuthModule} from "../auth/auth.module";
 import {SeriesModule} from "../series/series.module";
+import {UserModule} from "../user/user.module";
 
 @Module({
   imports: [
       PrismaModule,
       UtilModule,
       AuthModule,
-      SeriesModule
+      SeriesModule,
+      UserModule
   ],
   providers: [PostService],
   controllers: [PostController]

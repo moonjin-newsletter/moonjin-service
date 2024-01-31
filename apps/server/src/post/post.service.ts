@@ -6,12 +6,15 @@ import {Follow, Post, Prisma} from "@prisma/client";
 import {ExceptionList} from "../response/error/errorInstances";
 import {PostDto} from "./dto/post.dto";
 import {UtilService} from "../util/util.service";
+import {UserService} from "../user/user.service";
+import {PostWithWriterUserDto} from "./dto/postWithWriterUser.dto";
 
 @Injectable()
 export class PostService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
+        private readonly userService: UserService,
     ) {}
 
     /**
@@ -112,6 +115,39 @@ export class PostService {
         } catch (error) {
             console.error(error);
             throw error;
+        }
+    }
+
+    /**
+     * @summary 해당 유저의 뉴스레터 가져오기
+     * @param userId
+     * @return PostWithWriterUserDto[]
+     */
+    async getNewsletterListByUserId(userId : number) : Promise<PostWithWriterUserDto[]>{
+        const newsletterList = await this.prismaService.newsletter.findMany({
+            where : {
+                receiverId : userId
+            },
+            select : {
+                postId : true,
+            }
+        })
+        const postIdList = newsletterList.map(newsletter => newsletter.postId);
+        const postList = await this.prismaService.post.findMany({
+            where : {
+                id : {
+                    in : postIdList
+                },
+            }
+        })
+
+        try{
+            const writerIdList = [...new Set(postList.map(post => post.writerId))];
+            const writerUserDtoList = await this.userService.getUserIdentityDataListByWriterIdList(writerIdList);
+            return PostDtoMapper.PostAndWriterUserDtoListToPostWithWriterUserDtoList(postList,writerUserDtoList);
+        }catch (error){
+            console.error(error);
+            return [];
         }
     }
 }

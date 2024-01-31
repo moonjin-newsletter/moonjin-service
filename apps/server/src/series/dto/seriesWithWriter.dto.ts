@@ -1,13 +1,7 @@
 import {UserIdentityDto} from "../../user/dto/userIdentity.dto";
+import {SeriesDto} from "./series.dto";
 
 export interface SeriesWithWriterDto {
-    id : number;
-    title: string;
-    writer : UserIdentityDto;
-    category : string;
-    clicks : number;
-    status : boolean;
-    cover : string | null;
-    description : string | null;
-    releasedAt : Date | null;
+    series: SeriesDto;
+    writer: UserIdentityDto;
 }

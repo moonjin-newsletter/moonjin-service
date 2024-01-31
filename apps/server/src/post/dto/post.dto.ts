@@ -5,7 +5,6 @@ export interface PostDto {
     category: string;
     writerId: number;
     clicks: number;
-    status: boolean;
     cover: string | null;
     seriesId : number;
     releasedAt: Date | null;

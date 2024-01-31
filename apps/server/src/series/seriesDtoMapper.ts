@@ -13,9 +13,8 @@ class SeriesDtoMapperClass {
         return seriesList.map(series => this.SeriesToSeriesDto(series));
     }
 
-    SeriesAndWriterDtoToSeriesWithWriterDto(seriesDto : Series, writerData : UserIdentityDto): SeriesWithWriterDto {
-        const {writerId, ...series} = seriesDto;
-        return {...series, writer: writerData}
+    SeriesAndWriterDtoToSeriesWithWriterDto(series : Series, writerData : UserIdentityDto): SeriesWithWriterDto {
+        return {series: this.SeriesToSeriesDto(series), writer: writerData}
     }
 
     SeriesListAndWriterDtoListToSeriesWithWriterDtoList(seriesList : Series[], writerDataList : UserIdentityDto[]): SeriesWithWriterDto[] {

@@ -4,12 +4,14 @@ import {ICreatePost} from "./api-types/ICreatePost";
 import {PostService} from "./post.service";
 import {PostDto} from "./dto/post.dto";
 import {createResponseForm} from "../response/responseForm";
-import {TryCatch} from "../response/tryCatch";
+import {Try, TryCatch} from "../response/tryCatch";
 import {CREATE_POST_ERROR} from "../response/error/post";
 import {User} from "../auth/decorator/user.decorator";
 import {UserDto} from "../auth/dto/user.dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {SeriesService} from "../series/series.service";
+import {UserAuthGuard} from "../auth/guard/userAuth.guard";
+import {PostWithWriterUserDto} from "./dto/postWithWriterUser.dto";
 
 
 @Controller('post')
@@ -65,4 +67,10 @@ export class PostController {
         })
     }
 
+    @TypedRoute.Get('newsletter')
+    @UseGuards(UserAuthGuard)
+    async getNewsletter(@User() user:UserDto) : Promise<Try<PostWithWriterUserDto[]>>{
+        const newsletterList = await this.postService.getNewsletterListByUserId(user.id);
+        return createResponseForm(newsletterList);
+    }
 }
