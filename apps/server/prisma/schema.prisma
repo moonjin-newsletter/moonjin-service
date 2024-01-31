@@ -8,13 +8,14 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique @db.VarChar(32)
-  password  String?  @db.VarChar(64)
-  nickname  String   @unique @db.VarChar(16)
-  createdAt DateTime
-  role      Int      @default(0)
-  deleted   Boolean  @default(false)
+  id          Int      @id @default(autoincrement())
+  email       String   @unique @db.VarChar(32)
+  password    String?  @db.VarChar(64)
+  nickname    String   @unique @db.VarChar(16)
+  createdAt   DateTime
+  description String   @default("") @db.VarChar(256)
+  role        Int      @default(0)
+  deleted     Boolean  @default(false)
 }
 
 model Oauth {
