@@ -130,6 +130,9 @@ export class PostService {
             },
             select : {
                 postId : true,
+            },
+            orderBy : {
+                sentAt : 'desc'
             }
         })
         const postIdList = newsletterList.map(newsletter => newsletter.postId);
@@ -138,6 +141,9 @@ export class PostService {
                 id : {
                     in : postIdList
                 },
+            },
+            orderBy : {
+                releasedAt : 'desc'
             }
         })
 

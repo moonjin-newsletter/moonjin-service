@@ -67,6 +67,11 @@ export class PostController {
         })
     }
 
+    /**
+     * @summary 해당 유저의 뉴스레터 목록 가져오기
+     * @param user
+     * @returns PostWithWriterUserDto[]
+     */
     @TypedRoute.Get('newsletter')
     @UseGuards(UserAuthGuard)
     async getNewsletter(@User() user:UserDto) : Promise<Try<PostWithWriterUserDto[]>>{

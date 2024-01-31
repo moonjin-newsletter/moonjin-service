@@ -47,6 +47,9 @@ export class SeriesService {
                 writerId : {
                     in: followingUserIdList
                 }
+            },
+            orderBy:{
+                releasedAt : 'desc'
             }
         })
         if(!seriesList) return [];
