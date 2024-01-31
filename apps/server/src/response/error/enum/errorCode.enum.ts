@@ -40,4 +40,7 @@ export enum ErrorCodeEnum {
     FOLLOW_MYSELF_ERROR = "0400",
     FOLLOW_ALREADY_ERROR = "0401",
     FOLLOWER_NOT_FOUND = "0402",
+
+    // dev
+    EMPTY_LIST_INPUT = "9000",
 }

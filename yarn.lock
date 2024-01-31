@@ -2200,7 +2200,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@moonjin/api-types@workspace:^, @moonjin/api-types@workspace:packages/api-types":
+"@moonjin/api-types@workspace:packages/api-types":
   version: 0.0.0-use.local
   resolution: "@moonjin/api-types@workspace:packages/api-types"
   dependencies:
@@ -11889,7 +11889,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "server@workspace:apps/server"
   dependencies:
-    "@moonjin/api-types": "workspace:^"
     "@nestia/core": "npm:^2.4.3"
     "@nestia/e2e": "npm:^0.4.0"
     "@nestia/sdk": "npm:^2.4.3"

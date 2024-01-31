@@ -27,7 +27,6 @@
     "sdk:publish": "cd ./api-sdk && npm publish --access=public"
   },
   "dependencies": {
-    "@moonjin/api-types": "workspace:^",
     "@nestia/core": "^2.4.3",
     "@nestia/e2e": "^0.4.0",
     "@nestjs/axios": "^3.0.1",

@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {AuthValidationService} from "../auth/auth.validation.service";
 import {PrismaService} from "../prisma/prisma.service";
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import {PrismaClientKnownRequestError} from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
+import {UserIdentityDto} from "./dto/userIdentity.dto";
 
 @Injectable()
 export class UserService {
@@ -61,10 +62,10 @@ export class UserService {
     /**
      * @summary 해당 유저의 팔로잉 목록을 가져오기
      * @param followerId
-     * @returns userId[] | null
+     * @returns {userId, nickname}[] | []
      */
-    async getFollowingListByUserId(followerId : number): Promise<number[] | null> {
-        const followingList = await this.prismaService.follow.findMany({ // TODO : 작가가 삭제가 되었는지 확인 필요
+    async getFollowingUserListByUserId(followerId : number): Promise<UserIdentityDto[]> {
+        const followingList = await this.prismaService.follow.findMany({
             where: {
                 followerId
             },
@@ -72,7 +73,34 @@ export class UserService {
                 writerId : true
             }
         })
-        if(!followingList) return null;
-        return followingList.map(following => following.writerId);
+        try {
+            const followingIdList = followingList.map(following => following.writerId);
+            return await this.getUserIdentityDataListByUserIdList(followingIdList);
+        }catch (error) {
+            console.log(error)
+            return [];
+        }
+    }
+
+    /**
+     * @summary 유저 ID로 유저의 기본 정보 가져오기
+     * @param userIdList
+     * @returns {userId, nickname}[]
+     * @throws EMPTY_LIST_INPUT
+     */
+    async getUserIdentityDataListByUserIdList(userIdList : number[]) : Promise<UserIdentityDto[]> {
+        if (userIdList.length === 0) throw ExceptionList.EMPTY_LIST_INPUT;
+        return this.prismaService.user.findMany({
+            where: {
+                id : {
+                    in : userIdList
+                },
+                deleted : false,
+            },
+            select : {
+                id : true,
+                nickname : true,
+            }
+        })
     }
 }

@@ -6,6 +6,7 @@ import SeriesDtoMapper from "./seriesDtoMapper";
 import {SeriesDto} from "./dto/series.dto";
 import {ExceptionList} from "../response/error/errorInstances";
 import {UserService} from "../user/user.service";
+import {SeriesWithWriterDto} from "./dto/seriesWithWriter.dto";
 
 @Injectable()
 export class SeriesService {
@@ -36,22 +37,20 @@ export class SeriesService {
      * @summary 해당 유저의 구독 중인 시리즈 가져오기
      * @param userId
      */
-    async getSeriesByUserId(userId : number) : Promise<SeriesDto[] | null>{
-        const followList= await this.userService.getFollowingListByUserId(userId);
-        if(followList === null) return null;
-
+    async getSeriesByUserId(userId : number) : Promise<SeriesWithWriterDto[]>{
+        const followingUserList= await this.userService.getFollowingUserListByUserId(userId);
+        const followingUserIdList = followingUserList.map(user => user.id);
         const seriesList = await this.prismaService.series.findMany({
             where:{
                 deleted : false,
                 status : true,
                 writerId : {
-                    in: followList
+                    in: followingUserIdList
                 }
             }
         })
-        if(!seriesList) return null;
-
-        return SeriesDtoMapper.SeriesListToSeriesDtoList(seriesList);
+        if(!seriesList) return [];
+        return SeriesDtoMapper.SeriesListAndWriterDtoListToSeriesWithWriterDtoList(seriesList,followingUserList);
     }
 
 
