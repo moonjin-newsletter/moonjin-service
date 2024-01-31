@@ -5,6 +5,10 @@ import {PrismaClientKnownRequestError} from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
 import {UserIdentityDto} from "./dto/userIdentity.dto";
+import {UserRoleEnum} from "../auth/enum/userRole.enum";
+import {UserDto} from "../auth/dto/user.dto";
+import {WriterInfoDto} from "../auth/dto/writerInfoDto";
+import UserDtoMapper from "./userDtoMapper";
 
 @Injectable()
 export class UserService {
@@ -124,5 +128,41 @@ export class UserService {
                 nickname : true,
             }
         })
+    }
+
+    /**
+     * @summary 유저의 데이터 가져오기 (작가, 일반 유저 구분)
+     * @param userId
+     * @param role
+     * @returns UserDto, WriterInfoDto?
+     * @throws USER_NOT_FOUND
+     * @throws USER_NOT_WRITER
+     */
+    async getUserData(userId : number, role : UserRoleEnum) : Promise<{user : UserDto, writer?: WriterInfoDto}> {
+        const user = await this.prismaService.user.findUnique({
+            where : {
+                id : userId,
+                deleted : false,
+            }
+        })
+        if(!user) throw ExceptionList.USER_NOT_FOUND;
+        const userData = UserDtoMapper.UserToUserDto(user);
+
+        if(role === UserRoleEnum.WRITER){ // 작가의 경우
+            const writer = await this.prismaService.writerInfo.findUnique({
+                where : {
+                    userId,
+                    deleted : false,
+                }
+            })
+            if(!writer) throw ExceptionList.USER_NOT_WRITER;
+            const writerData = UserDtoMapper.WriterInfoToWriterInfoDto(writer);
+            return {
+                user: userData, writer: writerData
+            }
+        }
+        return {
+            user: userData
+        }
     }
 }

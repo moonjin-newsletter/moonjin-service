@@ -1,8 +1,8 @@
 import {User, WriterInfo} from "@prisma/client";
-import {UserDto} from "./dto/user.dto";
-import {WriterInfoDto} from "./dto/writerInfoDto";
+import {UserDto} from "../auth/dto/user.dto";
+import {WriterInfoDto} from "../auth/dto/writerInfoDto";
 
-class AuthDtoMapperClass {
+class UserDtoMapperClass {
     UserToUserDto(user: User): UserDto {
         const {deleted, createdAt, password,...userData} = user;
         return {...userData};
@@ -13,5 +13,5 @@ class AuthDtoMapperClass {
         return writerData
     }
 }
-const AuthDtoMapper = new AuthDtoMapperClass();
-export default AuthDtoMapper;
+const UserDtoMapper = new UserDtoMapperClass();
+export default UserDtoMapper;

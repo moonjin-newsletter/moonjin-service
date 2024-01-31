@@ -9,7 +9,7 @@ import {PrismaService} from "../prisma/prisma.service";
 import {UserDto} from "./dto/user.dto";
 import {SocialSignupDto} from "./dto/socialSignup.dto";
 import {UserRoleEnum} from "./enum/userRole.enum";
-import AuthDtoMapper from "./authDtoMapper";
+import UserDtoMapper from "../user/userDtoMapper";
 import console from "console";
 import {AuthService} from "./auth.service";
 import {UtilService} from "../util/util.service";
@@ -150,7 +150,7 @@ export class OauthService {
                 if(user){
                     return {
                         result : true,
-                        data : AuthDtoMapper.UserToUserDto(user)
+                        data : UserDtoMapper.UserToUserDto(user)
                     }
                 } else {
                     throw ExceptionList.USER_NOT_FOUND;
@@ -204,7 +204,7 @@ export class OauthService {
             if(userSignupData.role === UserRoleEnum.WRITER && moonjinId){ // 작가 회원가입
                 await this.authService.writerSignup({userId: createdUser.id, moonjinId});
             }
-            return AuthDtoMapper.UserToUserDto(createdUser)
+            return UserDtoMapper.UserToUserDto(createdUser)
         } catch (error){
             if(createdOauthId){ // transaction rollback
                 await this.prismaService.oauth.delete({

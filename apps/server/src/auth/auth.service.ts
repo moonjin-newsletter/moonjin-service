@@ -13,7 +13,7 @@ import {UserAccessTokensDto} from "./dto/userAccessTokens.dto";
 import {UserRoleEnum} from "./enum/userRole.enum";
 import {WriterSignupDto} from "./dto/writerSignup.dto";
 import {WriterInfoDto} from "./dto/writerInfoDto";
-import AuthDtoMapper from "./authDtoMapper";
+import UserDtoMapper from "../user/userDtoMapper";
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -51,7 +51,7 @@ export class AuthService {
             if (signUpData.role === UserRoleEnum.WRITER && moonjinId){ // 작가 회원가입
                 await this.writerSignup({userId, moonjinId});
             }
-            return AuthDtoMapper.UserToUserDto(createdUser);
+            return UserDtoMapper.UserToUserDto(createdUser);
         }catch(error){
             if(userId > 0){ // writerSignup Error : user가 생성되었으니 transaction rollback
                 await this.prismaService.user.delete({
@@ -85,7 +85,7 @@ export class AuthService {
                     createdAt : this.utilService.getCurrentDateInKorea()
                 }
             })
-            return AuthDtoMapper.WriterInfoToWriterInfoDto(writerInfo);
+            return UserDtoMapper.WriterInfoToWriterInfoDto(writerInfo);
         } catch (error){
             if(error instanceof PrismaClientKnownRequestError){
                 throw ExceptionList.MOONJIN_EMAIL_ALREADY_EXIST;
@@ -125,7 +125,7 @@ export class AuthService {
                 deleted : false
             }
         })
-        return user ? AuthDtoMapper.UserToUserDto(user) : null;
+        return user ? UserDtoMapper.UserToUserDto(user) : null;
     }
 
     /**
@@ -151,7 +151,7 @@ export class AuthService {
             if (!this.utilService.compareHash(loginData.password, user.password)) // 비밀번호 틀림
                 throw ExceptionList.INVALID_PASSWORD;
 
-            return AuthDtoMapper.UserToUserDto(user);
+            return UserDtoMapper.UserToUserDto(user);
         } catch (error) {
             console.error(error)
             if(error instanceof PrismaClientKnownRequestError){
