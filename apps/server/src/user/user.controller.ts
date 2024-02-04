@@ -2,13 +2,14 @@ import {TypedParam, TypedRoute} from '@nestia/core';
 import { Controller, UseGuards } from '@nestjs/common';
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {User} from "../auth/decorator/user.decorator";
-import {UserDto} from "../auth/dto/user.dto";
+import {UserAuthDto} from "../auth/dto/userAuthDto";
 import {UserService} from "./user.service";
 import {createResponseForm, ResponseForm} from "../response/responseForm";
 import {UserIdentityDto} from "./dto/userIdentity.dto";
 import {TryCatch} from "../response/tryCatch";
 import {WriterInfoDto} from "../auth/dto/writerInfoDto";
 import {USER_NOT_FOUND, USER_NOT_WRITER} from "../response/error/auth";
+import {UserDto} from "./dto/user.dto";
 
 @Controller('user')
 export class UserController {
@@ -23,7 +24,7 @@ export class UserController {
      */
     @TypedRoute.Post("Follow/:id")
     @UseGuards(UserAuthGuard)
-    async follow(@TypedParam("id") writerId : number, @User() user : UserDto) {
+    async follow(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
         await this.userService.followWriter(user.id, writerId);
         return createResponseForm({
             message: "팔로우 성공"
@@ -36,7 +37,7 @@ export class UserController {
      */
     @TypedRoute.Get("Following")
     @UseGuards(UserAuthGuard)
-    async getFollowingUserList(@User() user : UserDto) : Promise<ResponseForm<UserIdentityDto[]>> {
+    async getFollowingUserList(@User() user : UserAuthDto) : Promise<ResponseForm<UserIdentityDto[]>> {
         const followingUserList = await this.userService.getFollowingUserListByUserId(user.id);
         return createResponseForm(followingUserList);
     }
@@ -50,7 +51,7 @@ export class UserController {
      */
     @TypedRoute.Get()
     @UseGuards(UserAuthGuard)
-    async getUser(@User() user : UserDto): Promise<TryCatch<{user:UserDto, writer?: WriterInfoDto},
+    async getUser(@User() user : UserAuthDto): Promise<TryCatch<{user:UserDto, writer?: WriterInfoDto},
     USER_NOT_FOUND | USER_NOT_WRITER>>
     {
         const userData = await this.userService.getUserData(user.id, user.role);

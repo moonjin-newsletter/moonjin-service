@@ -1,6 +1,6 @@
 import {CanActivate, ExecutionContext, Injectable} from "@nestjs/common";
 import {ExceptionList} from "../../response/error/errorInstances";
-import {UserDto} from "../dto/user.dto";
+import {UserAuthDto} from "../dto/userAuthDto";
 import {AuthService} from "../auth.service";
 import {AuthValidationService} from "../auth.validation.service";
 
@@ -24,7 +24,7 @@ export class WriterAuthGuard implements CanActivate {
         if(!accessToken) throw ExceptionList.TOKEN_NOT_FOUND;
 
         try {
-            const {iat, exp ,...userData} = this.authService.getDataFromJwtToken<UserDto>(accessToken);
+            const {iat, exp ,...userData} = this.authService.getDataFromJwtToken<UserAuthDto>(accessToken);
             await this.authValidationService.assertWriter(userData.id)
             request.user = userData;
             return true;

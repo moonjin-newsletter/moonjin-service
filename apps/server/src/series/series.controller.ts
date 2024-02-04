@@ -1,7 +1,7 @@
 import { Controller, UseGuards } from '@nestjs/common';
 import {TypedBody, TypedRoute} from "@nestia/core";
 import {User} from "../auth/decorator/user.decorator";
-import {UserDto} from "../auth/dto/user.dto";
+import {UserAuthDto} from "../auth/dto/userAuthDto";
 import {ICreateSeries} from "./api-types/ICreateSeries";
 import {SeriesService} from "./series.service";
 import {createResponseForm} from "../response/responseForm";
@@ -22,7 +22,7 @@ export class SeriesController {
     @TypedRoute.Post()
     @UseGuards(WriterAuthGuard)
     async createSeries(
-        @User() user :UserDto,
+        @User() user :UserAuthDto,
         @TypedBody() seriesData : ICreateSeries
     ){
         const series = await this.seriesService.createSeries({writerId: user.id,...seriesData});
@@ -36,7 +36,7 @@ export class SeriesController {
      */
     @TypedRoute.Get('/following')
     @UseGuards(UserAuthGuard)
-    async getSeries(@User() user: UserDto) : Promise<Try<SeriesWithWriterDto[]>>{
+    async getSeries(@User() user: UserAuthDto) : Promise<Try<SeriesWithWriterDto[]>>{
         const seriesList = await this.seriesService.getSeriesByUserId(user.id);
         return createResponseForm(seriesList)
     }

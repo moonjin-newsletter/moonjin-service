@@ -6,7 +6,7 @@ import {ExceptionList} from "../response/error/errorInstances";
 import { HttpService } from "@nestjs/axios";
 import {UserSocialProfileDto} from "./dto/userSocialProfile.dto";
 import {PrismaService} from "../prisma/prisma.service";
-import {UserDto} from "./dto/user.dto";
+import {UserAuthDto} from "./dto/userAuthDto";
 import {SocialSignupDto} from "./dto/socialSignup.dto";
 import {UserRoleEnum} from "./enum/userRole.enum";
 import UserDtoMapper from "../user/userDtoMapper";
@@ -127,7 +127,7 @@ export class OauthService {
      * @throws SOCIAL_PROFILE_NOT_FOUND
      * @throws SOCIAL_LOGIN_ERROR
      */
-    async socialLogin(socialLoginData : SocialLoginDto) : Promise<{result:true, data:UserDto} | {result:false, data : UserSocialProfileDto}> {
+    async socialLogin(socialLoginData : SocialLoginDto) : Promise<{result:true, data:UserAuthDto} | {result:false, data : UserSocialProfileDto}> {
         // 1. oauthCode로 accessToken 받아오기
         const oauthAccessToken = await this.getAccessTokenFromSocialOauth(socialLoginData);
 
@@ -150,7 +150,7 @@ export class OauthService {
                 if(user){
                     return {
                         result : true,
-                        data : UserDtoMapper.UserToUserDto(user)
+                        data : UserDtoMapper.UserToUserAuthDto(user)
                     }
                 } else {
                     throw ExceptionList.USER_NOT_FOUND;
@@ -181,7 +181,7 @@ export class OauthService {
      * @throws NICKNAME_ALREADY_EXIST
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      */
-    async socialSignup(socialSignupData : SocialSignupDto): Promise<UserDto> {
+    async socialSignup(socialSignupData : SocialSignupDto): Promise<UserAuthDto> {
         let createdUserId = 0
         let createdOauthId = ""
         try {
@@ -204,7 +204,7 @@ export class OauthService {
             if(userSignupData.role === UserRoleEnum.WRITER && moonjinId){ // 작가 회원가입
                 await this.authService.writerSignup({userId: createdUser.id, moonjinId});
             }
-            return UserDtoMapper.UserToUserDto(createdUser)
+            return UserDtoMapper.UserToUserAuthDto(createdUser)
         } catch (error){
             if(createdOauthId){ // transaction rollback
                 await this.prismaService.oauth.delete({

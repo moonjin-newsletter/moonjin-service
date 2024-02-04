@@ -31,7 +31,7 @@ import {ISocialSignup} from "./api-types/ISocialSignup";
 import {RequestHeaderDto} from "./dto/requestHeader.dto";
 import {UserSocialProfileDto} from "./dto/userSocialProfile.dto";
 import * as process from "process";
-import {UserDto} from "./dto/user.dto";
+import {UserAuthDto} from "./dto/userAuthDto";
 import {AuthValidationService} from "./auth.validation.service";
 import {UserRoleEnum} from "./enum/userRole.enum";
 import {SignupEmailCodePayloadDto} from "./dto/signupEmailCodePayload.dto";
@@ -127,7 +127,7 @@ export class AuthController {
   @TypedRoute.Get("password/email/verification")
   async emailVerificationForPasswordChange(@TypedQuery() payload: IEmailVerification, @Res() res:Response):Promise<void> {
     try {
-      const {iat,exp,...userData} = this.authService.getDataFromJwtToken<UserDto>(payload.code);
+      const {iat,exp,...userData} = this.authService.getDataFromJwtToken<UserAuthDto>(payload.code);
       const passwordChangeToken = this.authService.generateJwtToken(userData);
       res.cookie('passwordChangeToken', passwordChangeToken)
       res.redirect(process.env.CLIENT_URL + "/auth/password/new");
@@ -151,7 +151,7 @@ export class AuthController {
   async passwordChange(@TypedBody() payload: ILocalLogin, @TypedHeaders() header:RequestHeaderDto, @Res() res:Response):Promise<
       void | TOKEN_NOT_FOUND | INVALID_TOKEN | PASSWORD_CHANGE_ERROR>{
     const token = this.authService.getTokenFromCookie(header.cookie, "passwordChangeToken");
-    const {iat,exp,...dataFromToken} = this.authService.getDataFromJwtToken<UserDto>(token);
+    const {iat,exp,...dataFromToken} = this.authService.getDataFromJwtToken<UserAuthDto>(token);
     await this.authService.passwordChange(dataFromToken.id, payload.password);
     res.cookie("passwordChangeToken", "", {maxAge: 0}) // 쿠키 삭제
     res.send(createResponseForm({message : "비밀번호가 변경되었습니다."}))

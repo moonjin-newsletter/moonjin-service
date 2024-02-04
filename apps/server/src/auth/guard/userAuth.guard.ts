@@ -1,6 +1,6 @@
 import {CanActivate, ExecutionContext, Injectable} from "@nestjs/common";
 import {ExceptionList} from "../../response/error/errorInstances";
-import {UserDto} from "../dto/user.dto";
+import {UserAuthDto} from "../dto/userAuthDto";
 import {AuthService} from "../auth.service";
 
 /**
@@ -20,7 +20,7 @@ export class UserAuthGuard implements CanActivate {
         const accessToken = request.cookies["accessToken"];
         if(!accessToken) throw ExceptionList.TOKEN_NOT_FOUND;
 
-        const {iat, exp ,...userData} = this.authService.getDataFromJwtToken<UserDto>(accessToken);
+        const {iat, exp ,...userData} = this.authService.getDataFromJwtToken<UserAuthDto>(accessToken);
         request.user = userData;
         return true;
     }

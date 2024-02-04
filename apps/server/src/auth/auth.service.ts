@@ -3,7 +3,7 @@ import {PrismaService} from "../prisma/prisma.service";
 import {User} from "@prisma/client";
 import * as console from "console";
 import {UtilService} from "../util/util.service";
-import {UserDto} from "./dto/user.dto";
+import {UserAuthDto} from "./dto/userAuthDto";
 import {Exception} from "../response/error/error";
 import { SignupDataDto } from './dto/signupData.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
@@ -28,14 +28,14 @@ export class AuthService {
      * @summary 작가 | 독자의 회원가입을 진행하는 기능
      *
      * @param signUpData
-     * @returns UserDto
+     * @returns UserAuthDto
      * @throws EMAIL_ALREADY_EXIST
      * @throws NICKNAME_ALREADY_EXIST
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      * @throws SIGNUP_ERROR
      * @throws WRITER_SIGNUP_ERROR
      */
-    async localSignUp(signUpData : SignupDataDto): Promise<UserDto> {
+    async localSignUp(signUpData : SignupDataDto): Promise<UserAuthDto> {
         let userId = 0;
         try {
             const {moonjinId, hashedPassword ,...data} = signUpData;
@@ -51,7 +51,7 @@ export class AuthService {
             if (signUpData.role === UserRoleEnum.WRITER && moonjinId){ // 작가 회원가입
                 await this.writerSignup({userId, moonjinId});
             }
-            return UserDtoMapper.UserToUserDto(createdUser);
+            return UserDtoMapper.UserToUserAuthDto(createdUser);
         }catch(error){
             if(userId > 0){ // writerSignup Error : user가 생성되었으니 transaction rollback
                 await this.prismaService.user.delete({
@@ -118,14 +118,14 @@ export class AuthService {
         }
     }
 
-    async getUserByEmail(email : string): Promise<UserDto | null> {
+    async getUserByEmail(email : string): Promise<UserAuthDto | null> {
         const user = await this.prismaService.user.findUnique({
             where:{
                 email,
                 deleted : false
             }
         })
-        return user ? UserDtoMapper.UserToUserDto(user) : null;
+        return user ? UserDtoMapper.UserToUserAuthDto(user) : null;
     }
 
     /**
@@ -137,7 +137,7 @@ export class AuthService {
      * @throws USER_NOT_FOUND
      * @throws LOGIN_ERROR
      */
-    async localLogin(loginData : LocalLoginDto) : Promise<UserDto> {
+    async localLogin(loginData : LocalLoginDto) : Promise<UserAuthDto> {
         try {
             const user = await this.prismaService.user.findUnique({
                 where:{
@@ -151,7 +151,7 @@ export class AuthService {
             if (!this.utilService.compareHash(loginData.password, user.password)) // 비밀번호 틀림
                 throw ExceptionList.INVALID_PASSWORD;
 
-            return UserDtoMapper.UserToUserDto(user);
+            return UserDtoMapper.UserToUserAuthDto(user);
         } catch (error) {
             console.error(error)
             if(error instanceof PrismaClientKnownRequestError){
@@ -231,7 +231,7 @@ export class AuthService {
      * @param userData
      * @returns {accessToken, refreshToken}
      */
-    getAccessTokens(userData: UserDto) : UserAccessTokensDto {
+    getAccessTokens(userData: UserAuthDto) : UserAccessTokensDto {
         const accessToken = this.generateJwtToken(userData,60 * 15);
         const refreshToken = this.generateJwtToken(userData, 60 * 60 * 24 * 7);
         return {accessToken, refreshToken}

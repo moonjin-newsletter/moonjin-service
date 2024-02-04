@@ -13,6 +13,7 @@ model User {
   password    String?  @db.VarChar(64)
   nickname    String   @unique @db.VarChar(16)
   createdAt   DateTime
+  image       String   @default("") @db.VarChar(128)
   description String   @default("") @db.VarChar(256)
   role        Int      @default(0)
   deleted     Boolean  @default(false)
@@ -47,6 +48,7 @@ model Follow {
 model Post {
   id         Int       @id @default(autoincrement())
   title      String    @db.VarChar(32)
+  subtitle   String    @default("") @db.VarChar(128)
   content    String    @db.Text
   writerId   Int
   category   String    @db.VarChar(16)

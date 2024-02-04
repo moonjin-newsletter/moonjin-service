@@ -6,9 +6,9 @@ import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
 import {UserIdentityDto} from "./dto/userIdentity.dto";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
-import {UserDto} from "../auth/dto/user.dto";
 import {WriterInfoDto} from "../auth/dto/writerInfoDto";
 import UserDtoMapper from "./userDtoMapper";
+import {UserDto} from "./dto/user.dto";
 
 @Injectable()
 export class UserService {

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Post" ALTER COLUMN "subtitle" SET DATA TYPE VARCHAR(128);

@@ -7,7 +7,7 @@ import {createResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {CREATE_POST_ERROR} from "../response/error/post";
 import {User} from "../auth/decorator/user.decorator";
-import {UserDto} from "../auth/dto/user.dto";
+import {UserAuthDto} from "../auth/dto/userAuthDto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {SeriesService} from "../series/series.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
@@ -31,7 +31,7 @@ export class PostController {
      */
     @TypedRoute.Post()
     @UseGuards(WriterAuthGuard)
-    async createPost(@TypedBody() postData : ICreatePost, @User() user:UserDto): Promise<TryCatch<
+    async createPost(@TypedBody() postData : ICreatePost, @User() user:UserAuthDto): Promise<TryCatch<
         PostDto,
         CREATE_POST_ERROR>>
     {
@@ -59,7 +59,7 @@ export class PostController {
      */
     @TypedRoute.Post(':id/newsletter')
     @UseGuards(WriterAuthGuard)
-    async sendNewsletter(@User() user:UserDto, @TypedParam('id') postId : number){
+    async sendNewsletter(@User() user:UserAuthDto, @TypedParam('id') postId : number){
         await this.postService.assertWriter(postId,user.id);
         const sentCount = await this.postService.sendNewsletter(postId);
         return createResponseForm({
@@ -74,7 +74,7 @@ export class PostController {
      */
     @TypedRoute.Get('newsletter')
     @UseGuards(UserAuthGuard)
-    async getNewsletter(@User() user:UserDto) : Promise<Try<PostWithWriterUserDto[]>>{
+    async getNewsletter(@User() user:UserAuthDto) : Promise<Try<PostWithWriterUserDto[]>>{
         const newsletterList = await this.postService.getNewsletterListByUserId(user.id);
         return createResponseForm(newsletterList);
     }
