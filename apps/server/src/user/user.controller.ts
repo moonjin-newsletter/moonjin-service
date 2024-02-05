@@ -5,11 +5,11 @@ import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto/userAuthDto";
 import {UserService} from "./user.service";
 import {createResponseForm, ResponseForm} from "../response/responseForm";
-import {UserIdentityDto} from "./dto/userIdentity.dto";
 import {TryCatch} from "../response/tryCatch";
 import {WriterInfoDto} from "../auth/dto/writerInfoDto";
 import {USER_NOT_FOUND, USER_NOT_WRITER} from "../response/error/auth";
 import {UserDto} from "./dto/user.dto";
+import {FollowingWriterDto} from "./dto/followingWriter.dto";
 
 @Controller('user')
 export class UserController {
@@ -21,6 +21,10 @@ export class UserController {
      * @summary 팔로우 기능
      * @param writerId
      * @param user
+     * @returns
+     * @throws USER_NOT_WRITER
+     * @throws FOLLOW_MYSELF_ERROR
+     * @throws FOLLOW_ALREADY_ERROR
      */
     @TypedRoute.Post("Follow/:id")
     @UseGuards(UserAuthGuard)
@@ -32,14 +36,32 @@ export class UserController {
     }
 
     /**
+     * @summary 팔로우 취소 기능
+     * @param writerId
+     * @param user
+     * @returns
+     * @throws USER_NOT_WRITER
+     * @throws FOLLOW_MYSELF_ERROR
+     */
+    @TypedRoute.Delete("Follow/:id")
+    @UseGuards(UserAuthGuard)
+    async unfollow(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
+        await this.userService.unfollowWriter(user.id, writerId);
+        return createResponseForm({
+            message: "팔로우 취소 성공"
+        })
+    }
+
+    /**
      * @summary 유저의 팔로잉 유저 목록 가져오기
      * @param user
+     * @returns FollowingWriterDto[]
      */
     @TypedRoute.Get("Following")
     @UseGuards(UserAuthGuard)
-    async getFollowingUserList(@User() user : UserAuthDto) : Promise<ResponseForm<UserIdentityDto[]>> {
-        const followingUserList = await this.userService.getFollowingUserListByUserId(user.id);
-        return createResponseForm(followingUserList);
+    async getFollowingUserList(@User() user : UserAuthDto) : Promise<ResponseForm<FollowingWriterDto[]>> {
+        const followingWriterList = await this.userService.getFollowingWriterListByFollowerId(user.id);
+        return createResponseForm(followingWriterList);
     }
 
     /**

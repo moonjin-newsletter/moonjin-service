@@ -9,6 +9,7 @@ import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import {WriterInfoDto} from "../auth/dto/writerInfoDto";
 import UserDtoMapper from "./userDtoMapper";
 import {UserDto} from "./dto/user.dto";
+import {FollowingWriterDto} from "./dto/followingWriter.dto";
 
 @Injectable()
 export class UserService {
@@ -46,6 +47,29 @@ export class UserService {
     }
 
     /**
+     * @summary 작가 팔로우 취소
+     * @param followerId
+     * @param writerId
+     * @returns void
+     * @throws FOLLOW_MYSELF_ERROR
+     * @throws USER_NOT_WRITER
+     */
+    async unfollowWriter(followerId : number, writerId : number): Promise<void> {
+        if(followerId === writerId) throw ExceptionList.FOLLOW_MYSELF_ERROR;
+        await this.authValidationService.assertWriter(writerId);
+        try {
+            await this.prismaService.follow.delete({ // TODO : 과거의 팔로우 기록을 남기는 방법이 필요한가 고민 필요
+                where :{
+                    followerId_writerId : {
+                        followerId,
+                        writerId
+                    }
+                }
+            });
+        }catch (error) {}
+    }
+
+    /**
      * @summary 해당 작가의 팔로워 목록을 가져오기
      * @param writerId
      * @returns userId[]
@@ -66,15 +90,74 @@ export class UserService {
     /**
      * @summary 해당 유저의 팔로잉 목록을 가져오기
      * @param followerId
-     * @returns {userId, nickname}[] | []
+     * @returns FollowingWriterDto[]
      */
-    async getFollowingUserListByUserId(followerId : number): Promise<UserIdentityDto[]> {
+    async getFollowingWriterListByFollowerId(followerId : number): Promise<FollowingWriterDto[]> {
         const followingList = await this.prismaService.follow.findMany({
             where: {
                 followerId
             },
             select:{
-                writerId : true
+                writerId : true,
+                createdAt : true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        })
+        try {
+            const followingIdList = followingList.map(following => following.writerId);
+            const followingWriterList = await this.getWriterInfoListByUserIdList(followingIdList);
+            const userIdentityInfoList = await this.getUserIdentityDataListByUserIdList(followingIdList);
+
+            return UserDtoMapper.UserIdentityAndWriterInfoDtoAndFollowingToFollowingWriterDtoList(userIdentityInfoList, followingWriterList, followingList);
+        }catch (error) {
+            console.log(error)
+            return [];
+        }
+    }
+
+    /**
+     * @summary 유저 ID로 작가 정보 가져오기
+     * @param userIdList
+     * @returns WriterInfoDto[]
+     * @throws EMPTY_LIST_INPUT
+     */
+    async getWriterInfoListByUserIdList(userIdList : number[]) : Promise<WriterInfoDto[]> {
+        if (userIdList.length === 0) throw ExceptionList.EMPTY_LIST_INPUT;
+        return this.prismaService.writerInfo.findMany({
+            where: {
+                userId: {
+                    in: userIdList
+                },
+                deleted: false,
+            },
+            select: {
+                userId: true,
+                moonjinId: true,
+                description: true,
+                newsletterCount: true,
+                seriesCount: true,
+                followerCount: true,
+            }
+        });
+    }
+
+    /**
+     * @summary 팔로잉 유저의 기본 정보 목록 가져오기
+     * @param followerId
+     * @returns UserIdentityDto[]
+     */
+    async getFollowingUserIdentityListByFollowerId(followerId : number): Promise<UserIdentityDto[]>{
+        const followingList = await this.prismaService.follow.findMany({
+            where: {
+                followerId
+            },
+            select:{
+                writerId : true,
+            },
+            orderBy: {
+                createdAt: 'desc'
             }
         })
         try {
