@@ -7,6 +7,8 @@ import csr from "../../../lib/fetcher/csr";
 import { ErrorCodeEnum } from "@moonjin/api-types";
 import Background from "public/images/background.png";
 import Image from "next/image";
+import Link from "next/link";
+import * as Io from "react-icons/io";
 
 export default function Page() {
   const {
@@ -33,31 +35,52 @@ export default function Page() {
     await csr
       .post("auth/signup", { json: auth })
       .then((res) => {
-        toast.success("메일을 확인해주세요!");
+        alert("메일을 확인해주세요!");
       })
       .catch((err) => {
-        if (err.code === ErrorCodeEnum.EMAIL_ALREADY_EXIST)
+        if (
+          err.code === ErrorCodeEnum.EMAIL_ALREADY_EXIST ||
+          err.code === ErrorCodeEnum.NICKNAME_ALREADY_EXIST
+        )
           return alert(err.data.message);
+
         alert("회원가입 실패");
       });
   }
 
   useEffect(() => {
-    resetField("moonjinEmail");
+    resetField("moonjinId");
   }, [role]);
 
   return (
     <div className="relative flex items-center justify-center w-full h-full min-h-screen">
-      <section className="flex-1 w-1/2 h-full min-h-screen bg-gray-600">
-        <Image
-          className="absolute top-0 left-0 z-0 w-screen h-screen object-cover"
-          src={Background}
-          alt="백그라운드 이미지"
-        />
+      <Image
+        className="absolute top-0 left-0 z-0 w-screen h-screen object-cover"
+        src={Background}
+        alt="백그라운드 이미지"
+      />
+      <section className="flex-1 z-10 w-1/2 h-full min-h-screen ">
+        <div className="text-white flex h-full min-h-screen flex-col pl-20 py-20">
+          <div className="font-serif font-semibold  text-2xl leading-relaxed ">
+            일상을 담은 <br />
+            다양한 뉴스레터를 <br />
+            받아보실 수 있습니다__
+          </div>
+          <I.LogoLeft className="mt-auto" />
+        </div>
       </section>
-      <section className="z-10  bg-white flex-1 w-1/2 h-full min-h-screen flex flex-col items-center justify-center">
-        <div className="  flex w-full max-w-[680px] px-20 gap-y-3 flex-col items-center">
-          <I.AuthLogo />
+      <section className="relative z-10  bg-white flex-1 w-1/2 h-full min-h-screen flex flex-col items-center justify-center">
+        <div className="absolute top-5 left-5">
+          <Link
+            href="/"
+            className="flex items-center text-2xl text-grayscale-500"
+          >
+            <Io.IoIosArrowBack />
+            <div className="text-lg">홈 이동</div>
+          </Link>
+        </div>
+        <div className="  flex w-full max-w-[600px] px-20 gap-y-3 flex-col items-center">
+          <h1 className="text-2xl font-bold text-grayscale-700">회원가입</h1>
           <form
             onSubmit={handleSubmit(onClickSignup)}
             className="w-full h-fit flex flex-col items-start gap-y-3"
@@ -96,7 +119,7 @@ export default function Page() {
                 type="text"
                 id="nickname"
                 placeholder="닉네임"
-                className="mt-2 w-full h-10 border rounded-lg px-2 placeholder:text-sm"
+                className="mt-2 w-full h-10 border border-grayscale-300 rounded-lg px-2 placeholder:text-sm"
                 {...register("nickname", { required: "닉네임을 입력해주세요" })}
               />
               {errors.nickname?.message && (
@@ -109,7 +132,7 @@ export default function Page() {
                 id="email"
                 type="email"
                 placeholder="이메일"
-                className="mt-2 w-full h-10 border rounded-lg px-2 placeholder:text-sm"
+                className="mt-2 w-full h-10 border border-grayscale-300 rounded-lg px-2 placeholder:text-sm"
                 {...register("email", { required: "이메일을 입력해주세요" })}
               />
               {errors.email?.message && (
@@ -122,7 +145,7 @@ export default function Page() {
                 id="password"
                 type="password"
                 placeholder="비밀번호"
-                className="mt-2 w-full h-10 border rounded-lg px-2 placeholder:text-sm"
+                className="mt-2 w-full h-10 border border-grayscale-300 rounded-lg px-2 placeholder:text-sm"
                 {...register("password", {
                   required: "비밀번호를 입력해주세요",
                 })}
@@ -137,7 +160,7 @@ export default function Page() {
                 id="passwordCheck"
                 type="password"
                 placeholder="비밀번호 확인"
-                className="mt-2 w-full h-10 border rounded-lg px-2 placeholder:text-sm"
+                className="mt-2 w-full h-10 border border-grayscale-300 rounded-lg px-2 placeholder:text-sm"
                 {...register("passwordCheck", {
                   required: "비밀번호를 확인해주세요",
                 })}
@@ -147,29 +170,30 @@ export default function Page() {
               )}
               {role === "1" ? (
                 <div className="w-full mt-4">
-                  <label htmlFor="moonjinEmail">문진 이메일</label>
+                  <label htmlFor="moonjinId">문진 이메일</label>
                   <div className="mt-2 flex items-center text-gray-800">
                     <input
-                      id="moonjinEmail"
+                      id="moonjinId"
                       type="text"
                       placeholder="문진 이메일 아이디"
-                      className=" w-1/3 h-10 border rounded-lg px-2 placeholder:text-sm"
-                      {...register("moonjinEmail", {
+                      className=" w-1/3 h-10 border border-grayscale-300 rounded-lg px-2 placeholder:text-sm"
+                      {...register("moonjinId", {
                         required: "레터를 발송할 이메일을 입력해주세요",
                       })}
                     />
-                    @ moonjin.site
+                    <span className="ml-1.5 font-medium text-grayscale-500">
+                      @ moonjin.site
+                    </span>
                   </div>
-                  {errors.moonjinEmail?.message && (
-                    <span className="text-xs text-rose-500 ">{`${errors.moonjinEmail?.message}`}</span>
+                  {errors.moonjinId?.message && (
+                    <span className="text-xs text-rose-500 ">{`${errors.moonjinId?.message}`}</span>
                   )}
                 </div>
               ) : null}
             </div>
             <button
-              disabled={!isValid}
               type="submit"
-              className="mt-2 disabled:bg-gray-900 w-full h-10 rounded-2xl bg-[#7b0000] text-white"
+              className="mt-2 py-3 disabled:bg-gray-900 w-full rounded-3xl bg-[#7b0000] text-white"
             >
               회원가입
             </button>

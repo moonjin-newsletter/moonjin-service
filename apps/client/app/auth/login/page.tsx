@@ -9,6 +9,12 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Background from "public/images/background.png";
 import * as process from "process";
+import * as Tb from "react-icons/tb";
+import * as Io from "react-icons/io";
+
+const authUrl = (type: string) => {
+  return `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/oauth?social=${type}`;
+};
 
 export default function Page() {
   const {
@@ -34,13 +40,27 @@ export default function Page() {
         src={Background}
         alt="백그라운드 이미지"
       />
-      <section className="flex-1 z-10 w-1/2 h-full min-h-screen px-20 py-12">
-        <div className="text-white font-serif">
-          Series : 작가들이 보내는 <br />다 다양한 시리즈물을 <br />
-          받아보실 수 있습니다
+      <section className="flex-1 z-10 w-1/2 h-full min-h-screen ">
+        <div className="text-white flex h-full min-h-screen flex-col pl-20 py-20">
+          <div className="font-serif font-semibold  text-2xl leading-relaxed ">
+            일상을 담은 <br />
+            다양한 뉴스레터를 <br />
+            받아보실 수 있습니다__
+          </div>
+          <I.LogoLeft className="mt-auto" />
         </div>
       </section>
-      <section className="z-10  bg-white flex-1 w-1/2 h-full min-h-screen flex flex-col items-center justify-center">
+      <section className="z-10 relative bg-white flex-1 w-1/2 h-full min-h-screen flex flex-col items-center justify-center">
+        <div className="absolute top-5 left-5">
+          <Link
+            href="/"
+            className="flex items-center text-2xl text-grayscale-500"
+          >
+            <Io.IoIosArrowBack />
+            <div className="text-lg">홈 이동</div>
+          </Link>
+        </div>
+
         <I.AuthLogo />
 
         <section className="flex flex-col items-center px-10 w-full">
@@ -51,11 +71,14 @@ export default function Page() {
             <input
               type="email"
               placeholder="이메일"
-              className="w-full h-10 border rounded-lg px-2 placeholder:text-sm"
+              className="w-full h-10 border rounded-lg px-2 placeholder:text-sm focus:outline-none"
               {...register("email", { required: "이메일을 입력해주세요" })}
             />
             {errors.email?.message && (
-              <span className="text-xs text-rose-500 ">{`${errors.email?.message}`}</span>
+              <div className="flex items-center  text-rose-500 gap-x-1">
+                <Tb.TbAlertCircle />
+                <span className="text-xs text-rose-500 ">{`${errors.email?.message}`}</span>
+              </div>
             )}
             <input
               type="password"
@@ -68,7 +91,10 @@ export default function Page() {
               })}
             />
             {errors.password?.message && (
-              <span className="text-xs text-rose-500 ">{`${errors.password?.message}`}</span>
+              <div className="flex items-center  text-rose-500 gap-x-1">
+                <Tb.TbAlertCircle />
+                <span className="text-xs text-rose-500 ">{`${errors.password?.message}`}</span>
+              </div>
             )}
             <button
               type="submit"
@@ -85,25 +111,19 @@ export default function Page() {
           </div>
           <div className="flex w-full h-fit mt-4 justify-center gap-x-8 items-center">
             <Link
-              href={`${
-                process.env.NEXT_PUBLIC_SERVER_URL
-              }/auth/social?social=${"kakao"}`}
+              href={authUrl("kakao")}
               className="h-fit w-fit flex items-center justify-center rounded-full border border-yellow-200 "
             >
               <I.Kakao />
             </Link>
             <Link
-              href={`${
-                process.env.NEXT_PUBLIC_SERVER_URL
-              }/auth/social?social=${"google"}`}
+              href={authUrl("google")}
               className="h-fit w-fit flex items-center justify-center rounded-full border border-gray-200 "
             >
               <I.Google />
             </Link>
             <Link
-              href={`${
-                process.env.NEXT_PUBLIC_SERVER_URL
-              }/auth/social?social=${"naver"}`}
+              href={authUrl("naver")}
               className="h-fit w-fit flex items-center justify-center rounded-full border border-green-500 "
             >
               <I.Naver />

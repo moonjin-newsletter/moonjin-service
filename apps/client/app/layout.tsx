@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Header from "../components/layout/Header";
 import ClientProvider from "./ClientProvider";
 import { Libre_Baskerville, Noto_Serif_KR } from "next/font/google";
+import Head from "next/head";
 
 export const metadata: Metadata = {
   title: "moonjin",
@@ -17,6 +18,7 @@ const libre = Libre_Baskerville({
 
 const serif = Noto_Serif_KR({
   subsets: ["latin"],
+  preload: false,
   variable: "--font-serif",
   weight: ["200", "300", "400", "500", "600", "700", "900"],
 });

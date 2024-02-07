@@ -7,8 +7,12 @@ import csr from "../../../lib/fetcher/csr";
 import { ErrorCodeEnum } from "@moonjin/api-types";
 import Background from "public/images/background.png";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import * as Tb from "react-icons/tb";
 
 export default function Page() {
+  const params = useSearchParams();
+
   const {
     register,
     setValue,
@@ -20,20 +24,15 @@ export default function Page() {
   const role = watch("role");
 
   async function onClickSignup(data: any) {
-    if (data.password !== data.passwordCheck)
-      return toast.error("비밀번호를 확인해주세요");
-
-    delete data["passwordCheck"];
-
     const auth = {
       ...data,
       role: parseInt(data.role),
     };
 
     await csr
-      .post("auth/signup", { json: auth })
+      .post("auth/oauth/signup", { json: auth })
       .then((res) => {
-        toast.success("메일을 확인해주세요!");
+        window.location.href = "/";
       })
       .catch((err) => {
         if (err.code === ErrorCodeEnum.EMAIL_ALREADY_EXIST)
@@ -43,20 +42,25 @@ export default function Page() {
   }
 
   useEffect(() => {
-    resetField("moonjinEmail");
+    resetField("moonjinId");
+    setValue("email", params.get("email"));
   }, [role]);
 
   return (
     <div className="relative flex items-center justify-center w-full h-full min-h-screen">
-      <section className="flex-1 w-1/2 h-full min-h-screen bg-gray-600">
-        <Image
-          className="absolute top-0 left-0 z-0 w-screen h-screen object-cover"
-          src={Background}
-          alt="백그라운드 이미지"
-        />
-        <div>
-          Series : 작가들이 보내는 <br />다 다양한 시리즈물을 <br />
-          받아보실 수 있습니다
+      <Image
+        className="absolute top-0 left-0 z-0 w-screen h-screen object-cover"
+        src={Background}
+        alt="백그라운드 이미지"
+      />
+      <section className="flex-1 z-10 w-1/2 h-full min-h-screen ">
+        <div className="text-white flex h-full min-h-screen flex-col pl-20 py-20">
+          <div className="font-serif font-semibold  text-2xl leading-relaxed ">
+            일상을 담은 <br />
+            다양한 뉴스레터를 <br />
+            받아보실 수 있습니다__
+          </div>
+          <I.LogoLeft className="mt-auto" />
         </div>
       </section>
       <section className="z-10  bg-white flex-1 w-1/2 h-full min-h-screen flex flex-col items-center justify-center">
@@ -100,11 +104,14 @@ export default function Page() {
                 type="text"
                 id="nickname"
                 placeholder="닉네임"
-                className="mt-2 w-full h-10 border rounded-lg px-2 placeholder:text-sm"
+                className="mt-2 w-full h-10 border border-grayscale-300 rounded-lg px-2 placeholder:text-sm"
                 {...register("nickname", { required: "닉네임을 입력해주세요" })}
               />
               {errors.nickname?.message && (
-                <span className="text-xs text-rose-500 ">{`${errors.nickname?.message}`}</span>
+                <div className="flex mt-1 items-center  text-rose-500 gap-x-1">
+                  <Tb.TbAlertCircle />
+                  <span className="text-xs text-rose-500 ">{`${errors.nickname?.message}`}</span>
+                </div>
               )}
               <label className="mt-4" htmlFor="email">
                 이메일
@@ -113,66 +120,45 @@ export default function Page() {
                 id="email"
                 type="email"
                 placeholder="이메일"
+                disabled={true}
                 defaultValue={"andy6239@gmail.com"}
-                className="mt-2 w-full h-10 border rounded-lg px-2 placeholder:text-sm"
+                className="mt-2 w-full h-10 border border-grayscale-300 rounded-lg px-2 placeholder:text-sm"
                 {...register("email", { required: "이메일을 입력해주세요" })}
               />
               {errors.email?.message && (
-                <span className="text-xs text-rose-500 ">{`${errors.email?.message}`}</span>
+                <div className="flex items-center mt-1 text-rose-500 gap-x-1">
+                  <Tb.TbAlertCircle />
+                  <span className="text-xs text-rose-500 ">{`${errors.email?.message}`}</span>
+                </div>
               )}
-              <label className="mt-4" htmlFor="password">
-                비밀번호
-              </label>
-              <input
-                id="password"
-                type="password"
-                placeholder="비밀번호"
-                className="mt-2 w-full h-10 border rounded-lg px-2 placeholder:text-sm"
-                {...register("password", {
-                  required: "비밀번호를 입력해주세요",
-                })}
-              />
-              {errors.password?.message && (
-                <span className="text-xs text-rose-500 ">{`${errors.password?.message}`}</span>
-              )}
-              <label className="mt-4" htmlFor="passwordCheck">
-                비밀번호 확인
-              </label>
-              <input
-                id="passwordCheck"
-                type="password"
-                placeholder="비밀번호 확인"
-                className="mt-2 w-full h-10 border rounded-lg px-2 placeholder:text-sm"
-                {...register("passwordCheck", {
-                  required: "비밀번호를 확인해주세요",
-                })}
-              />
-              {errors.passwordCheck?.message && (
-                <span className="text-xs text-rose-500 ">{`${errors.passwordCheck?.message}`}</span>
-              )}
+
               {role === "1" ? (
                 <div className="w-full mt-4">
-                  <label htmlFor="moonjinEmail">문진 이메일</label>
+                  <label htmlFor="moonjinId">문진 이메일</label>
                   <div className="mt-2 flex items-center text-gray-800">
                     <input
-                      id="moonjinEmail"
+                      id="moonjinId"
                       type="text"
                       placeholder="문진 이메일 아이디"
-                      className=" w-1/3 h-10 border rounded-lg px-2 placeholder:text-sm"
-                      {...register("moonjinEmail", {
+                      className=" w-1/3 h-10 border border-grayscale-300 rounded-lg px-2 placeholder:text-sm"
+                      {...register("moonjinId", {
                         required: "레터를 발송할 이메일을 입력해주세요",
                       })}
                     />
-                    @ moonjin.site
+                    <span className="ml-1.5 font-medium text-grayscale-500">
+                      @ moonjin.site
+                    </span>
                   </div>
-                  {errors.moonjinEmail?.message && (
-                    <span className="text-xs text-rose-500 ">{`${errors.moonjinEmail?.message}`}</span>
+                  {errors.moonjinId?.message && (
+                    <div className="flex items-center mt-1 text-rose-500 gap-x-1">
+                      <Tb.TbAlertCircle />
+                      <span className="text-xs text-rose-500 ">{`${errors.moonjinId?.message}`}</span>
+                    </div>
                   )}
                 </div>
               ) : null}
             </div>
             <button
-              disabled={!isValid}
               type="submit"
               className="mt-2 disabled:bg-gray-900 w-full h-10 rounded-2xl bg-[#7b0000] text-white"
             >

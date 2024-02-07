@@ -14,8 +14,8 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      libre: ["var(--font-libre)"],
-      serif: ["var(--font-serif)"],
+      libre: ["var(--font-libre)", "serif"],
+      serif: ["var(--font-serif)", "serif"],
     },
     screens: {
       mobile: { min: "0px", max: "600px" },
