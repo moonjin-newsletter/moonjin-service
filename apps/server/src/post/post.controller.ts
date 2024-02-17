@@ -78,4 +78,29 @@ export class PostController {
         const newsletterList = await this.postService.getNewsletterListByUserId(user.id);
         return createResponseForm(newsletterList);
     }
+
+    /**
+     * @summary 해당 유저의 스탬프 이력 가져오기
+     * @param user
+     * @returns PostWithWriterUserDto[]
+     */
+    @TypedRoute.Get('stamp')
+    @UseGuards(UserAuthGuard)
+    async getStampedNewsletter(@User() user:UserAuthDto){
+        await this.postService.getStampedNewsletterListByUserId();
+        return user.id // TODO
+    }
+
+    /**
+     * @summary stamp 기능
+     * @param user
+     * @param postId
+     */
+    @TypedRoute.Post(':postId/stamp')
+    @UseGuards(UserAuthGuard)
+    async stampPost(@User() user:UserAuthDto, @TypedParam('postId') postId : number){
+        const stamp = await this.postService.stampPost(user.id, postId);
+        return createResponseForm(stamp);
+    }
+
 }

@@ -1,10 +1,12 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
@@ -17,12 +19,19 @@ model User {
   description String   @default("") @db.VarChar(256)
   role        Int      @default(0)
   deleted     Boolean  @default(false)
+
+  oauth      Oauth?
+  writerInfo WriterInfo?
+  Follow     Follow[]
+  Newsletter Newsletter[]
+  Stamp      Stamp[]
 }
 
 model Oauth {
   oauthId String @id @unique @db.VarChar(64)
   userId  Int    @unique
   social  String @db.VarChar(8)
+  user    User   @relation(fields: [userId], references: [id])
 }
 
 model WriterInfo {
@@ -35,6 +44,11 @@ model WriterInfo {
   followerCount   Int      @default(0)
   status          Boolean  @default(true)
   deleted         Boolean  @default(false)
+
+  user   User     @relation(fields: [userId], references: [id])
+  Follow Follow[]
+  post   Post[]
+  Series Series[]
 }
 
 model Follow {
@@ -42,7 +56,12 @@ model Follow {
   writerId   Int
   createdAt  DateTime
 
+  user       User       @relation(fields: [followerId], references: [id])
+  writerInfo WriterInfo @relation(fields: [writerId], references: [userId])
+
   @@id([followerId, writerId])
+  @@index([writerId])
+  @@index([followerId])
 }
 
 model Post {
@@ -59,6 +78,14 @@ model Post {
   seriesId   Int       @default(0)
   status     Boolean   @default(true)
   deleted    Boolean   @default(false)
+
+  WriterInfo WriterInfo?  @relation(fields: [writerId], references: [userId])
+  newsletter Newsletter[]
+  Series     Series?      @relation(fields: [seriesId], references: [id])
+  Stamp      Stamp[]
+
+  @@index([writerId])
+  @@index([seriesId])
 }
 
 model Newsletter {
@@ -66,7 +93,12 @@ model Newsletter {
   receiverId Int
   sentAt     DateTime
 
+  Post Post @relation(fields: [postId], references: [id])
+  user User @relation(fields: [receiverId], references: [id])
+
   @@id([postId, receiverId])
+  @@index([postId])
+  @@index([receiverId])
 }
 
 model Series {
@@ -81,4 +113,22 @@ model Series {
   description String    @default("") @db.VarChar(256)
   status      Boolean   @default(true)
   deleted     Boolean   @default(false)
+
+  writerInfo WriterInfo @relation(fields: [writerId], references: [userId])
+  post       Post[]
+
+  @@index([writerId])
+}
+
+model Stamp {
+  userId    Int
+  postId    Int
+  createdAt DateTime
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
+
+  @@id([userId, postId])
+  @@index([userId])
+  @@index([postId])
 }

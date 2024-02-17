@@ -73,7 +73,7 @@ export class UserController {
      */
     @TypedRoute.Get()
     @UseGuards(UserAuthGuard)
-    async getUser(@User() user : UserAuthDto): Promise<TryCatch<{user:UserDto, writer?: WriterInfoDto},
+    async getUser(@User() user : UserAuthDto): Promise<TryCatch<{user:UserDto, writerInfo?: WriterInfoDto},
     USER_NOT_FOUND | USER_NOT_WRITER>>
     {
         const userData = await this.userService.getUserData(user.id, user.role);
