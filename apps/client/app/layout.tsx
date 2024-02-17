@@ -4,6 +4,7 @@ import Header from "../components/layout/Header";
 import ClientProvider from "./ClientProvider";
 import { Libre_Baskerville, Noto_Serif_KR } from "next/font/google";
 import Head from "next/head";
+import Footer from "../components/layout/Footer";
 
 export const metadata: Metadata = {
   title: "moonjin",
@@ -43,6 +44,7 @@ export default function RootLayout({
           <FontGoogleLayout>
             <Header />
             {children}
+            <Footer />
           </FontGoogleLayout>
         </ClientProvider>
       </body>

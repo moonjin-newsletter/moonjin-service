@@ -25,7 +25,7 @@ export default function CategoryTab({
         </Tab.List>
         <Tab.Panels>
           {tabList.map((value, index) => (
-            <Tab.Panel>{layout}</Tab.Panel>
+            <Tab.Panel key={index}>{layout}</Tab.Panel>
           ))}
         </Tab.Panels>
       </Tab.Group>
