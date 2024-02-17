@@ -6,10 +6,10 @@ import {UserAuthDto} from "../auth/dto/userAuthDto";
 import {UserService} from "./user.service";
 import {createResponseForm, ResponseForm} from "../response/responseForm";
 import {TryCatch} from "../response/tryCatch";
-import {WriterInfoDto} from "../auth/dto/writerInfoDto";
 import {USER_NOT_FOUND, USER_NOT_WRITER} from "../response/error/auth";
 import {UserDto} from "./dto/user.dto";
 import {FollowingWriterDto} from "./dto/followingWriter.dto";
+import {WriterDto} from "./dto/writer.dto";
 
 @Controller('user')
 export class UserController {
@@ -73,7 +73,7 @@ export class UserController {
      */
     @TypedRoute.Get()
     @UseGuards(UserAuthGuard)
-    async getUser(@User() user : UserAuthDto): Promise<TryCatch<{user:UserDto, writerInfo?: WriterInfoDto},
+    async getUser(@User() user : UserAuthDto): Promise<TryCatch<{user:UserDto} | WriterDto,
     USER_NOT_FOUND | USER_NOT_WRITER>>
     {
         const userData = await this.userService.getUserData(user.id, user.role);

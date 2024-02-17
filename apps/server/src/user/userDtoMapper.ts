@@ -5,6 +5,7 @@ import {UserDto} from "./dto/user.dto";
 import {UserIdentityDto} from "./dto/userIdentity.dto";
 import {FollowingWriterDto} from "./dto/followingWriter.dto";
 import { WriterInfoWithUser} from "./dto/writerInfo.prisma.type";
+import {WriterDto} from "./dto/writer.dto";
 
 class UserDtoMapperClass {
     UserToUserAuthDto(user: User): UserAuthDto {
@@ -22,7 +23,7 @@ class UserDtoMapperClass {
         return writerData
     }
 
-    UserWithWriterInfoToUserAndWriterInfoDto(writer: WriterInfoWithUser): {user: UserDto, writerInfo: WriterInfoDto}{
+    UserWithWriterInfoToUserAndWriterInfoDto(writer: WriterInfoWithUser): WriterDto{
         const {user,...writerInfo} = writer;
         return {
             user: this.UserToUserDto(user),
