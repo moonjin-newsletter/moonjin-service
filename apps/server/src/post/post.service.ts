@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {CreatePostDto} from "./dto/createPost.dto";
 import {PrismaService} from "../prisma/prisma.service";
 import PostDtoMapper from "./postDtoMapper";
-import {Follow, Post, Prisma} from "@prisma/client";
+import {Follow, Post} from "@prisma/client";
 import {ExceptionList} from "../response/error/errorInstances";
 import {PostDto} from "./dto/post.dto";
 import {UtilService} from "../util/util.service";
@@ -100,7 +100,7 @@ export class PostService {
 
         try {
             const now = this.utilService.getCurrentDateInKorea();
-            const newsletterData : Prisma.NewsletterCreateInput[] = followers.map(follower => {
+            const newsletterData = followers.map(follower => {
                 return {
                     postId,
                     receiverId : follower.followerId,
@@ -155,5 +155,20 @@ export class PostService {
             console.error(error);
             return [];
         }
+    }
+
+    async stampPost(userId : number, postId: number){
+        const createdAt = this.utilService.getCurrentDateInKorea();
+        return this.prismaService.stamp.create({
+            data : {
+                userId,
+                postId,
+                createdAt
+            }
+        })
+    }
+
+    async getStampedNewsletterListByUserId() : Promise<void> {
+
     }
 }

@@ -30,6 +30,30 @@ class PostDtoMapperClass {
         })
         return postWithWriterUserList;
     }
+
+    // StampAndPostAndUserListToStampedNewsletterDtoList(inputList : (Stamp&Post&User)[]): StampedNewsletterDto[] {
+    //     return inputList.map(input => {
+    //         return {
+    //             post : {
+    //                 id : input.id,
+    //                 title : input.title,
+    //                 content : input.content,
+    //                 status : input.status,
+    //                 deleted : input.deleted,
+    //                 createdAt : input.createdAt,
+    //                 writerId : input.writerId
+    //             },
+    //             writer : {
+    //                 id : input.id,
+    //                 nickname : input.nickname,
+    //             },
+    //             stamp : {
+    //                 createdAt : input.createdAt
+    //             }
+    //         }
+    //     }
+    // }
+
 }
 const PostDtoMapper = new PostDtoMapperClass();
 export default PostDtoMapper;

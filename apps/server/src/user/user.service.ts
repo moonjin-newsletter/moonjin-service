@@ -8,8 +8,9 @@ import {UserIdentityDto} from "./dto/userIdentity.dto";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import {WriterInfoDto} from "../auth/dto/writerInfoDto";
 import UserDtoMapper from "./userDtoMapper";
-import {UserDto} from "./dto/user.dto";
 import {FollowingWriterDto} from "./dto/followingWriter.dto";
+import {UserDto} from "./dto/user.dto";
+import {WriterInfoWithUser} from "./dto/writerInfo.prisma.type";
 
 @Injectable()
 export class UserService {
@@ -217,11 +218,26 @@ export class UserService {
      * @summary 유저의 데이터 가져오기 (작가, 일반 유저 구분)
      * @param userId
      * @param role
-     * @returns UserDto, WriterInfoDto?
+     * @returns UserDto & WriterInfoDto?
      * @throws USER_NOT_FOUND
      * @throws USER_NOT_WRITER
      */
-    async getUserData(userId : number, role : UserRoleEnum) : Promise<{user : UserDto, writer?: WriterInfoDto}> {
+    async getUserData(userId : number, role : UserRoleEnum):Promise<{user:UserDto, writer?: WriterInfoDto}> {
+        if(role === UserRoleEnum.WRITER){
+            const writer : WriterInfoWithUser | null = await this.prismaService.writerInfo.findUnique({
+                where : {
+                    userId,
+                    deleted : false,
+                },
+                include :{
+                    user : true
+                },
+                relationLoadStrategy: 'join',
+            })
+            if(!writer) throw ExceptionList.USER_NOT_WRITER;
+            return UserDtoMapper.UserWithWriterInfoToUserAndWriterInfoDto(writer);
+        }
+
         const user = await this.prismaService.user.findUnique({
             where : {
                 id : userId,
@@ -229,23 +245,6 @@ export class UserService {
             }
         })
         if(!user) throw ExceptionList.USER_NOT_FOUND;
-        const userData = UserDtoMapper.UserToUserDto(user);
-
-        if(role === UserRoleEnum.WRITER){ // 작가의 경우
-            const writer = await this.prismaService.writerInfo.findUnique({
-                where : {
-                    userId,
-                    deleted : false,
-                }
-            })
-            if(!writer) throw ExceptionList.USER_NOT_WRITER;
-            const writerData = UserDtoMapper.WriterInfoToWriterInfoDto(writer);
-            return {
-                user: userData, writer: writerData
-            }
-        }
-        return {
-            user: userData
-        }
+        return {user : UserDtoMapper.UserToUserDto(user)};
     }
 }
