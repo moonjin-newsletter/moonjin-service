@@ -8,6 +8,8 @@ import {PostDto} from "./dto/post.dto";
 import {UtilService} from "../util/util.service";
 import {UserService} from "../user/user.service";
 import {PostWithWriterUserDto} from "./dto/postWithWriterUser.dto";
+import {StampedPost} from "./dto/stampedPostWithWriter.prisma.type";
+import {StampedPostDto} from "./dto/stampedPost.dto";
 
 @Injectable()
 export class PostService {
@@ -178,7 +180,25 @@ export class PostService {
         }
     }
 
-    async getStampedNewsletterListByUserId() : Promise<void> {
-
+    /**
+     * @summary 해당 유저의 스탬프 이력 가져오기
+     * @param userId
+     * @return StampedPostDto[]
+     */
+    async getStampedPostListByUserId(userId : number): Promise<StampedPostDto[]> {
+        const stampedPostList : StampedPost[] = await this.prismaService.stamp.findMany({
+            where : {
+                userId
+            },
+            include: {
+                post : true
+            },
+            relationLoadStrategy: 'join',
+            orderBy : {
+                createdAt : 'desc'
+            }
+        })
+        if(stampedPostList.length === 0) return [];
+        return stampedPostList.map(stampedPost => PostDtoMapper.StampedPostToStampedPostDto(stampedPost));
     }
 }

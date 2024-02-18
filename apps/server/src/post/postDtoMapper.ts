@@ -2,6 +2,8 @@ import {PostDto} from "./dto/post.dto";
 import {Post} from "@prisma/client";
 import {UserIdentityDto} from "../user/dto/userIdentity.dto";
 import {PostWithWriterUserDto} from "./dto/postWithWriterUser.dto";
+import {StampedPostDto} from "./dto/stampedPost.dto";
+import {StampedPost} from "./dto/stampedPostWithWriter.prisma.type";
 
 
 class PostDtoMapperClass {
@@ -31,28 +33,15 @@ class PostDtoMapperClass {
         return postWithWriterUserList;
     }
 
-    // StampAndPostAndUserListToStampedNewsletterDtoList(inputList : (Stamp&Post&User)[]): StampedNewsletterDto[] {
-    //     return inputList.map(input => {
-    //         return {
-    //             post : {
-    //                 id : input.id,
-    //                 title : input.title,
-    //                 content : input.content,
-    //                 status : input.status,
-    //                 deleted : input.deleted,
-    //                 createdAt : input.createdAt,
-    //                 writerId : input.writerId
-    //             },
-    //             writer : {
-    //                 id : input.id,
-    //                 nickname : input.nickname,
-    //             },
-    //             stamp : {
-    //                 createdAt : input.createdAt
-    //             }
-    //         }
-    //     }
-    // }
+    StampedPostToStampedPostDto(stampedPostWithWriter : StampedPost): StampedPostDto{
+        const {post, ...stamp} = stampedPostWithWriter;
+        return {
+            post : this.PostToPostDto(post),
+            stamp : {
+                createdAt: stamp.createdAt
+            }
+        }
+    }
 
 }
 const PostDtoMapper = new PostDtoMapperClass();

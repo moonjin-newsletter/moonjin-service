@@ -49,7 +49,6 @@ class UserDtoMapperClass {
         })
         return followingWriterList;
     }
-
 }
 const UserDtoMapper = new UserDtoMapperClass();
 export default UserDtoMapper;

@@ -12,6 +12,7 @@ import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {SeriesService} from "../series/series.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {PostWithWriterUserDto} from "./dto/postWithWriterUser.dto";
+import {StampedPostDto} from "./dto/stampedPost.dto";
 
 
 @Controller('post')
@@ -82,13 +83,13 @@ export class PostController {
     /**
      * @summary 해당 유저의 스탬프 이력 가져오기
      * @param user
-     * @returns PostWithWriterUserDto[]
+     * @returns StampedPostDto[]
      */
     @TypedRoute.Get('stamp')
     @UseGuards(UserAuthGuard)
-    async getStampedNewsletter(@User() user:UserAuthDto){
-        await this.postService.getStampedNewsletterListByUserId();
-        return user.id // TODO
+    async getStampedNewsletter(@User() user:UserAuthDto): Promise<Try<StampedPostDto[]>>{
+        const stampedPostList = await this.postService.getStampedPostListByUserId(user.id);
+        return createResponseForm(stampedPostList);
     }
 
     /**
