@@ -151,23 +151,25 @@ export class UserService {
      * @returns UserIdentityDto[]
      */
     async getFollowingUserIdentityListByFollowerId(followerId : number): Promise<UserIdentityDto[]>{
-        const followingList = await this.prismaService.follow.findMany({
+        const followingUsersIdentityData = await this.prismaService.follow.findMany({
             where: {
                 followerId
             },
-            select:{
-                writerId : true,
+            select: {
+                user : {
+                    select : {
+                        id : true,
+                        nickname : true,
+                    }
+                }
             },
             orderBy: {
                 createdAt: 'desc'
             }
         })
-        try {
-            const followingIdList = followingList.map(following => following.writerId);
-            return await this.getUserIdentityDataListByUserIdList(followingIdList);
-        }catch (error) {
-            console.log(error)
-            return [];
+        if(followingUsersIdentityData.length === 0) return [];
+        else{
+            return followingUsersIdentityData.map(following => following.user);
         }
     }
 

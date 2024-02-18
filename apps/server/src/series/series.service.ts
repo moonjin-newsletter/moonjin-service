@@ -38,8 +38,6 @@ export class SeriesService {
      * @param userId
      */
     async getSeriesByUserId(userId : number) : Promise<SeriesWithWriterDto[]>{
-
-        
         const followingUserList = await this.userService.getFollowingUserIdentityListByFollowerId(userId);
         const followingUserIdList = followingUserList.map(user => user.id);
         const seriesList = await this.prismaService.series.findMany({

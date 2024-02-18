@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {CreatePostDto} from "./dto/createPost.dto";
 import {PrismaService} from "../prisma/prisma.service";
 import PostDtoMapper from "./postDtoMapper";
-import {Follow, Post} from "@prisma/client";
+import {Follow, Post, Stamp} from "@prisma/client";
 import {ExceptionList} from "../response/error/errorInstances";
 import {PostDto} from "./dto/post.dto";
 import {UtilService} from "../util/util.service";
@@ -157,15 +157,25 @@ export class PostService {
         }
     }
 
-    async stampPost(userId : number, postId: number){
+    /**
+     * @summary post를 stamp 찍기
+     * @param userId
+     * @param postId
+     * @throws STAMP_ALREADY_EXIST
+     */
+    async stampPost(userId : number, postId: number) : Promise<Stamp>{
         const createdAt = this.utilService.getCurrentDateInKorea();
-        return this.prismaService.stamp.create({
-            data : {
-                userId,
-                postId,
-                createdAt
-            }
-        })
+        try{
+            return await this.prismaService.stamp.create({
+                data: {
+                    userId,
+                    postId,
+                    createdAt
+                }
+            });
+        } catch (error) {
+            throw ExceptionList.STAMP_ALREADY_EXIST; // TODO: Stamp를 찍었던 날짜를 돌려주는 게 맞을지 고민해보기
+        }
     }
 
     async getStampedNewsletterListByUserId() : Promise<void> {

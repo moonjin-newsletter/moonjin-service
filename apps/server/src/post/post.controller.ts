@@ -5,7 +5,7 @@ import {PostService} from "./post.service";
 import {PostDto} from "./dto/post.dto";
 import {createResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
-import {CREATE_POST_ERROR} from "../response/error/post";
+import {CREATE_POST_ERROR, STAMP_ALREADY_EXIST} from "../response/error/post";
 import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto/userAuthDto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
@@ -95,12 +95,18 @@ export class PostController {
      * @summary stamp 기능
      * @param user
      * @param postId
+     * @throws STAMP_ALREADY_EXIST
      */
     @TypedRoute.Post(':postId/stamp')
     @UseGuards(UserAuthGuard)
-    async stampPost(@User() user:UserAuthDto, @TypedParam('postId') postId : number){
+    async stampPost(@User() user:UserAuthDto, @TypedParam('postId') postId : number) : Promise<TryCatch<{
+        message: string,
+        date: Date
+    }, STAMP_ALREADY_EXIST>>{
         const stamp = await this.postService.stampPost(user.id, postId);
-        return createResponseForm(stamp);
+        return createResponseForm({
+            message : "스탬프를 찍었습니다.",
+            date : stamp.createdAt
+        });
     }
-
 }
