@@ -25,7 +25,6 @@ export default function Header() {
       });
   }
 
-  console.log(path);
   useEffect(() => {
     userCookie ? setIsLogin(true) : setIsLogin(false);
   }, [userCookie]);
