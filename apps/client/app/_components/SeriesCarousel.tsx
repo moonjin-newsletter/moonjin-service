@@ -56,7 +56,7 @@ function PostCard({ value }: { value: any }) {
                   body: "우리의 여름은 언제부터 시작했을까?.... 세상은 어렵고 복잡하다. 하지만 행복해",
                 },
               ].map((value, index) => (
-                <tr className="space-y-2  align-top">
+                <tr key={index} className="space-y-2  align-top">
                   <th className=" h-fit text-left py-2  font-normal align-top text-xs w-12">
                     Part {index + 1}.
                   </th>
