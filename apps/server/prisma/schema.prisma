@@ -79,7 +79,7 @@ model Post {
   status     Boolean   @default(true)
   deleted    Boolean   @default(false)
 
-  WriterInfo WriterInfo?  @relation(fields: [writerId], references: [userId])
+  writerInfo WriterInfo   @relation(fields: [writerId], references: [userId])
   newsletter Newsletter[]
   Series     Series?      @relation(fields: [seriesId], references: [id])
   Stamp      Stamp[]
