@@ -13,10 +13,6 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    fontFamily: {
-      libre: ["var(--font-libre)", "serif"],
-      serif: ["var(--font-serif)", "serif"],
-    },
     screens: {
       mobile: { min: "0px", max: "600px" },
       tablet: { min: "601px", max: "1023px" },
@@ -24,6 +20,16 @@ module.exports = {
     },
 
     extend: {
+      fontFamily: {
+        libre: ["var(--font-libre)"],
+        serif: [
+          "var(--font-noto-serif)",
+          "Cambria",
+          "Times New Roman",
+          "Times",
+          "serif",
+        ],
+      },
       colors: {
         ...colors,
         transparent: "transparent",

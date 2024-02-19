@@ -4,8 +4,6 @@ import CategoryTab from "./_components/CategoryTab";
 import { postData, seriesData, writerData } from "./_data";
 import Link from "next/link";
 import * as I from "components/icons";
-import Carousel from "../components/carousel/Carousel";
-import SlickCarousel from "../components/carousel/SlickCarousel";
 import SeriesCarousel from "./_components/SeriesCarousel";
 
 export default async function Page() {

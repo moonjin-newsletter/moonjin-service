@@ -42,25 +42,25 @@ export default function Page() {
       />
       <section className="flex-1 z-10 w-1/2 h-full min-h-screen ">
         <div className="text-white flex h-full min-h-screen flex-col pl-20 py-20">
-          <div className="font-serif font-semibold  text-2xl leading-relaxed ">
+          <I.LogoLeft className="" />
+          <div className="font-serif font-semibold mt-8  text-2xl leading-relaxed ">
             일상을 담은 <br />
             다양한 뉴스레터를 <br />
             받아보실 수 있습니다__
           </div>
-          <I.LogoLeft className="mt-auto" />
+
+          <div className="flex text-white mt-auto">
+            <Link
+              href="/"
+              className="flex items-center text-2xl hover hover:translate-x-2 duration-300 transition ease-in-out"
+            >
+              <Io.IoIosArrowBack />
+              <div className="ml-2 text-lg ">홈 바로가기</div>
+            </Link>
+          </div>
         </div>
       </section>
       <section className="z-10 relative bg-white flex-1 w-1/2 h-full min-h-screen flex flex-col items-center justify-center">
-        <div className="absolute top-5 left-5">
-          <Link
-            href="/"
-            className="flex items-center text-2xl text-grayscale-500"
-          >
-            <Io.IoIosArrowBack />
-            <div className="text-lg">홈 이동</div>
-          </Link>
-        </div>
-
         <I.AuthLogo />
 
         <section className="flex flex-col items-center px-10 w-full">

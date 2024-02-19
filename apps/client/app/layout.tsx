@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import Header from "../components/layout/Header";
 import ClientProvider from "./ClientProvider";
 import { Libre_Baskerville, Noto_Serif_KR } from "next/font/google";
-import Head from "next/head";
 import Footer from "../components/layout/Footer";
 
 export const metadata: Metadata = {
@@ -13,24 +12,17 @@ export const metadata: Metadata = {
 
 const libre = Libre_Baskerville({
   subsets: ["latin"],
+  display: "swap",
   variable: "--font-libre",
   weight: ["400", "700"],
 });
 
-const serif = Noto_Serif_KR({
+const notoSerifKR = Noto_Serif_KR({
   subsets: ["latin"],
-  preload: false,
-  variable: "--font-serif",
+  display: "swap",
+  variable: "--font-noto-serif",
   weight: ["200", "300", "400", "500", "600", "700", "900"],
 });
-
-const FontGoogleLayout = (props: { children: any }) => {
-  return (
-    <div className={libre.variable}>
-      <div className={serif.variable}>{props.children}</div>
-    </div>
-  );
-};
 
 export default function RootLayout({
   children,
@@ -38,14 +30,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <html lang="en">
+    <html lang="en" className={`${libre.variable} ${notoSerifKR.variable}`}>
       <body className={`flex min-h-screen flex-col w-full h-full `}>
         <ClientProvider>
-          <FontGoogleLayout>
-            <Header />
-            {children}
-            <Footer />
-          </FontGoogleLayout>
+          <Header />
+
+          {children}
+          <Footer />
         </ClientProvider>
       </body>
     </html>
