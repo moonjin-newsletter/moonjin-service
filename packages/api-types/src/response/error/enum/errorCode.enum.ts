@@ -31,6 +31,8 @@ export enum ErrorCodeEnum {
     CREATE_POST_ERROR = "0100",
     POST_NOT_FOUND = "0101",
     NOT_ACCESSED_FOR_POST = "0102",
+    /// stamp
+    STAMP_ALREADY_EXIST= "0110",
     // series
     CREATE_SERIES_ERROR = "0201",
     SERIES_NOT_FOUND = "0202",
@@ -40,4 +42,7 @@ export enum ErrorCodeEnum {
     FOLLOW_MYSELF_ERROR = "0400",
     FOLLOW_ALREADY_ERROR = "0401",
     FOLLOWER_NOT_FOUND = "0402",
+
+    // dev
+    EMPTY_LIST_INPUT = "9000",
 }
