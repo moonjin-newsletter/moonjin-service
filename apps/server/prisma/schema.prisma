@@ -25,7 +25,8 @@ model User {
   Follow     Follow[]
   Newsletter Newsletter[]
   Stamp      Stamp[]
-  Letter     Letter[]
+  letter     Letter[]     @relation(name: "sender")
+  letter2    Letter[]     @relation(name: "receiver")
 }
 
 model Oauth {
@@ -84,7 +85,6 @@ model Post {
   newsletter Newsletter[]
   Series     Series?      @relation(fields: [seriesId], references: [id])
   Stamp      Stamp[]
-  Letter     Letter[]
 
   @@index([writerId])
   @@index([seriesId])
@@ -145,8 +145,8 @@ model Letter {
   readAt     DateTime?
   deleted    Boolean   @default(false)
 
-  user User @relation(fields: [senderId], references: [id])
-  post Post @relation(fields: [receiverId], references: [id])
+  sender   User @relation(name: "sender", fields: [senderId], references: [id])
+  receiver User @relation(name: "receiver", fields: [receiverId], references: [id])
 
   @@index([senderId])
   @@index([receiverId])

@@ -6,6 +6,8 @@ import LetterDtoMapper from "./letterDtoMapper";
 import {ExceptionList} from "../response/error/errorInstances";
 import {LetterDto} from "./dto/letter.dto";
 import {UserService} from "../user/user.service";
+import {LetterWithSender} from "./dto/letterWithUser.prisma";
+import {LetterWithSenderDto} from "./dto/LetterWithSender.dto";
 
 @Injectable()
 export class LetterService {
@@ -40,4 +42,29 @@ export class LetterService {
         }
     }
 
+    /**
+     * @summary 특정 유저의 편지함 조회
+     * @param userId
+     * @returns LetterWithSenderDto[]
+     */
+    async getLetterList(userId : number): Promise<LetterWithSenderDto[]>{
+        const letterList : LetterWithSender[] = await this.prismaService.letter.findMany({
+            where:{
+                receiverId : userId
+            },
+            include : {
+                sender : {
+                    select : {
+                        id : true,
+                        nickname : true
+                    }
+                }
+            },
+            orderBy:{
+                createdAt : 'desc'
+            }
+        });
+        if(letterList.length === 0) return [];
+        return letterList.map(letter => LetterDtoMapper.letterWithSenderToLetterWithSenderDto(letter));
+    }
 }

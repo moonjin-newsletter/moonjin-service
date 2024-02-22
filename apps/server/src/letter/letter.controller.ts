@@ -6,9 +6,10 @@ import {ICreateLetter} from "./api-types/ICreateLetter";
 import {UserAuthDto} from "../auth/dto/userAuthDto";
 import {LetterService} from "./letter.service";
 import {createResponseForm} from "../response/responseForm";
-import {TryCatch} from "../response/tryCatch";
+import {Try, TryCatch} from "../response/tryCatch";
 import {SEND_LETTER_ERROR} from "../response/error/letter/letter.error";
 import {USER_NOT_FOUND} from "../response/error/auth";
+import {LetterWithSenderDto} from "./dto/LetterWithSender.dto";
 
 @Controller('letter')
 export class LetterController {
@@ -35,7 +36,16 @@ export class LetterController {
         });
     }
 
-    
+    /**
+     * @summary 내 편지함 조회 API
+     * @param user
+     * @returns LetterWithSenderDto[]
+     */
+    @TypedRoute.Get()
+    @UseGuards(UserAuthGuard)
+    async getLetterList(@User() user: UserAuthDto) : Promise<Try<LetterWithSenderDto[]>> {
+        return createResponseForm(await this.letterService.getLetterList(user.id));
+    }
 
 
 }
