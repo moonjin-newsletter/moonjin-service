@@ -10,6 +10,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
 import { SeriesModule } from './series/series.module';
+import { LetterModule } from './letter/letter.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { SeriesModule } from './series/series.module';
     PostModule,
     UserModule,
     SeriesModule,
+    LetterModule,
   ],
   controllers: [AppController],
   providers: [AppService],
