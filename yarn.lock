@@ -5352,6 +5352,7 @@ __metadata:
     slick-carousel: "npm:^1.8.1"
     swr: "npm:^2.2.4"
     tailwindcss: "npm:^3.4.1"
+    ts-pattern: "npm:^5.0.8"
     tsconfig: "npm:*"
     typescript: "npm:^4.5.3"
     ui: "npm:*"
@@ -13178,6 +13179,13 @@ __metadata:
     ts-patch: bin/ts-patch.js
     tspc: bin/tspc.js
   checksum: 773f55de5cae7592af85ba9216b8b5baee9cd440ac085466152bcce7fbcfaeab0f2774b013f97a399f833a4c409646acc9579d7bb6c1f9b969b08bc492038a56
+  languageName: node
+  linkType: hard
+
+"ts-pattern@npm:^5.0.8":
+  version: 5.0.8
+  resolution: "ts-pattern@npm:5.0.8"
+  checksum: c0767f4a4ce960cc87e69274f750d4672e37e865b779f8aed472fb22566baaedd584caf7dfd454905c25138aabe88f3abb5c2351487b223e822a3affae9611eb
   languageName: node
   linkType: hard
 

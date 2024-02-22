@@ -37,7 +37,7 @@ export default function Header() {
     return;
   return (
     <header className="fixed z-50 top-0 left-0 w-full flex h-16  items-center justify-center bg-black/40">
-      <div className="flex  w-[1024px] h-full items-center  font-normal">
+      <div className="flex  w-[1006px] h-full items-center  font-normal">
         <Link href="/" className="flex  items-center h-full text-white">
           <I.Logo width="139" height="29" viewBox="0 0 149 39" />
         </Link>
@@ -61,8 +61,8 @@ export default function Header() {
               >
                 시작하기
               </Link>
-              <div className="h-fit group flex bg-black/50 rounded-l-full rounded-r-full items-center">
-                <nav className=" items-center    bortder  overflow-hidden font-medium text-[15px] text-grayscale-100 h-full  w-fit hidden  whitespace-nowrap right-0 top-14 hover:flex group-hover:flex ">
+              <div className="h-fit group flex  bg-black/50 rounded-l-full rounded-r-full items-center">
+                <nav className=" items-center transition duration-300 ease-in-out   overflow-hidden font-medium text-[15px] text-grayscale-100 h-full  w-fit hidden  whitespace-nowrap  hover:flex group-hover:flex ">
                   <Link className=" py-1.5 px-4" href="/mypage">
                     마이페이지
                   </Link>

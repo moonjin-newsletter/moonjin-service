@@ -1,9 +1,9 @@
 import "./globals.css";
-import type { Metadata } from "next";
-import Header from "../components/layout/Header";
-import ClientProvider from "./ClientProvider";
+import type { Metadata, Viewport } from "next";
 import { Libre_Baskerville, Noto_Serif_KR } from "next/font/google";
+import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
+import ClientProvider from "./ClientProvider";
 
 export const metadata: Metadata = {
   title: "moonjin",
@@ -24,13 +24,20 @@ const notoSerifKR = Noto_Serif_KR({
   weight: ["200", "300", "400", "500", "600", "700", "900"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  userScalable: true,
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <html lang="en" className={`${libre.variable} ${notoSerifKR.variable}`}>
+    <html className={`${libre.variable} ${notoSerifKR.variable}`} lang="en">
       <body className={`flex min-h-screen flex-col w-full h-full `}>
         <ClientProvider>
           <Header />
