@@ -17,6 +17,7 @@ import {CREATE_POST_ERROR, NOT_ACCESSED_FOR_POST, POST_NOT_FOUND, STAMP_ALREADY_
 import {FOLLOW_ALREADY_ERROR, FOLLOW_MYSELF_ERROR, FOLLOWER_NOT_FOUND} from "./user";
 import {CREATE_SERIES_ERROR, SERIES_NOT_FOUND} from "./series";
 import {EMPTY_LIST_INPUT} from "./dev";
+import {SEND_LETTER_ERROR} from "./letter";
 
 export const ExceptionList= {
     EMAIL_ALREADY_EXIST: new Exception(typia.random<EMAIL_ALREADY_EXIST>()),
@@ -49,12 +50,17 @@ export const ExceptionList= {
     /// stamp
     STAMP_ALREADY_EXIST : new Exception(typia.random<STAMP_ALREADY_EXIST>()),
 
+    // Series
     CREATE_SERIES_ERROR : new Exception(typia.random<CREATE_SERIES_ERROR>()),
     SERIES_NOT_FOUND : new Exception(typia.random<SERIES_NOT_FOUND>()),
 
+    // User
     FOLLOW_MYSELF_ERROR : new Exception(typia.random<FOLLOW_MYSELF_ERROR>()),
     FOLLOW_ALREADY_ERROR : new Exception(typia.random<FOLLOW_ALREADY_ERROR>()),
     FOLLOWER_NOT_FOUND : new Exception(typia.random<FOLLOWER_NOT_FOUND>()),
+
+    // Letter
+    SEND_LETTER_ERROR : new Exception(typia.random<SEND_LETTER_ERROR>()),
 
     //dev
     EMPTY_LIST_INPUT : new Exception(typia.random<EMPTY_LIST_INPUT>()),

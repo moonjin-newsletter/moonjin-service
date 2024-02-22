@@ -250,4 +250,21 @@ export class UserService {
         if(!user) throw ExceptionList.USER_NOT_FOUND;
         return {user : UserDtoMapper.UserToUserDto(user)};
     }
+
+
+    /**
+     * @summary 해당 유저가 존재하는 지 확인
+     * @param userId
+     * @returns void
+     * @throws USER_NOT_FOUND
+     */
+    async assertUserExist(userId : number): Promise<void>{
+        const user = await this.prismaService.user.findUnique({
+            where : {
+                id : userId,
+                deleted : false,
+            }
+        })
+        if(!user) throw ExceptionList.USER_NOT_FOUND;
+    }
 }

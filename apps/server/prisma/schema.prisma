@@ -25,6 +25,7 @@ model User {
   Follow     Follow[]
   Newsletter Newsletter[]
   Stamp      Stamp[]
+  Letter     Letter[]
 }
 
 model Oauth {
@@ -83,6 +84,7 @@ model Post {
   newsletter Newsletter[]
   Series     Series?      @relation(fields: [seriesId], references: [id])
   Stamp      Stamp[]
+  Letter     Letter[]
 
   @@index([writerId])
   @@index([seriesId])
@@ -131,4 +133,21 @@ model Stamp {
   @@id([userId, postId])
   @@index([userId])
   @@index([postId])
+}
+
+model Letter {
+  id         Int       @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  title      String    @db.VarChar(64)
+  content    String    @db.Text
+  createdAt  DateTime
+  readAt     DateTime?
+  deleted    Boolean   @default(false)
+
+  user User @relation(fields: [senderId], references: [id])
+  post Post @relation(fields: [receiverId], references: [id])
+
+  @@index([senderId])
+  @@index([receiverId])
 }

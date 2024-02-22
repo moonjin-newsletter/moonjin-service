@@ -27,6 +27,7 @@ export enum ErrorCodeEnum {
     // auth
     PASSWORD_CHANGE_ERROR = "0050",
     USER_NOT_WRITER = "0051",
+    
     // post
     CREATE_POST_ERROR = "0100",
     POST_NOT_FOUND = "0101",
@@ -42,6 +43,9 @@ export enum ErrorCodeEnum {
     FOLLOW_MYSELF_ERROR = "0400",
     FOLLOW_ALREADY_ERROR = "0401",
     FOLLOWER_NOT_FOUND = "0402",
+
+    // letter
+    SEND_LETTER_ERROR = "0500",
 
     // dev
     EMPTY_LIST_INPUT = "9000",
