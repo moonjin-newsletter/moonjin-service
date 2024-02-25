@@ -17,12 +17,12 @@ const libre = Libre_Baskerville({
   weight: ["400", "700"],
 });
 
-const notoSerifKR = Noto_Serif_KR({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-noto-serif",
-  weight: ["200", "300", "400", "500", "600", "700", "900"],
-});
+// const notoSerifKR = Noto_Serif_KR({
+//   subsets: ["latin"],
+//   display: "swap",
+//   variable: "--font-noto-serif",
+//   weight: ["200", "300", "400", "500", "600", "700", "900"],
+// });
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -37,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <html className={`${libre.variable} ${notoSerifKR.variable}`} lang="en">
+    <html className={`${libre.variable} `} lang="en">
       <body className={`flex min-h-screen flex-col w-full h-full `}>
         <ClientProvider>
           <Header />
