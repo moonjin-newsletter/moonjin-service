@@ -1,5 +1,5 @@
 import {Controller, UseGuards} from '@nestjs/common';
-import {TypedBody, TypedRoute} from "@nestia/core";
+import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {User} from "../auth/decorator/user.decorator";
 import {ICreateLetter} from "./api-types/ICreateLetter";
@@ -7,7 +7,7 @@ import {UserAuthDto} from "../auth/dto/userAuthDto";
 import {LetterService} from "./letter.service";
 import {createResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
-import {SEND_LETTER_ERROR} from "../response/error/letter/letter.error";
+import {LETTER_ALREADY_READ, LETTER_NOT_FOUND, LETTER_UNAUTHORIZED, SEND_LETTER_ERROR} from "../response/error/letter";
 import {USER_NOT_FOUND} from "../response/error/auth";
 import {LetterWithSenderDto} from "./dto/LetterWithSender.dto";
 
@@ -45,6 +45,17 @@ export class LetterController {
     @UseGuards(UserAuthGuard)
     async getLetterList(@User() user: UserAuthDto) : Promise<Try<LetterWithSenderDto[]>> {
         return createResponseForm(await this.letterService.getLetterList(user.id));
+    }
+
+    @TypedRoute.Put(':letterId/read')
+    @UseGuards(UserAuthGuard)
+    async readLetter(@User() user:UserAuthDto, @TypedParam('letterId') letterId: number) : Promise<TryCatch<{ message:string, readAt: Date | null },
+        LETTER_NOT_FOUND | LETTER_UNAUTHORIZED | LETTER_ALREADY_READ>>{
+        const letter = await this.letterService.readLetter(letterId, user.id);
+        return createResponseForm({
+            message : "편지를 읽음 처리 했습니다.",
+            readAt : letter.readAt
+        });
     }
 
 

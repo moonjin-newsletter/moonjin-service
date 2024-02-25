@@ -67,4 +67,51 @@ export class LetterService {
         if(letterList.length === 0) return [];
         return letterList.map(letter => LetterDtoMapper.letterWithSenderToLetterWithSenderDto(letter));
     }
+
+    /**
+     * @summary 특정 편지 읽음 처리
+     * @param letterId
+     * @param userId
+     * @returns LetterDto
+     * @throws LETTER_UNAUTHORIZED
+     * @throws LETTER_NOT_FOUND
+     * @throws LETTER_ALREADY_READ
+     */
+    async readLetter(letterId: number, userId: number): Promise<LetterDto>{
+        await this.assertUserIsReceiverOfLetter(letterId, userId, true);
+        try {
+            const letter   = await this.prismaService.letter.update({
+                where:{
+                    id : letterId
+                },
+                data:{
+                    readAt : this.utilService.getCurrentDateInKorea()
+                }
+            });
+            return LetterDtoMapper.letterToletterDto(letter);
+        }catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    /**
+     * @summary 특정 유저가 특정 편지의 수신자인지 확인
+     * @param letterId
+     * @param userId
+     * @param checkRead
+     * @throws LETTER_NOT_FOUND
+     * @throws LETTER_UNAUTHORIZED
+     * @throws LETTER_ALREADY_READ
+     */
+    async assertUserIsReceiverOfLetter(letterId: number, userId: number, checkRead: boolean = false){
+        const letter = await this.prismaService.letter.findUnique({
+            where:{
+                id : letterId
+            }
+        });
+        if(!letter) throw ExceptionList.LETTER_NOT_FOUND;
+        if(letter.receiverId !== userId) throw ExceptionList.LETTER_UNAUTHORIZED;
+        if(checkRead && letter.readAt) throw ExceptionList.LETTER_ALREADY_READ;
+    }
 }

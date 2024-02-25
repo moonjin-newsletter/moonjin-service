@@ -46,6 +46,9 @@ export enum ErrorCodeEnum {
 
     // letter
     SEND_LETTER_ERROR = "0500",
+    LETTER_UNAUTHORIZED = "0501",
+    LETTER_NOT_FOUND = "0502",
+    LETTER_ALREADY_READ = "0503",
 
     // dev
     EMPTY_LIST_INPUT = "9000",

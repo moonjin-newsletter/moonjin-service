@@ -10,5 +10,30 @@ export interface SEND_LETTER_ERROR extends ERROR {
     };
 }
 
+export interface LETTER_UNAUTHORIZED extends ERROR {
+    result : false;
+    code : ErrorCodeEnum.LETTER_UNAUTHORIZED;
+    httpStatus: 403;
+    data : {
+        message : "해당 편지에 접근 권한이 없습니다."
+    };
+}
 
+export interface LETTER_NOT_FOUND extends ERROR {
+    result : false;
+    code : ErrorCodeEnum.LETTER_NOT_FOUND;
+    httpStatus: 404;
+    data : {
+        message : "해당 편지가 존재하지 않습니다."
+    };
+}
+
+export interface LETTER_ALREADY_READ extends ERROR {
+    result : false;
+    code : ErrorCodeEnum.LETTER_ALREADY_READ;
+    httpStatus: 403;
+    data : {
+        message : "해당 편지를 이미 읽었습니다."
+    };
+}
 
