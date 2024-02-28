@@ -41,7 +41,6 @@ export default function RootLayout({
       <body className={`flex min-h-screen flex-col w-full h-full `}>
         <ClientProvider>
           <Header />
-
           {children}
           <Footer />
         </ClientProvider>

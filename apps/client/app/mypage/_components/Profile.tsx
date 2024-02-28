@@ -9,7 +9,7 @@ export default function Profile({
   type: userType;
 }) {
   return (
-    <section className="flex items-end relative w-full max-w-[1006px] py-7 bg-gray-100 gap-x-6">
+    <section className="flex items-end relative w-full max-w-[1006px] pt-7  gap-x-6">
       {type === "작가" && (
         <div className="py-11 px-20">
           <Image

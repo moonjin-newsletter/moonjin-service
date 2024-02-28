@@ -2,11 +2,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getCookie } from "cookies-next";
-import * as I from "components/icons";
 import * as Fi from "react-icons/fi";
 import { usePathname } from "next/navigation";
-import csr from "../../lib/fetcher/csr";
 import toast from "react-hot-toast";
+import * as I from "components/icons";
+import csr from "../../lib/fetcher/csr";
 
 export default function Header() {
   const userCookie = getCookie("accessToken");
@@ -34,21 +34,21 @@ export default function Header() {
     path.includes("signup") ||
     path.includes("auth/social")
   )
-    return;
+    return null;
   return (
     <header className="fixed z-50 top-0 left-0 w-full flex h-16  items-center justify-center bg-black/40">
       <div className="flex  w-[1006px] h-full items-center  font-normal">
-        <Link href="/" className="flex  items-center h-full text-white">
-          <I.Logo width="139" height="29" viewBox="0 0 149 39" />
+        <Link className="flex  items-center h-full text-white" href="/">
+          <I.Logo height="29" viewBox="0 0 149 39" width="139" />
         </Link>
         <div className="flex h-full ml-72 gap-x-8 items-center text-white">
-          <Link href="" className="flex items-center  h-full">
+          <Link className="flex items-center  h-full" href="">
             Brand
           </Link>
-          <Link href="" className="flex items-center  h-full">
+          <Link className="flex items-center  h-full" href="">
             시리즈
           </Link>
-          <Link href="" className="flex items-center  h-full">
+          <Link className="flex items-center  h-full" href="">
             전체 뉴스레터
           </Link>
         </div>
@@ -56,8 +56,8 @@ export default function Header() {
           {isLogin ? (
             <div className="w-fit h-full flex items-center gap-x-4 relative text-white">
               <Link
-                href=""
                 className="border border-white text-sm py-1.5 px-2.5 rounded-full"
+                href=""
               >
                 시작하기
               </Link>
@@ -67,12 +67,12 @@ export default function Header() {
                     마이페이지
                   </Link>
 
-                  <button onClick={onClickLogout} className="py-2 px-3">
+                  <button className="py-2 px-3" onClick={onClickLogout}>
                     로그아웃
                   </button>
                 </nav>
                 <button className="h-full px-2.5 py-2.5 relative  text-white ">
-                  <I.User width="22" height="23" viewBox="0 0 24 25" />
+                  <I.User height="23" viewBox="0 0 24 25" width="22" />
                 </button>
               </div>
 
@@ -88,8 +88,8 @@ export default function Header() {
             </div>
           ) : (
             <Link
-              href="/auth/login"
               className="py-2.5 h-fit px-6 text-white text-sm bg-[#7b0000] rounded-lg"
+              href="/auth/login"
             >
               로그인
             </Link>
