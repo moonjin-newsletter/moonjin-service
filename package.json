@@ -6,6 +6,7 @@
     "start": "turbo run start",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
+    "deploy": "pm2 start npm --name moonjin-service -- start",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "preinstall": "turbo run preinstall",
     "build:packages": "yarn build --filter=@moonjin/api-types"
