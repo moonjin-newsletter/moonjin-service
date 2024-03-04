@@ -61,7 +61,7 @@ export class PostController {
     @TypedRoute.Post(':id/newsletter')
     @UseGuards(WriterAuthGuard)
     async sendNewsletter(@User() user:UserAuthDto, @TypedParam('id') postId : number){
-        await this.postService.assertWriter(postId,user.id);
+        await this.postService.assertWriterOfPost(postId,user.id);
         const sentCount = await this.postService.sendNewsletter(postId);
         return createResponseForm({
             sentCount : sentCount
@@ -110,4 +110,18 @@ export class PostController {
             date : stamp.createdAt
         });
     }
+
+    /**
+     * @summary 해당 유저의 작성 중인 글 목록 가져오기
+     * @param user
+     * @returns PostDto[]
+     * @throws USER_NOT_WRITER
+     */
+    @TypedRoute.Get('/writing')
+    @UseGuards(WriterAuthGuard)
+    async getWritingPostList(@User() user:UserAuthDto) : Promise<Try<PostDto[]>>{
+        const postList = await this.postService.getWritingPost(user.id);
+        return createResponseForm(postList);
+    }
+
 }

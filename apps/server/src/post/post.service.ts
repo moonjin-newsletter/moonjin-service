@@ -10,6 +10,7 @@ import {UserService} from "../user/user.service";
 import {PostWithWriterUserDto} from "./dto/postWithWriterUser.dto";
 import {StampedPost} from "./dto/stampedPostWithWriter.prisma.type";
 import {StampedPostDto} from "./dto/stampedPost.dto";
+import {AuthValidationService} from "../auth/auth.validation.service";
 
 @Injectable()
 export class PostService {
@@ -17,6 +18,7 @@ export class PostService {
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
         private readonly userService: UserService,
+        private readonly authValidationService: AuthValidationService
     ) {}
 
     /**
@@ -66,7 +68,7 @@ export class PostService {
      * @throws POST_NOT_FOUND
      * @throws NOT_ACCESSED_FOR_POST
      */
-    async assertWriter(postId : number, writerId : number) : Promise<void> {
+    async assertWriterOfPost(postId : number, writerId : number) : Promise<void> {
         const post = await this.prismaService.post.findUnique({
             where : {
                 id : postId
@@ -200,5 +202,31 @@ export class PostService {
         })
         if(stampedPostList.length === 0) return [];
         return stampedPostList.map(stampedPost => PostDtoMapper.StampedPostToStampedPostDto(stampedPost));
+    }
+
+    /**
+     * @summary 해당 유저가 작성중인 글 목록 가져오기
+     * @param userId
+     * @return PostDto[]
+     * @throws USER_NOT_WRITER
+     */
+    async getWritingPost(userId: number): Promise<PostDto[]> {
+        await this.authValidationService.assertWriter(userId);
+        try{
+            const postList = await this.prismaService.post.findMany({
+                where : {
+                    writerId : userId,
+                    releasedAt : null,
+                    deleted : false
+                },
+                orderBy : {
+                    createdAt : 'desc'
+                }
+            })
+            return PostDtoMapper.PostListToPostDtoList(postList);
+        }catch (error){
+            console.error(error);
+            return [];
+        }
     }
 }
