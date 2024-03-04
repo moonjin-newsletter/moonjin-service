@@ -167,7 +167,7 @@ export class PostService {
      * @param postId
      * @throws STAMP_ALREADY_EXIST
      */
-    async stampPost(userId : number, postId: number) : Promise<Stamp>{
+    async stampPost(postId: number, userId : number) : Promise<Stamp>{
         const createdAt = this.utilService.getCurrentDateInKorea();
         try{
             return await this.prismaService.stamp.create({
@@ -227,6 +227,29 @@ export class PostService {
         }catch (error){
             console.error(error);
             return [];
+        }
+    }
+
+    /**
+     * @summary 글 삭제
+     * @param postId
+     * @param userId
+     * @throws POST_NOT_FOUND
+     * @throws NOT_ACCESSED_FOR_POST
+     */
+    async deletePost(postId: number, userId: number): Promise<void> {
+        await this.assertWriterOfPost(postId, userId);
+        try{
+            await this.prismaService.post.update({
+                where : {
+                    id : postId
+                },
+                data : {
+                    deleted : true,
+                }
+            }) // TODO : 글 삭제 시 Side Effect 생길 시 고려하기
+        }catch (error){
+            console.error(error);
         }
     }
 }
