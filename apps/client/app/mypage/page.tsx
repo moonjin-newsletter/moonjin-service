@@ -9,11 +9,10 @@ import { Fragment } from "react";
 
 export default function Page() {
   const { data: userInfo } = useSWR<any>("user", (url: string) =>
-    csr.get(url).then((res) => res.json()),
+    csr.get(url).then((res) => res.json())
   );
 
   const userType = userInfo?.data?.user?.role === 1 ? "작가" : "독자";
-  console.log(userInfo);
   const tabList =
     userType === "작가" ? ["작성글", "구독한 시리즈"] : ["구독한 시리즈"];
 
