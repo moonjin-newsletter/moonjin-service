@@ -12,7 +12,7 @@ export function Sidebar({ type }: { type: userType }) {
       </Link>
 
       <div className="flex flex-col w-full ">
-        <MenuLink title="마이페이지 홈" url="" />
+        <MenuLink title="마이페이지 홈" url="/mypage" />
         {type === "작가" && (
           <div className="flex flex-col w-full ">
             {[
@@ -25,7 +25,7 @@ export function Sidebar({ type }: { type: userType }) {
             <div className="w-full h-5 bg-grayscale-100" />
           </div>
         )}
-        <MenuLink title="구독한 뉴스레터" url="" />
+        <MenuLink title="구독한 뉴스레터" url="/mypage/subscribe" />
         <MenuLink title="구독한 작가" url="" />
         <MenuLink title="문진 스탬프" url="" />
         <MenuLink title="편지함" url="" />
