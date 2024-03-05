@@ -113,6 +113,19 @@ export class PostController {
     }
 
     /**
+     * @summary 내가 발표한 글 목록 가져오기
+     * @param user
+     * @returns PostDto[]
+     * @throws USER_NOT_WRITER
+     */
+    @TypedRoute.Get('me')
+    @UseGuards(WriterAuthGuard)
+    async getMyReleasedPostList(@User() user:UserAuthDto) : Promise<TryCatch<PostDto[], USER_NOT_WRITER>>{
+        const postList = await this.postService.getReleasedPostListByUserId(user.id);
+        return createResponseForm(postList);
+    }
+
+    /**
      * @summary 해당 유저의 작성 중인 글 목록 가져오기
      * @param user
      * @returns PostDto[]
@@ -121,12 +134,12 @@ export class PostController {
     @TypedRoute.Get('/writing')
     @UseGuards(WriterAuthGuard)
     async getWritingPostList(@User() user:UserAuthDto) : Promise<TryCatch<PostDto[], USER_NOT_WRITER>>{
-        const postList = await this.postService.getWritingPost(user.id);
+        const postList = await this.postService.getWritingPostList(user.id);
         return createResponseForm(postList);
     }
 
     /**
-     * @summary 해당 유저의 글 삭제s
+     * @summary 해당 유저의 글 삭제
      * @param user
      * @param postId
      * @throws POST_NOT_FOUND

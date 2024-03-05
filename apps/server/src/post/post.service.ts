@@ -210,7 +210,7 @@ export class PostService {
      * @return PostDto[]
      * @throws USER_NOT_WRITER
      */
-    async getWritingPost(userId: number): Promise<PostDto[]> {
+    async getWritingPostList(userId: number): Promise<PostDto[]> {
         await this.authValidationService.assertWriter(userId);
         try{
             const postList = await this.prismaService.post.findMany({
@@ -251,5 +251,35 @@ export class PostService {
         }catch (error){
             console.error(error);
         }
+    }
+
+    /**
+     * @summary 해당 유저의 발표된 글 목록 가져오기
+     * @param userId
+     * @return PostDto[]
+     * @throws USER_NOT_WRITER
+     */
+    async getReleasedPostListByUserId(userId : number): Promise<PostDto[]>{
+        await this.authValidationService.assertWriter(userId);
+        try{
+            const postList = await this.prismaService.post.findMany({
+                where : {
+                    writerId : userId,
+                    releasedAt : {
+                        not : null
+                    },
+                    status : true,
+                    deleted : false
+                },
+                orderBy : {
+                    releasedAt : 'desc'
+                }
+            })
+            return PostDtoMapper.PostListToPostDtoList(postList);
+        } catch (error){
+            console.error(error);
+            return [];
+        }
+
     }
 }
