@@ -8,7 +8,9 @@ import {createResponseForm} from "../response/responseForm";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {SeriesWithWriterDto} from "./dto/seriesWithWriter.dto";
-import {Try} from "../response/tryCatch";
+import {Try, TryCatch} from "../response/tryCatch";
+import {SeriesDto} from "./dto/series.dto";
+import {USER_NOT_WRITER} from "../response/error/auth";
 
 @Controller('series')
 export class SeriesController {
@@ -34,10 +36,23 @@ export class SeriesController {
      * @param user
      * @returns series
      */
-    @TypedRoute.Get('/following')
+    @TypedRoute.Get('following')
     @UseGuards(UserAuthGuard)
     async getSeries(@User() user: UserAuthDto) : Promise<Try<SeriesWithWriterDto[]>>{
         const seriesList = await this.seriesService.getSeriesByUserId(user.id);
+        return createResponseForm(seriesList)
+    }
+
+    /**
+     * @summary 내가 발행한 시리즈 가져오기
+     * @param user
+     * @returns series[]
+     * @throws USER_NOT_WRITER
+     */
+    @TypedRoute.Get('me')
+    @UseGuards(WriterAuthGuard)
+    async getSeriesByWriter(@User() user: UserAuthDto) : Promise<TryCatch<SeriesDto[], USER_NOT_WRITER>>{
+        const seriesList = await this.seriesService.getSeriesListByWriterId(user.id);
         return createResponseForm(seriesList)
     }
 

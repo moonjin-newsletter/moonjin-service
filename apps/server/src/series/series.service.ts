@@ -7,6 +7,7 @@ import {SeriesDto} from "./dto/series.dto";
 import {ExceptionList} from "../response/error/errorInstances";
 import {UserService} from "../user/user.service";
 import {SeriesWithWriterDto} from "./dto/seriesWithWriter.dto";
+import {AuthValidationService} from "../auth/auth.validation.service";
 
 @Injectable()
 export class SeriesService {
@@ -14,6 +15,7 @@ export class SeriesService {
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
         private readonly userService: UserService,
+        private readonly authValidationService: AuthValidationService
     ) {}
 
     async createSeries(createSeriesData : CreateSeriesDto) : Promise<SeriesDto>{
@@ -70,6 +72,28 @@ export class SeriesService {
             }
         })
         if(!series) throw ExceptionList.SERIES_NOT_FOUND;
+    }
+
+    /**
+     * @summary 해당 작가의 시리즈 가져오기
+     * @param writerId
+     * @returns SeriesDto
+     * @throws USER_NOT_WRITER
+     */
+    async getSeriesListByWriterId(writerId: number): Promise<SeriesDto[]> {
+        await this.authValidationService.assertWriter(writerId);
+        try {
+            const seriesList = await this.prismaService.series.findMany({
+                where: {
+                    deleted: false,
+                    writerId: writerId
+                }
+            })
+            return SeriesDtoMapper.SeriesListToSeriesDtoList(seriesList);
+        }catch(error){
+            console.error(error);
+            return [];
+        }
     }
 
 
