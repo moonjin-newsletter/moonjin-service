@@ -94,6 +94,7 @@ model Newsletter {
   postId     Int
   receiverId Int
   sentAt     DateTime
+  status     Boolean  @default(true)
 
   Post Post @relation(fields: [postId], references: [id])
   user User @relation(fields: [receiverId], references: [id])
