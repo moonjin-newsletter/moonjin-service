@@ -1,5 +1,5 @@
 import { Controller, UseGuards } from '@nestjs/common';
-import {TypedBody, TypedRoute} from "@nestia/core";
+import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
 import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto/userAuthDto";
 import {ICreateSeries} from "./api-types/ICreateSeries";
@@ -11,6 +11,8 @@ import {SeriesWithWriterDto} from "./dto/seriesWithWriter.dto";
 import {Try, TryCatch} from "../response/tryCatch";
 import {SeriesDto} from "./dto/series.dto";
 import {USER_NOT_WRITER} from "../response/error/auth";
+import {IUpdateSeries} from "./api-types/IUpdateSeries";
+import {SERIES_NOT_FOUND} from "../response/error/series";
 
 @Controller('series')
 export class SeriesController {
@@ -54,6 +56,26 @@ export class SeriesController {
     async getSeriesByWriter(@User() user: UserAuthDto) : Promise<TryCatch<SeriesDto[], USER_NOT_WRITER>>{
         const seriesList = await this.seriesService.getSeriesListByWriterId(user.id);
         return createResponseForm(seriesList)
+    }
+
+    /**
+     * @summary 시리즈 수정 API
+     * @param user
+     * @param seriesId
+     * @param seriesData
+     * @returns series
+     * @throws USER_NOT_WRITER
+     * @throws SERIES_NOT_FOUND
+     */
+    @TypedRoute.Patch(':seriesId')
+    @UseGuards(WriterAuthGuard)
+    async updateSeries(
+        @User() user :UserAuthDto,
+        @TypedParam('seriesId') seriesId: number,
+        @TypedBody() seriesData : IUpdateSeries
+    ): Promise<TryCatch<SeriesDto, USER_NOT_WRITER | SERIES_NOT_FOUND>>{
+        const series = await this.seriesService.updateSeries(seriesId,user.id,seriesData);
+        return createResponseForm(series);
     }
 
 }

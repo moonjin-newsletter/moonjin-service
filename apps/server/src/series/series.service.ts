@@ -8,6 +8,7 @@ import {ExceptionList} from "../response/error/errorInstances";
 import {UserService} from "../user/user.service";
 import {SeriesWithWriterDto} from "./dto/seriesWithWriter.dto";
 import {AuthValidationService} from "../auth/auth.validation.service";
+import {IUpdateSeries} from "./api-types/IUpdateSeries";
 
 @Injectable()
 export class SeriesService {
@@ -93,6 +94,53 @@ export class SeriesService {
         }catch(error){
             console.error(error);
             return [];
+        }
+    }
+
+    /**
+     * @summary 해당 작가의 시리즈가 맞는 지 확인
+     * @param seriesId
+     * @param writerId
+     * @throws SERIES_NOT_FOUND
+     * @throws USER_NOT_WRITER
+     */
+    async assertWriterOfSeries(seriesId: number, writerId: number): Promise<void> {
+        const series = await this.prismaService.series.findUnique({
+            where: {
+                id: seriesId
+            },
+            select: {
+                writerId: true
+            }
+        });
+        if(!series) throw ExceptionList.SERIES_NOT_FOUND;
+        if (series.writerId !== writerId) throw ExceptionList.USER_NOT_WRITER;
+    }
+
+    /**
+     * @summary 시리즈 수정
+     * @param seriesId
+     * @param writerId
+     * @param seriesData
+     * @returns SeriesDto
+     * @throws SERIES_NOT_FOUND
+     * @throws USER_NOT_WRITER
+     */
+    async updateSeries(seriesId: number, writerId: number, seriesData: IUpdateSeries): Promise<SeriesDto> {
+        await this.assertWriterOfSeries(seriesId, writerId);
+        try {
+            const updatedSeries = await this.prismaService.series.update({
+                where: {
+                    id: seriesId
+                },
+                data: {
+                    ...seriesData
+                }
+            })
+            return SeriesDtoMapper.SeriesToSeriesDto(updatedSeries);
+        }catch (error){
+            console.error(error);
+            throw ExceptionList.SERIES_NOT_FOUND;
         }
     }
 
