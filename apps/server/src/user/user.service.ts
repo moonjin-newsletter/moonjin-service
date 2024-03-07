@@ -10,7 +10,7 @@ import {WriterInfoDto} from "../auth/dto/writerInfoDto";
 import UserDtoMapper from "./userDtoMapper";
 import {FollowingWriterDto} from "./dto/followingWriter.dto";
 import {UserDto} from "./dto/user.dto";
-import {WriterInfoWithUser} from "./dto/writerInfo.prisma.type";
+import {WriterInfoWithUser} from "./prisma/writerInfo.prisma.type";
 import {WriterDto} from "./dto/writer.dto";
 import {FollowerDto} from "./dto/follower.dto";
 

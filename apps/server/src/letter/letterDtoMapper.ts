@@ -1,6 +1,6 @@
 import {Letter} from "@prisma/client";
 import {LetterDto} from "./dto/letter.dto";
-import {LetterWithSender} from "./dto/letterWithUser.prisma";
+import {LetterWithSender} from "./prisma/letterWithUser.prisma";
 import {LetterWithSenderDto} from "./dto/LetterWithSender.dto";
 
 class LetterDtoMapperClass {

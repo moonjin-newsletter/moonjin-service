@@ -36,7 +36,7 @@ export class SeriesController {
     /**
      * @summary 구독 중인 시리즈 가져오기
      * @param user
-     * @returns series
+     * @returns SeriesWithWriterDto[]
      */
     @TypedRoute.Get('following')
     @UseGuards(UserAuthGuard)

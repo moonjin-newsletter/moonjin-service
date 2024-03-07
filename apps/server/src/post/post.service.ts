@@ -8,7 +8,7 @@ import {PostDto} from "./dto/post.dto";
 import {UtilService} from "../util/util.service";
 import {UserService} from "../user/user.service";
 import {PostWithWriterUserDto} from "./dto/postWithWriterUser.dto";
-import {StampedPost} from "./dto/stampedPostWithWriter.prisma.type";
+import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
 import {StampedPostDto} from "./dto/stampedPost.dto";
 import {AuthValidationService} from "../auth/auth.validation.service";
 

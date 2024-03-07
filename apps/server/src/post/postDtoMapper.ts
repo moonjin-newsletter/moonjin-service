@@ -3,7 +3,7 @@ import {Post} from "@prisma/client";
 import {UserIdentityDto} from "../user/dto/userIdentity.dto";
 import {PostWithWriterUserDto} from "./dto/postWithWriterUser.dto";
 import {StampedPostDto} from "./dto/stampedPost.dto";
-import {StampedPost} from "./dto/stampedPostWithWriter.prisma.type";
+import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
 
 
 class PostDtoMapperClass {
