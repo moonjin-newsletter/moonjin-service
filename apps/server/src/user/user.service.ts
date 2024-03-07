@@ -12,6 +12,7 @@ import {FollowingWriterDto} from "./dto/followingWriter.dto";
 import {UserDto} from "./dto/user.dto";
 import {WriterInfoWithUser} from "./dto/writerInfo.prisma.type";
 import {WriterDto} from "./dto/writer.dto";
+import {FollowerDto} from "./dto/follower.dto";
 
 @Injectable()
 export class UserService {
@@ -266,5 +267,28 @@ export class UserService {
             }
         })
         if(!user) throw ExceptionList.USER_NOT_FOUND;
+    }
+
+    /**
+     * @summary 해당 작가의 팔로워 목록 가져오기
+     * @param writerId
+     * @returns UserProfileDto[]
+     */
+    async getFollowerListByWriterId(writerId: number): Promise<FollowerDto[]> {
+        const followerList = await this.prismaService.follow.findMany({
+            where: {
+                writerId,
+                deletedByWriter: false,
+            },
+            include:{
+                user : true
+            },
+            orderBy:{
+                createdAt: 'desc'
+            },
+        })
+        return followerList.map(follower => {
+            return UserDtoMapper.FollowAndUserToFollwerDto(follower.user, follower.createdAt);
+        })
     }
 }

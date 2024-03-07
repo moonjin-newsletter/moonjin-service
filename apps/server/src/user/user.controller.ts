@@ -5,11 +5,13 @@ import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto/userAuthDto";
 import {UserService} from "./user.service";
 import {createResponseForm, ResponseForm} from "../response/responseForm";
-import {TryCatch} from "../response/tryCatch";
+import {Try, TryCatch} from "../response/tryCatch";
 import {USER_NOT_FOUND, USER_NOT_WRITER} from "../response/error/auth";
 import {UserDto} from "./dto/user.dto";
 import {FollowingWriterDto} from "./dto/followingWriter.dto";
 import {WriterDto} from "./dto/writer.dto";
+import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
+import {FollowerDto} from "./dto/follower.dto";
 
 @Controller('user')
 export class UserController {
@@ -26,7 +28,7 @@ export class UserController {
      * @throws FOLLOW_MYSELF_ERROR
      * @throws FOLLOW_ALREADY_ERROR
      */
-    @TypedRoute.Post("Follow/:id")
+    @TypedRoute.Post(":id/Follow")
     @UseGuards(UserAuthGuard)
     async follow(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
         await this.userService.followWriter(user.id, writerId);
@@ -43,7 +45,7 @@ export class UserController {
      * @throws USER_NOT_WRITER
      * @throws FOLLOW_MYSELF_ERROR
      */
-    @TypedRoute.Delete("Follow/:id")
+    @TypedRoute.Delete(":id/Follow")
     @UseGuards(UserAuthGuard)
     async unfollow(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
         await this.userService.unfollowWriter(user.id, writerId);
@@ -78,5 +80,17 @@ export class UserController {
     {
         const userData = await this.userService.getUserData(user.id, user.role);
         return createResponseForm(userData);
+    }
+
+    /**
+     * @summary 작가의 팔로워 목록 보기
+     * @param user
+     * @returns UserProfileDto[]
+     */
+    @TypedRoute.Get("Follower")
+    @UseGuards(WriterAuthGuard)
+    async getFollowerList(@User() user : UserAuthDto) : Promise<Try<FollowerDto[]>> {
+        const followingWriterList = await this.userService.getFollowerListByWriterId(user.id)
+        return createResponseForm(followingWriterList);
     }
 }

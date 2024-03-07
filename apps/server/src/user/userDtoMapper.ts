@@ -6,6 +6,8 @@ import {UserIdentityDto} from "./dto/userIdentity.dto";
 import {FollowingWriterDto} from "./dto/followingWriter.dto";
 import { WriterInfoWithUser} from "./dto/writerInfo.prisma.type";
 import {WriterDto} from "./dto/writer.dto";
+import {UserProfileDto} from "./dto/userProfile.dto";
+import {FollowerDto} from "./dto/follower.dto";
 
 class UserDtoMapperClass {
     UserToUserAuthDto(user: User): UserAuthDto {
@@ -48,6 +50,20 @@ class UserDtoMapperClass {
             }
         })
         return followingWriterList;
+    }
+
+    UserToUserProfileDto(user: User): UserProfileDto {
+        const {deleted, password,email, ...userData} = user;
+        return userData;
+    }
+
+    FollowAndUserToFollwerDto(user: User, createdAt : Date): FollowerDto {
+        return {
+            user: this.UserToUserProfileDto(user),
+            following: {
+                createdAt
+            }
+        }
     }
 }
 const UserDtoMapper = new UserDtoMapperClass();
