@@ -278,7 +278,7 @@ export class UserService {
         const followerList = await this.prismaService.follow.findMany({
             where: {
                 writerId,
-                deletedByWriter: false,
+                hide: false,
             },
             include:{
                 user : true
@@ -290,5 +290,35 @@ export class UserService {
         return followerList.map(follower => {
             return UserDtoMapper.FollowAndUserToFollwerDto(follower.user, follower.createdAt);
         })
+    }
+
+    /**
+     * @summary 팔로우 목록에서 유저 숨기기
+     * @param followerId
+     * @param writerId
+     * @returns void
+     * @throws FOLLOW_MYSELF_ERROR
+     * @throws USER_NOT_FOUND
+     * @throws FOLLOWER_NOT_FOUND
+     */
+    async hideFollower(followerId: number, writerId: number): Promise<void> {
+        if(followerId === writerId) throw ExceptionList.FOLLOW_MYSELF_ERROR;
+        await this.assertUserExist(followerId);
+        try {
+             await this.prismaService.follow.update({
+                where: {
+                    followerId_writerId: {
+                        writerId,
+                        followerId
+                    }
+                },
+                data: {
+                    hide: true
+                }
+            })
+        }catch (error){
+            console.log(error);
+            throw ExceptionList.FOLLOWER_NOT_FOUND;
+        }
     }
 }

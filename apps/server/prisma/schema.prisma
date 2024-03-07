@@ -54,10 +54,10 @@ model WriterInfo {
 }
 
 model Follow {
-  followerId      Int
-  writerId        Int
-  createdAt       DateTime
-  deletedByWriter Boolean  @default(false)
+  followerId Int
+  writerId   Int
+  createdAt  DateTime
+  hide       Boolean  @default(false)
 
   user       User       @relation(fields: [followerId], references: [id])
   writerInfo WriterInfo @relation(fields: [writerId], references: [userId])

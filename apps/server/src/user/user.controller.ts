@@ -12,6 +12,7 @@ import {FollowingWriterDto} from "./dto/followingWriter.dto";
 import {WriterDto} from "./dto/writer.dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {FollowerDto} from "./dto/follower.dto";
+import {FOLLOW_MYSELF_ERROR, FOLLOWER_NOT_FOUND} from "../response/error/user";
 
 @Controller('user')
 export class UserController {
@@ -87,10 +88,29 @@ export class UserController {
      * @param user
      * @returns UserProfileDto[]
      */
-    @TypedRoute.Get("Follower")
+    @TypedRoute.Get("follower")
     @UseGuards(WriterAuthGuard)
     async getFollowerList(@User() user : UserAuthDto) : Promise<Try<FollowerDto[]>> {
         const followingWriterList = await this.userService.getFollowerListByWriterId(user.id)
         return createResponseForm(followingWriterList);
+    }
+
+    /**
+     * @summary 팔로워 숨김 API
+     * @param userId
+     * @param writer
+     * @returns
+     * @throws USER_NOT_FOUND
+     * @throws FOLLOW_MYSELF_ERROR
+     * @throws FOLLOWER_NOT_FOUND
+     */
+    @TypedRoute.Patch(':id/hide')
+    @UseGuards(WriterAuthGuard)
+    async hideUser(@TypedParam("id") userId : number, @User() writer : UserAuthDto): Promise<TryCatch<{message:string},
+    USER_NOT_FOUND | FOLLOW_MYSELF_ERROR | FOLLOWER_NOT_FOUND>> {
+        await this.userService.hideFollower(userId, writer.id);
+        return createResponseForm({
+            message: "유저 숨김 성공"
+        })
     }
 }
