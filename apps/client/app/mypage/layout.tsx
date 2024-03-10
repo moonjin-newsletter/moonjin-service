@@ -1,6 +1,6 @@
 import React, { ReactElement, ReactNode } from "react";
 import { notFound, redirect } from "next/navigation";
-// import { match } from "ts-pattern";
+import { match } from "ts-pattern";
 import ssr from "../../lib/fetcher/ssr";
 import { Sidebar } from "./_components/Sidebar";
 import Profile from "./_components/Profile";
@@ -19,14 +19,12 @@ export default async function RootLayout({
     .catch((err) => redirect("/auth/login"));
 
   if (!userInfo) notFound();
-  //
-  // const type = match<number, userType>(userInfo.data.user.role ?? 0)
-  //   .returnType<userType>()
-  //   .with(0, () => "독자")
-  //   .with(1, () => "작가")
-  //   .otherwise(() => "");
-  //
-  const type = "작가";
+
+  const type = match<number, userType>(userInfo.data.user.role ?? 0)
+    .returnType<userType>()
+    .with(0, () => "독자")
+    .with(1, () => "작가")
+    .otherwise(() => "");
 
   return (
     <div className="flex  w-full items-center flex-col bg-white p-0 outline-none ">

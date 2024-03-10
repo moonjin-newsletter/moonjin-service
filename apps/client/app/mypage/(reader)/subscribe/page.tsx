@@ -1,59 +1,27 @@
-"use client";
-import { Tab } from "@headlessui/react";
-import { Fragment } from "react";
-import { isNonEmptyArray } from "@toss/utils";
-import { dummyLetter } from "../../_data";
-import NewsLetterCard from "../../_components/NewsLetterCard";
+import SubscribeTab from "./_components/SubscribeTab";
+import ssr from "../../../../lib/fetcher/ssr";
+import type {
+  PostWithWriterUserDto,
+  ResponseForm,
+  SeriesWithWriterDto,
+} from "@moonjin/api-types";
 
-export default function Page() {
+export default async function Page() {
+  const seriesList = await ssr("series/following").then((res) =>
+    res.json<ResponseForm<SeriesWithWriterDto[]>>(),
+  );
+  const newsletterList = await ssr("post/newsletter").then((res) =>
+    res.json<ResponseForm<PostWithWriterUserDto[]>>(),
+  );
+
+  console.log(newsletterList.data);
+
   return (
     <main className="overflow-hidden w-full max-w-[748px]">
-      <Tab.Group>
-        <Tab.List className="w-full flex gap-x-4">
-          {["모든 뉴스레터", "시리즈"].map((category, index) => (
-            <Tab key={index} as={Fragment}>
-              {({ selected }) => (
-                /* Use the `selected` state to conditionally style the selected tab. */
-                <button
-                  className={`${
-                    selected ? "border-b-2 font-semibold" : null
-                  } border-primary py-1 outline-none`}
-                >
-                  {category}
-                </button>
-              )}
-            </Tab>
-          ))}
-        </Tab.List>
-        <Tab.Panels className="w-full mt-4">
-          <Tab.Panel>
-            <section className="flex flex-col w-full">
-              {isNonEmptyArray(dummyLetter) ? (
-                dummyLetter.map((value, index) => (
-                  <NewsLetterCard key={index} value={value} />
-                ))
-              ) : (
-                <div className="flex items-center justify-center bg-grayscale-400 rounded-lg text-white font-semibold">
-                  현재 구독 중인 뉴스레터가 없습니다.
-                </div>
-              )}
-            </section>
-          </Tab.Panel>
-          <Tab.Panel>
-            <section className="flex flex-col w-full">
-              {isNonEmptyArray(dummyLetter) ? (
-                dummyLetter.map((value, index) => (
-                  <NewsLetterCard key={index} value={value} />
-                ))
-              ) : (
-                <div className="flex py-8 items-center justify-center bg-grayscale-400/60 rounded-lg text-white font-semibold">
-                  현재 구독 중인 뉴스레터가 없습니다.
-                </div>
-              )}
-            </section>
-          </Tab.Panel>
-        </Tab.Panels>
-      </Tab.Group>
+      <SubscribeTab
+        newsletterList={newsletterList.data}
+        seriesList={seriesList.data}
+      />
     </main>
   );
 }
