@@ -7,5 +7,5 @@ export interface PostDto {
     clicks: number;
     cover: string | null;
     seriesId : number;
-    releasedAt: Date | null;
+    lastUpdatedAt: Date;
 }

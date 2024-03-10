@@ -1,43 +1,38 @@
 import {Injectable} from '@nestjs/common';
-import {CreatePostDto} from "./dto/createPost.dto";
+import {CreatePostDto, ReleasedPostWithWriterDto, StampedPostDto} from "./dto";
 import {PrismaService} from "../prisma/prisma.service";
 import PostDtoMapper from "./postDtoMapper";
 import {Follow, Post, Stamp} from "@prisma/client";
 import {ExceptionList} from "../response/error/errorInstances";
-import {PostDto} from "./dto/post.dto";
 import {UtilService} from "../util/util.service";
-import {UserService} from "../user/user.service";
-import {PostWithWriterUserDto} from "./dto/postWithWriterUser.dto";
 import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
-import {StampedPostDto} from "./dto/stampedPost.dto";
 import {AuthValidationService} from "../auth/auth.validation.service";
+import {ReleasedPostDto, UnreleasedPostDto} from "./dto";
+import {NewsletterWithPostAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
 
 @Injectable()
 export class PostService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
-        private readonly userService: UserService,
         private readonly authValidationService: AuthValidationService
     ) {}
 
     /**
      * @summary 게시글 생성
      * @param postData
-     * @return Promise<PostDto>
+     * @return UnreleasedPostDto
      * @throws CREATE_POST_ERROR
      */
-    async createPost(postData : CreatePostDto) : Promise<PostDto> {
+    async createPost(postData : CreatePostDto) : Promise<UnreleasedPostDto> {
         try {
-            const releaseDate = postData.releasedAt ? postData.releasedAt : this.utilService.getCurrentDateInKorea()
             const post: Post = await this.prismaService.post.create({
                 data : {
                     ...postData,
                     createdAt : this.utilService.getCurrentDateInKorea(),
-                    releasedAt : (postData.status) ? releaseDate : null
                 }
             })
-            return PostDtoMapper.PostToPostDto(post);
+            return PostDtoMapper.PostToUnreleasedPostDto(post);
         }catch (error){
             console.error(error);
             throw ExceptionList.CREATE_POST_ERROR;
@@ -46,19 +41,21 @@ export class PostService {
 
     /**
      * @summary 공개되어 있는 모든 게시글 가져오기
-     * @return Promise<PostDto[] | null>
+     * @return ReleasedPostDto[]
      */
-    async getPublicPostAll(): Promise<PostDto[] | null> {
-        const post = await this.prismaService.post.findMany(
+    async getPublicPostAll(): Promise<ReleasedPostDto[]> {
+        const postList = await this.prismaService.post.findMany(
             {
                 where: {
                     deleted: false,
-                    status : true
+                    status : true,
+                    releasedAt : {
+                        not : null
+                    }
                 },
             }
         );
-        if(!post) return null;
-        return PostDtoMapper.PostListToPostDtoList(post);
+        return PostDtoMapper.PostListToReleasedPostDtoList(postList);
     }
 
     /**
@@ -86,7 +83,6 @@ export class PostService {
      * @throws FOLLOWER_NOT_FOUND
      */
     async sendNewsletter(postId : number) : Promise<number> {
-
         const post = await this.prismaService.post.findUnique({
             where : {
                 id : postId,
@@ -125,46 +121,43 @@ export class PostService {
     /**
      * @summary 해당 유저의 뉴스레터 가져오기
      * @param userId
-     * @return PostWithWriterUserDto[]
+     * @return ReleasedPostWithWriterDto[]
      */
-    async getNewsletterListByUserId(userId : number) : Promise<PostWithWriterUserDto[]>{
-        const newsletterList = await this.prismaService.newsletter.findMany({
+    async getNewsletterListByUserId(userId : number) : Promise<ReleasedPostWithWriterDto[]>{
+        const newsletterList : NewsletterWithPostAndWriterUser[] = await this.prismaService.newsletter.findMany({
             where : {
                 receiverId : userId
             },
             select : {
-                postId : true,
+                sentAt : true,
+                post : {
+                    include : {
+                        writerInfo : {
+                            select : {
+                                user : {
+                                    select : {
+                                        id : true,
+                                        nickname : true,
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
+            relationLoadStrategy: 'join',
             orderBy : {
                 sentAt : 'desc'
             }
         })
-        const postIdList = newsletterList.map(newsletter => newsletter.postId);
-        const postList = await this.prismaService.post.findMany({
-            where : {
-                id : {
-                    in : postIdList
-                },
-            },
-            orderBy : {
-                releasedAt : 'desc'
-            }
-        })
-
-        try{
-            const writerIdList = [...new Set(postList.map(post => post.writerId))];
-            const writerUserDtoList = await this.userService.getUserIdentityDataListByWriterIdList(writerIdList);
-            return PostDtoMapper.PostAndWriterUserDtoListToPostWithWriterUserDtoList(postList,writerUserDtoList);
-        }catch (error){
-            console.error(error);
-            return [];
-        }
+        return newsletterList.map(newsletter => PostDtoMapper.NewsletterWithPostAndWriterUserToReleasedPostWithWriterDto(newsletter));
     }
 
     /**
      * @summary post를 stamp 찍기
      * @param userId
      * @param postId
+     * @return Stamp
      * @throws STAMP_ALREADY_EXIST
      */
     async stampPost(postId: number, userId : number) : Promise<Stamp>{
@@ -201,16 +194,16 @@ export class PostService {
             }
         })
         if(stampedPostList.length === 0) return [];
-        return stampedPostList.map(stampedPost => PostDtoMapper.StampedPostToStampedPostDto(stampedPost));
+        return PostDtoMapper.StampedPostListToStampedPostDtoList(stampedPostList);
     }
 
     /**
      * @summary 해당 유저가 작성중인 글 목록 가져오기
      * @param userId
-     * @return PostDto[]
+     * @return UnreleasedPostDto[]
      * @throws USER_NOT_WRITER
      */
-    async getWritingPostList(userId: number): Promise<PostDto[]> {
+    async getWritingPostList(userId: number): Promise<UnreleasedPostDto[]> {
         await this.authValidationService.assertWriter(userId);
         try{
             const postList = await this.prismaService.post.findMany({
@@ -223,7 +216,7 @@ export class PostService {
                     createdAt : 'desc'
                 }
             })
-            return PostDtoMapper.PostListToPostDtoList(postList);
+            return postList.map(post => PostDtoMapper.PostToUnreleasedPostDto(post));
         }catch (error){
             console.error(error);
             return [];
@@ -256,10 +249,10 @@ export class PostService {
     /**
      * @summary 해당 유저의 발표된 글 목록 가져오기
      * @param userId
-     * @return PostDto[]
+     * @return ReleasedPostDto[]
      * @throws USER_NOT_WRITER
      */
-    async getReleasedPostListByUserId(userId : number): Promise<PostDto[]>{
+    async getReleasedPostListByUserId(userId : number): Promise<ReleasedPostDto[]>{
         await this.authValidationService.assertWriter(userId);
         try{
             const postList = await this.prismaService.post.findMany({
@@ -275,7 +268,7 @@ export class PostService {
                     releasedAt : 'desc'
                 }
             })
-            return PostDtoMapper.PostListToPostDtoList(postList);
+            return PostDtoMapper.PostListToReleasedPostDtoList(postList);
         } catch (error){
             console.error(error);
             return [];

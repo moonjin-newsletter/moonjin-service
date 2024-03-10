@@ -22,9 +22,9 @@ model User {
 
   oauth      Oauth?
   writerInfo WriterInfo?
-  Follow     Follow[]
-  Newsletter Newsletter[]
-  Stamp      Stamp[]
+  follow     Follow[]
+  newsletter Newsletter[]
+  stamp      Stamp[]
   letter     Letter[]     @relation(name: "sender")
   letter2    Letter[]     @relation(name: "receiver")
 }
@@ -48,9 +48,9 @@ model WriterInfo {
   deleted         Boolean  @default(false)
 
   user   User     @relation(fields: [userId], references: [id])
-  Follow Follow[]
+  follow Follow[]
   post   Post[]
-  Series Series[]
+  series Series[]
 }
 
 model Follow {
@@ -68,24 +68,25 @@ model Follow {
 }
 
 model Post {
-  id         Int       @id @default(autoincrement())
-  title      String    @db.VarChar(32)
-  subtitle   String    @default("") @db.VarChar(128)
-  content    String    @db.Text
-  writerId   Int
-  category   String    @db.VarChar(16)
-  cover      String?   @db.VarChar(128)
-  clicks     Int       @default(0)
-  createdAt  DateTime
-  releasedAt DateTime?
-  seriesId   Int       @default(0)
-  status     Boolean   @default(true)
-  deleted    Boolean   @default(false)
+  id            Int       @id @default(autoincrement())
+  title         String    @db.VarChar(32)
+  subtitle      String    @default("") @db.VarChar(128)
+  content       String    @db.Text
+  writerId      Int
+  category      String    @db.VarChar(16)
+  cover         String?   @db.VarChar(128)
+  clicks        Int       @default(0)
+  createdAt     DateTime
+  lastUpdatedAt DateTime  @default(now())
+  releasedAt    DateTime?
+  seriesId      Int       @default(0)
+  status        Boolean   @default(true)
+  deleted       Boolean   @default(false)
 
   writerInfo WriterInfo   @relation(fields: [writerId], references: [userId])
   newsletter Newsletter[]
-  Series     Series?      @relation(fields: [seriesId], references: [id])
-  Stamp      Stamp[]
+  series     Series?      @relation(fields: [seriesId], references: [id])
+  stamp      Stamp[]
 
   @@index([writerId])
   @@index([seriesId])
@@ -97,7 +98,7 @@ model Newsletter {
   sentAt     DateTime
   status     Boolean  @default(true)
 
-  Post Post @relation(fields: [postId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
   user User @relation(fields: [receiverId], references: [id])
 
   @@id([postId, receiverId])

@@ -1,7 +1,7 @@
-import {PostDto} from "./post.dto";
+import {ReleasedPostDto} from "./releasedPost.dto";
 
 export interface StampedPostDto {
-    post : PostDto,
+    post : ReleasedPostDto,
     stamp : {
         createdAt : Date
     }
