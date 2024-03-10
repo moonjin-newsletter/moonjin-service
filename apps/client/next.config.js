@@ -28,4 +28,13 @@ module.exports = {
 
     return config;
   },
+  images: {
+    disableStaticImages: false,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "encrypted-tbn0.gstatic.com",
+      },
+    ],
+  },
 };

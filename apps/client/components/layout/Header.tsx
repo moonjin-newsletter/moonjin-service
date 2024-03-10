@@ -7,18 +7,20 @@ import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import * as I from "components/icons";
 import csr from "../../lib/fetcher/csr";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const userCookie = getCookie("accessToken");
   const path = usePathname();
+  const router = useRouter();
   const [isLogin, setIsLogin] = useState(false);
 
   function onClickLogout() {
     csr
       .post("auth/logout")
       .then((res) => {
-        toast.success("로그아웃 완료");
         setIsLogin(false);
+        return router.push("/");
       })
       .catch((err) => {
         toast.error("로그아웃 실패!");

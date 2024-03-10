@@ -3120,6 +3120,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@toss/date@npm:^1.1.8":
+  version: 1.1.8
+  resolution: "@toss/date@npm:1.1.8"
+  dependencies:
+    date-fns: "npm:^2.25.0"
+  checksum: 6a996c7d18573e0074af562a8a8fa383df2fc61d126b9fbfbc786be59dead7459717f21d5874e51d33556c86abba1af1824612119614b32ed852719923f12c61
+  languageName: node
+  linkType: hard
+
 "@toss/utils@npm:^1.4.6":
   version: 1.4.6
   resolution: "@toss/utils@npm:1.4.6"
@@ -5260,6 +5269,7 @@ __metadata:
     "@svgr/webpack": "npm:^8.1.0"
     "@tailwindcss/forms": "npm:^0.5.7"
     "@toss/assert": "npm:^1.1.12"
+    "@toss/date": "npm:^1.1.8"
     "@toss/utils": "npm:^1.4.6"
     "@types/node": "npm:^17.0.12"
     "@types/react": "npm:^18.0.22"

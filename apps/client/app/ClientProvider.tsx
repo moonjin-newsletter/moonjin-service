@@ -17,13 +17,13 @@ export default function ClientProvider({ children }: PropsWithChildren) {
             key,
             config,
             revalidate,
-            { retryCount },
+            { retryCount }
           ) => {
             if (arrayIncludes([401, 404], error.response?.status)) return; // Never retry on specific HTTP status codes.
             if (arrayIncludes(["auth/isLogin", "user"], key)) return; // Never retry for a specific key.
             setTimeout(() => revalidate({ retryCount }), 5 * 1000); // Retry after 5 seconds.
           },
-          // fetcher: (url) => csr.get(url).json(),
+          fetcher: (url) => csr.get(url).json(),
         }}
       >
         {children}
