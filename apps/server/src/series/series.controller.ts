@@ -1,15 +1,14 @@
 import { Controller, UseGuards } from '@nestjs/common';
 import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
 import {User} from "../auth/decorator/user.decorator";
-import {UserAuthDto} from "../auth/dto/userAuthDto";
+import {UserAuthDto} from "../auth/dto";
 import {ICreateSeries} from "./api-types/ICreateSeries";
 import {SeriesService} from "./series.service";
 import {createResponseForm} from "../response/responseForm";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
-import {SeriesWithWriterDto} from "./dto/seriesWithWriter.dto";
+import {SeriesWithWriterDto, SeriesDto} from "./dto";
 import {Try, TryCatch} from "../response/tryCatch";
-import {SeriesDto} from "./dto/series.dto";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
 import {SERIES_NOT_FOUND} from "../response/error/series";

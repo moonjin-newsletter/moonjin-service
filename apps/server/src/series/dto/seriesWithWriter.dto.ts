@@ -1,4 +1,4 @@
-import {UserIdentityDto} from "../../user/dto/userIdentity.dto";
+import {UserIdentityDto} from "../../user/dto";
 import {SeriesDto} from "./series.dto";
 
 export interface SeriesWithWriterDto {

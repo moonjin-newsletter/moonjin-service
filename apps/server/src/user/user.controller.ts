@@ -56,7 +56,7 @@ export class UserController {
     }
 
     /**
-     * @summary 유저의 팔로잉 유저 목록 가져오기
+     * @summary 유저의 팔로잉 작가 목록 가져오기
      * @param user
      * @returns FollowingWriterDto[]
      */
