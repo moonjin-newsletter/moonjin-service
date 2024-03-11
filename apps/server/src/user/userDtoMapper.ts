@@ -1,4 +1,4 @@
-import {User, WriterInfo} from "@prisma/client";
+import {ExternalFollow, User, WriterInfo} from "@prisma/client";
 import {UserAuthDto} from "../auth/dto/userAuthDto";
 import {WriterInfoDto} from "../auth/dto/writerInfoDto";
 import {UserDto} from "./dto/user.dto";
@@ -63,6 +63,13 @@ class UserDtoMapperClass {
             following: {
                 createdAt
             }
+        }
+    }
+
+    ExternalFollowerToExternalFollowerDto(externalFollow : ExternalFollow) {
+        return {
+            email : externalFollow.followerEmail,
+            createdAt : externalFollow.createdAt
         }
     }
 }

@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 import {ExceptionList} from "../response/error/errorInstances";
-import {UserUniqueDataDto} from "./dto/userUniqueData.dto";
+import {UserUniqueDataDto} from "./dto";
 
 @Injectable()
 export class AuthValidationService {

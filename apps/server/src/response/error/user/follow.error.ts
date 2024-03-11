@@ -27,3 +27,12 @@ export interface FOLLOWER_NOT_FOUND extends ERROR {
         message:"팔로워가 없습니다."
     }
 }
+
+export interface FOLLOWER_ALREADY_EXIST extends ERROR {
+    result : false;
+    code: ErrorCodeEnum.FOLLOWER_ALREADY_EXIST;
+    httpStatus: 405;
+    data: {
+        message:"이미 구독자입니다."
+    }
+}

@@ -47,17 +47,18 @@ model WriterInfo {
   status          Boolean  @default(true)
   deleted         Boolean  @default(false)
 
-  user   User     @relation(fields: [userId], references: [id])
-  follow Follow[]
-  post   Post[]
-  series Series[]
+  user           User             @relation(fields: [userId], references: [id])
+  follow         Follow[]
+  post           Post[]
+  series         Series[]
+  ExternalFollow ExternalFollow[]
 }
 
 model Follow {
   followerId Int
   writerId   Int
   createdAt  DateTime
-  hide       Boolean  @default(false)
+  deleted    Boolean  @default(false)
 
   user       User       @relation(fields: [followerId], references: [id])
   writerInfo WriterInfo @relation(fields: [writerId], references: [userId])
@@ -65,6 +66,16 @@ model Follow {
   @@id([followerId, writerId])
   @@index([writerId])
   @@index([followerId])
+}
+
+model ExternalFollow {
+  writerId      Int
+  followerEmail String
+  createdAt     DateTime
+
+  writerInfo WriterInfo @relation(fields: [writerId], references: [userId])
+
+  @@id([followerEmail, writerId])
 }
 
 model Post {

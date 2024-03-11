@@ -1,18 +1,16 @@
-import {TypedParam, TypedRoute} from '@nestia/core';
+import {TypedBody, TypedParam, TypedRoute} from '@nestia/core';
 import { Controller, UseGuards } from '@nestjs/common';
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {User} from "../auth/decorator/user.decorator";
-import {UserAuthDto} from "../auth/dto/userAuthDto";
+import {UserAuthDto} from "../auth/dto";
 import {UserService} from "./user.service";
 import {createResponseForm, ResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
-import {USER_NOT_FOUND, USER_NOT_WRITER} from "../response/error/auth";
-import {UserDto} from "./dto/user.dto";
-import {FollowingWriterDto} from "./dto/followingWriter.dto";
-import {WriterDto} from "./dto/writer.dto";
+import {EMAIL_ALREADY_EXIST, USER_NOT_FOUND, USER_NOT_WRITER} from "../response/error/auth";
+import {UserDto, FollowerDto, WriterDto, FollowingWriterDto, ExternalFollowerDto} from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
-import {FollowerDto} from "./dto/follower.dto";
-import {FOLLOW_MYSELF_ERROR, FOLLOWER_NOT_FOUND} from "../response/error/user";
+import {FOLLOWER_ALREADY_EXIST, FOLLOWER_NOT_FOUND} from "../response/error/user";
+import {ICreateExternalFollower} from "./api-types/ICreateExternalFollower";
 
 @Controller('user')
 export class UserController {
@@ -96,21 +94,40 @@ export class UserController {
     }
 
     /**
-     * @summary 팔로워 숨김 API
-     * @param userId
+     * @summary 팔로워 삭제 API
+     * @param followerId
      * @param writer
      * @returns
      * @throws USER_NOT_FOUND
-     * @throws FOLLOW_MYSELF_ERROR
      * @throws FOLLOWER_NOT_FOUND
      */
-    @TypedRoute.Patch(':id/hide')
+    @TypedRoute.Delete('follower/:id')
     @UseGuards(WriterAuthGuard)
-    async hideUser(@TypedParam("id") userId : number, @User() writer : UserAuthDto): Promise<TryCatch<{message:string},
-    USER_NOT_FOUND | FOLLOW_MYSELF_ERROR | FOLLOWER_NOT_FOUND>> {
-        await this.userService.hideFollower(userId, writer.id);
+    async deleteFollower(@TypedParam("id") followerId : number, @User() writer : UserAuthDto): Promise<TryCatch<{message:string},
+    USER_NOT_FOUND | FOLLOWER_NOT_FOUND>> {
+        await this.userService.deleteFollower(followerId, writer.id);
         return createResponseForm({
-            message: "유저 숨김 성공"
+            message: "팔로워 삭제에 성공했습니다."
+        })
+    }
+
+    /**
+     * @summary 외부 구독자 추가 API
+     * @param user
+     * @param followerData
+     * @returns {message:string} & ExternalFollowerDto
+     * @throws EMAIL_ALREADY_EXIST
+     * @throws FOLLOWER_ALREADY_EXIST
+     */
+    @TypedRoute.Post('follower/external')
+    @UseGuards(WriterAuthGuard)
+    async addExternalFollower(@User() user:UserAuthDto,@TypedBody() followerData : ICreateExternalFollower)
+    :Promise<TryCatch<{message:string} & ExternalFollowerDto, EMAIL_ALREADY_EXIST | FOLLOWER_ALREADY_EXIST>>{
+        const externalFollower = await this.userService.addExternalFollowerByEmail(user.id,followerData.followerEmail);
+        return createResponseForm({
+            message: "구독자 추가에 성공했습니다.",
+            email : externalFollower.email,
+            createdAt : externalFollower.createdAt
         })
     }
 }

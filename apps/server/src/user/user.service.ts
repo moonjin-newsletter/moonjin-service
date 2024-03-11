@@ -4,7 +4,7 @@ import {PrismaService} from "../prisma/prisma.service";
 import {PrismaClientKnownRequestError} from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
-import {UserIdentityDto, FollowingWriterDto, UserDto, WriterDto, FollowerDto, UserProfileDto} from "./dto";
+import {UserIdentityDto, FollowingWriterDto, UserDto, WriterDto, FollowerDto, ExternalFollowerDto} from "./dto";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import {WriterInfoDto} from "../auth/dto";
 import UserDtoMapper from "./userDtoMapper";
@@ -65,7 +65,9 @@ export class UserService {
                     }
                 }
             });
-        }catch (error) {}
+        }catch (error) {
+            console.log(error);
+        }
     }
 
     /**
@@ -140,29 +142,6 @@ export class UserService {
                 followerCount: true,
             }
         });
-    }
-
-    /**
-     * @summary 팔로잉 유저의 기본 정보 목록 가져오기
-     * @param followerId
-     * @returns UserIdentityDto[]
-     */
-    async getFollowingUserProfileListByFollowerId(followerId : number): Promise<UserProfileDto[]>{
-        const followingUsersIdentityData = await this.prismaService.follow.findMany({
-            where: {
-                followerId
-            },
-            select: {
-                user : true
-            },
-            orderBy: {
-                createdAt: 'desc'
-            }
-        })
-        if(followingUsersIdentityData.length === 0) return [];
-        else{
-            return followingUsersIdentityData.map(following => UserDtoMapper.UserToUserProfileDto(following.user));
-        }
     }
 
     /**
@@ -269,7 +248,7 @@ export class UserService {
         const followerList = await this.prismaService.follow.findMany({
             where: {
                 writerId,
-                hide: false,
+                deleted: false,
             },
             include:{
                 user : true
@@ -284,16 +263,14 @@ export class UserService {
     }
 
     /**
-     * @summary 팔로우 목록에서 유저 숨기기
+     * @summary 팔로워 삭제하기
      * @param followerId
      * @param writerId
      * @returns void
-     * @throws FOLLOW_MYSELF_ERROR
      * @throws USER_NOT_FOUND
      * @throws FOLLOWER_NOT_FOUND
      */
-    async hideFollower(followerId: number, writerId: number): Promise<void> {
-        if(followerId === writerId) throw ExceptionList.FOLLOW_MYSELF_ERROR;
+    async deleteFollower(followerId: number, writerId: number): Promise<void> {
         await this.assertUserExist(followerId);
         try {
              await this.prismaService.follow.update({
@@ -304,12 +281,37 @@ export class UserService {
                     }
                 },
                 data: {
-                    hide: true
+                    deleted: true
                 }
-            })
+            }) // update는 updateMany와 달리, 찾으려는 column이 없을 경우 에러를 발생시킵니다.
         }catch (error){
             console.log(error);
             throw ExceptionList.FOLLOWER_NOT_FOUND;
+        }
+    }
+
+    /**
+     * @summary 외부 팔로워 추가하기
+     * @param writerId
+     * @param followerEmail
+     * @returns ExternalFollowerDto
+     * @throws EMAIL_ALREADY_EXIST
+     * @throws FOLLOWER_ALREADY_EXIST
+     */
+    async addExternalFollowerByEmail(writerId: number, followerEmail: string): Promise<ExternalFollowerDto> {
+        await this.authValidationService.assertEmailUnique(followerEmail);
+        try{
+            const follow = await this.prismaService.externalFollow.create({
+                data: {
+                    writerId,
+                    followerEmail,
+                    createdAt: this.utilService.getCurrentDateInKorea()
+                }
+            })
+            return UserDtoMapper.ExternalFollowerToExternalFollowerDto(follow)
+        }catch (error){
+            console.log(error);
+            throw ExceptionList.FOLLOWER_ALREADY_EXIST;
         }
     }
 }

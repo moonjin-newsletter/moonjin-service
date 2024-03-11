@@ -43,6 +43,7 @@ export enum ErrorCodeEnum {
     FOLLOW_MYSELF_ERROR = "0400",
     FOLLOW_ALREADY_ERROR = "0401",
     FOLLOWER_NOT_FOUND = "0402",
+    FOLLOWER_ALREADY_EXIST = "0403",
 
     // letter
     SEND_LETTER_ERROR = "0500",

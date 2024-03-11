@@ -94,12 +94,12 @@ export class PostController {
     @UseGuards(UserAuthGuard)
     async stampPost(@User() user:UserAuthDto, @TypedParam('postId') postId : number) : Promise<TryCatch<{
         message: string,
-        date: Date
+        createdAt: Date
     }, STAMP_ALREADY_EXIST>>{
         const stamp = await this.postService.stampPost( postId, user.id);
         return createResponseForm({
             message : "스탬프를 찍었습니다.",
-            date : stamp.createdAt
+            createdAt : stamp.createdAt
         });
     }
 
