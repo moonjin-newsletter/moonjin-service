@@ -4,7 +4,6 @@ import {UtilService} from "../util/util.service";
 import SeriesDtoMapper from "./seriesDtoMapper";
 import {ExceptionList} from "../response/error/errorInstances";
 import {SeriesDto, CreateSeriesDto, ReleasedSeriesWithWriterDto, ReleasedSeriesDto, UnreleasedSeriesDto} from "./dto";
-import {AuthValidationService} from "../auth/auth.validation.service";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
 import {FollowingSeriesAndWriter} from "./prisma/followingSeriesAndWriter.prisma.type";
 
@@ -13,7 +12,6 @@ export class SeriesService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
-        private readonly authValidationService: AuthValidationService
     ) {}
 
     async createSeries(createSeriesData : CreateSeriesDto) : Promise<SeriesDto>{
@@ -25,7 +23,7 @@ export class SeriesService {
                     ...createSeriesData,
                     createdAt,
                     lastUpdatedAt :createdAt,
-                    releasedAt : (createSeriesData.status) ? releaseDate : undefined
+                    releasedAt : (createSeriesData.status) ? releaseDate : null
                 }
             })
             return SeriesDtoMapper.SeriesToSeriesDto(createdSeries);
@@ -83,10 +81,8 @@ export class SeriesService {
      * @summary 해당 작가의 시리즈 가져오기
      * @param writerId
      * @returns ReleasedSeriesDto[]
-     * @throws USER_NOT_WRITER
      */
     async getReleasedSeriesListByWriterId(writerId: number): Promise<ReleasedSeriesDto[]> {
-        await this.authValidationService.assertWriter(writerId);
         try {
             const seriesList = await this.prismaService.series.findMany({
                 where: {

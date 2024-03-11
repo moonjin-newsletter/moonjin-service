@@ -7,5 +7,5 @@ export interface SeriesDto {
     status : boolean;
     cover : string | null;
     description : string | null;
-    releasedAt : Date | null;
+    lastUpdatedAt : Date;
 }

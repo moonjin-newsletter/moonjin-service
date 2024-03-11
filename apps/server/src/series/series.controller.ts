@@ -48,11 +48,10 @@ export class SeriesController {
      * @summary 내가 발행한 시리즈 가져오기
      * @param user
      * @returns ReleasedSeriesDto[]
-     * @throws USER_NOT_WRITER
      */
     @TypedRoute.Get('me')
     @UseGuards(WriterAuthGuard)
-    async getSeriesByWriter(@User() user: UserAuthDto) : Promise<TryCatch<ReleasedSeriesDto[], USER_NOT_WRITER>>{
+    async getSeriesByWriter(@User() user: UserAuthDto) : Promise<Try<ReleasedSeriesDto[]>>{
         const seriesList = await this.seriesService.getReleasedSeriesListByWriterId(user.id);
         return createResponseForm(seriesList)
     }
