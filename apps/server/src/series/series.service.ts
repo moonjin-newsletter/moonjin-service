@@ -17,12 +17,14 @@ export class SeriesService {
     ) {}
 
     async createSeries(createSeriesData : CreateSeriesDto) : Promise<SeriesDto>{
+        const createdAt = this.utilService.getCurrentDateInKorea();
         try {
             const releaseDate = createSeriesData.releasedAt ? createSeriesData.releasedAt: this.utilService.getCurrentDateInKorea();
             const createdSeries = await this.prismaService.series.create({
                 data: {
                     ...createSeriesData,
-                    createdAt : this.utilService.getCurrentDateInKorea(),
+                    createdAt,
+                    lastUpdatedAt :createdAt,
                     releasedAt : (createSeriesData.status) ? releaseDate : undefined
                 }
             })

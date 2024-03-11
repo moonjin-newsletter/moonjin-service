@@ -107,17 +107,18 @@ model Newsletter {
 }
 
 model Series {
-  id          Int       @id @default(autoincrement())
-  title       String    @db.VarChar(32)
-  writerId    Int
-  category    String    @db.VarChar(16)
-  cover       String?   @db.VarChar(128)
-  clicks      Int       @default(0)
-  createdAt   DateTime
-  releasedAt  DateTime?
-  description String    @default("") @db.VarChar(256)
-  status      Boolean   @default(true)
-  deleted     Boolean   @default(false)
+  id            Int       @id @default(autoincrement())
+  title         String    @db.VarChar(32)
+  writerId      Int
+  category      String    @db.VarChar(16)
+  cover         String?   @db.VarChar(128)
+  clicks        Int       @default(0)
+  createdAt     DateTime
+  lastUpdatedAt DateTime  @default(now())
+  releasedAt    DateTime?
+  description   String    @default("") @db.VarChar(256)
+  status        Boolean   @default(true)
+  deleted       Boolean   @default(false)
 
   writerInfo WriterInfo @relation(fields: [writerId], references: [userId])
   post       Post[]
