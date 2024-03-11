@@ -106,7 +106,7 @@ export class PostController {
     /**
      * @summary 내가 발표한 글 목록 가져오기
      * @param user
-     * @returns PostDto[]
+     * @returns ReleasedPostDto[]
      * @throws USER_NOT_WRITER
      */
     @TypedRoute.Get('me')
@@ -119,7 +119,7 @@ export class PostController {
     /**
      * @summary 해당 유저의 작성 중인 글 목록 가져오기
      * @param user
-     * @returns PostDto[]
+     * @returns UnreleasedPostDto[]
      * @throws USER_NOT_WRITER
      */
     @TypedRoute.Get('/writing')

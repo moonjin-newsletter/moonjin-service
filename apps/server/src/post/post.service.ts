@@ -133,13 +133,8 @@ export class PostService {
                 post : {
                     include : {
                         writerInfo : {
-                            select : {
-                                user : {
-                                    select : {
-                                        id : true,
-                                        nickname : true,
-                                    }
-                                }
+                            include : {
+                                user : true
                             }
                         }
                     }

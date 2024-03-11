@@ -6,13 +6,8 @@ const newsletterWithPostAndWriterUser = Prisma.validator<Prisma.NewsletterDefaul
         post : {
             include : {
                 writerInfo : {
-                    select : {
-                        user : {
-                            select : {
-                                id : true,
-                                nickname : true,
-                            }
-                        }
+                    include : {
+                        user : true
                     }
                 }
             }

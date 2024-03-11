@@ -4,6 +4,7 @@ import {ReleasedPostWithWriterDto, StampedPostDto} from "./dto";
 import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
 import {ReleasedPostDto, UnreleasedPostDto} from "./dto";
 import {NewsletterWithPostAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
+import UserDtoMapper from "../user/userDtoMapper";
 
 
 class PostDtoMapperClass {
@@ -36,7 +37,7 @@ class PostDtoMapperClass {
         const {writerInfo, ...postData } = post;
         return {
             post : this.PostToReleasedPostDto(postData, sentAt), // TODO : sentAt이 releasedAt으로 바뀌어야 함
-            writer : writerInfo.user,
+            writer : UserDtoMapper.UserToUserProfileDto(writerInfo.user),
         }
 
     }
