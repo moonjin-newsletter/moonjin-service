@@ -1,3 +1,5 @@
 export * from './createSeries.dto'
 export * from './series.dto'
-export * from './seriesWithWriter.dto'
+export * from './releasedSeriesWithWriterDto'
+export * from './unreleasedSeries.dto'
+export * from './releasedSeries.dto'

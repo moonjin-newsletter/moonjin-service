@@ -1,21 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
-import {CreateSeriesDto} from "./dto/createSeries.dto";
 import {UtilService} from "../util/util.service";
 import SeriesDtoMapper from "./seriesDtoMapper";
-import {SeriesDto} from "./dto/series.dto";
 import {ExceptionList} from "../response/error/errorInstances";
-import {UserService} from "../user/user.service";
-import {SeriesWithWriterDto} from "./dto/seriesWithWriter.dto";
+import {SeriesDto, CreateSeriesDto, ReleasedSeriesWithWriterDto, ReleasedSeriesDto, UnreleasedSeriesDto} from "./dto";
 import {AuthValidationService} from "../auth/auth.validation.service";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
+import {FollowingSeriesAndWriter} from "./prisma/followingSeriesAndWriter.prisma.type";
 
 @Injectable()
 export class SeriesService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
-        private readonly userService: UserService,
         private readonly authValidationService: AuthValidationService
     ) {}
 
@@ -38,27 +35,32 @@ export class SeriesService {
 
     /**
      * @summary 해당 유저의 구독 중인 시리즈 가져오기
-     * @param userId
+     * @param followerId
      */
-    async getSeriesByUserId(userId : number) : Promise<SeriesWithWriterDto[]>{
-        const followingUserList = await this.userService.getFollowingUserIdentityListByFollowerId(userId);
-        const followingUserIdList = followingUserList.map(user => user.id);
-        const seriesList = await this.prismaService.series.findMany({
+    async getFollowingSeriesByFollowerId(followerId : number) : Promise<ReleasedSeriesWithWriterDto[]>{
+        const followingSeriesList : FollowingSeriesAndWriter[] = await this.prismaService.follow.findMany({
             where:{
-                deleted : false,
-                status : true,
-                writerId : {
-                    in: followingUserIdList
-                }
+                followerId,
             },
-            orderBy:{
-                releasedAt : 'desc'
+            include : {
+                writerInfo: {
+                    include: {
+                        series: {
+                            where: {
+                                deleted: false,
+                                releasedAt:{
+                                    not : null
+                                }
+                            }
+                        },
+                        user: true
+                    }
+                }
             }
         })
-        if(!seriesList) return [];
-        return SeriesDtoMapper.SeriesListAndWriterDtoListToSeriesWithWriterDtoList(seriesList,followingUserList);
+        if(!followingSeriesList) return [];
+        return SeriesDtoMapper.FollowingSeriesAndWriterListToSeriesWithWriterDtoList(followingSeriesList);
     }
-
 
     /**
      * @summary 시리즈 존재 여부 확인
@@ -78,19 +80,22 @@ export class SeriesService {
     /**
      * @summary 해당 작가의 시리즈 가져오기
      * @param writerId
-     * @returns SeriesDto
+     * @returns ReleasedSeriesDto[]
      * @throws USER_NOT_WRITER
      */
-    async getSeriesListByWriterId(writerId: number): Promise<SeriesDto[]> {
+    async getReleasedSeriesListByWriterId(writerId: number): Promise<ReleasedSeriesDto[]> {
         await this.authValidationService.assertWriter(writerId);
         try {
             const seriesList = await this.prismaService.series.findMany({
                 where: {
                     deleted: false,
-                    writerId: writerId
+                    writerId: writerId,
+                    releasedAt: {
+                        not: null
+                    }
                 }
             })
-            return SeriesDtoMapper.SeriesListToSeriesDtoList(seriesList);
+            return SeriesDtoMapper.SeriesListToReleasedSeriesDtoList(seriesList);
         }catch(error){
             console.error(error);
             return [];
@@ -122,11 +127,11 @@ export class SeriesService {
      * @param seriesId
      * @param writerId
      * @param seriesData
-     * @returns SeriesDto
+     * @returns ReleasedSeriesDto | UnreleasedSeriesDto
      * @throws SERIES_NOT_FOUND
      * @throws USER_NOT_WRITER
      */
-    async updateSeries(seriesId: number, writerId: number, seriesData: IUpdateSeries): Promise<SeriesDto> {
+    async updateSeries(seriesId: number, writerId: number, seriesData: IUpdateSeries): Promise<ReleasedSeriesDto | UnreleasedSeriesDto> {
         await this.assertWriterOfSeries(seriesId, writerId);
         try {
             const updatedSeries = await this.prismaService.series.update({
@@ -137,7 +142,8 @@ export class SeriesService {
                     ...seriesData
                 }
             })
-            return SeriesDtoMapper.SeriesToSeriesDto(updatedSeries);
+            if(updatedSeries.releasedAt) return SeriesDtoMapper.SeriesToReleasedSeriesDto(updatedSeries, updatedSeries.releasedAt);
+            else return SeriesDtoMapper.SeriesToUnreleasedSeriesDto(updatedSeries);
         }catch (error){
             console.error(error);
             throw ExceptionList.SERIES_NOT_FOUND;

@@ -7,7 +7,7 @@ import {SeriesService} from "./series.service";
 import {createResponseForm} from "../response/responseForm";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
-import {SeriesWithWriterDto, SeriesDto} from "./dto";
+import {ReleasedSeriesDto, ReleasedSeriesWithWriterDto, SeriesDto} from "./dto";
 import {Try, TryCatch} from "../response/tryCatch";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
@@ -35,25 +35,25 @@ export class SeriesController {
     /**
      * @summary 구독 중인 시리즈 가져오기
      * @param user
-     * @returns SeriesWithWriterDto[]
+     * @returns ReleasedSeriesWithWriterDto[]
      */
     @TypedRoute.Get('following')
     @UseGuards(UserAuthGuard)
-    async getSeries(@User() user: UserAuthDto) : Promise<Try<SeriesWithWriterDto[]>>{
-        const seriesList = await this.seriesService.getSeriesByUserId(user.id);
+    async getSeries(@User() user: UserAuthDto) : Promise<Try<ReleasedSeriesWithWriterDto[]>>{
+        const seriesList = await this.seriesService.getFollowingSeriesByFollowerId(user.id);
         return createResponseForm(seriesList)
     }
 
     /**
      * @summary 내가 발행한 시리즈 가져오기
      * @param user
-     * @returns series[]
+     * @returns ReleasedSeriesDto[]
      * @throws USER_NOT_WRITER
      */
     @TypedRoute.Get('me')
     @UseGuards(WriterAuthGuard)
-    async getSeriesByWriter(@User() user: UserAuthDto) : Promise<TryCatch<SeriesDto[], USER_NOT_WRITER>>{
-        const seriesList = await this.seriesService.getSeriesListByWriterId(user.id);
+    async getSeriesByWriter(@User() user: UserAuthDto) : Promise<TryCatch<ReleasedSeriesDto[], USER_NOT_WRITER>>{
+        const seriesList = await this.seriesService.getReleasedSeriesListByWriterId(user.id);
         return createResponseForm(seriesList)
     }
 

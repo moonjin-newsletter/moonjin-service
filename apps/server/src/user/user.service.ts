@@ -4,15 +4,11 @@ import {PrismaService} from "../prisma/prisma.service";
 import {PrismaClientKnownRequestError} from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
-import {UserIdentityDto} from "./dto/userIdentity.dto";
+import {UserIdentityDto, FollowingWriterDto, UserDto, WriterDto, FollowerDto, UserProfileDto} from "./dto";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
-import {WriterInfoDto} from "../auth/dto/writerInfoDto";
+import {WriterInfoDto} from "../auth/dto";
 import UserDtoMapper from "./userDtoMapper";
-import {FollowingWriterDto} from "./dto/followingWriter.dto";
-import {UserDto} from "./dto/user.dto";
 import {WriterInfoWithUser} from "./prisma/writerInfo.prisma.type";
-import {WriterDto} from "./dto/writer.dto";
-import {FollowerDto} from "./dto/follower.dto";
 
 @Injectable()
 export class UserService {
@@ -151,18 +147,13 @@ export class UserService {
      * @param followerId
      * @returns UserIdentityDto[]
      */
-    async getFollowingUserIdentityListByFollowerId(followerId : number): Promise<UserIdentityDto[]>{
+    async getFollowingUserProfileListByFollowerId(followerId : number): Promise<UserProfileDto[]>{
         const followingUsersIdentityData = await this.prismaService.follow.findMany({
             where: {
                 followerId
             },
             select: {
-                user : {
-                    select : {
-                        id : true,
-                        nickname : true,
-                    }
-                }
+                user : true
             },
             orderBy: {
                 createdAt: 'desc'
@@ -170,7 +161,7 @@ export class UserService {
         })
         if(followingUsersIdentityData.length === 0) return [];
         else{
-            return followingUsersIdentityData.map(following => following.user);
+            return followingUsersIdentityData.map(following => UserDtoMapper.UserToUserProfileDto(following.user));
         }
     }
 

@@ -1,32 +1,51 @@
-import {SeriesDto} from "./dto/series.dto";
 import {Series} from "@prisma/client";
-import {UserIdentityDto} from "../user/dto/userIdentity.dto";
-import {SeriesWithWriterDto} from "./dto/seriesWithWriter.dto";
+import { UserProfileDto} from "../user/dto";
+import {ReleasedSeriesDto, SeriesDto, ReleasedSeriesWithWriterDto, UnreleasedSeriesDto} from "./dto";
+import {FollowingSeriesAndWriter} from "./prisma/followingSeriesAndWriter.prisma.type";
+import UserDtoMapper from "../user/userDtoMapper";
 
 class SeriesDtoMapperClass {
     SeriesToSeriesDto(series : Series): SeriesDto {
         const {deleted, createdAt ,...seriesData} = series;
         return seriesData;
     }
-
-    SeriesListToSeriesDtoList(seriesList: Series[]): SeriesDto[] {
-        return seriesList.map(series => this.SeriesToSeriesDto(series));
+    SeriesToUnreleasedSeriesDto(series : Series): UnreleasedSeriesDto {
+        return this.SeriesToSeriesDto(series);
     }
 
-    SeriesAndWriterDtoToSeriesWithWriterDto(series : Series, writerData : UserIdentityDto): SeriesWithWriterDto {
-        return {series: this.SeriesToSeriesDto(series), writer: writerData}
+    SeriesToReleasedSeriesDto(series : Series, releasedDate : Date): ReleasedSeriesDto {
+        const seriesData = this.SeriesToSeriesDto(series);
+        return {...seriesData, releasedAt : series.releasedAt?? releasedDate};
     }
 
-    SeriesListAndWriterDtoListToSeriesWithWriterDtoList(seriesList : Series[], writerDataList : UserIdentityDto[]): SeriesWithWriterDto[] {
-        const seriesWithWriterList : SeriesWithWriterDto[] = []
+    SeriesAndWriterDtoToSeriesWithWriterDto(series : Series, releasedAt : Date, writerUserProfileData : UserProfileDto): ReleasedSeriesWithWriterDto {
+        return {
+            series: this.SeriesToReleasedSeriesDto(series, releasedAt),
+            writer: writerUserProfileData
+        }
+    }
+
+    SeriesListToReleasedSeriesDtoList(seriesList : Series[]): ReleasedSeriesDto[] {
+        const releasedSeriesList : ReleasedSeriesDto[] = [];
         seriesList.forEach(series => {
-            const followingUser = writerDataList.find(writer => writer.id === series.writerId);
-            if(followingUser){
-                seriesWithWriterList.push(this.SeriesAndWriterDtoToSeriesWithWriterDto(series,followingUser))
-            }
+            if(series.releasedAt !== null) releasedSeriesList.push(this.SeriesToReleasedSeriesDto(series, series.releasedAt));
+        })
+        return releasedSeriesList;
+    }
+
+    FollowingSeriesAndWriterListToSeriesWithWriterDtoList(followingSeriesAndWriter : FollowingSeriesAndWriter[]): ReleasedSeriesWithWriterDto[] {
+        const seriesWithWriterList : ReleasedSeriesWithWriterDto[] = [];
+        followingSeriesAndWriter.forEach(followingSeriesAndWriter => {
+            const { writerInfo} = followingSeriesAndWriter;
+            const userProfileData = UserDtoMapper.UserToUserProfileDto(writerInfo.user);
+            writerInfo.series.forEach(series => {
+                if(!series.releasedAt) return;
+                seriesWithWriterList.push(this.SeriesAndWriterDtoToSeriesWithWriterDto(series, series.releasedAt, userProfileData));
+            })
         })
         return seriesWithWriterList;
     }
+
 }
 const SeriesDtoMapper = new SeriesDtoMapperClass();
 export default SeriesDtoMapper;
