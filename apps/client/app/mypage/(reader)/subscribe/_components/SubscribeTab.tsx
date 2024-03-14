@@ -4,14 +4,17 @@ import { Tab } from "@headlessui/react";
 import { Fragment } from "react";
 import { isNonEmptyArray } from "@toss/utils";
 import NewsLetterCard from "../../../_components/NewsLetterCard";
-import { PostWithWriterUserDto, SeriesWithWriterDto } from "@moonjin/api-types";
+import {
+  ReleasedPostWithWriterDto,
+  ReleasedSeriesWithWriterDto,
+} from "@moonjin/api-types";
 
 export default function SubscribeTab({
   seriesList,
   newsletterList,
 }: {
-  seriesList: SeriesWithWriterDto[];
-  newsletterList: PostWithWriterUserDto[];
+  seriesList: ReleasedSeriesWithWriterDto[];
+  newsletterList: ReleasedPostWithWriterDto[];
 }) {
   return (
     <Tab.Group>

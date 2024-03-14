@@ -2,11 +2,11 @@ import Link from "next/link";
 import * as Io from "react-icons/io";
 import Image from "next/image";
 import NewsLetterCard from "./NewsLetterCard";
-import { dummyLetter, dummySeries } from "../_data";
-import {
-  PostWithWriterUserDto,
+
+import type {
+  ReleasedPostWithWriterDto,
+  ReleasedSeriesWithWriterDto,
   ResponseForm,
-  SeriesWithWriterDto,
 } from "@moonjin/api-types";
 import { isNonEmptyArray } from "@toss/utils";
 
@@ -14,8 +14,8 @@ export function ReaderHome({
   seriesList,
   newsletterList,
 }: {
-  seriesList: SeriesWithWriterDto[];
-  newsletterList: PostWithWriterUserDto[];
+  seriesList: ReleasedSeriesWithWriterDto[];
+  newsletterList: ReleasedPostWithWriterDto[];
 }) {
   return (
     <div className="flex flex-col w-full gap-y-12 max-w-[740px]">
@@ -28,7 +28,7 @@ export function ReaderHome({
 function SeriesNewsletter({
   seriesList,
 }: {
-  seriesList: SeriesWithWriterDto[];
+  seriesList: ReleasedSeriesWithWriterDto[];
 }) {
   return (
     <section className="flex flex-col w-full">
@@ -85,7 +85,7 @@ function SeriesNewsletter({
 function NewsletterList({
   newsletterList,
 }: {
-  newsletterList: PostWithWriterUserDto[];
+  newsletterList: ReleasedPostWithWriterDto[];
 }) {
   return (
     <section className="flex flex-col w-full">

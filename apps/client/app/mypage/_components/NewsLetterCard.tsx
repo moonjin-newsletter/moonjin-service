@@ -1,12 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import type { PostWithWriterUserDto } from "@moonjin/api-types";
+import type { ReleasedPostWithWriterDto } from "@moonjin/api-types";
 
 export default function NewsLetterCard({
   value,
 }: {
-  value: PostWithWriterUserDto;
+  value: ReleasedPostWithWriterDto;
 }) {
   return (
     <Link href="" className="flex w-full  py-4 border-b border-grayscale-200">

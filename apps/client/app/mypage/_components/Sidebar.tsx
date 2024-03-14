@@ -26,10 +26,10 @@ export function Sidebar({ type }: { type: userType }) {
           </div>
         )}
         <MenuLink title="구독한 뉴스레터" url="/mypage/subscribe" />
-        <MenuLink title="구독한 작가" url="" />
-        <MenuLink title="문진 스탬프" url="" />
-        <MenuLink title="편지함" url="" />
-        <MenuLink title="프로필 설정" url="" />
+        <MenuLink title="구독한 작가" url="/mypage/following" />
+        <MenuLink title="문진 스탬프" url="/mypage/stamp" />
+        <MenuLink title="편지함" url="/mypage/letter" />
+        <MenuLink title="프로필 설정" url="/mypage/setting" />
       </div>
       <div className="w-full mt-2">
         <button className="w-full   flex justify-center items-center py-4 text-rose-500">

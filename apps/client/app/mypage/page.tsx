@@ -1,9 +1,9 @@
 import HomeTab from "./_components/HomeTab";
 import ssr from "../../lib/fetcher/ssr";
 import type {
-  PostWithWriterUserDto,
+  ReleasedPostWithWriterDto,
+  ReleasedSeriesWithWriterDto,
   ResponseForm,
-  SeriesWithWriterDto,
 } from "@moonjin/api-types";
 import { redirect } from "next/navigation";
 
@@ -12,15 +12,11 @@ export default async function Page() {
     .then((res) => res.json<any>())
     .catch((err) => redirect("/auth/login"));
   const seriesList = await ssr("series/following").then((res) =>
-    res.json<ResponseForm<SeriesWithWriterDto[]>>(),
+    res.json<ResponseForm<ReleasedSeriesWithWriterDto[]>>(),
   );
   const newsletterList = await ssr("post/newsletter").then((res) =>
-    res.json<ResponseForm<PostWithWriterUserDto[]>>(),
+    res.json<ResponseForm<ReleasedPostWithWriterDto[]>>(),
   );
-
-  console.log(userInfo);
-  console.log(seriesList);
-  console.log(newsletterList);
 
   const userType = userInfo?.data?.user?.role === 1 ? "작가" : "독자";
 
