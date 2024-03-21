@@ -1,9 +1,7 @@
 import {Letter} from "@prisma/client";
 import {LetterDto} from "./dto/letter.dto";
-import {LetterWithSender} from "./prisma/letterWithSender.prisma";
-import {LetterWithSenderDto} from "./dto/letterWithSender.dto";
-import {LetterWithReceiver} from "./prisma/letterWithReceiver.prisma";
-import {LetterWithReceiverDto} from "./dto";
+import {LetterWithUser} from "./prisma/letterWithUser.prisma";
+import {LetterWithUserDto} from "./dto";
 
 class LetterDtoMapperClass {
 
@@ -12,14 +10,11 @@ class LetterDtoMapperClass {
         return letterData;
     }
 
-    letterWithSenderToLetterWithSenderDto(letter : LetterWithSender) : LetterWithSenderDto  {
+    letterWithUserToletterWithUserDto(letter : LetterWithUser) : LetterWithUserDto  {
         const letterDto = this.letterToletterDto(letter);
-        return {...letterDto, sender: letter.sender};
+        return {...letterDto, sender: letter.sender,receiver:letter.receiver};
     }
-    letterWithReceiverToLetterWithReceiverDto(letter : LetterWithReceiver) : LetterWithReceiverDto  {
-        const letterDto = this.letterToletterDto(letter);
-        return {...letterDto, receiver: letter.receiver};
-    }
+
 
 }
 const LetterDtoMapper = new LetterDtoMapperClass();

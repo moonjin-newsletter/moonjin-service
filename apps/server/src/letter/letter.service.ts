@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
-import {CreateLetterDto} from "./dto/CreateLetter.dto";
 import {UtilService} from "../util/util.service";
 import LetterDtoMapper from "./letterDtoMapper";
 import {ExceptionList} from "../response/error/errorInstances";
-import {LetterDto} from "./dto/letter.dto";
 import {UserService} from "../user/user.service";
-import {LetterWithSender} from "./prisma/letterWithSender.prisma";
-import {LetterWithSenderDto} from "./dto/letterWithSender.dto";
-import {LetterWithReceiverDto} from "./dto";
-import {LetterWithReceiver} from "./prisma/letterWithReceiver.prisma";
+import { LetterWithUser} from "./prisma/letterWithUser.prisma";
+import {CreateLetterDto, LetterDto, LetterWithUserDto} from "./dto";
 
 @Injectable()
 export class LetterService {
@@ -47,10 +43,10 @@ export class LetterService {
     /**
      * @summary 특정 유저의 받은 편지함 조회
      * @param receiverId
-     * @returns LetterWithSenderDto[]
+     * @returns LetterWithUserDto[]
      */
-    async getReceivedLetterListByReceiverId(receiverId : number): Promise<LetterWithSenderDto[]>{
-        const letterList : LetterWithSender[] = await this.prismaService.letter.findMany({
+    async getReceivedLetterListByReceiverId(receiverId : number): Promise<LetterWithUserDto[]>{
+        const letterList : LetterWithUser[] = await this.prismaService.letter.findMany({
             where:{
                 receiverId
             },
@@ -60,26 +56,7 @@ export class LetterService {
                         id : true,
                         nickname : true
                     }
-                }
-            },
-            orderBy:{
-                createdAt : 'desc'
-            }
-        });
-        return letterList.map(letter => LetterDtoMapper.letterWithSenderToLetterWithSenderDto(letter));
-    }
-
-    /**
-     * @summary 특정 유저의 받은 편지함 조회
-     * @param senderId
-     * @returns LetterWithSenderDto[]
-     */
-    async getSentLetterListBySenderId(senderId : number): Promise<LetterWithReceiverDto[]>{
-        const letterList : LetterWithReceiver[] = await this.prismaService.letter.findMany({
-            where:{
-                senderId,
-            },
-            include : {
+                },
                 receiver : {
                     select : {
                         id : true,
@@ -91,7 +68,38 @@ export class LetterService {
                 createdAt : 'desc'
             }
         });
-        return letterList.map(letter => LetterDtoMapper.letterWithReceiverToLetterWithReceiverDto(letter));
+        return letterList.map(letter => LetterDtoMapper.letterWithUserToletterWithUserDto(letter));
+    }
+
+    /**
+     * @summary 특정 유저의 받은 편지함 조회
+     * @param senderId
+     * @returns LetterWithUserDto[]
+     */
+    async getSentLetterListBySenderId(senderId : number): Promise<LetterWithUserDto[]>{
+        const letterList : LetterWithUser[] = await this.prismaService.letter.findMany({
+            where:{
+                senderId,
+            },
+            include : {
+                sender : {
+                    select : {
+                        id : true,
+                        nickname : true
+                    }
+                },
+                receiver : {
+                    select : {
+                        id : true,
+                        nickname : true
+                    }
+                }
+            },
+            orderBy:{
+                createdAt : 'desc'
+            }
+        });
+        return letterList.map(letter => LetterDtoMapper.letterWithUserToletterWithUserDto(letter));
     }
 
 

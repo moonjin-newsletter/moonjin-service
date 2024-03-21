@@ -9,7 +9,7 @@ import {createResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {LETTER_ALREADY_READ, LETTER_NOT_FOUND, LETTER_UNAUTHORIZED, SEND_LETTER_ERROR} from "../response/error/letter";
 import {USER_NOT_FOUND} from "../response/error/auth";
-import {LetterWithReceiverDto, LetterWithSenderDto} from "./dto";
+import {LetterWithUserDto} from "./dto";
 import {UtilService} from "../util/util.service";
 
 @Controller('letter')
@@ -41,24 +41,31 @@ export class LetterController {
     /**
      * @summary 내 받은 편지함 조회 API
      * @param user
-     * @returns LetterWithSenderDto[]
+     * @returns LetterWithUserDto[]
      */
     @TypedRoute.Get('receive')
     @UseGuards(UserAuthGuard)
-    async getReceivedLetterList(@User() user: UserAuthDto) : Promise<Try<LetterWithSenderDto[]>> {
+    async getReceivedLetterList(@User() user: UserAuthDto) : Promise<Try<LetterWithUserDto[]>> {
         return createResponseForm(await this.letterService.getReceivedLetterListByReceiverId(user.id));
     }
 
     /**
      * @summary 내가 보낸 편지함 조회 API
      * @param user
-     * @returns LetterWithSenderDto[]
+     * @returns LetterWithUserDto[]
      */
     @TypedRoute.Get('send')
     @UseGuards(UserAuthGuard)
-    async getSentLetterList(@User() user: UserAuthDto) : Promise<Try<LetterWithReceiverDto[]>> {
+    async getSentLetterList(@User() user: UserAuthDto) : Promise<Try<LetterWithUserDto[]>> {
         return createResponseForm(await this.letterService.getSentLetterListBySenderId(user.id));
     }
+
+    // @TypedRoute.Get(':letterId')
+    // @UseGuards(UserAuthGuard)
+    // async getLetter(@User() user: UserAuthDto, @TypedParam('letterId') letterId: number) : Promise<TryCatch<LetterWithSenderDto,
+    //     LETTER_NOT_FOUND | LETTER_UNAUTHORIZED>>{
+    //     return createResponseForm(await this.letterService.getLetterByLetterId(letterId, user.id));
+    // }
 
     @TypedRoute.Put(':letterId/read')
     @UseGuards(UserAuthGuard)
