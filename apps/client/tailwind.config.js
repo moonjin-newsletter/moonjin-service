@@ -16,7 +16,9 @@ module.exports = {
       tablet: { min: "601px", max: "1023px" },
       desktop: { min: "1024px" },
     },
-
+    fontFamily: {
+      sans: ["Pretendard", "-apple-system", "sans-serif"],
+    },
     extend: {
       fontFamily: {
         libre: ["var(--font-libre)"],

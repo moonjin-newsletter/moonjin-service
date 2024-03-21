@@ -1,7 +1,7 @@
 import Link from "next/link";
 import * as I from "components/icons";
 import ssr from "../../../../lib/fetcher/ssr";
-import type { LetterWithSenderDto, ResponseForm } from "@moonjin/api-types";
+import type { LetterWithUserDto, ResponseForm } from "@moonjin/api-types";
 import LetterTab from "./_components/LetterTab";
 
 const dummy = [
@@ -47,15 +47,19 @@ const dummy = [
 ];
 
 export default async function Page() {
-  const { data: letterList } = await ssr("letter").then((res) =>
-    res.json<ResponseForm<LetterWithSenderDto[]>>(),
+  const { data: receivedLetter } = await ssr("letter/receive").then((res) =>
+    res.json<ResponseForm<LetterWithUserDto[]>>(),
   );
-
-  console.log(letterList);
+  const { data: sendingLetter } = await ssr("letter/send").then((res) =>
+    res.json<ResponseForm<LetterWithUserDto[]>>(),
+  );
 
   return (
     <main className="overflow-hidden w-full max-w-[748px]">
-      <LetterTab receivedLetter={dummy} />
+      <LetterTab
+        receivedLetter={receivedLetter}
+        sendingLetter={sendingLetter}
+      />
     </main>
   );
 }
