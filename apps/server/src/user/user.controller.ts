@@ -7,7 +7,7 @@ import {UserService} from "./user.service";
 import {createResponseForm, ResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {EMAIL_ALREADY_EXIST, USER_NOT_FOUND, USER_NOT_WRITER} from "../response/error/auth";
-import {UserDto, FollowerDto, WriterDto, FollowingWriterDto, ExternalFollowerDto} from "./dto";
+import {UserDto, WriterDto, FollowingWriterDto, ExternalFollowerDto, AllFollowerDto} from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {FOLLOWER_ALREADY_EXIST, FOLLOWER_NOT_FOUND} from "../response/error/user";
 import {ICreateExternalFollower} from "./api-types/ICreateExternalFollower";
@@ -84,13 +84,16 @@ export class UserController {
     /**
      * @summary 작가의 팔로워 목록 보기
      * @param user
-     * @returns UserProfileDto[]
+     * @returns AllFollowerDto
      */
     @TypedRoute.Get("follower")
     @UseGuards(WriterAuthGuard)
-    async getFollowerList(@User() user : UserAuthDto) : Promise<Try<FollowerDto[]>> {
-        const followingWriterList = await this.userService.getFollowerListByWriterId(user.id)
-        return createResponseForm(followingWriterList);
+    async getFollowerList(@User() user : UserAuthDto) : Promise<Try<AllFollowerDto>> {
+        const followerList = await this.userService.getFollowerListByWriterId(user.id)
+        const externalFollowerList = await this.userService.getExternalFollowerListByWriterId(user.id);
+        return createResponseForm({
+            followerList, externalFollowerList
+        });
     }
 
     /**

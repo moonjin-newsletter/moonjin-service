@@ -1,4 +1,4 @@
-import {UserProfileDto} from "./userProfile.dto";
+import {UserProfileDto} from ".";
 
 export interface FollowerDto {
     user : UserProfileDto;

@@ -71,6 +71,23 @@ export class UserService {
     }
 
     /**
+     * @summary 외부 팔로워 목록 가져오기
+     * @param writerId
+     * @returns ExternalFollowerDto[]
+     */
+    async getExternalFollowerListByWriterId(writerId: number): Promise<ExternalFollowerDto[]> {
+        const externalFollowerList = await this.prismaService.externalFollow.findMany({
+            where: {
+                writerId
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        })
+        return externalFollowerList.map(externalFollower => UserDtoMapper.ExternalFollowerToExternalFollowerDto(externalFollower));
+    }
+
+    /**
      * @summary 해당 작가의 팔로워 목록을 가져오기
      * @param writerId
      * @returns userId[]
