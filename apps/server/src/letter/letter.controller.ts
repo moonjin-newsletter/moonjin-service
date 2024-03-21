@@ -9,14 +9,16 @@ import {createResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {LETTER_ALREADY_READ, LETTER_NOT_FOUND, FORBIDDEN_FOR_LETTER, SEND_LETTER_ERROR} from "../response/error/letter";
 import {USER_NOT_FOUND} from "../response/error/auth";
-import {LetterWithUserDto} from "./dto";
+import {CreateLetterDto, LetterWithUserDto} from "./dto";
 import {UtilService} from "../util/util.service";
+import {UserService} from "../user/user.service";
 
 @Controller('letter')
 export class LetterController {
     constructor(
         private readonly letterService: LetterService,
         private readonly utilService: UtilService,
+        private readonly userService: UserService
     ){}
 
     /**
@@ -24,14 +26,21 @@ export class LetterController {
      * @param user
      * @param letterData
      * @returns
-     * @throws SEND_LETTER_ERROR
      * @throws USER_NOT_EXIST
+     * @throws SEND_LETTER_ERROR
      */
     @TypedRoute.Post()
     @UseGuards(UserAuthGuard)
     async sendLetter(@User() user: UserAuthDto, @TypedBody() letterData: ICreateLetter): Promise<TryCatch<{ message:string, sentAt: Date },
-        SEND_LETTER_ERROR | USER_NOT_FOUND>>{
-        const letter = await this.letterService.sendLetter({...letterData, senderId: user.id});
+        USER_NOT_FOUND | SEND_LETTER_ERROR >>{
+
+        const createLetterData : CreateLetterDto = {
+            senderId : user.id,
+            receiverId : await this.userService.getUserIdByEmail(letterData.receiverEmail),
+            title : letterData.title,
+            content : letterData.content,
+        }
+        const letter = await this.letterService.sendLetter({...createLetterData, senderId: user.id});
         return createResponseForm({
             message : "편지 발송에 성공하였습니다.",
             sentAt : letter.createdAt

@@ -1,13 +1,7 @@
 import {ExternalFollow, User, WriterInfo} from "@prisma/client";
-import {UserAuthDto} from "../auth/dto/userAuthDto";
-import {WriterInfoDto} from "../auth/dto/writerInfoDto";
-import {UserDto} from "./dto/user.dto";
-import {UserIdentityDto} from "./dto/userIdentity.dto";
-import {FollowingWriterDto} from "./dto/followingWriter.dto";
+import {UserAuthDto, WriterInfoDto} from "../auth/dto";
+import {UserDto, UserIdentityDto, FollowingWriterDto, WriterDto, UserProfileDto, FollowerDto} from "./dto";
 import { WriterInfoWithUser} from "./prisma/writerInfo.prisma.type";
-import {WriterDto} from "./dto/writer.dto";
-import {UserProfileDto} from "./dto/userProfile.dto";
-import {FollowerDto} from "./dto/follower.dto";
 
 class UserDtoMapperClass {
     UserToUserAuthDto(user: User): UserAuthDto {
