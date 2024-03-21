@@ -1,4 +1,4 @@
-import {WriterInfoDto} from "../../auth/dto/writerInfoDto";
+import {WriterInfoDto} from "../../auth/dto";
 import {UserIdentityDto} from "./userIdentity.dto";
 
 export interface FollowingWriterDto {
