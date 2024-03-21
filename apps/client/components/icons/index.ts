@@ -6,5 +6,20 @@ import LogoLeft from "./logo-left.svg";
 import Logo from "./logo.svg";
 import LogoIcon from "./logo-icon.svg";
 import User from "./user.svg";
+import LetterIn from "./letter_in.svg";
+import LetterOut from "./letter_out.svg";
+import Empty from "./empty.svg";
 
-export { Kakao, Google, Naver, AuthLogo, Logo, LogoLeft, User, LogoIcon };
+export {
+  Kakao,
+  Google,
+  Naver,
+  AuthLogo,
+  Logo,
+  LogoLeft,
+  User,
+  LogoIcon,
+  LetterOut,
+  LetterIn,
+  Empty,
+};

@@ -27,7 +27,7 @@ export function Sidebar({ type }: { type: userType }) {
         )}
         <MenuLink title="구독한 뉴스레터" url="/mypage/subscribe" />
         <MenuLink title="구독한 작가" url="/mypage/following" />
-        <MenuLink title="문진 스탬프" url="/mypage/stamp" />
+        {/*<MenuLink title="문진 스탬프" url="/mypage/stamp" />*/}
         <MenuLink title="편지함" url="/mypage/letter" />
         <MenuLink title="프로필 설정" url="/mypage/setting" />
       </div>

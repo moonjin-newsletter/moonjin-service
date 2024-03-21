@@ -48,8 +48,7 @@ function PasswordLayout() {
   } = useForm();
 
   function onClickSubmit(value: any) {
-    console.log(value, 1);
-    csr.post("auth/password", { body: value });
+    csr.patch("auth/password", { body: value });
   }
 
   useEffect(() => {
