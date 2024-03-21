@@ -130,7 +130,7 @@ export class LetterService {
      * @throws FORBIDDEN_FOR_LETTER
      */
     async getLetterByLetterId(letterId: number, userId: number): Promise<LetterWithUserDto>{
-        await this.assertUserIsReceiverOfLetter(letterId, userId);
+        await this.assertUserCanAccessToLetter(letterId, userId);
         const letter: LetterWithUser|null = await this.prismaService.letter.findUnique({
             where:{
                 id : letterId
@@ -176,7 +176,7 @@ export class LetterService {
      * @throws LETTER_ALREADY_READ
      */
     async readLetter(letterId: number, userId: number): Promise<LetterDto>{
-        const letter = await this.assertUserIsReceiverOfLetter(letterId, userId);
+        const letter = await this.assertUserCanAccessToLetter(letterId, userId);
         if(letter.readAt) throw ExceptionList.LETTER_ALREADY_READ;
         try {
             const letter   = await this.prismaService.letter.update({
@@ -195,20 +195,21 @@ export class LetterService {
     }
 
     /**
-     * @summary 특정 유저가 특정 편지의 수신자인지 확인
+     * @summary 특정 유저가 특정 편지에 접근 가능한지 확인
      * @param letterId
      * @param userId
      * @throws LETTER_NOT_FOUND
      * @throws FORBIDDEN_FOR_LETTER
      */
-    async assertUserIsReceiverOfLetter(letterId: number, userId: number): Promise<LetterDto>{
+    async assertUserCanAccessToLetter(letterId: number, userId: number): Promise<LetterDto>{
         const letter = await this.prismaService.letter.findUnique({
             where:{
                 id : letterId
             }
         });
         if(!letter) throw ExceptionList.LETTER_NOT_FOUND;
-        if(letter.receiverId !== userId) throw ExceptionList.FORBIDDEN_FOR_LETTER;
-        return LetterDtoMapper.letterToLetterDto(letter);
+        if(letter.receiverId === userId || letter.senderId === userId)
+            return LetterDtoMapper.letterToLetterDto(letter);
+        throw ExceptionList.FORBIDDEN_FOR_LETTER;
     }
 }
