@@ -1,7 +1,7 @@
 import {LetterDto} from "./letter.dto";
-import {UserIdentityDto} from "../../user/dto";
+import {UserLetterProfileDto} from "./userLetterProfileDto";
 
 export interface LetterWithUserDto extends LetterDto {
-    sender: UserIdentityDto
-    receiver: UserIdentityDto
+    sender: UserLetterProfileDto
+    receiver: UserLetterProfileDto
 }

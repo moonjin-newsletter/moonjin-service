@@ -1,5 +1,5 @@
 export interface ICreateLetter {
-    receiverId: number;
+    receiverEmail: string;
     title: string;
     content: string;
 }

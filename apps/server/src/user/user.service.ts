@@ -9,6 +9,7 @@ import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import {WriterInfoDto} from "../auth/dto";
 import UserDtoMapper from "./userDtoMapper";
 import {WriterInfoWithUser} from "./prisma/writerInfo.prisma.type";
+import * as process from "process";
 
 @Injectable()
 export class UserService {
@@ -246,7 +247,7 @@ export class UserService {
      * @returns void
      * @throws USER_NOT_FOUND
      */
-    async assertUserExist(userId : number): Promise<void>{
+    async assertUserExistById(userId : number): Promise<void>{
         const user = await this.prismaService.user.findUnique({
             where : {
                 id : userId,
@@ -254,6 +255,26 @@ export class UserService {
             }
         })
         if(!user) throw ExceptionList.USER_NOT_FOUND;
+    }
+
+    /**
+     * @summary 해당 유저가 존재하는 지 확인
+     * @param email
+     * @returns {userId, email}
+     * @throws USER_NOT_FOUND
+     */
+    async assertUserExistByEmail(email : string): Promise<{userId: number, email: string}>{
+        const user = await this.prismaService.user.findUnique({
+            where : {
+                email,
+                deleted : false,
+            }
+        })
+        if(!user) throw ExceptionList.USER_NOT_FOUND;
+        return {
+            userId: user.id,
+            email
+        };
     }
 
     /**
@@ -280,6 +301,25 @@ export class UserService {
     }
 
     /**
+     * @summary 해당 작가가 존재하는 지 확인
+     * @param moonjinId
+     * @returns {userId, moonjinId}
+     * @throws USER_NOT_WRITER
+     */
+    async assertWriterExistByMoonjinId(moonjinId: string): Promise<{userId: number, moonjinId :string}> {
+        const writer = await this.prismaService.writerInfo.findUnique({
+            where: {
+                moonjinId
+            }
+        })
+        if(!writer) throw ExceptionList.USER_NOT_FOUND;
+        return {
+            userId: writer.userId,
+            moonjinId
+        };
+    }
+
+    /**
      * @summary 팔로워 삭제하기
      * @param followerId
      * @param writerId
@@ -288,7 +328,7 @@ export class UserService {
      * @throws FOLLOWER_NOT_FOUND
      */
     async deleteFollower(followerId: number, writerId: number): Promise<void> {
-        await this.assertUserExist(followerId);
+        await this.assertUserExistById(followerId);
         try {
              await this.prismaService.follow.update({
                 where: {
@@ -329,6 +369,35 @@ export class UserService {
         }catch (error){
             console.log(error);
             throw ExceptionList.FOLLOWER_ALREADY_EXIST;
+        }
+    }
+
+    /**
+     * @summary email로 userId 가져오기 (moonjinEmail도 가능)
+     * @param email
+     * @returns userId
+     * @throws USER_NOT_FOUND
+     */
+    async getUserIdByEmail(email: string): Promise<number> {
+        const moonjinDomain = process.env.MAILGUN_DOMAIN?? '@moonjin';
+
+        if(email.includes(moonjinDomain)){
+            const moonjinId = email.split('@')[0];
+            const writer = await this.prismaService.writerInfo.findUnique({
+                where: {
+                    moonjinId
+                }
+            })
+            if(!writer) throw ExceptionList.USER_NOT_FOUND;
+            return writer.userId;
+        }else{
+            const user = await this.prismaService.user.findUnique({
+                where: {
+                    email
+                }
+            })
+            if(!user) throw ExceptionList.USER_NOT_FOUND;
+            return user.id;
         }
     }
 }

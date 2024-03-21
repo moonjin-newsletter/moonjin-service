@@ -3,7 +3,6 @@ import {PrismaService} from "../prisma/prisma.service";
 import {UtilService} from "../util/util.service";
 import LetterDtoMapper from "./letterDtoMapper";
 import {ExceptionList} from "../response/error/errorInstances";
-import {UserService} from "../user/user.service";
 import { LetterWithUser} from "./prisma/letterWithUser.prisma";
 import {CreateLetterDto, LetterDto, LetterWithUserDto} from "./dto";
 
@@ -12,20 +11,16 @@ export class LetterService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
-        private readonly userService: UserService
     ) {}
-
 
     /**
      * @summary 편지 발송 기능
      * @param createLetterData
      * @returns LetterDto
-     * @throws SEND_LETTER_ERROR
      * @throws USER_NOT_FOUND
+     * @throws SEND_LETTER_ERROR
      */
     async sendLetter(createLetterData : CreateLetterDto) : Promise<LetterDto> {
-        await this.userService.assertUserExist(createLetterData.receiverId);
-        if(createLetterData.receiverId === createLetterData.senderId) throw ExceptionList.SEND_LETTER_ERROR;
         try {
             const letter = await this.prismaService.letter.create({
                 data : {
@@ -33,7 +28,7 @@ export class LetterService {
                     createdAt : this.utilService.getCurrentDateInKorea(),
                 }
             });
-            return LetterDtoMapper.letterToletterDto(letter);
+            return LetterDtoMapper.letterToLetterDto(letter);
         }catch (error) {
             console.error(error);
             throw ExceptionList.SEND_LETTER_ERROR;
@@ -54,13 +49,25 @@ export class LetterService {
                 sender : {
                     select : {
                         id : true,
-                        nickname : true
+                        nickname : true,
+                        email : true,
+                        writerInfo : {
+                            select : {
+                                moonjinId : true
+                            }
+                        }
                     }
                 },
                 receiver : {
                     select : {
                         id : true,
-                        nickname : true
+                        nickname : true,
+                        email : true,
+                        writerInfo : {
+                            select : {
+                                moonjinId : true
+                            }
+                        }
                     }
                 }
             },
@@ -68,11 +75,11 @@ export class LetterService {
                 createdAt : 'desc'
             }
         });
-        return letterList.map(letter => LetterDtoMapper.letterWithUserToletterWithUserDto(letter));
+        return letterList.map(letter => LetterDtoMapper.letterWithUserToLetterWithUserDto(letter));
     }
 
     /**
-     * @summary 특정 유저의 받은 편지함 조회
+     * @summary 특정 유저의 보낸 편지함 조회
      * @param senderId
      * @returns LetterWithUserDto[]
      */
@@ -85,13 +92,25 @@ export class LetterService {
                 sender : {
                     select : {
                         id : true,
-                        nickname : true
+                        nickname : true,
+                        email : true,
+                        writerInfo : {
+                            select : {
+                                moonjinId : true
+                            }
+                        }
                     }
                 },
                 receiver : {
                     select : {
                         id : true,
-                        nickname : true
+                        nickname : true,
+                        email : true,
+                        writerInfo : {
+                            select : {
+                                moonjinId : true
+                            }
+                        }
                     }
                 }
             },
@@ -99,7 +118,7 @@ export class LetterService {
                 createdAt : 'desc'
             }
         });
-        return letterList.map(letter => LetterDtoMapper.letterWithUserToletterWithUserDto(letter));
+        return letterList.map(letter => LetterDtoMapper.letterWithUserToLetterWithUserDto(letter));
     }
 
     /**
@@ -120,19 +139,31 @@ export class LetterService {
                 sender : {
                     select : {
                         id : true,
-                        nickname : true
+                        nickname : true,
+                        email : true,
+                        writerInfo : {
+                            select : {
+                                moonjinId : true
+                            }
+                        }
                     }
                 },
                 receiver : {
                     select : {
                         id : true,
-                        nickname : true
+                        nickname : true,
+                        email : true,
+                        writerInfo : {
+                            select : {
+                                moonjinId : true
+                            }
+                        }
                     }
                 }
-            }
+            },
         });
         if(!letter) throw ExceptionList.LETTER_NOT_FOUND;
-        return LetterDtoMapper.letterWithUserToletterWithUserDto(letter);
+        return LetterDtoMapper.letterWithUserToLetterWithUserDto(letter);
     }
 
     /**
@@ -156,7 +187,7 @@ export class LetterService {
                     readAt : this.utilService.getCurrentDateInKorea()
                 }
             });
-            return LetterDtoMapper.letterToletterDto(letter);
+            return LetterDtoMapper.letterToLetterDto(letter);
         }catch (error) {
             console.error(error);
             throw error;
@@ -178,6 +209,6 @@ export class LetterService {
         });
         if(!letter) throw ExceptionList.LETTER_NOT_FOUND;
         if(letter.receiverId !== userId) throw ExceptionList.FORBIDDEN_FOR_LETTER;
-        return LetterDtoMapper.letterToletterDto(letter);
+        return LetterDtoMapper.letterToLetterDto(letter);
     }
 }

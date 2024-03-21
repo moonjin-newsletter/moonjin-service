@@ -10,9 +10,9 @@ export interface SEND_LETTER_ERROR extends ERROR {
     };
 }
 
-export interface LETTER_UNAUTHORIZED extends ERROR {
+export interface FORBIDDEN_FOR_LETTER extends ERROR {
     result : false;
-    code : ErrorCodeEnum.LETTER_UNAUTHORIZED;
+    code : ErrorCodeEnum.FORBIDDEN_FOR_LETTER;
     httpStatus: 403;
     data : {
         message : "해당 편지에 접근 권한이 없습니다."

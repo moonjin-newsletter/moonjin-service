@@ -5,15 +5,27 @@ const letterWithUser = Prisma.validator<Prisma.LetterDefaultArgs>()({
         sender : {
             select : {
                 id : true,
-                nickname : true
+                nickname : true,
+                email : true,
+                writerInfo : {
+                    select : {
+                        moonjinId : true
+                    }
+                }
             }
         },
         receiver : {
             select : {
                 id : true,
-                nickname : true
+                nickname : true,
+                email : true,
+                writerInfo : {
+                    select : {
+                        moonjinId : true
+                    }
+                }
             }
         }
-    }
+    },
 })
 export type LetterWithUser = Prisma.LetterGetPayload<typeof letterWithUser>;
