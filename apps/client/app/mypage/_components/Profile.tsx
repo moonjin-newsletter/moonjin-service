@@ -8,6 +8,7 @@ export default function Profile({
   userInfo: any;
   type: userType;
 }) {
+  console.log(userInfo);
   return (
     <section className="flex items-end relative w-full max-w-[1006px] pt-7  gap-x-6">
       {type === "작가" && (
@@ -23,26 +24,26 @@ export default function Profile({
       )}
       <div className="flex h-fit  w-full  flex-col  ">
         <div className="flex font-medium text-3xl items-center gap-x-2.5 ">
-          {userInfo.nickname}
+          {userInfo.user.nickname}
           <div className="py-1 text-sm px-3 border border-grayscale-400 rounded-full text-gray-500">
             {type}
           </div>
         </div>
-        {userInfo.description != "" && (
-          <span className="mt-3">{userInfo.description}</span>
+        {userInfo.user.description != "" && (
+          <span className="mt-3">{userInfo.user.description}</span>
         )}
       </div>
       {type === "작가" && (
         <div className="ml-auto flex ">
           {[
-            { title: "뉴스레터", body: 123 },
+            { title: "뉴스레터", body: userInfo.writerInfo.newsletterCount },
             {
               title: "시리즈",
-              body: 23,
+              body: userInfo.writerInfo.seriesCount,
             },
             {
               title: "구독자",
-              body: 23,
+              body: userInfo.writerInfo.followerCount,
             },
           ].map((value, index) => (
             <div
