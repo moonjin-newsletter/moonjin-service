@@ -6,8 +6,10 @@ import LetterDtoMapper from "./letterDtoMapper";
 import {ExceptionList} from "../response/error/errorInstances";
 import {LetterDto} from "./dto/letter.dto";
 import {UserService} from "../user/user.service";
-import {LetterWithSender} from "./prisma/letterWithUser.prisma";
-import {LetterWithSenderDto} from "./dto/LetterWithSender.dto";
+import {LetterWithSender} from "./prisma/letterWithSender.prisma";
+import {LetterWithSenderDto} from "./dto/letterWithSender.dto";
+import {LetterWithReceiverDto} from "./dto";
+import {LetterWithReceiver} from "./prisma/letterWithReceiver.prisma";
 
 @Injectable()
 export class LetterService {
@@ -43,14 +45,14 @@ export class LetterService {
     }
 
     /**
-     * @summary 특정 유저의 편지함 조회
-     * @param userId
+     * @summary 특정 유저의 받은 편지함 조회
+     * @param receiverId
      * @returns LetterWithSenderDto[]
      */
-    async getLetterList(userId : number): Promise<LetterWithSenderDto[]>{
+    async getReceivedLetterListByReceiverId(receiverId : number): Promise<LetterWithSenderDto[]>{
         const letterList : LetterWithSender[] = await this.prismaService.letter.findMany({
             where:{
-                receiverId : userId
+                receiverId
             },
             include : {
                 sender : {
@@ -64,9 +66,34 @@ export class LetterService {
                 createdAt : 'desc'
             }
         });
-        if(letterList.length === 0) return [];
         return letterList.map(letter => LetterDtoMapper.letterWithSenderToLetterWithSenderDto(letter));
     }
+
+    /**
+     * @summary 특정 유저의 받은 편지함 조회
+     * @param senderId
+     * @returns LetterWithSenderDto[]
+     */
+    async getSentLetterListBySenderId(senderId : number): Promise<LetterWithReceiverDto[]>{
+        const letterList : LetterWithReceiver[] = await this.prismaService.letter.findMany({
+            where:{
+                senderId,
+            },
+            include : {
+                receiver : {
+                    select : {
+                        id : true,
+                        nickname : true
+                    }
+                }
+            },
+            orderBy:{
+                createdAt : 'desc'
+            }
+        });
+        return letterList.map(letter => LetterDtoMapper.letterWithReceiverToLetterWithReceiverDto(letter));
+    }
+
 
     /**
      * @summary 특정 편지 읽음 처리

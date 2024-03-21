@@ -31,12 +31,13 @@ export enum ErrorCodeEnum {
     // post
     CREATE_POST_ERROR = "0100",
     POST_NOT_FOUND = "0101",
-    NOT_ACCESSED_FOR_POST = "0102",
+    FORBIDDEN_FOR_POST = "0102",
     /// stamp
     STAMP_ALREADY_EXIST= "0110",
     // series
     CREATE_SERIES_ERROR = "0201",
     SERIES_NOT_FOUND = "0202",
+    FORBIDDEN_FOR_SERIES = "0203",
 
     // user
     /// follow
