@@ -19,9 +19,9 @@ export interface POST_NOT_FOUND extends ERROR {
     }
 }
 
-export interface NOT_ACCESSED_FOR_POST extends ERROR {
+export interface FORBIDDEN_FOR_POST extends ERROR {
     result : false;
-    code: ErrorCodeEnum.NOT_ACCESSED_FOR_POST;
+    code: ErrorCodeEnum.FORBIDDEN_FOR_POST;
     httpStatus: 403;
     data: {
         message:"해당 글에 권한이 없습니다."

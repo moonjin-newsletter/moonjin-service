@@ -18,3 +18,12 @@ export interface SERIES_NOT_FOUND extends ERROR {
         message:"해당하는 시리즈가 없습니다."
     }
 }
+
+export interface FORBIDDEN_FOR_SERIES extends ERROR {
+    result : false;
+    code: ErrorCodeEnum.FORBIDDEN_FOR_SERIES;
+    httpStatus: 403;
+    data: {
+        message:"해당 시리즈에 접근할 수 없습니다."
+    }
+}

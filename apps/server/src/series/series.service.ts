@@ -148,5 +148,33 @@ export class SeriesService {
         }
     }
 
+    /**
+     * @summary 해당 유저가 해당 글에 접근할 수 있는 지 권한 확인
+     * @param seriesId
+     * @param userId
+     * @throws SERIES_NOT_FOUND
+     * @throws FORBIDDEN_FOR_SERIES
+     */
+    async assertUserCanAccessToSeries(seriesId: number, userId: number) {
+        const series = await this.prismaService.series.findUnique({
+            where : {
+                id : seriesId
+            },
+            select : {
+                writerId : true
+            }
+        })
+        if(!series) throw ExceptionList.SERIES_NOT_FOUND;
+        if(series.writerId === userId) return;
 
+        const follower = await this.prismaService.follow.findUnique({
+            where : {
+                followerId_writerId: {
+                    followerId : userId,
+                    writerId : series.writerId
+                }
+            }
+        })
+        if(!follower) throw ExceptionList.FORBIDDEN_FOR_SERIES;
+    }
 }

@@ -63,7 +63,7 @@ export class PostService {
      * @param postId
      * @param writerId
      * @throws POST_NOT_FOUND
-     * @throws NOT_ACCESSED_FOR_POST
+     * @throws FORBIDDEN_FOR_POST
      */
     async assertWriterOfPost(postId : number, writerId : number) : Promise<void> {
         const post = await this.prismaService.post.findUnique({
@@ -72,7 +72,7 @@ export class PostService {
             }
         })
         if(!post) throw ExceptionList.POST_NOT_FOUND;
-        if(post.writerId !== writerId) throw ExceptionList.NOT_ACCESSED_FOR_POST;
+        if(post.writerId !== writerId) throw ExceptionList.FORBIDDEN_FOR_POST;
     }
 
     /**
@@ -268,6 +268,27 @@ export class PostService {
             console.error(error);
             return [];
         }
+    }
 
+    /**
+     * @summary 해당 시리즈의 발표된 글 목록 가져오기
+     * @param seriesId
+     * @return ReleasedPostDto[]
+     */
+    async getReleasedPostListBySeriesId(seriesId : number): Promise<ReleasedPostDto[]> {
+        const postList = await this.prismaService.post.findMany({
+            where : {
+                seriesId,
+                releasedAt : {
+                    not : null
+                },
+                status : true,
+                deleted : false
+            },
+            orderBy : {
+                releasedAt : 'desc'
+            }
+        })
+        return PostDtoMapper.PostListToReleasedPostDtoList(postList);
     }
 }
