@@ -2,7 +2,7 @@
 
 import { Tab } from "@headlessui/react";
 import { Fragment } from "react";
-import { LetterWithSenderDto } from "@moonjin/api-types";
+import { LetterWithUserDto } from "@moonjin/api-types";
 import Link from "next/link";
 import * as I from "../../../../../components/icons";
 import { isNonEmptyArray } from "@toss/utils";
@@ -10,9 +10,12 @@ import { format } from "date-fns";
 
 export default function LetterTab({
   receivedLetter,
+  sendingLetter,
 }: {
-  receivedLetter: LetterWithSenderDto[];
+  receivedLetter: LetterWithUserDto[];
+  sendingLetter: LetterWithUserDto[];
 }) {
+  console.log(receivedLetter);
   return (
     <Tab.Group>
       <Tab.List className="w-full flex gap-x-4">
@@ -30,6 +33,12 @@ export default function LetterTab({
             )}
           </Tab>
         ))}
+        <Link
+          href="/mypage/letter/sending"
+          className="ml-auto py-1.5 px-4 bg-primary text-white text-sm rounded"
+        >
+          편지쓰기
+        </Link>
       </Tab.List>
       <Tab.Panels className="w-full mt-4">
         <Tab.Panel>
@@ -47,8 +56,8 @@ export default function LetterTab({
           )}
         </Tab.Panel>
         <Tab.Panel>
-          {isNonEmptyArray(receivedLetter ?? []) ? (
-            receivedLetter?.map((letter, index) => (
+          {isNonEmptyArray(sendingLetter ?? []) ? (
+            sendingLetter?.map((letter, index) => (
               <SendLetterCard key={index} letter={letter} />
             ))
           ) : (
@@ -65,10 +74,10 @@ export default function LetterTab({
   );
 }
 
-function SendLetterCard({ letter }: { letter: LetterWithSenderDto }) {
+function SendLetterCard({ letter }: { letter: LetterWithUserDto }) {
   return (
     <Link
-      href={""}
+      href={`/mypage/letter/${letter.id}`}
       className="flex flex-col w-full border-b border-grayscale-200 py-4"
     >
       <div className="w-full flex items-center ">
@@ -80,7 +89,7 @@ function SendLetterCard({ letter }: { letter: LetterWithSenderDto }) {
           to.{letter.sender.nickname}
         </span>
         <span className="ml-auto text-sm text-grayscale-500">
-          {format(letter.createdAt, "yyyy-MM-dd")}
+          {format(new Date(letter.createdAt), "yyyy-MM-dd")}
         </span>
       </div>
       <div className="mt-4">
@@ -90,10 +99,10 @@ function SendLetterCard({ letter }: { letter: LetterWithSenderDto }) {
   );
 }
 
-function ReceivedLetterCard({ letter }: { letter: LetterWithSenderDto }) {
+function ReceivedLetterCard({ letter }: { letter: LetterWithUserDto }) {
   return (
     <Link
-      href={""}
+      href={`/mypage/letter/${letter.id}`}
       className="flex flex-col w-full border-b border-grayscale-200 py-4"
     >
       <div className="w-full flex items-center ">
@@ -105,7 +114,7 @@ function ReceivedLetterCard({ letter }: { letter: LetterWithSenderDto }) {
           from.{letter.sender.nickname}
         </span>
         <span className="ml-auto text-sm text-grayscale-500">
-          {format(letter.createdAt, "yyyy-MM-dd")}
+          {format(new Date(letter.createdAt), "yyyy-MM-dd")}
         </span>
       </div>
       <div className="mt-4">
