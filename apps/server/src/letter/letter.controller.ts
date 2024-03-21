@@ -7,7 +7,7 @@ import {UserAuthDto} from "../auth/dto";
 import {LetterService} from "./letter.service";
 import {createResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
-import {LETTER_ALREADY_READ, LETTER_NOT_FOUND, LETTER_UNAUTHORIZED, SEND_LETTER_ERROR} from "../response/error/letter";
+import {LETTER_ALREADY_READ, LETTER_NOT_FOUND, FORBIDDEN_FOR_LETTER, SEND_LETTER_ERROR} from "../response/error/letter";
 import {USER_NOT_FOUND} from "../response/error/auth";
 import {LetterWithUserDto} from "./dto";
 import {UtilService} from "../util/util.service";
@@ -60,17 +60,30 @@ export class LetterController {
         return createResponseForm(await this.letterService.getSentLetterListBySenderId(user.id));
     }
 
-    // @TypedRoute.Get(':letterId')
-    // @UseGuards(UserAuthGuard)
-    // async getLetter(@User() user: UserAuthDto, @TypedParam('letterId') letterId: number) : Promise<TryCatch<LetterWithSenderDto,
-    //     LETTER_NOT_FOUND | LETTER_UNAUTHORIZED>>{
-    //     return createResponseForm(await this.letterService.getLetterByLetterId(letterId, user.id));
-    // }
+    /**
+     * @summary 특정 편지 조회 API
+     * @param user
+     * @param letterId
+     * @returns LetterWithUserDto
+     * @throws LETTER_NOT_FOUND
+     * @throws FORBIDDEN_FOR_LETTER
+     */
+    @TypedRoute.Get(':letterId')
+    @UseGuards(UserAuthGuard)
+    async getLetter(@User() user: UserAuthDto, @TypedParam('letterId') letterId: number) : Promise<TryCatch<LetterWithUserDto,
+        LETTER_NOT_FOUND | FORBIDDEN_FOR_LETTER>>{
+        const letter = await this.letterService.getLetterByLetterId(letterId, user.id);
+        if(!letter.readAt)
+            try{
+                await this.letterService.readLetter(letterId, user.id);
+            }catch(e){}
+        return createResponseForm(letter);
+    }
 
     @TypedRoute.Put(':letterId/read')
     @UseGuards(UserAuthGuard)
     async readLetter(@User() user:UserAuthDto, @TypedParam('letterId') letterId: number) : Promise<TryCatch<{ message:string, readAt: Date },
-        LETTER_NOT_FOUND | LETTER_UNAUTHORIZED | LETTER_ALREADY_READ>>{
+        LETTER_NOT_FOUND | FORBIDDEN_FOR_LETTER | LETTER_ALREADY_READ>>{
         const letter = await this.letterService.readLetter(letterId, user.id);
         return createResponseForm({
             message : "편지를 읽음 처리 했습니다.",
