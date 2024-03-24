@@ -66,6 +66,11 @@ class UserDtoMapperClass {
             createdAt : externalFollow.createdAt
         }
     }
+
+    UserDtoToUserAuthDto(userDto: UserDto): UserAuthDto {
+        const {image,description,createdAt, ...userData} = userDto;
+        return userData;
+    }
 }
 const UserDtoMapper = new UserDtoMapperClass();
 export default UserDtoMapper;

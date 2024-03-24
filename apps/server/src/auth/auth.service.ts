@@ -3,16 +3,11 @@ import {PrismaService} from "../prisma/prisma.service";
 import {User} from "@prisma/client";
 import * as console from "console";
 import {UtilService} from "../util/util.service";
-import {UserAuthDto} from "./dto/userAuthDto";
+import {UserAuthDto, SignupDataDto, LocalLoginDto, UserAccessTokensDto, WriterSignupDto, WriterInfoDto} from "./dto";
 import {Exception} from "../response/error/error";
-import { SignupDataDto } from './dto/signupData.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
-import {LocalLoginDto} from "./dto/localLogin.dto";
-import {UserAccessTokensDto} from "./dto/userAccessTokens.dto";
 import {UserRoleEnum} from "./enum/userRole.enum";
-import {WriterSignupDto} from "./dto/writerSignup.dto";
-import {WriterInfoDto} from "./dto/writerInfoDto";
 import UserDtoMapper from "../user/userDtoMapper";
 import { JwtService } from '@nestjs/jwt';
 

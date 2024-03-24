@@ -6,10 +6,11 @@ import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
 import {UserIdentityDto, FollowingWriterDto, UserDto, WriterDto, FollowerDto, ExternalFollowerDto} from "./dto";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
-import {WriterInfoDto} from "../auth/dto";
+import { WriterInfoDto} from "../auth/dto";
 import UserDtoMapper from "./userDtoMapper";
 import {WriterInfoWithUser} from "./prisma/writerInfo.prisma.type";
 import * as process from "process";
+import {IChangeUserProfile} from "./api-types/IChangeUserProfile";
 
 @Injectable()
 export class UserService {
@@ -398,6 +399,33 @@ export class UserService {
             })
             if(!user) throw ExceptionList.USER_NOT_FOUND;
             return user.id;
+        }
+    }
+
+    /**
+     * @summary 유저 프로필 변경하기
+     * @param userId
+     * @param newProfile
+     * @returns UserDto
+     * @throws NICKNAME_ALREADY_EXIST
+     * @throws USER_NOT_FOUND
+     */
+    async changeUserProfile(userId: number, newProfile: IChangeUserProfile): Promise<UserDto> {
+        try {
+            const user = await this.prismaService.user.update({
+                where: {
+                    id: userId
+                },
+                data: {
+                    nickname: newProfile.nickname
+                }
+            })
+            return UserDtoMapper.UserToUserDto(user);
+        }catch (error){
+            if(error instanceof PrismaClientKnownRequestError){
+                throw ExceptionList.NICKNAME_ALREADY_EXIST;
+            }
+            throw ExceptionList.USER_NOT_FOUND;
         }
     }
 }
