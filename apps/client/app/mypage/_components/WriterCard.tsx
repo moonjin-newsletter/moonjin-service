@@ -9,7 +9,7 @@ export default function WriterCard({
   writerInfo: FollowingWriterDto;
 }) {
   return (
-    <Link href={``} className="w-full flex p-4">
+    <Link href={``} className="w-full flex p-4 border-b border-grayscale-200">
       <Image
         src={``}
         alt="작가 프로필 이미지"

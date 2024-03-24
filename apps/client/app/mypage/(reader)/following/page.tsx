@@ -2,10 +2,11 @@ import ssr from "../../../../lib/fetcher/ssr";
 import { FollowingWriterDto, ResponseForm } from "@moonjin/api-types";
 import { isNonEmptyArray, isNotNil } from "@toss/utils";
 import WriterCard from "../../_components/WriterCard";
+import EmptyCard from "../../_components/EmptyCard";
 
 export default async function Page() {
   const writerList = await ssr("user/following").then((res) =>
-    res.json<ResponseForm<FollowingWriterDto[]>>()
+    res.json<ResponseForm<FollowingWriterDto[]>>(),
   );
 
   return (
@@ -22,7 +23,7 @@ export default async function Page() {
             <WriterCard writerInfo={writer} />
           ))
         ) : (
-          <div>구독한 작가가 없습니다</div>
+          <EmptyCard text={"구독 중인 작가가 없습니다"} />
         )}
       </section>
     </main>

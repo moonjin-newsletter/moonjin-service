@@ -8,6 +8,8 @@ import type { ResponseForm } from "@moonjin/api-types";
 import csr from "../../../../../lib/fetcher/csr";
 
 export default function SettingTab() {
+  const { data: userInfo, isLoading } = useSWR<ResponseForm<any>>("user");
+
   return (
     <Tab.Group>
       <Tab.List className="w-full flex gap-x-4">
@@ -28,18 +30,17 @@ export default function SettingTab() {
       </Tab.List>
       <Tab.Panels className="w-full mt-4">
         <Tab.Panel>
-          <ProfileLayout />
+          <ProfileLayout userInfo={userInfo} />
         </Tab.Panel>
         <Tab.Panel>
-          <PasswordLayout />
+          <PasswordLayout userInfo={userInfo} />
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>
   );
 }
 
-function PasswordLayout() {
-  const { data: userInfo, isLoading } = useSWR<ResponseForm<any>>("user");
+function PasswordLayout({ userInfo }: { userInfo?: any }) {
   const {
     setValue,
     formState: { errors, isValid },
@@ -53,7 +54,7 @@ function PasswordLayout() {
 
   useEffect(() => {
     setValue("email", userInfo?.data?.user?.email);
-  }, [isLoading]);
+  }, []);
 
   return (
     <section className="flex flex-col w-full">
@@ -66,6 +67,7 @@ function PasswordLayout() {
         </label>
         <input
           type="email"
+          disabled={true}
           {...register("email")}
           // placeholder={userInfo?.data?.user?.email}
           defaultValue={userInfo?.data?.user?.email}
@@ -90,7 +92,7 @@ function PasswordLayout() {
   );
 }
 
-function ProfileLayout() {
+function ProfileLayout({ userInfo }: { userInfo?: any }) {
   const {
     formState: { errors, isValid },
     handleSubmit,
@@ -112,7 +114,7 @@ function ProfileLayout() {
         </label>
         <input
           {...register("nickname")}
-          placeholder="황재하"
+          placeholder={userInfo?.data?.user?.nickname}
           className="w-full mt-2 h-10 bg-grayscale-100 outline-0 border-0 rounded px-2 focus:ring-0 placeholder:text-sm placeholder:text-grayscale-400"
         />
       </form>

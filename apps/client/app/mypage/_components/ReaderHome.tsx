@@ -9,6 +9,7 @@ import type {
   ResponseForm,
 } from "@moonjin/api-types";
 import { isNonEmptyArray } from "@toss/utils";
+import EmptyCard from "./EmptyCard";
 
 export function ReaderHome({
   seriesList,
@@ -75,7 +76,7 @@ function SeriesNewsletter({
             </Link>
           ))
         ) : (
-          <Link href={""}>구독중인 뉴스레터 시리즈가 없습니다</Link>
+          <EmptyCard text="구독 중인 시리즈가 없습니다" />
         )}
       </div>
     </section>
@@ -110,7 +111,7 @@ function NewsletterList({
             <NewsLetterCard key={index} value={value} />
           ))
         ) : (
-          <Link href="">구독중인 뉴스레터가 없습니다</Link>
+          <EmptyCard text="구독 중인 뉴스레터가 없습니다" />
         )}
       </div>
     </section>

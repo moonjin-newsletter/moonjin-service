@@ -3,8 +3,12 @@
 import Link from "next/link";
 import * as Io from "react-icons/io";
 import { useForm } from "react-hook-form";
+import csr from "../../../../../lib/fetcher/csr";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
   const {
     formState: { errors },
     handleSubmit,
@@ -12,8 +16,13 @@ export default function Page() {
   } = useForm();
 
   function onClickSubmit(value: any) {
-    console.log(value);
-    return;
+    csr
+      .post("letter", { body: value })
+      .then((res) => {
+        toast.success("편지 전송을 완료했습니다");
+        router.push("/mypage/letter");
+      })
+      .catch((err) => toast.error("편지 전송에 실패하였습니다"));
   }
 
   return (

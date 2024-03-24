@@ -8,6 +8,8 @@ import {
   ReleasedPostWithWriterDto,
   ReleasedSeriesWithWriterDto,
 } from "@moonjin/api-types";
+import SeriesCard from "../../../_components/SeriesCard";
+import EmptyCard from "../../../_components/EmptyCard";
 
 export default function SubscribeTab({
   seriesList,
@@ -42,23 +44,16 @@ export default function SubscribeTab({
                 <NewsLetterCard key={index} value={value} />
               ))
             ) : (
-              <div className="flex items-center justify-center bg-grayscale-400 rounded-lg text-white font-semibold">
-                현재 구독 중인 뉴스레터가 없습니다.
-              </div>
+              <EmptyCard text={"구독중인 뉴스레터가 없습니다"} />
             )}
           </section>
         </Tab.Panel>
         <Tab.Panel>
           <section className="flex flex-col w-full">
             {isNonEmptyArray(seriesList) ? (
-              seriesList.map((value, index) => (
-                // <NewsLetterCard key={index} value={value} />
-                <div>1</div>
-              ))
+              seriesList.map((value, index) => <SeriesCard value={value} />)
             ) : (
-              <div className="flex py-8 items-center justify-center bg-grayscale-400/60 rounded-lg text-white font-semibold">
-                현재 구독 중인 뉴스레터가 없습니다.
-              </div>
+              <EmptyCard text={"구독중인 시리즈가 없습니다"} />
             )}
           </section>
         </Tab.Panel>

@@ -15,6 +15,7 @@ export default async function Page({ params }: { params: pageProps }) {
     res.json<ResponseForm<LetterWithUserDto>>(),
   );
 
+  console.log(letterInfo);
   return (
     <main className="overflow-hidden w-full max-w-[748px] flex flex-col">
       <Link
@@ -36,13 +37,13 @@ export default async function Page({ params }: { params: pageProps }) {
           <li className="text-grayscale-700 font-semibold">
             보낸사람
             <span className="ml-4 text-grayscale-500 font-normal">
-              {letterInfo.sender.nickname}
+              {letterInfo.sender.nickname} ({letterInfo.sender.email})
             </span>
           </li>
           <li className="text-grayscale-700 font-semibold">
             받은사람
             <span className="ml-4 text-grayscale-500 font-normal">
-              {letterInfo.receiver.nickname}
+              {letterInfo.receiver.nickname} ({letterInfo.receiver.email})
             </span>
           </li>
         </ul>
