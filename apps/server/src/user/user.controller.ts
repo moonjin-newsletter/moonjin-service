@@ -11,11 +11,13 @@ import {UserDto, WriterDto, FollowingWriterDto, ExternalFollowerDto, AllFollower
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {FOLLOWER_ALREADY_EXIST, FOLLOWER_NOT_FOUND} from "../response/error/user";
 import {ICreateExternalFollower} from "./api-types/ICreateExternalFollower";
+import {OauthService} from "../auth/oauth.service";
 
 @Controller('user')
 export class UserController {
     constructor(
         private readonly userService: UserService,
+        private readonly oauthService: OauthService
     ) {}
 
     /**
@@ -79,6 +81,22 @@ export class UserController {
     {
         const userData = await this.userService.getUserData(user.id, user.role);
         return createResponseForm(userData);
+    }
+
+    /**
+     * @summary 유저의 oauth Provider 정보 가져오기
+     * @param user
+     * @returns {social:string}
+     */
+    @TypedRoute.Get('oauth')
+    @UseGuards(UserAuthGuard)
+    async getUserOauthProvider(@User() user : UserAuthDto): Promise<Try<{social : string}>> {
+        try{
+            const userOauth = await this.oauthService.getUserOauthByUserId(user.id);
+            return createResponseForm({ social : userOauth.social });
+        } catch (error){
+            return createResponseForm({ social : "moonjin" });
+        }
     }
 
     /**
