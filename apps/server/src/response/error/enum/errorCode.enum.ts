@@ -27,6 +27,8 @@ export enum ErrorCodeEnum {
     // auth
     PASSWORD_CHANGE_ERROR = "0050",
     USER_NOT_WRITER = "0051",
+    // oauth
+    OAUTH_NOT_FOUND = "0060",
     
     // post
     CREATE_POST_ERROR = "0100",

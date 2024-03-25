@@ -1,21 +1,28 @@
 import {TypedBody, TypedParam, TypedRoute} from '@nestia/core';
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, Res, UseGuards } from '@nestjs/common';
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto";
 import {UserService} from "./user.service";
 import {createResponseForm, ResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
-import {EMAIL_ALREADY_EXIST, USER_NOT_FOUND, USER_NOT_WRITER} from "../response/error/auth";
+import {EMAIL_ALREADY_EXIST, NICKNAME_ALREADY_EXIST, USER_NOT_FOUND, USER_NOT_WRITER} from "../response/error/auth";
 import {UserDto, WriterDto, FollowingWriterDto, ExternalFollowerDto, AllFollowerDto} from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {FOLLOWER_ALREADY_EXIST, FOLLOWER_NOT_FOUND} from "../response/error/user";
 import {ICreateExternalFollower} from "./api-types/ICreateExternalFollower";
+import {OauthService} from "../auth/oauth.service";
+import {IChangeUserProfile} from "./api-types/IChangeUserProfile";
+import {AuthService} from "../auth/auth.service";
+import {Response} from "express";
+import UserDtoMapper from "./userDtoMapper";
 
 @Controller('user')
 export class UserController {
     constructor(
         private readonly userService: UserService,
+        private readonly authService: AuthService,
+        private readonly oauthService: OauthService
     ) {}
 
     /**
@@ -82,6 +89,22 @@ export class UserController {
     }
 
     /**
+     * @summary 유저의 oauth Provider 정보 가져오기
+     * @param user
+     * @returns {social:string}
+     */
+    @TypedRoute.Get('oauth')
+    @UseGuards(UserAuthGuard)
+    async getUserOauthProvider(@User() user : UserAuthDto): Promise<Try<{social : string}>> {
+        try{
+            const userOauth = await this.oauthService.getUserOauthByUserId(user.id);
+            return createResponseForm({ social : userOauth.social });
+        } catch (error){
+            return createResponseForm({ social : "moonjin" });
+        }
+    }
+
+    /**
      * @summary 작가의 팔로워 목록 보기
      * @param user
      * @returns AllFollowerDto
@@ -132,5 +155,23 @@ export class UserController {
             email : externalFollower.email,
             createdAt : externalFollower.createdAt
         })
+    }
+
+    /**
+     * @summary 유저 프로필 변경 API
+     * @param user
+     * @param res
+     * @param newProfile
+     */
+    @TypedRoute.Patch('profile')
+    @UseGuards(UserAuthGuard)
+    async changeUserProfile(@User() user:UserAuthDto, @Res() res: Response, @TypedBody() newProfile : IChangeUserProfile): Promise<TryCatch<UserDto,
+        NICKNAME_ALREADY_EXIST | USER_NOT_FOUND>> {
+        const newUser = await this.userService.changeUserProfile(user.id, newProfile);
+        const {accessToken, refreshToken }= this.authService.getAccessTokens(UserDtoMapper.UserDtoToUserAuthDto(newUser));
+        res.cookie('accessToken', accessToken)
+        res.cookie('refreshToken', refreshToken)
+        res.send(createResponseForm(newUser));
+        return createResponseForm(newUser);
     }
 }

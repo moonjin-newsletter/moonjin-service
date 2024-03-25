@@ -1,18 +1,16 @@
 import {Injectable} from "@nestjs/common";
 import {SocialProviderEnum} from "./enum/socialProvider.enum";
-import {SocialLoginDto} from "./dto/socialLogin.dto";
+import {OauthDto, SocialLoginDto, SocialSignupDto, UserAuthDto, UserSocialProfileDto} from "./dto";
 import {firstValueFrom} from "rxjs";
 import {ExceptionList} from "../response/error/errorInstances";
-import { HttpService } from "@nestjs/axios";
-import {UserSocialProfileDto} from "./dto/userSocialProfile.dto";
+import {HttpService} from "@nestjs/axios";
 import {PrismaService} from "../prisma/prisma.service";
-import {UserAuthDto} from "./dto/userAuthDto";
-import {SocialSignupDto} from "./dto/socialSignup.dto";
 import {UserRoleEnum} from "./enum/userRole.enum";
 import UserDtoMapper from "../user/userDtoMapper";
 import console from "console";
 import {AuthService} from "./auth.service";
 import {UtilService} from "../util/util.service";
+import OauthDtoMapper from "./oauthDtoMapper";
 
 @Injectable()
 export class OauthService {
@@ -226,5 +224,23 @@ export class OauthService {
         }
     }
 
-
+    /**
+     * @summary userId로 해당 유저의 oauth 정보 가져오기
+     * @param userId
+     * @returns OauthDto
+     * @throws OAUTH_NOT_FOUND
+     */
+    async getUserOauthByUserId(userId: number) : Promise<OauthDto> {
+        try {
+            const oauth = await this.prismaService.oauth.findUniqueOrThrow({
+                where: {
+                    userId
+                }
+            });
+            return OauthDtoMapper.OauthToOauthDto(oauth)
+        } catch (error){
+            console.error(error);
+            throw ExceptionList.OAUTH_NOT_FOUND;
+        }
+    }
 }

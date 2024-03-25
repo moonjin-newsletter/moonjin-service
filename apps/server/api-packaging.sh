@@ -7,26 +7,32 @@ rsync -av --progress --exclude='error.ts' --exclude='errorInstances.ts' "$source
 
 source_folder="src/auth/dto"
 destination_folder="../../packages/api-types/src/api-types/auth/dto"
+
+rm "$destination_folder/*"
 # 원본 폴더 안의 모든 파일과 폴더를 대상 폴더로 복사
 rsync -av --progress "$source_folder/" "$destination_folder/"
 
 source_folder="src/letter/dto"
 destination_folder="../../packages/api-types/src/api-types/letter/dto"
+rm "$destination_folder/*"
 # 원본 폴더 안의 모든 파일과 폴더를 대상 폴더로 복사
 rsync -av --progress "$source_folder/" "$destination_folder/"
 
 source_folder="src/post/dto"
 destination_folder="../../packages/api-types/src/api-types/post/dto"
+rm "$destination_folder/*"
 # 원본 폴더 안의 모든 파일과 폴더를 대상 폴더로 복사
 rsync -av --progress "$source_folder/" "$destination_folder/"
 
 source_folder="src/series/dto"
 destination_folder="../../packages/api-types/src/api-types/series/dto"
+rm "$destination_folder/*"
 # 원본 폴더 안의 모든 파일과 폴더를 대상 폴더로 복사
 rsync -av --progress "$source_folder/" "$destination_folder/"
 
 source_folder="src/user/dto"
 destination_folder="../../packages/api-types/src/api-types/user/dto"
+rm "$destination_folder/*"
 # 원본 폴더 안의 모든 파일과 폴더를 대상 폴더로 복사
 rsync -av --progress "$source_folder/" "$destination_folder/"
 
