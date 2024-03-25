@@ -8,7 +8,6 @@ export default function Profile({
   userInfo: any;
   type: userType;
 }) {
-  console.log(userInfo);
   return (
     <section className="flex items-end relative w-full max-w-[1006px] pt-7  gap-x-6">
       {type === "작가" && (

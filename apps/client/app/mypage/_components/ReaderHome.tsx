@@ -53,7 +53,9 @@ function SeriesNewsletter({
             >
               <div className="group w-full h-fit relative">
                 <Image
-                  src=""
+                  width={230}
+                  height={320}
+                  src={value.series.cover ?? ""}
                   alt="시리즈 배너"
                   className="w-full h-72 object-fill bg-gray-200 rounded-lg"
                 />{" "}

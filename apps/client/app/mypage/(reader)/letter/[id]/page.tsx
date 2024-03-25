@@ -15,7 +15,6 @@ export default async function Page({ params }: { params: pageProps }) {
     res.json<ResponseForm<LetterWithUserDto>>(),
   );
 
-  console.log(letterInfo);
   return (
     <main className="overflow-hidden w-full max-w-[748px] flex flex-col">
       <Link
