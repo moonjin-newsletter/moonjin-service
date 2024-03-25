@@ -63,8 +63,8 @@ export default function Header() {
               >
                 시작하기
               </Link>
-              <div className="h-fit group flex  bg-black/50 rounded-l-full rounded-r-full items-center">
-                <nav className=" items-center transition duration-300 ease-in-out   overflow-hidden font-medium text-[15px] text-grayscale-100 h-full  w-fit hidden  whitespace-nowrap  hover:flex group-hover:flex ">
+              <div className="h-fit group  flex  bg-black/50 rounded-l-full rounded-r-full items-center">
+                <nav className=" items-center  transition duration-300 ease-in-out   overflow-hidden font-medium text-[15px] text-grayscale-100 h-full  w-fit hidden  whitespace-nowrap  hover:flex group-hover:flex ">
                   <Link className=" py-1.5 px-4" href="/mypage">
                     마이페이지
                   </Link>

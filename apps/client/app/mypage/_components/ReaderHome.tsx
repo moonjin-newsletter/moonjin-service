@@ -35,7 +35,7 @@ function SeriesNewsletter({
     <section className="flex flex-col w-full">
       <div className="flex justify-end">
         <Link
-          href=""
+          href="/mypage/subscribe?type=series"
           className="flex items-center text-grayscale-500 gap-x-2.5"
         >
           시리즈 전체보기 <Io.IoIosArrowForward />
@@ -99,7 +99,7 @@ function NewsletterList({
         </div>
 
         <Link
-          href=""
+          href="/mypage/subscribe"
           className="flex ml-auto items-center text-grayscale-500 gap-x-2.5"
         >
           뉴스레터 전체보기 <Io.IoIosArrowForward />

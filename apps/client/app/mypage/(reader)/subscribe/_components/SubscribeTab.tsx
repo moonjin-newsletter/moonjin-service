@@ -1,7 +1,7 @@
 "use client";
 
 import { Tab } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { isNonEmptyArray } from "@toss/utils";
 import NewsLetterCard from "../../../_components/NewsLetterCard";
 import {
@@ -10,6 +10,7 @@ import {
 } from "@moonjin/api-types";
 import SeriesCard from "../../../_components/SeriesCard";
 import EmptyCard from "../../../_components/EmptyCard";
+import { useSearchParams } from "next/navigation";
 
 export default function SubscribeTab({
   seriesList,
@@ -18,8 +19,10 @@ export default function SubscribeTab({
   seriesList: ReleasedSeriesWithWriterDto[];
   newsletterList: ReleasedPostWithWriterDto[];
 }) {
+  const params = useSearchParams();
+
   return (
-    <Tab.Group>
+    <Tab.Group defaultIndex={params.get("type") === "series" ? 1 : 0}>
       <Tab.List className="w-full flex gap-x-4">
         {["모든 뉴스레터", "시리즈"].map((category, index) => (
           <Tab key={index} as={Fragment}>

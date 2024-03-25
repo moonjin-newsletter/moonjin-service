@@ -18,7 +18,7 @@ export default function HomeTab({
   newsletterList: ReleasedPostWithWriterDto[];
 }) {
   const tabList =
-    userType === "작가" ? ["작성글", "구독한 시리즈"] : ["구독한 시리즈"];
+    userType === "작가" ? ["작성글", "구독한 뉴스레터"] : ["구독한 뉴스레터"];
   return (
     <>
       <Tab.Group defaultIndex={0}>
