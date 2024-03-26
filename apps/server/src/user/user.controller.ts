@@ -8,8 +8,7 @@ import {createResponseForm, ResponseForm, ResponseMessage} from "../response/res
 import {Try, TryCatch} from "../response/tryCatch";
 import {
     EMAIL_ALREADY_EXIST,
-    INVALID_TOKEN,
-    NICKNAME_ALREADY_EXIST, PASSWORD_CHANGE_ERROR, SOCIAL_USER_ERROR,
+    NICKNAME_ALREADY_EXIST,
     USER_NOT_FOUND,
     USER_NOT_WRITER
 } from "../response/error/auth";
@@ -26,6 +25,8 @@ import {IChangePassword} from "./api-types/IChangePassword";
 import {MailService} from "../mail/mail.service";
 import {EMAIL_NOT_EXIST} from "../response/error/mail";
 import {IEmailVerification} from "../auth/api-types/IEmailVerification";
+import * as process from "process";
+import {ErrorCodeEnum} from "../response/error/enum/errorCode.enum";
 
 @Controller('user')
 export class UserController {
@@ -206,20 +207,25 @@ export class UserController {
     }
 
     /**
-     * @summary 비밀번호 변경 요청 API (메일 전송, 쿠키 설정)
+     * @summary 비밀번호 변경 메일 링크 클릭
      * @param payload
      * @returns
-     * @throws INVALID_TOKEN
-     * @throws PASSWORD_CHANGE_ERROR
-     * @throws SOCIAL_USER_ERROR
      */
     @TypedRoute.Get('password/change')
-    async callBackForChangeUserPassword(@TypedQuery() payload: IEmailVerification, @Res() res:Response) : Promise<TryCatch<ResponseMessage,
-    INVALID_TOKEN | PASSWORD_CHANGE_ERROR | SOCIAL_USER_ERROR>> {
-        const jwtData = this.authService.getDataFromJwtToken<UserWithPasswordDto>(payload.code);
-        await this.authService.passwordChange(jwtData.userId, jwtData.password);
-        res.cookie('passwordChangeCode', '', {maxAge: 0});
-        res.send(createResponseForm({message: "비밀번호 변경에 성공했습니다."}));
-        return createResponseForm({message: "비밀번호 변경에 성공했습니다."});
+    async callBackForChangeUserPassword(@TypedQuery() payload: IEmailVerification, @Res() res:Response): Promise<void>{
+        try{
+            const jwtData = this.authService.getDataFromJwtToken<UserWithPasswordDto>(payload.code);
+            await this.authService.passwordChange(jwtData.userId, jwtData.password);
+            res.cookie('passwordChangeCode', '', {maxAge: 0});
+            res.redirect(process.env.CLIENT_URL ?? "http://localhost:3000" + "/password/change/success");
+        }catch (error){
+            if(error.code == ErrorCodeEnum.INVALID_TOKEN)
+                res.redirect(process.env.CLIENT_URL ?? "http://localhost:3000" + "/password/change/fail?error=invalidToken");
+            else if(error.code == ErrorCodeEnum.PASSWORD_CHANGE_ERROR)
+                res.redirect(process.env.CLIENT_URL ?? "http://localhost:3000" + "/password/change/fail?error=passwordChangeError");
+            else
+                res.redirect(process.env.CLIENT_URL ?? "http://localhost:3000" + "/password/change/fail?error=socialUserError");
+        }
+
     }
 }
