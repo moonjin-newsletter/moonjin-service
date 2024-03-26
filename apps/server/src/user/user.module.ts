@@ -4,12 +4,14 @@ import { UserController } from './user.controller';
 import {AuthModule} from "../auth/auth.module";
 import {PrismaModule} from "../prisma/prisma.module";
 import {UtilModule} from "../util/util.module";
+import {MailModule} from "../mail/mail.module";
 
 @Module({
   imports:[
       AuthModule,
       PrismaModule,
-      UtilModule
+      UtilModule,
+      MailModule
   ],
   providers: [UserService],
   controllers: [UserController],

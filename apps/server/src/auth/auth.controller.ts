@@ -113,7 +113,7 @@ export class AuthController {
     if(!user) throw ExceptionList.USER_NOT_FOUND;
 
     const passwordChangeToken = this.authService.generateJwtToken(user);
-    await this.mailService.sendPasswordChangeMail(payload.email, passwordChangeToken);
+    await this.mailService.sendMailForPasswordChangePage(payload.email, passwordChangeToken);
     return createResponseForm({message : "비밀번호 변경 메일이 전송되었습니다."})
   }
 
@@ -255,7 +255,7 @@ export class AuthController {
     if((socialSignupData.role === UserRoleEnum.WRITER && !socialSignupData.moonjinId) || (socialSignupData.role === UserRoleEnum.USER && socialSignupData.moonjinId)) throw ExceptionList.SIGNUP_ROLE_ERROR;
     const socialSignupToken = this.authService.getTokenFromCookie(header.cookie, "socialSignupToken");
     const {iat,exp,...userSocialData} = this.authService.getDataFromJwtToken<UserSocialProfileDto>(socialSignupToken);
-    const user = await this.oauthService.socialSignup({...userSocialData, ...socialSignupData});
+    const user = await this.authService.socialSignup({...userSocialData, ...socialSignupData});
     const {accessToken, refreshToken} = this.authService.getAccessTokens(user)
     res.cookie('accessToken', accessToken)
     res.cookie('refreshToken', refreshToken)

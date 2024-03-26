@@ -1,15 +1,12 @@
 import {Injectable} from "@nestjs/common";
 import {SocialProviderEnum} from "./enum/socialProvider.enum";
-import {OauthDto, SocialLoginDto, SocialSignupDto, UserAuthDto, UserSocialProfileDto} from "./dto";
+import {OauthDto, SocialLoginDto, UserAuthDto, UserSocialProfileDto} from "./dto";
 import {firstValueFrom} from "rxjs";
 import {ExceptionList} from "../response/error/errorInstances";
 import {HttpService} from "@nestjs/axios";
 import {PrismaService} from "../prisma/prisma.service";
-import {UserRoleEnum} from "./enum/userRole.enum";
 import UserDtoMapper from "../user/userDtoMapper";
 import console from "console";
-import {AuthService} from "./auth.service";
-import {UtilService} from "../util/util.service";
 import OauthDtoMapper from "./oauthDtoMapper";
 
 @Injectable()
@@ -19,8 +16,6 @@ export class OauthService {
     constructor(
         private readonly httpService: HttpService,
         private readonly prismaService: PrismaService,
-        private readonly authService: AuthService,
-        private readonly utilService: UtilService
     ) {
         this.socialLoginUrlList = {
             [SocialProviderEnum.NAVER]: `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${process.env.NAVER_OAUTH_CLIENT_ID}&redirect_uri=${process.env.SERVER_URL}/auth/oauth/login?social=naver&state=RANDOM_STATE`,
@@ -169,56 +164,20 @@ export class OauthService {
         }
     }
 
-
     /**
-     * @summary 소셜 회원가입을 진행하는 함수
-     * @param socialSignupData
-     * @returns UserDto | WriterDto
-     * @throws SOCIAL_SIGNUP_ERROR
-     * @throws EMAIL_ALREADY_EXIST
-     * @throws NICKNAME_ALREADY_EXIST
-     * @throws MOONJIN_EMAIL_ALREADY_EXIST
+     * @summary 소셜 회원가입 진행
+     * @param oauth
      */
-    async socialSignup(socialSignupData : SocialSignupDto): Promise<UserAuthDto> {
-        let createdUserId = 0
-        let createdOauthId = ""
-        try {
-            const {oauthId, social, moonjinId, ...userSignupData} = socialSignupData;
-            const createdUser = await this.prismaService.user.create({
-                data: {
-                    ...userSignupData,
-                    createdAt : this.utilService.getCurrentDateInKorea()
-                }
-            })
-            createdUserId = createdUser.id;
-            const createdOauth = await this.prismaService.oauth.create({
+    async oauthSignup(oauth : OauthDto): Promise<OauthDto> {
+        try{
+            return await this.prismaService.oauth.create({
                 data:{
-                    oauthId,
-                    social,
-                    userId : createdUser.id
+                    oauthId : oauth.oauthId,
+                    social : oauth.social,
+                    userId : oauth.userId
                 }
             })
-            createdOauthId = createdOauth.oauthId
-            if(userSignupData.role === UserRoleEnum.WRITER && moonjinId){ // 작가 회원가입
-                await this.authService.writerSignup({userId: createdUser.id, moonjinId});
-            }
-            return UserDtoMapper.UserToUserAuthDto(createdUser)
-        } catch (error){
-            if(createdOauthId){ // transaction rollback
-                await this.prismaService.oauth.delete({
-                    where:{
-                        oauthId : createdOauthId
-                    }
-                })
-            }
-            if(createdUserId > 0){ // transaction rollback
-                await this.prismaService.user.delete({
-                    where:{
-                        id : createdUserId
-                    }
-                })
-            }
-            this.authService.prismaSignupErrorHandling(error);
+        }catch (error){
             console.error(error);
             throw ExceptionList.SOCIAL_SIGNUP_ERROR;
         }
@@ -241,6 +200,38 @@ export class OauthService {
         } catch (error){
             console.error(error);
             throw ExceptionList.OAUTH_NOT_FOUND;
+        }
+    }
+
+    /**
+     * @summary 해당 유저가 social 회원인지 확인
+     * @param userId
+     * @throws USER_NOT_FOUND_IN_SOCIAL
+     */
+    async assertUserSocial(userId: number) {
+        const oauth = await this.prismaService.oauth.findUnique({
+            where: {
+                userId
+            }
+        });
+        if(!oauth) {
+            throw ExceptionList.USER_NOT_FOUND_IN_SOCIAL;
+        }
+    }
+
+    /**
+     * @summary 해당 유저가 social 회원이 아닌지 확인
+     * @param userId
+     * @throws SOCIAL_USER_ERROR
+     */
+    async assertUserNotSocial(userId: number) {
+        const oauth = await this.prismaService.oauth.findUnique({
+            where: {
+                userId
+            }
+        });
+        if(oauth) {
+            throw ExceptionList.SOCIAL_USER_ERROR;
         }
     }
 }

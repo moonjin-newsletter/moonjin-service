@@ -1,13 +1,19 @@
-import {TypedBody, TypedParam, TypedRoute} from '@nestia/core';
+import {TypedBody, TypedParam, TypedQuery, TypedRoute} from '@nestia/core';
 import { Controller, Res, UseGuards } from '@nestjs/common';
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto";
 import {UserService} from "./user.service";
-import {createResponseForm, ResponseForm} from "../response/responseForm";
+import {createResponseForm, ResponseForm, ResponseMessage} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
-import {EMAIL_ALREADY_EXIST, NICKNAME_ALREADY_EXIST, USER_NOT_FOUND, USER_NOT_WRITER} from "../response/error/auth";
-import {UserDto, WriterDto, FollowingWriterDto, ExternalFollowerDto, AllFollowerDto} from "./dto";
+import {
+    EMAIL_ALREADY_EXIST,
+    INVALID_TOKEN,
+    NICKNAME_ALREADY_EXIST, PASSWORD_CHANGE_ERROR, SOCIAL_USER_ERROR,
+    USER_NOT_FOUND,
+    USER_NOT_WRITER
+} from "../response/error/auth";
+import {UserDto, WriterDto, FollowingWriterDto, ExternalFollowerDto, AllFollowerDto, UserWithPasswordDto} from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {FOLLOWER_ALREADY_EXIST, FOLLOWER_NOT_FOUND} from "../response/error/user";
 import {ICreateExternalFollower} from "./api-types/ICreateExternalFollower";
@@ -16,13 +22,18 @@ import {IChangeUserProfile} from "./api-types/IChangeUserProfile";
 import {AuthService} from "../auth/auth.service";
 import {Response} from "express";
 import UserDtoMapper from "./userDtoMapper";
+import {IChangePassword} from "./api-types/IChangePassword";
+import {MailService} from "../mail/mail.service";
+import {EMAIL_NOT_EXIST} from "../response/error/mail";
+import {IEmailVerification} from "../auth/api-types/IEmailVerification";
 
 @Controller('user')
 export class UserController {
     constructor(
         private readonly userService: UserService,
         private readonly authService: AuthService,
-        private readonly oauthService: OauthService
+        private readonly oauthService: OauthService,
+        private readonly mailService: MailService
     ) {}
 
     /**
@@ -173,5 +184,42 @@ export class UserController {
         res.cookie('refreshToken', refreshToken)
         res.send(createResponseForm(newUser));
         return createResponseForm(newUser);
+    }
+
+    /**
+     * @summary 비밀번호 변경 요청 API (메일 전송, 쿠키 설정)
+     * @param user
+     * @param res
+     * @param body
+     * @returns
+     * @throws EMAIL_NOT_EXIST
+     */
+    @TypedRoute.Patch('password')
+    @UseGuards(UserAuthGuard)
+    async changeUserPassword(@User() user:UserAuthDto, @Res() res: Response, @TypedBody() body : IChangePassword): Promise<TryCatch<ResponseMessage,
+        EMAIL_NOT_EXIST>> {
+        const passwordChangeCode = this.authService.generateJwtToken<UserWithPasswordDto>({userId: user.id, password: body.newPassword});
+        await this.mailService.sendMailForPasswordChange(user.email,passwordChangeCode);
+        res.cookie('passwordChangeCode', passwordChangeCode);
+        res.send(createResponseForm({message: "비밀번호 변경을 위한 이메일을 발송했습니다."}));
+        return createResponseForm({message: "비밀번호 변경을 위한 이메일을 발송했습니다."});
+    }
+
+    /**
+     * @summary 비밀번호 변경 요청 API (메일 전송, 쿠키 설정)
+     * @param payload
+     * @returns
+     * @throws INVALID_TOKEN
+     * @throws PASSWORD_CHANGE_ERROR
+     * @throws SOCIAL_USER_ERROR
+     */
+    @TypedRoute.Get('password/change')
+    async callBackForChangeUserPassword(@TypedQuery() payload: IEmailVerification, @Res() res:Response) : Promise<TryCatch<ResponseMessage,
+    INVALID_TOKEN | PASSWORD_CHANGE_ERROR | SOCIAL_USER_ERROR>> {
+        const jwtData = this.authService.getDataFromJwtToken<UserWithPasswordDto>(payload.code);
+        await this.authService.passwordChange(jwtData.userId, jwtData.password);
+        res.cookie('passwordChangeCode', '', {maxAge: 0});
+        res.send(createResponseForm({message: "비밀번호 변경에 성공했습니다."}));
+        return createResponseForm({message: "비밀번호 변경에 성공했습니다."});
     }
 }

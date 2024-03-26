@@ -3,20 +3,30 @@ import {PrismaService} from "../prisma/prisma.service";
 import {User} from "@prisma/client";
 import * as console from "console";
 import {UtilService} from "../util/util.service";
-import {UserAuthDto, SignupDataDto, LocalLoginDto, UserAccessTokensDto, WriterSignupDto, WriterInfoDto} from "./dto";
+import {
+    UserAuthDto,
+    SignupDataDto,
+    LocalLoginDto,
+    UserAccessTokensDto,
+    WriterSignupDto,
+    WriterInfoDto,
+    SocialSignupDto
+} from "./dto";
 import {Exception} from "../response/error/error";
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
 import {UserRoleEnum} from "./enum/userRole.enum";
 import UserDtoMapper from "../user/userDtoMapper";
 import { JwtService } from '@nestjs/jwt';
+import {OauthService} from "./oauth.service";
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private readonly oauthService: OauthService
     ) {}
 
     /**
@@ -93,10 +103,12 @@ export class AuthService {
      * @summary 비밀번호 변경
      * @param id
      * @param password
+     * @throws SOCIAL_USER_ERROR
      * @throws PASSWORD_CHANGE_ERROR
      * @returns void
      */
     async passwordChange(id : number, password : string): Promise<void> {
+        await this.oauthService.assertUserNotSocial(id);
         try {
             await this.prismaService.user.update({
                 where:{
@@ -153,6 +165,55 @@ export class AuthService {
                 throw ExceptionList.LOGIN_ERROR;
             }
             throw error;
+        }
+    }
+
+
+    /**
+     * @summary 소셜 회원가입을 진행하는 함수
+     * @param socialSignupData
+     * @returns UserDto | WriterDto
+     * @throws SOCIAL_SIGNUP_ERROR
+     * @throws EMAIL_ALREADY_EXIST
+     * @throws NICKNAME_ALREADY_EXIST
+     * @throws MOONJIN_EMAIL_ALREADY_EXIST
+     */
+    async socialSignup(socialSignupData : SocialSignupDto): Promise<UserAuthDto> {
+        let createdUserId = 0
+        let createdOauthId = ""
+        try {
+            const {oauthId, social, moonjinId, ...userSignupData} = socialSignupData;
+            const createdUser = await this.prismaService.user.create({
+                data: {
+                    ...userSignupData,
+                    createdAt : this.utilService.getCurrentDateInKorea()
+                }
+            })
+            createdUserId = createdUser.id;
+            const createdOauth = await this.oauthService.oauthSignup({oauthId, social, userId: createdUser.id});
+            createdOauthId = createdOauth.oauthId
+            if(userSignupData.role === UserRoleEnum.WRITER && moonjinId){ // 작가 회원가입
+                await this.writerSignup({userId: createdUser.id, moonjinId});
+            }
+            return UserDtoMapper.UserToUserAuthDto(createdUser)
+        } catch (error){
+            if(createdOauthId){ // transaction rollback
+                await this.prismaService.oauth.delete({
+                    where:{
+                        oauthId : createdOauthId
+                    }
+                })
+            }
+            if(createdUserId > 0){ // transaction rollback
+                await this.prismaService.user.delete({
+                    where:{
+                        id : createdUserId
+                    }
+                })
+            }
+            this.prismaSignupErrorHandling(error);
+            console.error(error);
+            throw ExceptionList.SOCIAL_SIGNUP_ERROR;
         }
     }
 
