@@ -121,12 +121,18 @@ export class PostService {
     /**
      * @summary 해당 유저의 뉴스레터 가져오기
      * @param userId
+     * @param seriesOnly
      * @return ReleasedPostWithWriterDto[]
      */
-    async getNewsletterListByUserId(userId : number) : Promise<ReleasedPostWithWriterDto[]>{
+    async getNewsletterListByUserId(userId : number, seriesOnly = false) : Promise<ReleasedPostWithWriterDto[]>{
         const newsletterList : NewsletterWithPostAndWriterUser[] = await this.prismaService.newsletter.findMany({
             where : {
-                receiverId : userId
+                receiverId : userId,
+                post : {
+                    seriesId : seriesOnly ? {
+                        gt : 0
+                    } : undefined
+                }
             },
             select : {
                 sentAt : true,
@@ -137,8 +143,8 @@ export class PostService {
                                 user : true
                             }
                         }
-                    }
-                }
+                    },
+                },
             },
             relationLoadStrategy: 'join',
             orderBy : {
@@ -207,6 +213,7 @@ export class PostService {
                     releasedAt : null,
                     deleted : false
                 },
+                relationLoadStrategy: 'join',
                 orderBy : {
                     createdAt : 'desc'
                 }
@@ -259,6 +266,7 @@ export class PostService {
                     status : true,
                     deleted : false
                 },
+                relationLoadStrategy: 'join',
                 orderBy : {
                     releasedAt : 'desc'
                 }
@@ -285,6 +293,7 @@ export class PostService {
                 status : true,
                 deleted : false
             },
+            relationLoadStrategy: 'join',
             orderBy : {
                 releasedAt : 'desc'
             }

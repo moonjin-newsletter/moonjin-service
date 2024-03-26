@@ -1,11 +1,5 @@
-import {UserRoleEnum} from "../../auth/enum/userRole.enum";
+import {UserProfileDto} from "./userProfile.dto";
 
-export interface UserDto {
-    id: number;
-    nickname: string;
+export interface UserDto extends UserProfileDto{
     email: string;
-    role: UserRoleEnum;
-    image : string;
-    description : string;
-    createdAt : Date;
 }

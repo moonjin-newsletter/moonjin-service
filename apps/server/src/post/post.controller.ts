@@ -14,6 +14,7 @@ import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {FOLLOWER_NOT_FOUND} from "../response/error/user";
 import {IGetPostBySeriesId} from "./api-types/IGetPostBySeriesId";
+import {IGetNewsletter} from "./api-types/IGetNewsletter";
 
 
 @Controller('post')
@@ -64,12 +65,13 @@ export class PostController {
     /**
      * @summary 해당 유저의 뉴스레터 목록 가져오기
      * @param user
+     * @param seriesOption
      * @returns ReleasedPostWithWriterDto[]
      */
     @TypedRoute.Get('newsletter')
     @UseGuards(UserAuthGuard)
-    async getNewsletter(@User() user:UserAuthDto) : Promise<Try<ReleasedPostWithWriterDto[]>>{
-        const newsletterList = await this.postService.getNewsletterListByUserId(user.id);
+    async getNewsletter(@User() user:UserAuthDto, @TypedQuery() seriesOption : IGetNewsletter) : Promise<Try<ReleasedPostWithWriterDto[]>>{
+        const newsletterList = await this.postService.getNewsletterListByUserId(user.id, seriesOption.seriesOnly?? false);
         return createResponseForm(newsletterList);
     }
 
