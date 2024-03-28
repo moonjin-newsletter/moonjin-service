@@ -2,7 +2,7 @@ import {Controller, UseGuards} from '@nestjs/common';
 import {TypedBody, TypedParam, TypedQuery, TypedRoute} from "@nestia/core";
 import {ICreatePost} from "./api-types/ICreatePost";
 import {PostService} from "./post.service";
-import { StampedPostDto, ReleasedPostWithWriterDto, UnreleasedPostDto, ReleasedPostDto} from "./dto";
+import {StampedPostDto, UnreleasedPostDto, ReleasedPostDto, NewsletterDto} from "./dto";
 import {createResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {CREATE_POST_ERROR, FORBIDDEN_FOR_POST, POST_NOT_FOUND, STAMP_ALREADY_EXIST} from "../response/error/post";
@@ -70,7 +70,7 @@ export class PostController {
      */
     @TypedRoute.Get('newsletter')
     @UseGuards(UserAuthGuard)
-    async getNewsletter(@User() user:UserAuthDto, @TypedQuery() seriesOption : IGetNewsletter) : Promise<Try<ReleasedPostWithWriterDto[]>>{
+    async getNewsletter(@User() user:UserAuthDto, @TypedQuery() seriesOption : IGetNewsletter) : Promise<Try<NewsletterDto[]>>{
         const newsletterList = await this.postService.getNewsletterListByUserId(user.id, seriesOption.seriesOnly?? false);
         return createResponseForm(newsletterList);
     }

@@ -1,6 +1,6 @@
 import {Prisma} from "@prisma/client";
 
-const newsletterWithPostAndWriterUser = Prisma.validator<Prisma.NewsletterDefaultArgs>()({
+const newsletterWithPostAndSeriesAndWriterUser = Prisma.validator<Prisma.NewsletterDefaultArgs>()({
     select : {
         sentAt : true,
         post : {
@@ -9,9 +9,10 @@ const newsletterWithPostAndWriterUser = Prisma.validator<Prisma.NewsletterDefaul
                     include : {
                         user : true
                     }
-                }
-            }
-        }
+                },
+                series : true
+            },
+        },
     },
 })
-export type NewsletterWithPostAndWriterUser = Prisma.NewsletterGetPayload<typeof newsletterWithPostAndWriterUser>;
+export type NewsletterWithPostAndSeriesAndWriterUser = Prisma.NewsletterGetPayload<typeof newsletterWithPostAndSeriesAndWriterUser>;

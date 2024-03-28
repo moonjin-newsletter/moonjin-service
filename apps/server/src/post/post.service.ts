@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common';
-import {CreatePostDto, ReleasedPostWithWriterDto, StampedPostDto} from "./dto";
+import {CreatePostDto, NewsletterDto, StampedPostDto} from "./dto";
 import {PrismaService} from "../prisma/prisma.service";
 import PostDtoMapper from "./postDtoMapper";
 import {Follow, Post, Stamp} from "@prisma/client";
@@ -8,7 +8,7 @@ import {UtilService} from "../util/util.service";
 import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
 import {AuthValidationService} from "../auth/auth.validation.service";
 import {ReleasedPostDto, UnreleasedPostDto} from "./dto";
-import {NewsletterWithPostAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
+import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
 
 @Injectable()
 export class PostService {
@@ -122,17 +122,17 @@ export class PostService {
      * @summary 해당 유저의 뉴스레터 가져오기
      * @param userId
      * @param seriesOnly
-     * @return ReleasedPostWithWriterDto[]
+     * @return NewsletterDto[]
      */
-    async getNewsletterListByUserId(userId : number, seriesOnly = false) : Promise<ReleasedPostWithWriterDto[]>{
-        const newsletterList : NewsletterWithPostAndWriterUser[] = await this.prismaService.newsletter.findMany({
+    async getNewsletterListByUserId(userId : number, seriesOnly = false) : Promise<NewsletterDto[]>{
+        const newsletterList : NewsletterWithPostAndSeriesAndWriterUser[] = await this.prismaService.newsletter.findMany({
             where : {
                 receiverId : userId,
                 post : {
                     seriesId : seriesOnly ? {
                         gt : 0
                     } : undefined
-                }
+                },
             },
             select : {
                 sentAt : true,
@@ -142,7 +142,8 @@ export class PostService {
                             include : {
                                 user : true
                             }
-                        }
+                        },
+                        series : true
                     },
                 },
             },
@@ -151,7 +152,7 @@ export class PostService {
                 sentAt : 'desc'
             }
         })
-        return newsletterList.map(newsletter => PostDtoMapper.NewsletterWithPostAndWriterUserToReleasedPostWithWriterDto(newsletter));
+        return newsletterList.map(newsletter => PostDtoMapper.NewsletterWithPostAndSeriesAndWriterUserToNewsletterDto(newsletter));
     }
 
     /**

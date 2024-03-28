@@ -1,10 +1,11 @@
-import {PostDto} from "./dto";
+import {NewsletterDto, PostDto} from "./dto";
 import {Post} from "@prisma/client";
 import {ReleasedPostWithWriterDto, StampedPostDto} from "./dto";
 import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
 import {ReleasedPostDto, UnreleasedPostDto} from "./dto";
-import {NewsletterWithPostAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
+import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
 import UserDtoMapper from "../user/userDtoMapper";
+import SeriesDtoMapper from "../series/seriesDtoMapper";
 
 
 class PostDtoMapperClass {
@@ -31,8 +32,18 @@ class PostDtoMapperClass {
         })
         return releasedPostList;
     }
+    NewsletterWithPostAndSeriesAndWriterUserToNewsletterDto(newsletter : NewsletterWithPostAndSeriesAndWriterUser): NewsletterDto {
+        const {  sentAt, post } = newsletter;
+        const {writerInfo, series,...postData } = post;
+        return {
+            post : this.PostToReleasedPostDto(postData, sentAt), // TODO : sentAt이 releasedAt으로 바뀌어야 함
+            series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
+            writer : UserDtoMapper.UserToUserProfileDto(writerInfo.user),
+        }
+    }
 
-    NewsletterWithPostAndWriterUserToReleasedPostWithWriterDto(newsletter : NewsletterWithPostAndWriterUser): ReleasedPostWithWriterDto {
+
+    NewsletterWithPostAndWriterUserToReleasedPostWithWriterDto(newsletter : NewsletterWithPostAndSeriesAndWriterUser): ReleasedPostWithWriterDto {
         const {  sentAt, post } = newsletter;
         const {writerInfo, ...postData } = post;
         return {
