@@ -21,6 +21,7 @@ export class LetterService {
      * @throws SEND_LETTER_ERROR
      */
     async sendLetter(createLetterData : CreateLetterDto) : Promise<LetterDto> {
+        if(createLetterData.senderId === createLetterData.receiverId) throw ExceptionList.SEND_LETTER_ERROR;
         try {
             const letter = await this.prismaService.letter.create({
                 data : {

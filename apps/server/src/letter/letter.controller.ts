@@ -40,7 +40,7 @@ export class LetterController {
             title : letterData.title,
             content : letterData.content,
         }
-        const letter = await this.letterService.sendLetter({...createLetterData, senderId: user.id});
+        const letter = await this.letterService.sendLetter(createLetterData);
         return createResponseForm({
             message : "편지 발송에 성공하였습니다.",
             sentAt : letter.createdAt
