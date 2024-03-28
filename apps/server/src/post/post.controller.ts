@@ -114,7 +114,7 @@ export class PostController {
      */
     @TypedRoute.Get('me')
     @UseGuards(WriterAuthGuard)
-    async getMyReleasedPostList(@User() user:UserAuthDto) : Promise<TryCatch<ReleasedPostDto[], USER_NOT_WRITER>>{
+    async getMyReleasedPostList(@User() user:UserAuthDto) : Promise<TryCatch<NewsletterDto[], USER_NOT_WRITER>>{
         const postList = await this.postService.getReleasedPostListByUserId(user.id);
         return createResponseForm(postList);
     }

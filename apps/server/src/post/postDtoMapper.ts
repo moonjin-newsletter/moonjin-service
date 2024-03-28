@@ -6,6 +6,7 @@ import {ReleasedPostDto, UnreleasedPostDto} from "./dto";
 import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
 import UserDtoMapper from "../user/userDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
+import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
 
 
 class PostDtoMapperClass {
@@ -32,6 +33,22 @@ class PostDtoMapperClass {
         })
         return releasedPostList;
     }
+
+    PostWithSeriesAndWriterUserListToNewsLetterDtoList(postList: PostWithSeriesAndWriterUser[]):NewsletterDto[] {
+        const newsLetterList : NewsletterDto[] = [];
+        postList.forEach(post => {
+            const {  series, writerInfo, ...postData} = post;
+            if(postData.releasedAt){
+                newsLetterList.push({
+                    post: this.PostToReleasedPostDto(postData, postData.releasedAt),
+                    series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
+                    writer : UserDtoMapper.UserToUserProfileDto(writerInfo.user),
+                });
+            }
+        })
+        return newsLetterList;
+    }
+
     NewsletterWithPostAndSeriesAndWriterUserToNewsletterDto(newsletter : NewsletterWithPostAndSeriesAndWriterUser): NewsletterDto {
         const {  sentAt, post } = newsletter;
         const {writerInfo, series,...postData } = post;

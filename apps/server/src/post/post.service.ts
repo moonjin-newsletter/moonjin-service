@@ -9,6 +9,7 @@ import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
 import {AuthValidationService} from "../auth/auth.validation.service";
 import {ReleasedPostDto, UnreleasedPostDto} from "./dto";
 import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
+import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
 
 @Injectable()
 export class PostService {
@@ -252,27 +253,36 @@ export class PostService {
     /**
      * @summary 해당 유저의 발표된 글 목록 가져오기
      * @param userId
+     * @param status (true)
      * @return ReleasedPostDto[]
      * @throws USER_NOT_WRITER
      */
-    async getReleasedPostListByUserId(userId : number): Promise<ReleasedPostDto[]>{
+    async getReleasedPostListByUserId(userId : number, status= true): Promise<NewsletterDto[]>{
         await this.authValidationService.assertWriter(userId);
         try{
-            const postList = await this.prismaService.post.findMany({
+            const postList : PostWithSeriesAndWriterUser[] = await this.prismaService.post.findMany({
                 where : {
                     writerId : userId,
                     releasedAt : {
                         not : null
                     },
-                    status : true,
+                    status,
                     deleted : false
+                },
+                include:{
+                    series : true,
+                    writerInfo : {
+                        include : {
+                            user : true
+                        }
+                    }
                 },
                 relationLoadStrategy: 'join',
                 orderBy : {
                     releasedAt : 'desc'
                 }
             })
-            return PostDtoMapper.PostListToReleasedPostDtoList(postList);
+            return PostDtoMapper.PostWithSeriesAndWriterUserListToNewsLetterDtoList(postList);
         } catch (error){
             console.error(error);
             return [];
