@@ -294,8 +294,8 @@ export class PostService {
      * @param seriesId
      * @return ReleasedPostDto[]
      */
-    async getReleasedPostListBySeriesId(seriesId : number): Promise<ReleasedPostDto[]> {
-        const postList = await this.prismaService.post.findMany({
+    async getReleasedPostListBySeriesId(seriesId : number): Promise<NewsletterDto[]> {
+        const postList : PostWithSeriesAndWriterUser[] = await this.prismaService.post.findMany({
             where : {
                 seriesId,
                 releasedAt : {
@@ -304,11 +304,19 @@ export class PostService {
                 status : true,
                 deleted : false
             },
+            include: {
+                writerInfo : {
+                    include : {
+                        user : true
+                    }
+                },
+                series : true
+            },
             relationLoadStrategy: 'join',
             orderBy : {
                 releasedAt : 'desc'
             }
         })
-        return PostDtoMapper.PostListToReleasedPostDtoList(postList);
+        return PostDtoMapper.PostWithSeriesAndWriterUserListToNewsLetterDtoList(postList);
     }
 }

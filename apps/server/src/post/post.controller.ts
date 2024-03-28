@@ -2,7 +2,7 @@ import {Controller, UseGuards} from '@nestjs/common';
 import {TypedBody, TypedParam, TypedQuery, TypedRoute} from "@nestia/core";
 import {ICreatePost} from "./api-types/ICreatePost";
 import {PostService} from "./post.service";
-import {StampedPostDto, UnreleasedPostDto, ReleasedPostDto, NewsletterDto} from "./dto";
+import {StampedPostDto, UnreleasedPostDto, NewsletterDto} from "./dto";
 import {createResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {CREATE_POST_ERROR, FORBIDDEN_FOR_POST, POST_NOT_FOUND, STAMP_ALREADY_EXIST} from "../response/error/post";
@@ -66,7 +66,7 @@ export class PostController {
      * @summary 해당 유저의 뉴스레터 목록 가져오기
      * @param user
      * @param seriesOption
-     * @returns ReleasedPostWithWriterDto[]
+     * @returns NewsletterDto[]
      */
     @TypedRoute.Get('newsletter')
     @UseGuards(UserAuthGuard)
@@ -155,13 +155,13 @@ export class PostController {
      * @summary 해당 시리즈의 글 목록 가져오기
      * @param user
      * @param series
-     * @returns ReleasedPostDto[]
+     * @returns NewsletterDto[]
      * @throws SERIES_NOT_FOUND
      * @throws FORBIDDEN_FOR_SERIES
      */
     @TypedRoute.Get()
     @UseGuards(UserAuthGuard)
-    async getPostListInSeries(@User() user:UserAuthDto, @TypedQuery() series : IGetPostBySeriesId) : Promise<Try<ReleasedPostDto[]>>{
+    async getPostListInSeries(@User() user:UserAuthDto, @TypedQuery() series : IGetPostBySeriesId) : Promise<Try<NewsletterDto[]>>{
         await this.seriesService.assertUserCanAccessToSeries(series.seriesId, user.id);
         const postList = await this.postService.getReleasedPostListBySeriesId(series.seriesId);
         return createResponseForm(postList);
