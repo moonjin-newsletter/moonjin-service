@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import csr from "../../../../../lib/fetcher/csr";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { ICreateLetter } from "@moonjin/api-types";
 
 export default function Page() {
   const router = useRouter();
@@ -17,7 +18,7 @@ export default function Page() {
 
   function onClickSubmit(value: any) {
     csr
-      .post("letter", { body: value })
+      .post("letter", { json: value })
       .then((res) => {
         toast.success("편지 전송을 완료했습니다");
         router.push("/mypage/letter");
@@ -56,7 +57,7 @@ export default function Page() {
             받는 사람
           </label>
           <input
-            {...register("email", { required: "제목을 작성해주세요" })}
+            {...register("receiverEmail", { required: "제목을 작성해주세요" })}
             placeholder="letter@moonjin.site"
             type="email"
             className="ml-4 focus:ring-0 min-w-[400px] border-0 outline-none "

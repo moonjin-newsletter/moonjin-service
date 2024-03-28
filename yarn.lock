@@ -4784,15 +4784,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/multer@npm:^1.4.11":
-  version: 1.4.11
-  resolution: "@types/multer@npm:1.4.11"
-  dependencies:
-    "@types/express": "npm:*"
-  checksum: ace8e9f5ac7d2d7f6e0c35b790504f582a2f82a84cc06a7b90315527599b95256595bc0bb5bba60220c20a558554f0c21b96b94848b885987ab69512a3a9865e
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:*, @types/node@npm:^20.3.1, @types/node@npm:^20.5.2":
   version: 20.9.0
   resolution: "@types/node@npm:20.9.0"
@@ -11299,21 +11290,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multer@npm:^1.4.5-lts.1":
-  version: 1.4.5-lts.1
-  resolution: "multer@npm:1.4.5-lts.1"
-  dependencies:
-    append-field: "npm:^1.0.0"
-    busboy: "npm:^1.0.0"
-    concat-stream: "npm:^1.5.2"
-    mkdirp: "npm:^0.5.4"
-    object-assign: "npm:^4.1.1"
-    type-is: "npm:^1.6.4"
-    xtend: "npm:^4.0.0"
-  checksum: 4c6c91e93e510c99e791b6520e3e2f4a227a57f4f509427ff7f3a6f4cc0b4b09ad77c475f629c12f7ae01dba11645b2bd6568877cab775de8bf853b0a67259b4
-  languageName: node
-  linkType: hard
-
 "mute-stream@npm:0.0.8":
   version: 0.0.8
   resolution: "mute-stream@npm:0.0.8"
@@ -13297,7 +13273,6 @@ __metadata:
     "@types/cookie-parser": "npm:^1.4.6"
     "@types/express": "npm:^4.17.21"
     "@types/jest": "npm:^29.5.2"
-    "@types/multer": "npm:^1.4.11"
     "@types/node": "npm:^20.3.1"
     "@types/passport": "npm:^0"
     "@types/passport-jwt": "npm:^4"
@@ -13316,7 +13291,6 @@ __metadata:
     form-data: "npm:^4.0.0"
     jest: "npm:^29.5.0"
     mailgun.js: "npm:^9.4.0"
-    multer: "npm:^1.4.5-lts.1"
     nestia: "npm:^5.1.2"
     passport: "npm:^0.7.0"
     passport-jwt: "npm:^4.0.1"

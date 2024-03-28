@@ -4,20 +4,18 @@ import { Tab } from "@headlessui/react";
 import { Fragment, useEffect } from "react";
 import { isNonEmptyArray } from "@toss/utils";
 import NewsLetterCard from "../../../_components/NewsLetterCard";
-import {
-  ReleasedPostWithWriterDto,
-  ReleasedSeriesWithWriterDto,
-} from "@moonjin/api-types";
-import SeriesCard from "../../../_components/SeriesCard";
+import { NewsletterDto, ReleasedSeriesWithWriterDto } from "@moonjin/api-types";
+import SeriesLetterCard from "../../../_components/SeriesLetterCard";
 import EmptyCard from "../../../_components/EmptyCard";
 import { useSearchParams } from "next/navigation";
+import { SeriesWithWritterCard } from "../../../_components/SeriesCard";
 
 export default function SubscribeTab({
   seriesList,
   newsletterList,
 }: {
   seriesList: ReleasedSeriesWithWriterDto[];
-  newsletterList: ReleasedPostWithWriterDto[];
+  newsletterList: NewsletterDto[];
 }) {
   const params = useSearchParams();
 
@@ -44,7 +42,13 @@ export default function SubscribeTab({
           <section className="flex flex-col w-full">
             {isNonEmptyArray(newsletterList) ? (
               newsletterList.map((value, index) => (
-                <NewsLetterCard key={index} value={value} />
+                <>
+                  {value.series ? (
+                    <SeriesLetterCard value={value} />
+                  ) : (
+                    <NewsLetterCard key={index} value={value} />
+                  )}
+                </>
               ))
             ) : (
               <EmptyCard text={"구독중인 뉴스레터가 없습니다"} />
@@ -52,9 +56,11 @@ export default function SubscribeTab({
           </section>
         </Tab.Panel>
         <Tab.Panel>
-          <section className="flex flex-col w-full">
+          <section className="grid grid-cols-3 w-full">
             {isNonEmptyArray(seriesList) ? (
-              seriesList.map((value, index) => <SeriesCard value={value} />)
+              seriesList.map((value, index) => (
+                <SeriesWithWritterCard seriesInfo={value} key={index} />
+              ))
             ) : (
               <EmptyCard text={"구독중인 시리즈가 없습니다"} />
             )}

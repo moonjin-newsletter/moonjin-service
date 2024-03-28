@@ -10,6 +10,7 @@ import type {
 } from "@moonjin/api-types";
 import { isNonEmptyArray } from "@toss/utils";
 import EmptyCard from "./EmptyCard";
+import { SeriesWithWritterCard } from "./SeriesCard";
 
 export function ReaderHome({
   seriesList,
@@ -47,35 +48,7 @@ function SeriesNewsletter({
       >
         {isNonEmptyArray(seriesList) ? (
           seriesList.map((value, index) => (
-            <Link
-              href={""}
-              className="flex flex-col min-w-[230px] w-[230px] h-fit pb-6"
-            >
-              <div className="group w-full h-fit relative">
-                <Image
-                  width={230}
-                  height={320}
-                  src={value.series.cover ?? ""}
-                  alt="시리즈 배너"
-                  className="w-full h-72 object-fill bg-gray-200 rounded-lg"
-                />{" "}
-                <div className="absolute text-white bottom-0 w-full rounded-b-lg items-center bg-black/40 py-5 group-hover:flex hidden flex-col">
-                  <div className="font-semibold">시리즈 자세히 보기</div>
-                </div>
-              </div>
-
-              <div className="flex flex-col mt-2">
-                <div className="text-lg line-clamp-1 font-semibold text-grayscale-700">
-                  {value.series.title}
-                </div>
-                <span className="text-grayscale-600 line-clamp-2">
-                  {value.series.description}
-                </span>
-                <span className="text-xs mt-0.5 line-clamp-1 text-grayscale-400">
-                  written by.{value.writer.nickname}
-                </span>
-              </div>
-            </Link>
+            <SeriesWithWritterCard seriesInfo={value} key={index} />
           ))
         ) : (
           <EmptyCard text="구독 중인 시리즈가 없습니다" />

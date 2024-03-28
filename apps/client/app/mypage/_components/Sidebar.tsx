@@ -16,9 +16,17 @@ export function Sidebar({ type }: { type: userType }) {
         {type === "작가" && (
           <div className="flex flex-col w-full ">
             {[
-              { title: "작성중인 글", icon: null, url: "" },
-              { title: "발행한 뉴스레터", icon: null, url: "" },
-              { title: "구독자 관리", icon: null, url: "" },
+              {
+                title: "작성중인 글",
+                icon: null,
+                url: "/mypage/newsletter/prepare",
+              },
+              {
+                title: "발행한 뉴스레터",
+                icon: null,
+                url: "/mypage/newsletter/publish",
+              },
+              { title: "구독자 관리", icon: null, url: "/mypage/follower" },
             ].map((value, index) => (
               <MenuLink title={value.title} url={value.url} />
             ))}
