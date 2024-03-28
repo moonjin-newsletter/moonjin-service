@@ -1,5 +1,5 @@
 import {TypedBody, TypedParam, TypedQuery, TypedRoute} from '@nestia/core';
-import { Controller, Res, UseGuards } from '@nestjs/common';
+import {Controller, Res, UseGuards} from '@nestjs/common';
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto";
@@ -187,6 +187,17 @@ export class UserController {
         return createResponseForm(newUser);
     }
 
+
+    // @TypedRoute.Post('profile/image')
+    // @UseGuards(WriterAuthGuard)
+    // @UseInterceptors(FileInterceptor('image'))
+    // async changeProfileImage(@User() user:UserAuthDto, @UploadedFile() file : Express.Multer.File){
+    //
+    //     // const newUser = await this.userService.changeProfileImage(user.id, image.image);
+    //     // return createResponseForm(newUser);
+    // }
+
+
     /**
      * @summary 비밀번호 변경 요청 API (메일 전송, 쿠키 설정)
      * @param user
@@ -226,6 +237,5 @@ export class UserController {
             else
                 res.redirect(process.env.CLIENT_URL ?? "http://localhost:3000" + "/password/change/fail?error=socialUserError");
         }
-
     }
 }

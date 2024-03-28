@@ -428,4 +428,8 @@ export class UserService {
             throw ExceptionList.USER_NOT_FOUND;
         }
     }
+
+    // async changeProfileImage(userId: number, image: string): Promise<UserDto> {
+    //
+    // }
 }

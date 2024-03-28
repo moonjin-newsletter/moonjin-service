@@ -54,6 +54,11 @@ export enum ErrorCodeEnum {
     LETTER_NOT_FOUND = "0502",
     LETTER_ALREADY_READ = "0503",
 
+
+    //File
+    FILE_EXTENTION_ERROR = "1000",
+    FILE_UPLOAD_ERROR = "1001",
+
     // dev
     EMPTY_LIST_INPUT = "9000",
 }

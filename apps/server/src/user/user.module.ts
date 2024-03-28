@@ -11,7 +11,7 @@ import {MailModule} from "../mail/mail.module";
       AuthModule,
       PrismaModule,
       UtilModule,
-      MailModule
+      MailModule,
   ],
   providers: [UserService],
   controllers: [UserController],

@@ -28,6 +28,8 @@
     "sdk:publish": "cd ./api-sdk && npm publish --access=public"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.540.0",
+    "@aws-sdk/s3-request-presigner": "^3.540.0",
     "@nestia/core": "^2.4.3",
     "@nestia/e2e": "^0.4.0",
     "@nestjs/axios": "^3.0.1",
@@ -51,7 +53,8 @@
     "prisma": "^5.9.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
-    "typia": "^5.3.7"
+    "typia": "^5.3.7",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@nestia/sdk": "^2.4.3",
@@ -67,6 +70,7 @@
     "@types/passport": "^0",
     "@types/passport-jwt": "^4",
     "@types/supertest": "^2.0.12",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.42.0",

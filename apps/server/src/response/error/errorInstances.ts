@@ -18,6 +18,7 @@ import {FOLLOW_ALREADY_ERROR, FOLLOW_MYSELF_ERROR, FOLLOWER_ALREADY_EXIST, FOLLO
 import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "./series";
 import {EMPTY_LIST_INPUT} from "./dev";
 import {LETTER_ALREADY_READ, LETTER_NOT_FOUND, FORBIDDEN_FOR_LETTER, SEND_LETTER_ERROR} from "./letter";
+import {FILE_EXTENTION_ERROR, FILE_UPLOAD_ERROR} from "./file";
 
 export const ExceptionList= {
     EMAIL_ALREADY_EXIST: new Exception(typia.random<EMAIL_ALREADY_EXIST>()),
@@ -69,6 +70,9 @@ export const ExceptionList= {
     FORBIDDEN_FOR_LETTER : new Exception(typia.random<FORBIDDEN_FOR_LETTER>()),
     LETTER_NOT_FOUND : new Exception(typia.random<LETTER_NOT_FOUND>()),
     LETTER_ALREADY_READ : new Exception(typia.random<LETTER_ALREADY_READ>()),
+    //file
+    FILE_EXTENTION_ERROR: new Exception(typia.random<FILE_EXTENTION_ERROR>()),
+    FILE_UPLOAD_ERROR: new Exception(typia.random<FILE_UPLOAD_ERROR>()),
     //dev
     EMPTY_LIST_INPUT : new Exception(typia.random<EMPTY_LIST_INPUT>()),
 }

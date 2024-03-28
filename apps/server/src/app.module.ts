@@ -11,6 +11,8 @@ import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
 import { SeriesModule } from './series/series.module';
 import { LetterModule } from './letter/letter.module';
+import { AwsModule } from './aws/aws.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { LetterModule } from './letter/letter.module';
     UserModule,
     SeriesModule,
     LetterModule,
+    AwsModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
