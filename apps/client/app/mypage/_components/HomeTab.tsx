@@ -7,6 +7,7 @@ import {
   ReleasedPostWithWriterDto,
   ReleasedSeriesWithWriterDto,
 } from "@moonjin/api-types";
+import WritterHome from "./WritterHome";
 
 export default function HomeTab({
   userType,
@@ -39,7 +40,11 @@ export default function HomeTab({
           ))}
         </Tab.List>
         <Tab.Panels>
-          {userType === "작가" && <Tab.Panel>Content 1</Tab.Panel>}
+          {userType === "작가" && (
+            <Tab.Panel>
+              <WritterHome />
+            </Tab.Panel>
+          )}
           <Tab.Panel>
             <ReaderHome
               seriesList={seriesList}

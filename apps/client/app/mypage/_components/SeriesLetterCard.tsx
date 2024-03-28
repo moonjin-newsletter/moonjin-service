@@ -1,13 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import type { ReleasedPostWithWriterDto } from "@moonjin/api-types";
+import { NewsletterDto } from "@moonjin/api-types";
 
-export default function NewsLetterCard({
-  value,
-}: {
-  value: ReleasedPostWithWriterDto;
-}) {
+export default function SeriesLetterCard({ value }: { value: NewsletterDto }) {
+  console.log(value);
   return (
     <Link href="" className="flex w-full  py-4 border-b border-grayscale-200">
       <Image
@@ -15,12 +12,15 @@ export default function NewsLetterCard({
         alt="뉴스레터 썸네일"
         width={80}
         height={80}
-        className="w-28 min-w-[112px] h-28 bg-gray-600 rounded-lg object-cover"
+        className="w-28 min-w-[112px] h-28 bg-gray-600 rounded-lg"
       />
       <div className="flex w-full flex-col ml-4">
-        <div className="flex gap-x-1.5 ">
+        <div className="flex gap-x-1.5 items-center ">
           <div className="border border-grayscale-400 text-grayscale-400 py-0.5 px-2 rounded text-xs">
             # {value.post.category}
+          </div>
+          <div className="text-grayscale-400 py-0.5 px-2 rounded text-xs">
+            {value.series?.title}
           </div>
           {/*{value.post.category.map((category: any, index: number) => (*/}
           {/*  <div className="border border-grayscale-400 text-grayscale-400 py-0.5 px-2 rounded text-xs">*/}
