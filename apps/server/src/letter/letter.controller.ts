@@ -81,11 +81,7 @@ export class LetterController {
     @UseGuards(UserAuthGuard)
     async getLetter(@User() user: UserAuthDto, @TypedParam('letterId') letterId: number) : Promise<TryCatch<LetterWithUserDto,
         LETTER_NOT_FOUND | FORBIDDEN_FOR_LETTER>>{
-        const letter = await this.letterService.getLetterByLetterId(letterId, user.id);
-        if(!letter.readAt)
-            try{
-                await this.letterService.readLetter(letterId, user.id);
-            }catch(e){}
+        const letter = await this.letterService.getLetterByLetterId(letterId, user.id, true);
         return createResponseForm(letter);
     }
 

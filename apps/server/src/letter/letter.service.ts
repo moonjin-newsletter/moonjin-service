@@ -126,11 +126,12 @@ export class LetterService {
      * @summary 편지 id로 조회
      * @param letterId
      * @param userId
+     * @param onRead : 읽음 처리 시킬건 지
      * @returns LetterWithUserDto
      * @throws LETTER_NOT_FOUND
      * @throws FORBIDDEN_FOR_LETTER
      */
-    async getLetterByLetterId(letterId: number, userId: number): Promise<LetterWithUserDto>{
+    async getLetterByLetterId(letterId: number, userId: number, onRead = false): Promise<LetterWithUserDto>{
         await this.assertUserCanAccessToLetter(letterId, userId);
         const letter: LetterWithUser|null = await this.prismaService.letter.findUnique({
             where:{
@@ -164,6 +165,12 @@ export class LetterService {
             },
         });
         if(!letter) throw ExceptionList.LETTER_NOT_FOUND;
+        try{
+            if(onRead && !letter.readAt)
+                await this.readLetter(letterId, userId);
+        }catch (error) {
+            console.error(error);
+        }
         return LetterDtoMapper.letterWithUserToLetterWithUserDto(letter);
     }
 
