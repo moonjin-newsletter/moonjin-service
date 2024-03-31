@@ -2,7 +2,7 @@ import {Controller, UseGuards} from '@nestjs/common';
 import {TypedBody, TypedParam, TypedQuery, TypedRoute} from "@nestia/core";
 import {ICreatePost} from "./api-types/ICreatePost";
 import {PostService} from "./post.service";
-import {StampedPostDto, UnreleasedPostDto, NewsletterDto} from "./dto";
+import {StampedPostDto, UnreleasedPostWithSeriesDto, NewsletterDto, PostDto} from "./dto";
 import {createResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {CREATE_POST_ERROR, FORBIDDEN_FOR_POST, POST_NOT_FOUND, STAMP_ALREADY_EXIST} from "../response/error/post";
@@ -35,7 +35,7 @@ export class PostController {
     @TypedRoute.Post()
     @UseGuards(WriterAuthGuard)
     async createPost(@TypedBody() postData : ICreatePost, @User() user:UserAuthDto): Promise<TryCatch<
-        UnreleasedPostDto, CREATE_POST_ERROR>>
+        PostDto, CREATE_POST_ERROR>>
     {
         if(postData.seriesId) await this.seriesService.assertSeriesExist(postData.seriesId);
         const post = await this.postService.createPost({writerId:user.id,...postData});
@@ -122,12 +122,12 @@ export class PostController {
     /**
      * @summary 해당 유저의 작성 중인 글 목록 가져오기
      * @param user
-     * @returns UnreleasedPostDto[]
+     * @returns UnreleasedPostWithSeriesDto[]
      * @throws USER_NOT_WRITER
      */
     @TypedRoute.Get('/writing')
     @UseGuards(WriterAuthGuard)
-    async getWritingPostList(@User() user:UserAuthDto) : Promise<TryCatch<UnreleasedPostDto[], USER_NOT_WRITER>>{
+    async getWritingPostList(@User() user:UserAuthDto) : Promise<TryCatch<UnreleasedPostWithSeriesDto[], USER_NOT_WRITER>>{
         const postList = await this.postService.getWritingPostList(user.id);
         return createResponseForm(postList);
     }

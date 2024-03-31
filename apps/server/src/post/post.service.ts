@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common';
-import {CreatePostDto, NewsletterDto, StampedPostDto} from "./dto";
+import {CreatePostDto, NewsletterDto, PostDto, StampedPostDto} from "./dto";
 import {PrismaService} from "../prisma/prisma.service";
 import PostDtoMapper from "./postDtoMapper";
 import {Follow, Post, Stamp} from "@prisma/client";
@@ -7,9 +7,10 @@ import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
 import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
 import {AuthValidationService} from "../auth/auth.validation.service";
-import {ReleasedPostDto, UnreleasedPostDto} from "./dto";
+import {ReleasedPostDto, UnreleasedPostWithSeriesDto} from "./dto";
 import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
+import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 
 @Injectable()
 export class PostService {
@@ -22,10 +23,10 @@ export class PostService {
     /**
      * @summary 게시글 생성
      * @param postData
-     * @return UnreleasedPostDto
+     * @return PostDto
      * @throws CREATE_POST_ERROR
      */
-    async createPost(postData : CreatePostDto) : Promise<UnreleasedPostDto> {
+    async createPost(postData : CreatePostDto) : Promise<PostDto> {
         try {
             const post: Post = await this.prismaService.post.create({
                 data : {
@@ -33,7 +34,7 @@ export class PostService {
                     createdAt : this.utilService.getCurrentDateInKorea(),
                 }
             })
-            return PostDtoMapper.PostToUnreleasedPostDto(post);
+            return PostDtoMapper.PostToPostDto(post);
         }catch (error){
             console.error(error);
             throw ExceptionList.CREATE_POST_ERROR;
@@ -203,24 +204,27 @@ export class PostService {
     /**
      * @summary 해당 유저가 작성중인 글 목록 가져오기
      * @param userId
-     * @return UnreleasedPostDto[]
+     * @return UnreleasedPostWithSeriesDto[]
      * @throws USER_NOT_WRITER
      */
-    async getWritingPostList(userId: number): Promise<UnreleasedPostDto[]> {
+    async getWritingPostList(userId: number): Promise<UnreleasedPostWithSeriesDto[]> {
         await this.authValidationService.assertWriter(userId);
         try{
-            const postList = await this.prismaService.post.findMany({
+            const postList: PostWithSeries[] = await this.prismaService.post.findMany({
                 where : {
                     writerId : userId,
                     releasedAt : null,
                     deleted : false
+                },
+                include: {
+                    series : true
                 },
                 relationLoadStrategy: 'join',
                 orderBy : {
                     createdAt : 'desc'
                 }
             })
-            return postList.map(post => PostDtoMapper.PostToUnreleasedPostDto(post));
+            return postList.map(post => PostDtoMapper.PostWithSeriesToUnreleasedPostDto(post));
         }catch (error){
             console.error(error);
             return [];

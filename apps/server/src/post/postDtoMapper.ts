@@ -2,11 +2,12 @@ import {NewsletterDto, PostDto} from "./dto";
 import {Post} from "@prisma/client";
 import {ReleasedPostWithWriterDto, StampedPostDto} from "./dto";
 import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
-import {ReleasedPostDto, UnreleasedPostDto} from "./dto";
+import {ReleasedPostDto, UnreleasedPostWithSeriesDto} from "./dto";
 import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
 import UserDtoMapper from "../user/userDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
+import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 
 
 class PostDtoMapperClass {
@@ -18,9 +19,13 @@ class PostDtoMapperClass {
         const postData = this.PostToPostDto(post);
         return {...postData, releasedAt : post.releasedAt ?? releasedDate}
     }
-    PostToUnreleasedPostDto(post: Post):UnreleasedPostDto {
-        return this.PostToPostDto(post);
+    PostWithSeriesToUnreleasedPostDto(post: PostWithSeries):UnreleasedPostWithSeriesDto {
+        return {
+            post: this.PostToPostDto(post),
+            series: post.series ? SeriesDtoMapper.SeriesToSeriesDto(post.series) : null
+        }
     }
+
     PostListToPostDtoList(postList: Post[]):PostDto[] {
         return postList.map(post => this.PostToPostDto(post));
     }
