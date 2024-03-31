@@ -1,3 +1,33 @@
-export default function Page() {
-  return <main className="overflow-hidden w-full max-w-[748px]"></main>;
+import { isNonEmptyArray, isNotNil } from "@toss/utils";
+import ssr from "../../../../../lib/fetcher/ssr";
+import { ResponseForm, UnreleasedPostDto } from "@moonjin/api-types";
+import EmptyCard from "../../../_components/EmptyCard";
+import { UnreleasedNewsletterCard } from "./_components/UnreleasedCard";
+
+export default async function Page() {
+  const { data: writingPostList } = await ssr("post/writing").then((res) =>
+    res.json<ResponseForm<UnreleasedPostDto[]>>(),
+  );
+
+  return (
+    <main className="overflow-hidden w-full max-w-[748px]">
+      <div className="flex ">
+        <div className="border-b font-semibold border-primary">
+          작성중인 뉴스레터
+        </div>
+        <div className="py-1 font-semibold px-2 ml-2 text-sm rounded bg-gray-200 text-gray-400">
+          {isNotNil(writingPostList) ? writingPostList.length : 0}
+        </div>
+      </div>
+      <section className="flex w-full mt-4">
+        {isNonEmptyArray(writingPostList ?? []) ? (
+          writingPostList.map((post, index) => (
+            <UnreleasedNewsletterCard value={post} />
+          ))
+        ) : (
+          <EmptyCard text={"작성 중인 글이 없습니다"} />
+        )}
+      </section>
+    </main>
+  );
 }

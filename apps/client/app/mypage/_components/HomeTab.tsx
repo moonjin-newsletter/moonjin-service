@@ -4,6 +4,7 @@ import { Tab } from "@headlessui/react";
 import { Fragment } from "react";
 import { ReaderHome } from "./ReaderHome";
 import {
+  NewsletterDto,
   ReleasedPostWithWriterDto,
   ReleasedSeriesWithWriterDto,
 } from "@moonjin/api-types";
@@ -13,13 +14,15 @@ export default function HomeTab({
   userType,
   seriesList,
   newsletterList,
+  myNewsletterList,
 }: {
   userType: any;
   seriesList: ReleasedSeriesWithWriterDto[];
   newsletterList: ReleasedPostWithWriterDto[];
+  myNewsletterList: NewsletterDto[];
 }) {
   const tabList =
-    userType === "작가" ? ["작성글", "구독한 뉴스레터"] : ["구독한 뉴스레터"];
+    userType === "작가" ? ["발행글", "구독한 뉴스레터"] : ["구독한 뉴스레터"];
   return (
     <>
       <Tab.Group defaultIndex={0}>
@@ -42,7 +45,7 @@ export default function HomeTab({
         <Tab.Panels>
           {userType === "작가" && (
             <Tab.Panel>
-              <WritterHome />
+              <WritterHome myNewsletterList={myNewsletterList} />
             </Tab.Panel>
           )}
           <Tab.Panel>
