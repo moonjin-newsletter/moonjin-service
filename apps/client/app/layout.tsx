@@ -45,7 +45,9 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
         />
       </head>
-      <body className={`flex min-h-screen flex-col w-full h-full `}>
+      <body
+        className={`flex min-h-screen flex-col w-full h-full min-w-[1006px] `}
+      >
         <ClientProvider>
           <Header />
           {children}

@@ -11,7 +11,7 @@ export default function WriterCard({
   return (
     <Link href={``} className="w-full flex p-4 border-b border-grayscale-200">
       <Image
-        src={``}
+        src={""}
         alt="작가 프로필 이미지"
         className="w-12 h-12 rounded-full bg-grayscale-400 object-contain"
       />
