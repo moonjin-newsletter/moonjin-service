@@ -371,6 +371,29 @@ export class UserService {
     }
 
     /**
+     * @summary 외부 팔로워 삭제하기
+     * @param writerId
+     * @param followerEmail
+     * @returns ExternalFollowerDto
+     * @throws FOLLOWER_NOT_FOUND
+     */
+    async deleteExternalFollowerByEmail(writerId: number, followerEmail: string): Promise<ExternalFollowerDto> {
+        try{
+            const externalFollow = await this.prismaService.externalFollow.delete({
+                where: {
+                    followerEmail_writerId: {
+                        writerId,
+                        followerEmail
+                    }
+                }
+            })
+            return UserDtoMapper.ExternalFollowerToExternalFollowerDto(externalFollow);
+        }catch (error){
+            throw ExceptionList.FOLLOWER_NOT_FOUND;
+        }
+    }
+
+    /**
      * @summary email로 userId 가져오기 (moonjinEmail도 가능)
      * @param email
      * @returns userId

@@ -24,7 +24,7 @@ export interface FOLLOWER_NOT_FOUND extends ERROR {
     code: ErrorCodeEnum.FOLLOWER_NOT_FOUND;
     httpStatus: 404;
     data: {
-        message:"팔로워가 없습니다."
+        message:"해당하는 팔로워가 없습니다."
     }
 }
 

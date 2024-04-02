@@ -132,40 +132,39 @@ export class UserController {
     }
 
     /**
-     * @summary 팔로워 삭제 API
-     * @param followerId
-     * @param writer
-     * @returns
-     * @throws USER_NOT_FOUND
-     * @throws FOLLOWER_NOT_FOUND
-     */
-    @TypedRoute.Delete('follower/:id')
-    @UseGuards(WriterAuthGuard)
-    async deleteFollower(@TypedParam("id") followerId : number, @User() writer : UserAuthDto): Promise<TryCatch<{message:string},
-    USER_NOT_FOUND | FOLLOWER_NOT_FOUND>> {
-        await this.userService.deleteFollower(followerId, writer.id);
-        return createResponseForm({
-            message: "팔로워 삭제에 성공했습니다."
-        })
-    }
-
-    /**
      * @summary 외부 구독자 추가 API
      * @param user
      * @param followerData
-     * @returns {message:string} & ExternalFollowerDto
+     * @returns ResponseMessage & ExternalFollowerDto
      * @throws EMAIL_ALREADY_EXIST
      * @throws FOLLOWER_ALREADY_EXIST
      */
     @TypedRoute.Post('follower/external')
     @UseGuards(WriterAuthGuard)
     async addExternalFollower(@User() user:UserAuthDto,@TypedBody() followerData : ICreateExternalFollower)
-    :Promise<TryCatch<{message:string} & ExternalFollowerDto, EMAIL_ALREADY_EXIST | FOLLOWER_ALREADY_EXIST>>{
+    :Promise<TryCatch<ResponseMessage & ExternalFollowerDto, EMAIL_ALREADY_EXIST | FOLLOWER_ALREADY_EXIST>>{
         const externalFollower = await this.userService.addExternalFollowerByEmail(user.id,followerData.followerEmail);
         return createResponseForm({
             message: "구독자 추가에 성공했습니다.",
-            email : externalFollower.email,
-            createdAt : externalFollower.createdAt
+            ...externalFollower,
+        })
+    }
+
+    /**
+     * @summary 외부 구독자 제거 API
+     * @param user
+     * @param followerData
+     * @returns ResponseMessage & ExternalFollowerDto
+     * @throws FOLLOWER_NOT_FOUND
+     */
+    @TypedRoute.Delete('follower/external')
+    @UseGuards(WriterAuthGuard)
+    async deleteExternalFollower(@User() user:UserAuthDto, @TypedBody() followerData : ICreateExternalFollower)
+        :Promise<TryCatch<ResponseMessage & ExternalFollowerDto, FOLLOWER_NOT_FOUND>>{
+        const externalFollower = await this.userService.deleteExternalFollowerByEmail(user.id,followerData.followerEmail);
+        return createResponseForm({
+            message: "구독자 삭제에 성공했습니다.",
+            ...externalFollower,
         })
     }
 
@@ -237,5 +236,23 @@ export class UserController {
             else
                 res.redirect(process.env.CLIENT_URL ?? "http://localhost:3000" + "/password/change/fail?error=socialUserError");
         }
+    }
+
+    /**
+     * @summary 팔로워 삭제 API
+     * @param followerId
+     * @param writer
+     * @returns
+     * @throws USER_NOT_FOUND
+     * @throws FOLLOWER_NOT_FOUND
+     */
+    @TypedRoute.Delete('follower/:id')
+    @UseGuards(WriterAuthGuard)
+    async deleteFollower(@TypedParam("id") followerId : number, @User() writer : UserAuthDto): Promise<TryCatch<{message:string},
+        USER_NOT_FOUND | FOLLOWER_NOT_FOUND>> {
+        await this.userService.deleteFollower(followerId, writer.id);
+        return createResponseForm({
+            message: "팔로워 삭제에 성공했습니다."
+        })
     }
 }
