@@ -4,13 +4,14 @@ import {PrismaService} from "../prisma/prisma.service";
 import {PrismaClientKnownRequestError} from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
-import {UserIdentityDto, FollowingWriterDto, UserDto, WriterDto, FollowerDto, ExternalFollowerDto} from "./dto";
+import {UserIdentityDto, FollowingWriterProfileDto, UserDto, WriterDto, FollowerDto, ExternalFollowerDto} from "./dto";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import { WriterInfoDto} from "../auth/dto";
 import UserDtoMapper from "./userDtoMapper";
 import {WriterInfoWithUser} from "./prisma/writerInfo.prisma.type";
 import * as process from "process";
 import {IChangeUserProfile} from "./api-types/IChangeUserProfile";
+import {FollowingWriterInfoWithUser} from "./prisma/followingWriterInfoWithUser.prisma.type";
 
 @Injectable()
 export class UserService {
@@ -110,31 +111,27 @@ export class UserService {
     /**
      * @summary 해당 유저의 팔로잉 목록을 가져오기
      * @param followerId
-     * @returns FollowingWriterDto[]
+     * @returns FollowingWriterProfileDto[]
      */
-    async getFollowingWriterListByFollowerId(followerId : number): Promise<FollowingWriterDto[]> {
-        const followingList = await this.prismaService.follow.findMany({
+    async getFollowingWriterListByFollowerId(followerId : number): Promise<FollowingWriterProfileDto[]> {
+        const followingList: FollowingWriterInfoWithUser[] = await this.prismaService.follow.findMany({
             where: {
                 followerId
             },
-            select:{
-                writerId : true,
-                createdAt : true
+            include: {
+                writerInfo: {
+                    include : {
+                        user: true
+                    }
+                }
             },
             orderBy: {
                 createdAt: 'desc'
             }
         })
-        try {
-            const followingIdList = followingList.map(following => following.writerId);
-            const followingWriterList = await this.getWriterInfoListByUserIdList(followingIdList);
-            const userIdentityInfoList = await this.getUserIdentityDataListByUserIdList(followingIdList);
-
-            return UserDtoMapper.UserIdentityAndWriterInfoDtoAndFollowingToFollowingWriterDtoList(userIdentityInfoList, followingWriterList, followingList);
-        }catch (error) {
-            console.log(error)
-            return [];
-        }
+        return followingList.map(following => {
+            return UserDtoMapper.FollowingWriterInfoWithUserToFollowingWriterDto(following);
+        })
     }
 
     /**
@@ -297,7 +294,7 @@ export class UserService {
             },
         })
         return followerList.map(follower => {
-            return UserDtoMapper.FollowAndUserToFollwerDto(follower.user, follower.createdAt);
+            return UserDtoMapper.FollowAndUserToFollowerDto(follower.user, follower.createdAt);
         })
     }
 

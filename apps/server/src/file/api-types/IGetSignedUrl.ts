@@ -1,5 +1,6 @@
+import {FileTypeEnum} from "../enum/fileType.enum";
 
 
 export interface IGetSignedUrl {
-    fileName: string;
+    type: FileTypeEnum
 }

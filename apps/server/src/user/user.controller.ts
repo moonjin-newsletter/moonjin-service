@@ -12,7 +12,7 @@ import {
     USER_NOT_FOUND,
     USER_NOT_WRITER
 } from "../response/error/auth";
-import {UserDto, WriterDto, FollowingWriterDto, ExternalFollowerDto, AllFollowerDto, UserWithPasswordDto} from "./dto";
+import {UserDto, WriterDto, FollowingWriterProfileDto, ExternalFollowerDto, AllFollowerDto, UserWithPasswordDto} from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {FOLLOWER_ALREADY_EXIST, FOLLOWER_NOT_FOUND} from "../response/error/user";
 import {ICreateExternalFollower} from "./api-types/ICreateExternalFollower";
@@ -75,11 +75,11 @@ export class UserController {
     /**
      * @summary 유저의 팔로잉 작가 목록 가져오기
      * @param user
-     * @returns FollowingWriterDto[]
+     * @returns FollowingWriterProfileDto[]
      */
     @TypedRoute.Get("Following")
     @UseGuards(UserAuthGuard)
-    async getFollowingUserList(@User() user : UserAuthDto) : Promise<ResponseForm<FollowingWriterDto[]>> {
+    async getFollowingUserList(@User() user : UserAuthDto) : Promise<ResponseForm<FollowingWriterProfileDto[]>> {
         const followingWriterList = await this.userService.getFollowingWriterListByFollowerId(user.id);
         return createResponseForm(followingWriterList);
     }

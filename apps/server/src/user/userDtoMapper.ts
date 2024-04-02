@@ -1,7 +1,8 @@
 import {ExternalFollow, User, WriterInfo} from "@prisma/client";
 import {UserAuthDto, WriterInfoDto} from "../auth/dto";
-import {UserDto, UserIdentityDto, FollowingWriterDto, WriterDto, UserProfileDto, FollowerDto} from "./dto";
+import {UserDto, FollowingWriterProfileDto, WriterDto, UserProfileDto, FollowerDto} from "./dto";
 import { WriterInfoWithUser} from "./prisma/writerInfo.prisma.type";
+import {FollowingWriterInfoWithUser} from "./prisma/followingWriterInfoWithUser.prisma.type";
 
 class UserDtoMapperClass {
     UserToUserAuthDto(user: User): UserAuthDto {
@@ -27,31 +28,12 @@ class UserDtoMapperClass {
         }
     }
 
-    UserIdentityAndWriterInfoDtoAndFollowingToFollowingWriterDtoList(userList: UserIdentityDto[], writerInfoList : WriterInfoDto[], followingList : {writerId : number, createdAt : Date}[]) : FollowingWriterDto[]{
-        const followingWriterList : FollowingWriterDto[] = [];
-
-        followingList.forEach((following) => {
-            const writerInfo = writerInfoList.find((writerInfo) => writerInfo.userId === following.writerId);
-            const user = userList.find((user) => user.id === following.writerId);
-            if(user && writerInfo) {
-                followingWriterList.push({
-                    user,
-                    writer: writerInfo,
-                    following: {
-                        createdAt: following.createdAt
-                    }
-                })
-            }
-        })
-        return followingWriterList;
-    }
-
     UserToUserProfileDto(user: User): UserProfileDto {
         const {deleted, password,email, ...userData} = user;
         return userData;
     }
 
-    FollowAndUserToFollwerDto(user: User, createdAt : Date): FollowerDto {
+    FollowAndUserToFollowerDto(user: User, createdAt : Date): FollowerDto {
         return {
             user: this.UserToUserProfileDto(user),
             following: {
@@ -70,6 +52,18 @@ class UserDtoMapperClass {
     UserDtoToUserAuthDto(userDto: UserDto): UserAuthDto {
         const {image,description,createdAt, ...userData} = userDto;
         return userData;
+    }
+
+    FollowingWriterInfoWithUserToFollowingWriterDto(followingWriterInfoWithUser: FollowingWriterInfoWithUser): FollowingWriterProfileDto {
+        const {writerInfo, createdAt} = followingWriterInfoWithUser;
+        const {user, ...writerInfoData} = writerInfo;
+        return {
+            user: this.UserToUserProfileDto(user),
+            writerInfo: this.WriterInfoToWriterInfoDto(writerInfoData),
+            following: {
+                createdAt
+            }
+        }
     }
 }
 const UserDtoMapper = new UserDtoMapperClass();
