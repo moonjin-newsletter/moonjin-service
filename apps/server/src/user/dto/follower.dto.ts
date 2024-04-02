@@ -1,7 +1,7 @@
-import {UserProfileDto} from ".";
+import {UserDto} from ".";
 
 export interface FollowerDto {
-    user : UserProfileDto;
+    user : UserDto;
     following : {
         createdAt : Date;
     }

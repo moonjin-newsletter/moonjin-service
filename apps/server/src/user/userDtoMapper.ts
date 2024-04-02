@@ -35,7 +35,7 @@ class UserDtoMapperClass {
 
     FollowAndUserToFollowerDto(user: User, createdAt : Date): FollowerDto {
         return {
-            user: this.UserToUserProfileDto(user),
+            user: this.UserToUserDto(user),
             following: {
                 createdAt
             }
