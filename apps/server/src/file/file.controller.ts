@@ -1,11 +1,12 @@
 import {Controller, UseGuards} from '@nestjs/common';
 import {AwsService} from "../aws/aws.service";
-import {TypedQuery, TypedRoute} from "@nestia/core";
+import {TypedBody, TypedRoute} from "@nestia/core";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {IGetSignedUrl} from "./api-types/IGetSignedUrl";
 import {createResponseForm} from "../response/responseForm";
 import {TryCatch} from "../response/tryCatch";
 import {FILE_UPLOAD_ERROR} from "../response/error/file";
+import {FileTypeEnum} from "./enum/fileType.enum";
 
 @Controller('file')
 export class FileController {
@@ -14,11 +15,15 @@ export class FileController {
         private readonly awsService: AwsService
     ){}
 
-    @TypedRoute.Get('signed-url/image')
+    @TypedRoute.Post()
     @UseGuards(UserAuthGuard)
-    async getSignedUrlForImage(@TypedQuery() query : IGetSignedUrl) : Promise<TryCatch<{url: string}, FILE_UPLOAD_ERROR>>{
-        return createResponseForm({
-            url : await this.awsService.getSignedUrlForImage(query.fileName)
-        });
+    async getSignedUrlForImage(@TypedBody() body : IGetSignedUrl) : Promise<TryCatch<{url: string}, FILE_UPLOAD_ERROR>>{
+        switch (body.type){
+            case FileTypeEnum.IMAGE:
+                return createResponseForm({
+                    url : await this.awsService.getSignedUrlForImage()
+                });
+
+        }
     }
 }
