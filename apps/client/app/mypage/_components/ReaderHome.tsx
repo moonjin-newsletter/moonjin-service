@@ -10,7 +10,7 @@ import type {
 } from "@moonjin/api-types";
 import { isNonEmptyArray } from "@toss/utils";
 import EmptyCard from "./EmptyCard";
-import { SeriesWithWritterCard } from "./SeriesCard";
+import { SeriesCardForReader } from "./SeriesCard";
 
 export function ReaderHome({
   seriesList,
@@ -48,7 +48,7 @@ function SeriesNewsletter({
       >
         {isNonEmptyArray(seriesList) ? (
           seriesList.map((value, index) => (
-            <SeriesWithWritterCard seriesInfo={value} key={index} />
+            <SeriesCardForReader seriesInfo={value} key={index} />
           ))
         ) : (
           <EmptyCard text="구독 중인 시리즈가 없습니다" />

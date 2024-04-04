@@ -8,7 +8,7 @@ import { NewsletterDto, ReleasedSeriesWithWriterDto } from "@moonjin/api-types";
 import SeriesLetterCard from "../../../_components/SeriesLetterCard";
 import EmptyCard from "../../../_components/EmptyCard";
 import { useSearchParams } from "next/navigation";
-import { SeriesWithWritterCard } from "../../../_components/SeriesCard";
+import { SeriesCardForReader } from "../../../_components/SeriesCard";
 
 export default function SubscribeTab({
   seriesList,
@@ -56,11 +56,13 @@ export default function SubscribeTab({
           </section>
         </Tab.Panel>
         <Tab.Panel>
-          <section className="grid grid-cols-3 w-full">
+          <section className=" w-full">
             {isNonEmptyArray(seriesList) ? (
-              seriesList.map((value, index) => (
-                <SeriesWithWritterCard seriesInfo={value} key={index} />
-              ))
+              <div className="grid grid-cols-3">
+                {seriesList.map((value, index) => (
+                  <SeriesCardForReader seriesInfo={value} key={index} />
+                ))}
+              </div>
             ) : (
               <EmptyCard text={"구독중인 시리즈가 없습니다"} />
             )}

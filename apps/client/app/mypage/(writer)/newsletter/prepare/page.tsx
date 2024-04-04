@@ -1,14 +1,18 @@
 import { isNonEmptyArray, isNotNil } from "@toss/utils";
 import ssr from "../../../../../lib/fetcher/ssr";
-import { ResponseForm, UnreleasedPostDto } from "@moonjin/api-types";
+import type {
+  ResponseForm,
+  UnreleasedPostWithSeriesDto,
+} from "@moonjin/api-types";
 import EmptyCard from "../../../_components/EmptyCard";
 import { UnreleasedNewsletterCard } from "./_components/UnreleasedCard";
 
 export default async function Page() {
   const { data: writingPostList } = await ssr("post/writing").then((res) =>
-    res.json<ResponseForm<UnreleasedPostDto[]>>(),
+    res.json<ResponseForm<UnreleasedPostWithSeriesDto[]>>(),
   );
 
+  console.log(writingPostList);
   return (
     <main className="overflow-hidden w-full max-w-[748px]">
       <div className="flex ">

@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import type { userType } from "../layout";
+import { usePathname } from "next/navigation";
 
 export function Sidebar({ type }: { type: userType }) {
   return (
@@ -57,9 +60,17 @@ function MenuLink({
   url: string;
   icon?: HTMLElement;
 }) {
+  const nowUrl = usePathname();
+
   return (
     <Link
-      className={`hover:bg-grayscale-300 hover:text-grayscale-700 py-4 px-5 text-grayscale-500  font-medium  w-full border-b  border-grayscale-200`}
+      className={`
+      ${
+        url === nowUrl
+          ? "text-primary"
+          : "text-grayscale-500 hover:text-grayscale-700"
+      }
+      hover:bg-grayscale-300  py-4 px-5 text-grayscale-500  font-medium  w-full border-b  border-grayscale-200`}
       href={url}
     >
       {title}
