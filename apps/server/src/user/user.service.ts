@@ -452,19 +452,23 @@ export class UserService {
     /**
      * @summary 작가 뉴스레터 수 증가
      * @param userId
+     * @param isIncrement
      * @returns void
      * @throws USER_NOT_WRITER
      */
-    async synchronizeNewsLetter(userId : number): Promise<void> {
+    async synchronizeNewsLetter(userId : number, isIncrement: boolean): Promise<void> {
         try{
+            const newsletterCount = isIncrement ? {
+                increment: 1
+            } : {
+                decrement: 1
+            };
             await this.prismaService.writerInfo.update({
                 where: {
                     userId
                 },
                 data: {
-                    newsletterCount: {
-                        increment: 1
-                    }
+                    newsletterCount
                 }
             })
         }catch (error){
@@ -475,19 +479,50 @@ export class UserService {
     /**
      * @summary 작가 시리즈 수 증가
      * @param userId
+     * @param isIncrement
      * @returns void
      * @throws USER_NOT_WRITER
      */
-    async synchronizeSeries(userId :number) {
+    async synchronizeSeries(userId :number, isIncrement: boolean) {
         try{
+            const seriesCount = isIncrement ? {
+                increment: 1
+            } : {
+                decrement: 1
+            };
             await this.prismaService.writerInfo.update({
                 where: {
                     userId
                 },
                 data: {
-                    seriesCount: {
-                        increment: 1
-                    }
+                    seriesCount
+                }
+            })
+        }catch (error){
+            throw ExceptionList.USER_NOT_WRITER
+        }
+    }
+
+    /**
+     * @summary 작가 시리즈 수 증가
+     * @param userId
+     * @param isIncrement
+     * @returns void
+     * @throws USER_NOT_WRITER
+     */
+    async synchronizeFollower(userId :number, isIncrement: boolean) {
+        try{
+            const followerCount = isIncrement ? {
+                increment: 1
+            } : {
+                decrement: 1
+            };
+            await this.prismaService.writerInfo.update({
+                where: {
+                    userId
+                },
+                data: {
+                    followerCount
                 }
             })
         }catch (error){

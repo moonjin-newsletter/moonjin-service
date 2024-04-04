@@ -59,7 +59,7 @@ export class PostController {
     : Promise<TryCatch<{sentCount: number}, POST_NOT_FOUND | FORBIDDEN_FOR_POST | FOLLOWER_NOT_FOUND>>{
         await this.postService.assertWriterOfPost(postId,user.id);
         const sentCount = await this.postService.sendNewsletter(postId);
-        await this.userSerivce.synchronizeNewsLetter(user.id);
+        await this.userSerivce.synchronizeNewsLetter(user.id, true);
         return createResponseForm({
             sentCount : sentCount
         })
@@ -149,6 +149,7 @@ export class PostController {
         POST_NOT_FOUND | FORBIDDEN_FOR_POST>>
     {
         await this.postService.deletePost(postId,user.id);
+        await this.userSerivce.synchronizeNewsLetter(user.id, false);
         return createResponseForm({
             message : "해당 글을 삭제했습니다."
         })

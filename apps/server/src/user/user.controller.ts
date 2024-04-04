@@ -50,6 +50,7 @@ export class UserController {
     @UseGuards(UserAuthGuard)
     async follow(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
         await this.userService.followWriter(user.id, writerId);
+        await this.userService.synchronizeFollower(writerId, true);
         return createResponseForm({
             message: "팔로우 성공"
         })
@@ -67,6 +68,7 @@ export class UserController {
     @UseGuards(UserAuthGuard)
     async unfollow(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
         await this.userService.unfollowWriter(user.id, writerId);
+        await this.userService.synchronizeFollower(writerId, false);
         return createResponseForm({
             message: "팔로우 취소 성공"
         })
@@ -144,6 +146,7 @@ export class UserController {
     async addExternalFollower(@User() user:UserAuthDto,@TypedBody() followerData : ICreateExternalFollower)
     :Promise<TryCatch<ResponseMessage & ExternalFollowerDto, EMAIL_ALREADY_EXIST | FOLLOWER_ALREADY_EXIST>>{
         const externalFollower = await this.userService.addExternalFollowerByEmail(user.id,followerData.followerEmail);
+        await this.userService.synchronizeFollower(user.id, true);
         return createResponseForm({
             message: "구독자 추가에 성공했습니다.",
             ...externalFollower,
@@ -162,6 +165,7 @@ export class UserController {
     async deleteExternalFollower(@User() user:UserAuthDto, @TypedBody() followerData : ICreateExternalFollower)
         :Promise<TryCatch<ResponseMessage & ExternalFollowerDto, FOLLOWER_NOT_FOUND>>{
         const externalFollower = await this.userService.deleteExternalFollowerByEmail(user.id,followerData.followerEmail);
+        await this.userService.synchronizeFollower(user.id, false);
         return createResponseForm({
             message: "구독자 삭제에 성공했습니다.",
             ...externalFollower,
