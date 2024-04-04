@@ -24,7 +24,7 @@ export class AwsService {
     /**
      * @summary S3에 이미지 업로드를 위한 signedUrl을 생성합니다.
      * @returns signedUrl
-     * @throws FILE_EXTENTION_ERROR
+     * @throws FILE_UPLOAD_ERROR
      */
     async getSignedUrlForUpload(fileName : string, fileType : FileTypeEnum) : Promise<PreSignedUrlDto> {
         const ext = fileName.split('.')[1];
@@ -35,7 +35,7 @@ export class AwsService {
                 Key: fileName,
             })
             return {
-                fileName,
+                fileName : process.env.CDN_URL + '/' + fileName,
                 preSignedUrl : await getSignedUrl(this.s3Client, command, {
                     expiresIn : 60 * 60,
                 })
