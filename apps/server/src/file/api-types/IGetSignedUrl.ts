@@ -1,6 +1,8 @@
 import {FileTypeEnum} from "../enum/fileType.enum";
+import {tags} from "typia";
 
 
 export interface IGetSignedUrl {
-    type: FileTypeEnum
+    fileType: FileTypeEnum;
+    fileName: string & tags.MaxLength<32>;
 }

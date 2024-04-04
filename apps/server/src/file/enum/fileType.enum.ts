@@ -1,4 +1,6 @@
 
 export enum FileTypeEnum {
-    IMAGE = 'image'
+    PROFILE_IMAGE = "profile",
+    COVER_IMAGE= "cover",
+    NEWSLETTER = "newsletter",
 }

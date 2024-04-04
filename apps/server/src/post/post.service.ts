@@ -28,6 +28,8 @@ export class PostService {
      */
     async createPost(postData : CreatePostDto) : Promise<PostDto> {
         try {
+            const defaultImage = process.env.CDN_URL + '/cover/default.png';
+            if(!postData.cover) postData.cover = defaultImage;
             const post: Post = await this.prismaService.post.create({
                 data : {
                     ...postData,

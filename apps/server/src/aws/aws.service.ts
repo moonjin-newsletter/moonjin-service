@@ -4,6 +4,8 @@ import { getSignedUrl} from "@aws-sdk/s3-request-presigner";
 import * as process from "process";
 import {ExceptionList} from "../response/error/errorInstances";
 import { v4 as uuid } from 'uuid';
+import {PreSignedUrlDto} from "../file/dto";
+import {FileTypeEnum} from "../file/enum/fileType.enum";
 
 @Injectable()
 export class AwsService {
@@ -22,18 +24,22 @@ export class AwsService {
     /**
      * @summary S3에 이미지 업로드를 위한 signedUrl을 생성합니다.
      * @returns signedUrl
-     * @throws FILE_UPLOAD_ERROR
+     * @throws FILE_EXTENTION_ERROR
      */
-    async getSignedUrlForImage() : Promise<string> {
+    async getSignedUrlForUpload(fileName : string, fileType : FileTypeEnum) : Promise<PreSignedUrlDto> {
+        const ext = fileName.split('.')[1];
+        fileName = fileType + '/' + uuid() + "." + ext;
         try {
-            const fileName = uuid();
-            const command = new PutObjectCommand({
+            const command : PutObjectCommand = new PutObjectCommand({
                 Bucket : process.env.AWS_S3_BUCKET_NAME,
-                Key: fileName
+                Key: fileName,
             })
-            return await getSignedUrl(this.s3Client, command, {
-                expiresIn : 60 * 60
-            });
+            return {
+                fileName,
+                preSignedUrl : await getSignedUrl(this.s3Client, command, {
+                    expiresIn : 60 * 60,
+                })
+            }
         }catch (error){
             console.log(error);
             throw ExceptionList.FILE_UPLOAD_ERROR;

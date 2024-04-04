@@ -43,11 +43,13 @@ export class AuthService {
     async localSignUp(signUpData : SignupDataDto): Promise<UserAuthDto> {
         let userId = 0;
         try {
+            const defaultProfile = process.env.CDN_URL + '/profile/default.png';
             const {moonjinId, hashedPassword ,...data} = signUpData;
             // 공통 회원가입
             const createdUser : User = await this.prismaService.user.create({
                 data : {
                     ...data,
+                    image : defaultProfile,
                     password : hashedPassword,
                     createdAt : this.utilService.getCurrentDateInKorea()
                 }
