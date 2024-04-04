@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { ReleasedSeriesDto } from "@moonjin/api-types";
 
-export function SeriesWithWritterCard({ seriesInfo }: { seriesInfo: any }) {
+export function SeriesCardForReader({ seriesInfo }: { seriesInfo: any }) {
   return (
     <Link
       href={""}
@@ -35,10 +36,14 @@ export function SeriesWithWritterCard({ seriesInfo }: { seriesInfo: any }) {
   );
 }
 
-export function SeriesCard({ seriesInfo }: { seriesInfo: any }) {
+export function SeriesCardForWritter({
+  seriesInfo,
+}: {
+  seriesInfo: ReleasedSeriesDto;
+}) {
   return (
     <Link
-      href={""}
+      href={`/mypage/newsletter/series/${seriesInfo.id}`}
       className="flex flex-col min-w-[230px] w-[230px] h-fit pb-6"
     >
       <div className="group w-full h-fit relative">

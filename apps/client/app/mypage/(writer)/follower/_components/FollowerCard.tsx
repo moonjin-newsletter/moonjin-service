@@ -6,10 +6,20 @@ import csr from "../../../../../lib/fetcher/csr";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-async function deleteFollower(userId: number) {
-  csr.delete(`user/follower/${userId}`).then((res) => {
-    toast.success("구독목록에서 삭제됐습니다");
-  });
+async function deleteFollower(userId?: number, externalEmail?: string) {
+  if (userId) {
+    return await csr.delete(`user/follower/${userId}`).then((res) => {
+      toast.success("구독목록에서 삭제됐습니다");
+    });
+  } else {
+    return await csr
+      .delete(`user/follower/external`, {
+        json: { followerEmail: externalEmail },
+      })
+      .then((res) => {
+        toast.success("구독목록에서 삭제됐습니다");
+      });
+  }
 }
 
 export function FollowerCard({ follower }: { follower: FollowerDto }) {
@@ -33,8 +43,8 @@ export function FollowerCard({ follower }: { follower: FollowerDto }) {
           구독
         </p>
         <button
-          onClick={() => {
-            deleteFollower(follower.user.id);
+          onClick={async () => {
+            await deleteFollower(follower.user.id);
             router.refresh();
           }}
           className="text-sm py-1.5 px-2.5 bg-grayscale-300 hover:brightness-75 text-grayscale-500  rounded-lg"
@@ -47,6 +57,7 @@ export function FollowerCard({ follower }: { follower: FollowerDto }) {
 }
 
 export function ExternalCard({ follower }: { follower: ExternalFollowerDto }) {
+  const router = useRouter();
   return (
     <div className="w-full rounded-lg p-4 bg-grayscale-100 flex items-center">
       <div className="flex flex-col ml-3">
@@ -56,7 +67,13 @@ export function ExternalCard({ follower }: { follower: ExternalFollowerDto }) {
         <p className="text-grayscale-500 ml-auto text-sm gap-x-2.5">
           {format(new Date(follower.createdAt), "yyyy-MM-dd")}부터 구독
         </p>
-        <button className="text-sm py-1.5 px-2.5 bg-grayscale-300 hover:brightness-75 text-grayscale-500  rounded-lg">
+        <button
+          onClick={async () => {
+            await deleteFollower(undefined, follower.email);
+            router.refresh();
+          }}
+          className="text-sm py-1.5 px-2.5 bg-grayscale-300 hover:brightness-75 text-grayscale-500  rounded-lg"
+        >
           삭제
         </button>
       </div>
