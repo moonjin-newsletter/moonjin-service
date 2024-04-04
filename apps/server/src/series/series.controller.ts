@@ -12,11 +12,13 @@ import {Try, TryCatch} from "../response/tryCatch";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
 import {SERIES_NOT_FOUND} from "../response/error/series";
+import {UserService} from "../user/user.service";
 
 @Controller('series')
 export class SeriesController {
     constructor(
-        private readonly seriesService: SeriesService
+        private readonly seriesService: SeriesService,
+        private readonly userSerivce:UserService
     ) {}
 
     /**
@@ -29,6 +31,7 @@ export class SeriesController {
         @TypedBody() seriesData : ICreateSeries
     ){
         const series = await this.seriesService.createSeries({writerId: user.id,...seriesData});
+        if(series.status) await this.userSerivce.synchronizeSeries(user.id);
         return createResponseForm(series)
     }
 

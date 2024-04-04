@@ -15,13 +15,15 @@ import {USER_NOT_WRITER} from "../response/error/auth";
 import {FOLLOWER_NOT_FOUND} from "../response/error/user";
 import {IGetPostBySeriesId} from "./api-types/IGetPostBySeriesId";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
+import {UserService} from "../user/user.service";
 
 
 @Controller('post')
 export class PostController {
     constructor(
         private readonly postService: PostService,
-        private readonly seriesService: SeriesService
+        private readonly seriesService: SeriesService,
+        private readonly userSerivce:UserService
     ) {}
 
     /**
@@ -57,6 +59,7 @@ export class PostController {
     : Promise<TryCatch<{sentCount: number}, POST_NOT_FOUND | FORBIDDEN_FOR_POST | FOLLOWER_NOT_FOUND>>{
         await this.postService.assertWriterOfPost(postId,user.id);
         const sentCount = await this.postService.sendNewsletter(postId);
+        await this.userSerivce.synchronizeNewsLetter(user.id);
         return createResponseForm({
             sentCount : sentCount
         })

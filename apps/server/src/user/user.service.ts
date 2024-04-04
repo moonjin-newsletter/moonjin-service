@@ -449,6 +449,52 @@ export class UserService {
         }
     }
 
+    /**
+     * @summary 작가 뉴스레터 수 증가
+     * @param userId
+     * @returns void
+     * @throws USER_NOT_WRITER
+     */
+    async synchronizeNewsLetter(userId : number): Promise<void> {
+        try{
+            await this.prismaService.writerInfo.update({
+                where: {
+                    userId
+                },
+                data: {
+                    newsletterCount: {
+                        increment: 1
+                    }
+                }
+            })
+        }catch (error){
+            throw ExceptionList.USER_NOT_WRITER
+        }
+    }
+
+    /**
+     * @summary 작가 시리즈 수 증가
+     * @param userId
+     * @returns void
+     * @throws USER_NOT_WRITER
+     */
+    async synchronizeSeries(userId :number) {
+        try{
+            await this.prismaService.writerInfo.update({
+                where: {
+                    userId
+                },
+                data: {
+                    seriesCount: {
+                        increment: 1
+                    }
+                }
+            })
+        }catch (error){
+            throw ExceptionList.USER_NOT_WRITER
+        }
+    }
+
     // async changeProfileImage(userId: number, image: string): Promise<UserDto> {
     //
     // }
