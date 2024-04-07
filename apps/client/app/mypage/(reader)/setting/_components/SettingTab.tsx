@@ -96,7 +96,7 @@ function PasswordLayout({
             </label>
             <input
               {...register("newPassword")}
-              type="newPassword"
+              type="password"
               className="w-full mt-2 h-10 bg-grayscale-100 outline-0 border-0 rounded px-2 focus:ring-0 placeholder:text-sm placeholder:text-grayscale-400"
             />
             <button

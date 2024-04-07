@@ -19,7 +19,7 @@ export default async function Page({ params }: { params: pageProps }) {
   return (
     <main className="overflow-hidden w-full max-w-[748px] flex flex-col">
       <Link
-        href="/mypage/letter"
+        href={`/mypage/letter`}
         className="w-fit pr-4 py-2  flex items-center gap-x-2.5"
       >
         <Io.IoIosArrowBack /> 뒤로가기
