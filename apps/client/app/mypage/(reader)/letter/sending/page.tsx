@@ -7,6 +7,7 @@ import csr from "../../../../../lib/fetcher/csr";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ICreateLetter } from "@moonjin/api-types";
+import { useEffect } from "react";
 
 export default function Page() {
   const router = useRouter();
@@ -29,7 +30,9 @@ export default function Page() {
       .catch((err) => toast.error("편지 전송에 실패하였습니다"));
   }
 
-  if (receiver) setValue("receiverEmail", receiver);
+  useEffect(() => {
+    if (receiver) setValue("receiverEmail", receiver);
+  }, []);
 
   return (
     <main className="overflow-hidden w-full max-w-[748px] flex flex-col">
