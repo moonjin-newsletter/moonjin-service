@@ -6,7 +6,7 @@ import { ReaderHome } from "./ReaderHome";
 import {
   NewsletterDto,
   ReleasedPostWithWriterDto,
-  ReleasedSeriesWithWriterDto,
+  SeriesWithWriterDto,
 } from "@moonjin/api-types";
 import WritterHome from "./WritterHome";
 
@@ -17,7 +17,7 @@ export default function HomeTab({
   myNewsletterList,
 }: {
   userType: any;
-  seriesList: ReleasedSeriesWithWriterDto[];
+  seriesList: SeriesWithWriterDto[];
   newsletterList: ReleasedPostWithWriterDto[];
   myNewsletterList: NewsletterDto[];
 }) {

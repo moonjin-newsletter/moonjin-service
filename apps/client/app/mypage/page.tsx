@@ -3,8 +3,8 @@ import ssr from "../../lib/fetcher/ssr";
 import type {
   NewsletterDto,
   ReleasedPostWithWriterDto,
-  ReleasedSeriesWithWriterDto,
   ResponseForm,
+  SeriesWithWriterDto,
 } from "@moonjin/api-types";
 import { redirect } from "next/navigation";
 
@@ -13,7 +13,7 @@ export default async function Page() {
     .then((res) => res.json<any>())
     .catch((err) => redirect("/auth/login"));
   const seriesList = await ssr("series/following").then((res) =>
-    res.json<ResponseForm<ReleasedSeriesWithWriterDto[]>>(),
+    res.json<ResponseForm<SeriesWithWriterDto[]>>(),
   );
   const newsletterList = await ssr("post/newsletter").then((res) =>
     res.json<ResponseForm<ReleasedPostWithWriterDto[]>>(),

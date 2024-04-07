@@ -45,7 +45,7 @@ export default async function Page() {
             </div>
           </div>
         ) : (
-          <EmptyCard text={"작성 중인 글이 없습니다"} />
+          <EmptyCard text={"구독중인 독자가 없습니다"} />
         )}
       </section>
     </main>

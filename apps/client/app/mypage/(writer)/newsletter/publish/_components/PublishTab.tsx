@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import Link from "next/link";
 import { isNonEmptyArray } from "@toss/utils";
 import * as I from "../../../../../../components/icons";
-import type { NewsletterDto, ReleasedSeriesDto } from "@moonjin/api-types";
+import type { NewsletterDto, SeriesDto } from "@moonjin/api-types";
 import { SeriesCardForWritter } from "../../../../_components/SeriesCard";
 import { PublishedLetterCard } from "../../_components/PublishedLetterCard";
 
@@ -13,7 +13,7 @@ export default function PublishTab({
   seriesList,
 }: {
   newsletterList: NewsletterDto[];
-  seriesList: ReleasedSeriesDto[];
+  seriesList: SeriesDto[];
 }) {
   return (
     <Tab.Group>
@@ -55,7 +55,7 @@ export default function PublishTab({
   );
 }
 
-function SeriesLayout({ seriesList }: { seriesList: ReleasedSeriesDto[] }) {
+function SeriesLayout({ seriesList }: { seriesList: SeriesDto[] }) {
   return (
     <section className="w-full  gap-x-2.5 flex flex-col">
       <Link

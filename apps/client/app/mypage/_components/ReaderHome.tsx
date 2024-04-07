@@ -5,8 +5,8 @@ import NewsLetterCard from "./NewsLetterCard";
 
 import type {
   ReleasedPostWithWriterDto,
-  ReleasedSeriesWithWriterDto,
   ResponseForm,
+  SeriesWithWriterDto,
 } from "@moonjin/api-types";
 import { isNonEmptyArray } from "@toss/utils";
 import EmptyCard from "./EmptyCard";
@@ -16,7 +16,7 @@ export function ReaderHome({
   seriesList,
   newsletterList,
 }: {
-  seriesList: ReleasedSeriesWithWriterDto[];
+  seriesList: SeriesWithWriterDto[];
   newsletterList: ReleasedPostWithWriterDto[];
 }) {
   return (
@@ -30,7 +30,7 @@ export function ReaderHome({
 function SeriesNewsletter({
   seriesList,
 }: {
-  seriesList: ReleasedSeriesWithWriterDto[];
+  seriesList: SeriesWithWriterDto[];
 }) {
   return (
     <section className="flex flex-col w-full">

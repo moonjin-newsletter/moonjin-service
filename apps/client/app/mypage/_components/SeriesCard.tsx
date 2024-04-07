@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { ReleasedSeriesDto } from "@moonjin/api-types";
+import type { SeriesDto } from "@moonjin/api-types";
 
 export function SeriesCardForReader({ seriesInfo }: { seriesInfo: any }) {
   return (
@@ -39,7 +39,7 @@ export function SeriesCardForReader({ seriesInfo }: { seriesInfo: any }) {
 export function SeriesCardForWritter({
   seriesInfo,
 }: {
-  seriesInfo: ReleasedSeriesDto;
+  seriesInfo: SeriesDto;
 }) {
   return (
     <Link
