@@ -35,7 +35,7 @@ export class AwsService {
                 Key: fileName,
             })
             return {
-                fileName : process.env.CDN_URL + '/' + fileName,
+                file : process.env.CDN_URL + '/' + fileName,
                 preSignedUrl : await getSignedUrl(this.s3Client, command, {
                     expiresIn : 60 * 60,
                 })
