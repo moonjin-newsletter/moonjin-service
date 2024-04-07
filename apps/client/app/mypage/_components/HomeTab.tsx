@@ -43,7 +43,7 @@ export default function HomeTab({
           ))}
         </Tab.List>
         <Tab.Panels>
-          {userType === "작가" && (
+          {userType === "작가" && myNewsletterList != null && (
             <Tab.Panel>
               <WritterHome myNewsletterList={myNewsletterList} />
             </Tab.Panel>
