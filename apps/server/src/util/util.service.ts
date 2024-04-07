@@ -38,4 +38,12 @@ export class UtilService {
         }
     }
 
+    processImageForProfile(cover: string | undefined | null): string {
+        const cdnUrl = process.env.CDN_URL?? "https://d1ppxineti4knh.cloudfront.net";
+        if (cover) {
+            return cover;
+        } else {
+            return cdnUrl + '/profile/default.png';
+        }
+    }
 }

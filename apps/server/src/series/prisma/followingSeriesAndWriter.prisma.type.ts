@@ -7,9 +7,6 @@ const followingSeriesAndWriter = Prisma.validator<Prisma.FollowDefaultArgs>()({
                 series: {
                     where: {
                         deleted: false,
-                        releasedAt:{
-                            not : null
-                        }
                     }
                 },
                 user: true

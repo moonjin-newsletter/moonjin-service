@@ -5,5 +5,4 @@ export interface CreateSeriesDto {
     status : boolean;
     cover? : string;
     description? : string;
-    releasedAt? : Date;
 }

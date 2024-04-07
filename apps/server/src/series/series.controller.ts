@@ -7,7 +7,7 @@ import {SeriesService} from "./series.service";
 import {createResponseForm} from "../response/responseForm";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
-import {ReleasedSeriesDto, ReleasedSeriesWithWriterDto, SeriesDto} from "./dto";
+import {SeriesWithWriterDto, SeriesDto} from "./dto";
 import {Try, TryCatch} from "../response/tryCatch";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
@@ -18,7 +18,7 @@ import {UserService} from "../user/user.service";
 export class SeriesController {
     constructor(
         private readonly seriesService: SeriesService,
-        private readonly userSerivce:UserService
+        private readonly userService:UserService
     ) {}
 
     /**
@@ -35,18 +35,18 @@ export class SeriesController {
         @TypedBody() seriesData : ICreateSeries
     ): Promise<TryCatch<SeriesDto, CREATE_SERIES_ERROR >>{
         const series = await this.seriesService.createSeries({writerId: user.id,...seriesData});
-        if(series.status) await this.userSerivce.synchronizeSeries(user.id, true);
+        if(series.status) await this.userService.synchronizeSeries(user.id, true);
         return createResponseForm(series)
     }
 
     /**
      * @summary 구독 중인 시리즈 가져오기
      * @param user
-     * @returns ReleasedSeriesWithWriterDto[]
+     * @returns SeriesWithWriterDto[]
      */
     @TypedRoute.Get('following')
     @UseGuards(UserAuthGuard)
-    async getSeries(@User() user: UserAuthDto) : Promise<Try<ReleasedSeriesWithWriterDto[]>>{
+    async getSeries(@User() user: UserAuthDto) : Promise<Try<SeriesWithWriterDto[]>>{
         const seriesList = await this.seriesService.getFollowingSeriesByFollowerId(user.id);
         return createResponseForm(seriesList)
     }
@@ -72,7 +72,7 @@ export class SeriesController {
      */
     @TypedRoute.Get('me')
     @UseGuards(WriterAuthGuard)
-    async getReleasedSeriesByWriter(@User() user: UserAuthDto) : Promise<Try<ReleasedSeriesDto[]>>{
+    async getReleasedSeriesByWriter(@User() user: UserAuthDto) : Promise<Try<SeriesDto[]>>{
         const seriesList = await this.seriesService.getReleasedSeriesListByWriterId(user.id);
         return createResponseForm(seriesList)
     }
@@ -107,7 +107,7 @@ export class SeriesController {
     @TypedRoute.Get(':seriesId')
     @UseGuards(UserAuthGuard)
     async getReleasedSeriesById(@TypedParam('seriesId') seriesId: number) :
-        Promise<TryCatch<ReleasedSeriesDto, SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES>>{
+        Promise<TryCatch<SeriesDto, SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES>>{
         const series = await this.seriesService.getReleasedSeriesById(seriesId);
         return createResponseForm(series);
     }

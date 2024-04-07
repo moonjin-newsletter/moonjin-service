@@ -183,11 +183,13 @@ export class AuthService {
     async socialSignup(socialSignupData : SocialSignupDto): Promise<UserAuthDto> {
         let createdUserId = 0
         let createdOauthId = ""
+        const image = this.utilService.processImageForProfile(socialSignupData.image)
         try {
             const {oauthId, social, moonjinId, ...userSignupData} = socialSignupData;
             const createdUser = await this.prismaService.user.create({
                 data: {
                     ...userSignupData,
+                    image,
                     createdAt : this.utilService.getCurrentDateInKorea()
                 }
             })

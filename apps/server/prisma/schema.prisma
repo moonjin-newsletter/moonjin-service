@@ -15,7 +15,7 @@ model User {
   password    String?  @db.VarChar(64)
   nickname    String   @unique @db.VarChar(16)
   createdAt   DateTime
-  image       String   @default("") @db.VarChar(128)
+  image       String   @db.VarChar(128)
   description String   @default("") @db.VarChar(256)
   role        Int      @default(0)
   deleted     Boolean  @default(false)
@@ -85,7 +85,7 @@ model Post {
   content       String    @db.Text
   writerId      Int
   category      String    @db.VarChar(16)
-  cover         String?   @db.VarChar(128)
+  cover         String    @db.VarChar(128)
   clicks        Int       @default(0)
   createdAt     DateTime
   lastUpdatedAt DateTime  @default(now())
@@ -118,18 +118,17 @@ model Newsletter {
 }
 
 model Series {
-  id            Int       @id @default(autoincrement())
-  title         String    @db.VarChar(32)
+  id            Int      @id @default(autoincrement())
+  title         String   @db.VarChar(32)
   writerId      Int
-  category      String    @db.VarChar(16)
-  cover         String?   @db.VarChar(128)
-  clicks        Int       @default(0)
+  category      String   @db.VarChar(16)
+  cover         String   @db.VarChar(128)
+  clicks        Int      @default(0)
   createdAt     DateTime
-  lastUpdatedAt DateTime  @default(now())
-  releasedAt    DateTime?
-  description   String    @default("") @db.VarChar(256)
-  status        Boolean   @default(true)
-  deleted       Boolean   @default(false)
+  lastUpdatedAt DateTime @default(now())
+  description   String   @default("") @db.VarChar(256)
+  status        Boolean  @default(true)
+  deleted       Boolean  @default(false)
 
   writerInfo WriterInfo @relation(fields: [writerId], references: [userId])
   post       Post[]
