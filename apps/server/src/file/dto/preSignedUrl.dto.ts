@@ -1,4 +1,4 @@
 export interface PreSignedUrlDto {
-    fileName : string;
+    file : string;
     preSignedUrl : string;
 }

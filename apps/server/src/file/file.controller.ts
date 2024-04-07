@@ -29,5 +29,4 @@ export class FileController {
             ...await this.awsService.getSignedUrlForUpload(body.fileName, body.fileType)
         })
     }
-
 }
