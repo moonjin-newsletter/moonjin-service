@@ -28,6 +28,8 @@ export default function WriterCard({
       <Image
         src={writerInfo.user.image}
         alt="작가 프로필 이미지"
+        width={48}
+        height={48}
         className="w-12 h-12 rounded-full bg-grayscale-400 object-contain"
       />
       <div className="flex flex-col ml-3">
