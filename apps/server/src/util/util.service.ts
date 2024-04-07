@@ -30,19 +30,12 @@ export class UtilService {
     }
 
     processImageForCover(cover: string | undefined | null): string {
+        const cdnUrl = process.env.CDN_URL?? "https://d1ppxineti4knh.cloudfront.net";
         if (cover) {
-            return this.deletePrefixFromImageUrl(cover);
+            return cover;
         } else {
-            return 'cover/default.png';
+            return cdnUrl + '/cover/default.png';
         }
     }
 
-    deletePrefixFromImageUrl(cover: string): string {
-        const cdnUrl = process.env.CDN_URL ? process.env.CDN_URL + '/' : ".net/";
-        if (cover.includes(cdnUrl)) {
-            return cover.split(cdnUrl)[1]
-        } else {
-            return cover;
-        }
-    }
 }
