@@ -19,7 +19,7 @@ export default function HomeTab({
   userType: any;
   seriesList: SeriesWithWriterDto[];
   newsletterList: ReleasedPostWithWriterDto[];
-  myNewsletterList: NewsletterDto[];
+  myNewsletterList?: NewsletterDto[];
 }) {
   const tabList =
     userType === "작가" ? ["발행글", "구독한 뉴스레터"] : ["구독한 뉴스레터"];
