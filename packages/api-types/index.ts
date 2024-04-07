@@ -24,3 +24,4 @@ export * from './src/api-types/letter/dto/index';
 export * from './src/api-types/post/dto/index';
 export * from './src/api-types/series/dto/index';
 export * from './src/api-types/user/dto/index';
+export * from './src/api-types/file/dto/index';
