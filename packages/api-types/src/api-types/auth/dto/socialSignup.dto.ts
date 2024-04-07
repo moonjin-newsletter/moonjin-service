@@ -4,5 +4,6 @@ export interface SocialSignupDto{
     social: string;
     nickname: string;
     role: number;
+    image?: string;
     moonjinId? :string;
 }

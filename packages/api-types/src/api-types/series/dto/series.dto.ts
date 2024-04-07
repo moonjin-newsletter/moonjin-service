@@ -5,7 +5,7 @@ export interface SeriesDto {
     category : string;
     clicks : number;
     status : boolean;
-    cover : string | null;
+    cover : string;
     description : string | null;
     lastUpdatedAt : Date;
 }
