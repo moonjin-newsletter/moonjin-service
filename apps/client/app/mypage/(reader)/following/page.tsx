@@ -20,7 +20,7 @@ export default async function Page() {
           {isNotNil(writerList) ? writerList.data.length : 0}
         </div>
       </div>
-      <section className="flex w-full mt-4">
+      <section className="flex flex-col w-full mt-4">
         {isNonEmptyArray(writerList.data ?? []) ? (
           writerList.data.map((writer, index) => (
             <WriterCard writerInfo={writer} />
