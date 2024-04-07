@@ -77,7 +77,9 @@ function SendLetterCard({ letter }: { letter: LetterWithUserDto }) {
   return (
     <Link
       href={`/mypage/letter/send-${letter.id}`}
-      className="flex flex-col w-full border-b border-grayscale-200 py-4 hover:bg-grayscale-700/10 rounded"
+      className={`${
+        letter.readAt && "bg-grayscale-100"
+      } flex flex-col w-full border-b border-grayscale-200 py-4 hover:bg-grayscale-700/10 rounded`}
     >
       <div className="w-full flex items-center ">
         <I.LetterOut />
