@@ -15,7 +15,6 @@ export default function LetterTab({
   receivedLetter: LetterWithUserDto[];
   sendingLetter: LetterWithUserDto[];
 }) {
-  console.log(receivedLetter);
   return (
     <Tab.Group>
       <Tab.List className="w-full flex gap-x-4">
@@ -78,7 +77,7 @@ function SendLetterCard({ letter }: { letter: LetterWithUserDto }) {
   return (
     <Link
       href={`/mypage/letter/${letter.id}`}
-      className="flex flex-col w-full border-b border-grayscale-200 py-4"
+      className="flex flex-col w-full border-b border-grayscale-200 py-4 hover:bg-grayscale-700/10 rounded"
     >
       <div className="w-full flex items-center ">
         <I.LetterOut />
@@ -103,7 +102,7 @@ function ReceivedLetterCard({ letter }: { letter: LetterWithUserDto }) {
   return (
     <Link
       href={`/mypage/letter/${letter.id}`}
-      className="flex flex-col w-full border-b border-grayscale-200 py-4"
+      className="flex flex-col w-full border-b border-grayscale-200 py-4 hover:bg-grayscale-700/10 rounded"
     >
       <div className="w-full flex items-center ">
         <I.LetterIn />
