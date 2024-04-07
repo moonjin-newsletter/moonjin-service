@@ -11,7 +11,7 @@ import {ReleasedSeriesDto, ReleasedSeriesWithWriterDto, SeriesDto} from "./dto";
 import {Try, TryCatch} from "../response/tryCatch";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
-import {FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
+import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
 import {UserService} from "../user/user.service";
 
 @Controller('series')
@@ -23,13 +23,17 @@ export class SeriesController {
 
     /**
      * @summary 시리즈 생성 API
+     * @param user
+     * @param seriesData
+     * @returns SeriesDto
+     * @throws CREATE_SERIES_ERROR
      */
     @TypedRoute.Post()
     @UseGuards(WriterAuthGuard)
     async createSeries(
         @User() user :UserAuthDto,
         @TypedBody() seriesData : ICreateSeries
-    ){
+    ): Promise<TryCatch<SeriesDto, CREATE_SERIES_ERROR >>{
         const series = await this.seriesService.createSeries({writerId: user.id,...seriesData});
         if(series.status) await this.userSerivce.synchronizeSeries(user.id, true);
         return createResponseForm(series)

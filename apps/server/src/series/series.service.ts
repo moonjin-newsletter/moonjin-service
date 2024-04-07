@@ -14,13 +14,21 @@ export class SeriesService {
         private readonly utilService: UtilService,
     ) {}
 
+    /**
+     * @summary 시리즈 생성
+     * @param createSeriesData
+     * @returns SeriesDto
+     * @throws CREATE_SERIES_ERROR
+     */
     async createSeries(createSeriesData : CreateSeriesDto) : Promise<SeriesDto>{
         const createdAt = this.utilService.getCurrentDateInKorea();
+        const cover = this.utilService.processImageForCover(createSeriesData.cover);
         try {
             const releaseDate = createSeriesData.releasedAt ? createSeriesData.releasedAt: this.utilService.getCurrentDateInKorea();
             const createdSeries = await this.prismaService.series.create({
                 data: {
                     ...createSeriesData,
+                    cover,
                     createdAt,
                     lastUpdatedAt :createdAt,
                     releasedAt : (createSeriesData.status) ? releaseDate : null

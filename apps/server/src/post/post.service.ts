@@ -27,12 +27,12 @@ export class PostService {
      * @throws CREATE_POST_ERROR
      */
     async createPost(postData : CreatePostDto) : Promise<PostDto> {
+        const cover = this.utilService.processImageForCover(postData.cover);
         try {
-            const defaultImage = process.env.CDN_URL + '/cover/default.png';
-            if(!postData.cover) postData.cover = defaultImage;
             const post: Post = await this.prismaService.post.create({
                 data : {
                     ...postData,
+                    cover,
                     createdAt : this.utilService.getCurrentDateInKorea(),
                 }
             })
