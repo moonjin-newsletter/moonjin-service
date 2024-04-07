@@ -36,22 +36,6 @@ export class SeriesController {
     }
 
     /**
-     * @summary 시리즈 상세 정보 가져오기
-     * @param seriesId
-     * @returns ReleasedSeriesDto
-     * @throws SERIES_NOT_FOUND
-     * @throws FORBIDDEN_FOR_SERIES
-     */
-    @TypedRoute.Get(':seriesId')
-    @UseGuards(UserAuthGuard)
-    async getReleasedSeriesById(@TypedParam('seriesId') seriesId: number) :
-        Promise<TryCatch<ReleasedSeriesDto, SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES>>{
-        const series = await this.seriesService.getReleasedSeriesById(seriesId);
-        return createResponseForm(series);
-    }
-
-
-    /**
      * @summary 구독 중인 시리즈 가져오기
      * @param user
      * @returns ReleasedSeriesWithWriterDto[]
@@ -109,4 +93,18 @@ export class SeriesController {
         return createResponseForm(series);
     }
 
+    /**
+     * @summary 시리즈 상세 정보 가져오기
+     * @param seriesId
+     * @returns ReleasedSeriesDto
+     * @throws SERIES_NOT_FOUND
+     * @throws FORBIDDEN_FOR_SERIES
+     */
+    @TypedRoute.Get(':seriesId')
+    @UseGuards(UserAuthGuard)
+    async getReleasedSeriesById(@TypedParam('seriesId') seriesId: number) :
+        Promise<TryCatch<ReleasedSeriesDto, SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES>>{
+        const series = await this.seriesService.getReleasedSeriesById(seriesId);
+        return createResponseForm(series);
+    }
 }
