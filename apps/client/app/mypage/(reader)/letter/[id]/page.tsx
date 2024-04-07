@@ -50,7 +50,7 @@ export default async function Page({ params }: { params: pageProps }) {
           {letterInfo.content}
         </div>
         <Link
-          href="/mypage/letter/sending"
+          href={`/mypage/letter/sending?receiver=${letterInfo.receiver.email}`}
           className="py-2.5 px-10 bg-primary text-white w-fit ml-auto mt-8 rounded"
         >
           답장하기

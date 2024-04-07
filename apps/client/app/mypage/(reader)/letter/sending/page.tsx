@@ -5,14 +5,17 @@ import * as Io from "react-icons/io";
 import { useForm } from "react-hook-form";
 import csr from "../../../../../lib/fetcher/csr";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ICreateLetter } from "@moonjin/api-types";
 
 export default function Page() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const receiver = searchParams.get("receiver");
   const {
     formState: { errors },
     handleSubmit,
+    setValue,
     register,
   } = useForm();
 
@@ -25,6 +28,8 @@ export default function Page() {
       })
       .catch((err) => toast.error("편지 전송에 실패하였습니다"));
   }
+
+  if (receiver) setValue("receiverEmail", receiver);
 
   return (
     <main className="overflow-hidden w-full max-w-[748px] flex flex-col">
