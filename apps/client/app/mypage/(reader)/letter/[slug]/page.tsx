@@ -5,11 +5,12 @@ import { LetterWithUserDto, ResponseForm } from "@moonjin/api-types";
 import { format } from "date-fns";
 
 type pageProps = {
-  id: string;
+  slug: string;
 };
 
 export default async function Page({ params }: { params: pageProps }) {
-  const letterId = parseInt(params.id, 10);
+  const [type, id] = params.slug.split("-");
+  const letterId = parseInt(id, 10);
 
   const { data: letterInfo } = await ssr(`letter/${letterId}`).then((res) =>
     res.json<ResponseForm<LetterWithUserDto>>(),
@@ -50,7 +51,11 @@ export default async function Page({ params }: { params: pageProps }) {
           {letterInfo.content}
         </div>
         <Link
-          href={`/mypage/letter/sending?receiver=${letterInfo.receiver.email}`}
+          href={`/mypage/letter/sending?receiver=${
+            type === "receive"
+              ? letterInfo.sender.email
+              : letterInfo.receiver.email
+          }`}
           className="py-2.5 px-10 bg-primary text-white w-fit ml-auto mt-8 rounded"
         >
           답장하기
