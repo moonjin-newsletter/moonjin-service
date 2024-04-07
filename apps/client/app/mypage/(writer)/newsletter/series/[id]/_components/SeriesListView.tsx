@@ -3,8 +3,8 @@
 import useSWR from "swr";
 import type { NewsletterDto, ResponseForm } from "@moonjin/api-types";
 import { isNonEmptyArray } from "@toss/utils";
-import { PublishedLetterCard } from "../../../_components/PublishedLetterCard";
 import * as I from "../../../../../../../components/icons";
+import PublishedSeriesCard from "./PublishedSeriesCard";
 
 export default function SeriesListView({ seriesId }: { seriesId: number }) {
   const { data: seriesList } = useSWR<ResponseForm<NewsletterDto[]>>(
@@ -13,13 +13,15 @@ export default function SeriesListView({ seriesId }: { seriesId: number }) {
 
   return (
     <section className="w-full flex flex-col">
-      <div className="w-full">
-        <span>총 {seriesList?.data?.length}개</span>
+      <div className="w-full border-b border-gray-200 py-3">
+        <span className="font-medium text-grayscale-500">
+          총 {seriesList?.data?.length}개
+        </span>
       </div>
 
       {isNonEmptyArray(seriesList?.data ?? []) ? (
         seriesList?.data?.map((letter, index) => (
-          <PublishedLetterCard key={index} letter={letter} />
+          <PublishedSeriesCard key={index} letter={letter} />
         ))
       ) : (
         <div className="w-full flex flex-col gap-y-4 items-center justify-center py-12">

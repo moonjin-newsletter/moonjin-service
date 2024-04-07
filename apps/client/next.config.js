@@ -35,6 +35,10 @@ module.exports = {
         protocol: "https",
         hostname: "encrypted-tbn0.gstatic.com",
       },
+      {
+        protocol: "https",
+        hostname: "d1ppxineti4knh.cloudfront.net",
+      },
     ],
   },
 };

@@ -31,7 +31,7 @@ export function Sidebar({ type }: { type: userType }) {
               },
               { title: "구독자 관리", icon: null, url: "/mypage/follower" },
             ].map((value, index) => (
-              <MenuLink title={value.title} url={value.url} />
+              <MenuLink key={index} title={value.title} url={value.url} />
             ))}
             <div className="w-full h-5 bg-grayscale-100" />
           </div>
