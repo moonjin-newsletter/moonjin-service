@@ -177,4 +177,43 @@ export class SeriesService {
         })
         if(!follower) throw ExceptionList.FORBIDDEN_FOR_SERIES;
     }
+
+    /**
+     * @summary 해당 시리즈 정보 id로 가져오기
+     * @param seriesId
+     * @returns SeriesDto
+     * @throws SERIES_NOT_FOUND
+     * @throws FORBIDDEN_FOR_SERIES
+     */
+    async getReleasedSeriesById(seriesId: number): Promise<ReleasedSeriesDto> {
+        const series = await this.prismaService.series.findUnique({
+            where: {
+                id: seriesId
+            }
+        });
+        if(!series) throw ExceptionList.SERIES_NOT_FOUND;
+        if(!series.releasedAt) throw ExceptionList.FORBIDDEN_FOR_SERIES;
+        return SeriesDtoMapper.SeriesToReleasedSeriesDto(series, series.releasedAt);
+    }
+
+    /**
+     * @summary 나의 시리즈 정보 id로 가져오기
+     * @param seriesId
+     * @param userId
+     * @returns SeriesDto
+     * @throws SERIES_NOT_FOUND
+     * @throws FORBIDDEN_FOR_SERIES
+     */
+    async getWritingSeriesById(seriesId: number, userId : number ): Promise<SeriesDto> {
+        await this.assertUserCanAccessToSeries(seriesId, userId);
+        const series = await this.prismaService.series.findUnique({
+            where: {
+                id: seriesId
+            }
+        });
+        if(!series) throw ExceptionList.SERIES_NOT_FOUND;
+        return SeriesDtoMapper.SeriesToSeriesDto(series);
+    }
+
+
 }

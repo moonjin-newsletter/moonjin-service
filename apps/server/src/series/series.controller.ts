@@ -11,7 +11,7 @@ import {ReleasedSeriesDto, ReleasedSeriesWithWriterDto, SeriesDto} from "./dto";
 import {Try, TryCatch} from "../response/tryCatch";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
-import {SERIES_NOT_FOUND} from "../response/error/series";
+import {FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
 import {UserService} from "../user/user.service";
 
 @Controller('series')
@@ -36,6 +36,22 @@ export class SeriesController {
     }
 
     /**
+     * @summary 시리즈 상세 정보 가져오기
+     * @param seriesId
+     * @returns ReleasedSeriesDto
+     * @throws SERIES_NOT_FOUND
+     * @throws FORBIDDEN_FOR_SERIES
+     */
+    @TypedRoute.Get(':seriesId')
+    @UseGuards(UserAuthGuard)
+    async getReleasedSeriesById(@TypedParam('seriesId') seriesId: number) :
+        Promise<TryCatch<ReleasedSeriesDto, SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES>>{
+        const series = await this.seriesService.getReleasedSeriesById(seriesId);
+        return createResponseForm(series);
+    }
+
+
+    /**
      * @summary 구독 중인 시리즈 가져오기
      * @param user
      * @returns ReleasedSeriesWithWriterDto[]
@@ -48,13 +64,27 @@ export class SeriesController {
     }
 
     /**
-     * @summary 내가 발행한 시리즈 가져오기
+     * @summary 내가 작성중인 시리즈 id로 가져오기
+     * @param user
+     * @param seriesId
+     * @returns ReleasedSeriesDto[]
+     */
+    @TypedRoute.Get('writing/:seriesId')
+    @UseGuards(WriterAuthGuard)
+    async getWritingSeriesById(@User() user: UserAuthDto, @TypedParam('seriesId') seriesId : number) : Promise<TryCatch<
+        SeriesDto, SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES>>{
+        const seriesList = await this.seriesService.getWritingSeriesById(seriesId,user.id);
+        return createResponseForm(seriesList)
+    }
+
+    /**
+     * @summary 내가 발행한 시리즈들 가져오기
      * @param user
      * @returns ReleasedSeriesDto[]
      */
     @TypedRoute.Get('me')
     @UseGuards(WriterAuthGuard)
-    async getSeriesByWriter(@User() user: UserAuthDto) : Promise<Try<ReleasedSeriesDto[]>>{
+    async getReleasedSeriesByWriter(@User() user: UserAuthDto) : Promise<Try<ReleasedSeriesDto[]>>{
         const seriesList = await this.seriesService.getReleasedSeriesListByWriterId(user.id);
         return createResponseForm(seriesList)
     }
