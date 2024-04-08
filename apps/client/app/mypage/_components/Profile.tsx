@@ -16,7 +16,7 @@ export default function Profile({
             alt="작가 프로필 이미지"
             className=" absolute left-0 rounded-lg -top-12 bg-gray-600 w-40 h-40 object-fill"
             height={160}
-            src=""
+            src={userInfo.user.image}
             width={160}
           />
         </div>
