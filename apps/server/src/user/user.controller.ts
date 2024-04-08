@@ -7,7 +7,7 @@ import {UserService} from "./user.service";
 import {createResponseForm, ResponseForm, ResponseMessage} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {
-    EMAIL_ALREADY_EXIST,
+    EMAIL_ALREADY_EXIST, MOONJIN_EMAIL_ALREADY_EXIST,
     NICKNAME_ALREADY_EXIST,
     USER_NOT_FOUND,
     USER_NOT_WRITER
@@ -27,6 +27,8 @@ import {EMAIL_NOT_EXIST} from "../response/error/mail";
 import {IEmailVerification} from "../auth/api-types/IEmailVerification";
 import * as process from "process";
 import {ErrorCodeEnum} from "../response/error/enum/errorCode.enum";
+import {IChangeWriterProfile} from "./api-types/IChangeWriterProfile";
+import {PROFILE_CHANGE_ERROR} from "../response/error/user/user.error";
 
 @Controller('user')
 export class UserController {
@@ -177,11 +179,15 @@ export class UserController {
      * @param user
      * @param res
      * @param newProfile
+     * @returns
+     * @throws PROFILE_CHANGE_ERROR
+     * @throws NICKNAME_ALREADY_EXIST
+     * @throws USER_NOT_FOUND
      */
     @TypedRoute.Patch('profile')
     @UseGuards(UserAuthGuard)
     async changeUserProfile(@User() user:UserAuthDto, @Res() res: Response, @TypedBody() newProfile : IChangeUserProfile): Promise<TryCatch<UserDto,
-        NICKNAME_ALREADY_EXIST | USER_NOT_FOUND>> {
+        PROFILE_CHANGE_ERROR | NICKNAME_ALREADY_EXIST | USER_NOT_FOUND>> {
         const newUser = await this.userService.changeUserProfile(user.id, newProfile);
         const {accessToken, refreshToken }= this.authService.getAccessTokens(UserDtoMapper.UserDtoToUserAuthDto(newUser));
         res.cookie('accessToken', accessToken)
@@ -190,16 +196,29 @@ export class UserController {
         return createResponseForm(newUser);
     }
 
-
-    // @TypedRoute.Post('profile/image')
-    // @UseGuards(WriterAuthGuard)
-    // @UseInterceptors(FileInterceptor('image'))
-    // async changeProfileImage(@User() user:UserAuthDto, @UploadedFile() file : Express.Multer.File){
-    //
-    //     // const newUser = await this.userService.changeProfileImage(user.id, image.image);
-    //     // return createResponseForm(newUser);
-    // }
-
+    /**
+     * @summary 작가 프로필 변경 API
+     * @param user
+     * @param res
+     * @param newProfile
+     * @returns
+     * @throws PROFILE_CHANGE_ERROR
+     * @throws NICKNAME_ALREADY_EXIST
+     * @throws USER_NOT_WRITER
+     * @throws USER_NOT_FOUND
+     * @throws MOONJIN_EMAIL_ALREADY_EXIST
+     */
+    @TypedRoute.Patch('writer/profile')
+    @UseGuards(WriterAuthGuard)
+    async changeWriterProfile(@User() user:UserAuthDto, @Res() res: Response, @TypedBody() newProfile : IChangeWriterProfile): Promise<TryCatch<UserDto,
+        PROFILE_CHANGE_ERROR | NICKNAME_ALREADY_EXIST | USER_NOT_WRITER | USER_NOT_FOUND | MOONJIN_EMAIL_ALREADY_EXIST>> {
+        const newUser = await this.userService.changeWriterProfile(user.id, newProfile);
+        const {accessToken, refreshToken }= this.authService.getAccessTokens(UserDtoMapper.UserDtoToUserAuthDto(newUser));
+        res.cookie('accessToken', accessToken)
+        res.cookie('refreshToken', refreshToken)
+        res.send(createResponseForm(newUser));
+        return createResponseForm(newUser);
+    }
 
     /**
      * @summary 비밀번호 변경 요청 API (메일 전송, 쿠키 설정)

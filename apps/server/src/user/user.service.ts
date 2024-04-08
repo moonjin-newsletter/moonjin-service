@@ -4,14 +4,22 @@ import {PrismaService} from "../prisma/prisma.service";
 import {PrismaClientKnownRequestError} from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
-import {UserIdentityDto, FollowingWriterProfileDto, UserDto, WriterDto, FollowerDto, ExternalFollowerDto} from "./dto";
+import {
+    UserIdentityDto,
+    FollowingWriterProfileDto,
+    UserDto,
+    WriterDto,
+    FollowerDto,
+    ExternalFollowerDto,
+    ChangeUserProfileDto
+} from "./dto";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import { WriterInfoDto} from "../auth/dto";
 import UserDtoMapper from "./userDtoMapper";
-import {WriterInfoWithUser} from "./prisma/writerInfo.prisma.type";
+import {WriterInfoWithUser} from "./prisma/writerInfoWithUser.prisma.type";
 import * as process from "process";
-import {IChangeUserProfile} from "./api-types/IChangeUserProfile";
 import {FollowingWriterInfoWithUser} from "./prisma/followingWriterInfoWithUser.prisma.type";
+import {ChangeWriterProfileDto} from "./dto/changeWriterProfile.dto";
 
 @Injectable()
 export class UserService {
@@ -152,7 +160,6 @@ export class UserService {
             select: {
                 userId: true,
                 moonjinId: true,
-                description: true,
                 newsletterCount: true,
                 seriesCount: true,
                 followerCount: true,
@@ -425,19 +432,21 @@ export class UserService {
     /**
      * @summary 유저 프로필 변경하기
      * @param userId
-     * @param newProfile
+     * @param newUserProfile
      * @returns UserDto
+     * @throws PROFILE_CHANGE_ERROR
      * @throws NICKNAME_ALREADY_EXIST
      * @throws USER_NOT_FOUND
      */
-    async changeUserProfile(userId: number, newProfile: IChangeUserProfile): Promise<UserDto> {
+    async changeUserProfile(userId: number, newUserProfile: ChangeUserProfileDto): Promise<UserDto> {
+        if(Object.keys(newUserProfile).length === 0) throw ExceptionList.PROFILE_CHANGE_ERROR;
         try {
             const user = await this.prismaService.user.update({
                 where: {
                     id: userId
                 },
                 data: {
-                    nickname: newProfile.nickname
+                    ...newUserProfile,
                 }
             })
             return UserDtoMapper.UserToUserDto(user);
@@ -446,6 +455,57 @@ export class UserService {
                 throw ExceptionList.NICKNAME_ALREADY_EXIST;
             }
             throw ExceptionList.USER_NOT_FOUND;
+        }
+    }
+
+    /**
+     * @summary 작가 프로필 변경하기
+     * @param userId
+     * @param newWriterProfile
+     * @returns UserDto
+     * @throws PROFILE_CHANGE_ERROR
+     * @throws NICKNAME_ALREADY_EXIST
+     * @throws USER_NOT_WRITER
+     * @throws MOONJIN_EMAIL_ALREADY_EXIST
+     */
+    async changeWriterProfile(userId: number, newWriterProfile: ChangeWriterProfileDto): Promise<UserDto> {
+        if(Object.keys(newWriterProfile).length === 0) throw ExceptionList.PROFILE_CHANGE_ERROR;
+        const {moonjinId, ...newUserProfile} = newWriterProfile;
+        if(!moonjinId) return this.changeUserProfile(userId, newUserProfile);
+
+        try{
+            const writerInfoWithUser : WriterInfoWithUser = await this.prismaService.writerInfo.update({
+                where: {
+                    userId
+                },
+                data: {
+                    moonjinId,
+                    user: {
+                        update: {
+                            ...newUserProfile
+                        }
+                    }
+                },
+                include: {
+                    user: true
+                }
+            })
+            return UserDtoMapper.UserToUserDto(writerInfoWithUser.user);
+        }catch (error){
+            if (error instanceof PrismaClientKnownRequestError){
+                if (error.code == "P2002" && error.meta){
+                    const errorField = (error.meta.target as string[])[0]
+                    switch (errorField){
+                        case "nickname":
+                            throw ExceptionList.NICKNAME_ALREADY_EXIST;
+                        case "moonjinId":
+                            throw ExceptionList.MOONJIN_EMAIL_ALREADY_EXIST;
+                        default:
+                            throw ExceptionList.PROFILE_CHANGE_ERROR;
+                    }
+                }
+            }
+            throw ExceptionList.USER_NOT_WRITER;
         }
     }
 
@@ -530,7 +590,4 @@ export class UserService {
         }
     }
 
-    // async changeProfileImage(userId: number, image: string): Promise<UserDto> {
-    //
-    // }
 }

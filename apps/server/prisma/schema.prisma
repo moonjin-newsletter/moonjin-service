@@ -40,7 +40,6 @@ model WriterInfo {
   userId          Int      @id @unique
   moonjinId       String   @unique @db.VarChar(32)
   createdAt       DateTime
-  description     String   @default("") @db.VarChar(256)
   newsletterCount Int      @default(0)
   seriesCount     Int      @default(0)
   followerCount   Int      @default(0)

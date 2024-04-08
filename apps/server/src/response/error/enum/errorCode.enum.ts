@@ -1,3 +1,4 @@
+
 export enum ErrorCodeEnum {
     // auth/signup
     EMAIL_ALREADY_EXIST = '0001',
@@ -47,6 +48,8 @@ export enum ErrorCodeEnum {
     FOLLOW_ALREADY_ERROR = "0401",
     FOLLOWER_NOT_FOUND = "0402",
     FOLLOWER_ALREADY_EXIST = "0403",
+    //user
+    PROFILE_CHANGE_ERROR = "0410",
 
     // letter
     SEND_LETTER_ERROR = "0500",

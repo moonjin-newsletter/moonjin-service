@@ -19,6 +19,7 @@ import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "./ser
 import {EMPTY_LIST_INPUT} from "./dev";
 import {LETTER_ALREADY_READ, LETTER_NOT_FOUND, FORBIDDEN_FOR_LETTER, SEND_LETTER_ERROR} from "./letter";
 import {FILE_EXTENTION_ERROR, FILE_UPLOAD_ERROR} from "./file";
+import {PROFILE_CHANGE_ERROR} from "./user/user.error";
 
 export const ExceptionList= {
     EMAIL_ALREADY_EXIST: new Exception(typia.random<EMAIL_ALREADY_EXIST>()),
@@ -64,6 +65,7 @@ export const ExceptionList= {
     FOLLOW_ALREADY_ERROR : new Exception(typia.random<FOLLOW_ALREADY_ERROR>()),
     FOLLOWER_NOT_FOUND : new Exception(typia.random<FOLLOWER_NOT_FOUND>()),
     FOLLOWER_ALREADY_EXIST : new Exception(typia.random<FOLLOWER_ALREADY_EXIST>()),
+    PROFILE_CHANGE_ERROR : new Exception(typia.random<PROFILE_CHANGE_ERROR>()),
 
     // Letter
     SEND_LETTER_ERROR : new Exception(typia.random<SEND_LETTER_ERROR>()),

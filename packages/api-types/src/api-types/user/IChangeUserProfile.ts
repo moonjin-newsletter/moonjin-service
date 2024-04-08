@@ -1,3 +1,6 @@
+
 export interface IChangeUserProfile {
-    nickname: string;
+    nickname?: string;
+    image?: string;
+    description?: string;
 }
