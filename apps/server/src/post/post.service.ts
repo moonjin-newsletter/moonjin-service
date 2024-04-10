@@ -11,6 +11,7 @@ import {ReleasedPostDto, UnreleasedPostWithSeriesDto} from "./dto";
 import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
+import {PaginationOptionsDto} from "../common/dto";
 
 @Injectable()
 export class PostService {
@@ -298,12 +299,13 @@ export class PostService {
     /**
      * @summary 해당 시리즈의 발표된 글 목록 가져오기
      * @param seriesId
+     * @param paginationOptions
      * @return ReleasedPostDto[]
      */
-    async getReleasedPostListBySeriesId(seriesId : number): Promise<NewsletterDto[]> {
+    async getReleasedPostListBySeriesId(seriesId? : number, paginationOptions? : PaginationOptionsDto): Promise<NewsletterDto[]> {
         const postList : PostWithSeriesAndWriterUser[] = await this.prismaService.post.findMany({
             where : {
-                seriesId,
+                seriesId : seriesId?? undefined,
                 releasedAt : {
                     not : null
                 },
@@ -321,8 +323,14 @@ export class PostService {
             relationLoadStrategy: 'join',
             orderBy : {
                 releasedAt : 'desc'
-            }
+            },
+            skip: paginationOptions?.skip,
+            take: paginationOptions?.take,
+            cursor: paginationOptions?.cursor ? {
+                id : paginationOptions.cursor
+            } : undefined
         })
+
         return PostDtoMapper.PostWithSeriesAndWriterUserListToNewsLetterDtoList(postList);
     }
 }
