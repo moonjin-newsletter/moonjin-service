@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 const categoryList = ["수필", "에세이", "소설", "시", "자유"];
 
 export default function Page() {
-  const [coverImage, setCoverImage] = useState(null);
+  const [coverImage, setCoverImage] = useState<any>(null);
   const { watch, register, setValue, handleSubmit } = useForm<any>({
     defaultValues: {
       category: categoryList[0],
@@ -129,16 +129,18 @@ export default function Page() {
 
         <input
           onChange={async (e) => {
-            try {
-              const fileUrl = await fileUpload(
-                e.target.files[0],
-                FileTypeEnum.COVER_IMAGE,
-              );
-              setCoverImage(URL.createObjectURL(e.target.files[0]));
-              setValue("cover", fileUrl);
-            } catch (e) {
-              toast.error("이미지 업로드 실패");
-              setCoverImage(null);
+            if (e?.target?.files) {
+              try {
+                const fileUrl = await fileUpload(
+                  e.target.files[0],
+                  FileTypeEnum.COVER_IMAGE,
+                );
+                setCoverImage(URL.createObjectURL(e.target.files[0]));
+                setValue("cover", fileUrl);
+              } catch (e) {
+                toast.error("이미지 업로드 실패");
+                setCoverImage(null);
+              }
             }
           }}
           id="cover"

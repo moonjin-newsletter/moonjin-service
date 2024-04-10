@@ -20,11 +20,10 @@ export default async function RootLayout({
 
   if (!userInfo) notFound();
 
-  const type = match<number, userType>(userInfo.data.user.role ?? 0)
-    .returnType<userType>()
+  const type = match(userInfo.data.user.role ?? 0)
     .with(0, () => "독자")
     .with(1, () => "작가")
-    .otherwise(() => "");
+    .otherwise(() => "") as userType;
 
   return (
     <div className="flex   w-full items-center flex-col bg-white p-0 outline-none ">

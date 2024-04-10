@@ -34,7 +34,7 @@ export default function WriterCard({
       />
       <div className="flex flex-col ml-3">
         <h3 className="font-semibold">{writerInfo.user.nickname}</h3>
-        <span>{writerInfo.writerInfo.description}</span>
+        <span>{writerInfo.user.description}</span>
       </div>
       <div className="flex flex-col ml-auto gap-y-1">
         <div className="flex text-sm text-grayscale-500">
