@@ -16,6 +16,10 @@ import {FOLLOWER_NOT_FOUND} from "../response/error/user";
 import {IGetPostBySeriesId} from "./api-types/IGetPostBySeriesId";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
 import {UserService} from "../user/user.service";
+import CommonDtoMapper from "../common/commonDtoMapper";
+import {IPaginationQuery} from "../common/api-types/IPaginationQuery";
+import {FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
+import {NewsletterListWithPaginationDto} from "./dto";
 
 
 @Controller('post')
@@ -165,9 +169,39 @@ export class PostController {
      */
     @TypedRoute.Get()
     @UseGuards(UserAuthGuard)
-    async getPostListInSeries(@User() user:UserAuthDto, @TypedQuery() series : IGetPostBySeriesId) : Promise<Try<NewsletterDto[]>>{
-        await this.seriesService.assertUserCanAccessToSeries(series.seriesId, user.id);
+    async getPostListInSeries(@User() user:UserAuthDto, @TypedQuery() series : IGetPostBySeriesId) : Promise<TryCatch<
+        NewsletterDto[], SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES>>{
+        if(series.seriesId)
+            await this.seriesService.assertUserCanAccessToSeries(series.seriesId, user.id);
         const postList = await this.postService.getReleasedPostListBySeriesId(series.seriesId);
         return createResponseForm(postList);
+    }
+
+    /**
+     * @summary 모든 글 목록 가져오기
+     * @param user
+     * @param series
+     * @returns NewsletterDto[]
+     * @throws SERIES_NOT_FOUND
+     * @throws FORBIDDEN_FOR_SERIES
+     */
+    @TypedRoute.Get('page')
+    @UseGuards(UserAuthGuard)
+    async getAllReleasedPosts(@User() user:UserAuthDto, @TypedQuery() series : IGetPostBySeriesId & IPaginationQuery) : Promise<TryCatch<
+        NewsletterListWithPaginationDto ,SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES>>{
+        const {seriesId, ...paginationOption} = series;
+        const paginationOptionDto = CommonDtoMapper.IPaginationQueryToPaginationOptionsDto(paginationOption);
+        if(seriesId) {
+            await this.seriesService.assertUserCanAccessToSeries(seriesId, user.id);
+        }
+        const postList = await this.postService.getReleasedPostListBySeriesId(seriesId, paginationOptionDto);
+        const nextUrl = postList.length > 0 ? CommonDtoMapper.generateNextPaginationUrl(paginationOptionDto.take, postList[postList.length - 1].post.id) : "";
+        return createResponseForm({
+            newsletters : postList,
+            paginationMetaData :{
+                nextUrl,
+                totalCount : postList.length
+            }
+        });
     }
 }

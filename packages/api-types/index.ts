@@ -17,6 +17,7 @@ export * from './src/api-types/post/index';
 export * from './src/api-types/series/index';
 export * from './src/api-types/user/index';
 export * from './src/api-types/file/index';
+export * from './src/api-types/common/index';
 
 /// dto
 export * from './src/api-types/auth/dto/index';
@@ -25,3 +26,4 @@ export * from './src/api-types/post/dto/index';
 export * from './src/api-types/series/dto/index';
 export * from './src/api-types/user/dto/index';
 export * from './src/api-types/file/dto/index';
+export * from './src/api-types/common/dto/index';
