@@ -464,8 +464,10 @@ export class UserService {
      */
     async changeWriterProfile(userId: number, newWriterProfile: ChangeWriterProfileDto): Promise<UserDto> {
         if(Object.keys(newWriterProfile).length === 0) throw ExceptionList.PROFILE_CHANGE_ERROR;
-        const {moonjinId, ...newUserProfile} = newWriterProfile;
-        if(!moonjinId) return this.changeUserProfile(userId, newUserProfile);
+
+        const {moonjinId, description,...newUserProfile} = newWriterProfile;
+        const {nickname,image, ...newWriterInfoProfile} = newWriterProfile;
+        if(!moonjinId && !description) return this.changeUserProfile(userId, newUserProfile);
 
         try{
             const writerInfoWithUser : WriterInfoWithUser = await this.prismaService.writerInfo.update({
@@ -473,7 +475,7 @@ export class UserService {
                     userId
                 },
                 data: {
-                    moonjinId,
+                    ...newWriterInfoProfile,
                     user: {
                         update: {
                             ...newUserProfile
