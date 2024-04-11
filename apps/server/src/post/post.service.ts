@@ -1,5 +1,13 @@
 import {Injectable} from '@nestjs/common';
-import {CreatePostDto, NewsletterDto, PostDto, StampedPostDto} from "./dto";
+import {
+    CreatePostContentDto,
+    CreatePostDto,
+    NewsletterDto,
+    PostDto,
+    ReleasedPostDto,
+    StampedPostDto,
+    UnreleasedPostWithSeriesDto
+} from "./dto";
 import {PrismaService} from "../prisma/prisma.service";
 import PostDtoMapper from "./postDtoMapper";
 import {Follow, Post, Stamp} from "@prisma/client";
@@ -7,7 +15,6 @@ import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
 import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
 import {AuthValidationService} from "../auth/auth.validation.service";
-import {ReleasedPostDto, UnreleasedPostWithSeriesDto} from "./dto";
 import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
@@ -332,5 +339,19 @@ export class PostService {
         })
 
         return PostDtoMapper.PostWithSeriesAndWriterUserListToNewsLetterDtoList(postList);
+    }
+
+    async updatePostContent(postContentData : CreatePostContentDto){
+        try{
+            return await this.prismaService.postContent.create({
+                data: {
+                    ...postContentData,
+                    createdAt : this.utilService.getCurrentDateInKorea(),
+                }
+            });
+        }catch (error){
+            console.log(error);
+            throw ExceptionList.CREATE_POST_ERROR;
+        }
     }
 }

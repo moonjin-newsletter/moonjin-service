@@ -6,7 +6,7 @@ import {FollowingWriterInfoWithUser} from "./prisma/followingWriterInfoWithUser.
 
 class UserDtoMapperClass {
     UserToUserAuthDto(user: User): UserAuthDto {
-        const {deleted, createdAt, password, description, image,...userData} = user;
+        const {deleted, createdAt, password, image,...userData} = user;
         return userData;
     }
 
@@ -50,7 +50,7 @@ class UserDtoMapperClass {
     }
 
     UserDtoToUserAuthDto(userDto: UserDto): UserAuthDto {
-        const {image,description,createdAt, ...userData} = userDto;
+        const {image,createdAt, ...userData} = userDto;
         return userData;
     }
 

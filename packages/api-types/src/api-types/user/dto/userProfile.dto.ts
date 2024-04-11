@@ -5,6 +5,5 @@ export interface UserProfileDto {
     nickname: string;
     role: UserRoleEnum;
     image : string;
-    description : string;
     createdAt : Date;
 }

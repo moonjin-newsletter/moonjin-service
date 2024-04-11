@@ -19,7 +19,7 @@ import UserDtoMapper from "./userDtoMapper";
 import {WriterInfoWithUser} from "./prisma/writerInfoWithUser.prisma.type";
 import * as process from "process";
 import {FollowingWriterInfoWithUser} from "./prisma/followingWriterInfoWithUser.prisma.type";
-import {ChangeWriterProfileDto} from "./dto/changeWriterProfile.dto";
+import {ChangeWriterProfileDto} from "./dto";
 
 @Injectable()
 export class UserService {
@@ -150,21 +150,15 @@ export class UserService {
      */
     async getWriterInfoListByUserIdList(userIdList : number[]) : Promise<WriterInfoDto[]> {
         if (userIdList.length === 0) throw ExceptionList.EMPTY_LIST_INPUT;
-        return this.prismaService.writerInfo.findMany({
+        const writerInfoList = await this.prismaService.writerInfo.findMany({
             where: {
                 userId: {
                     in: userIdList
                 },
                 deleted: false,
-            },
-            select: {
-                userId: true,
-                moonjinId: true,
-                newsletterCount: true,
-                seriesCount: true,
-                followerCount: true,
             }
         });
+        return writerInfoList.map(writerInfo => UserDtoMapper.WriterInfoToWriterInfoDto(writerInfo));
     }
 
     /**

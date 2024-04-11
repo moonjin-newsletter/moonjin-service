@@ -10,15 +10,14 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  email       String   @unique @db.VarChar(32)
-  password    String?  @db.VarChar(64)
-  nickname    String   @unique @db.VarChar(16)
-  createdAt   DateTime
-  image       String   @db.VarChar(128)
-  description String   @default("") @db.VarChar(256)
-  role        Int      @default(0)
-  deleted     Boolean  @default(false)
+  id        Int      @id @default(autoincrement())
+  email     String   @unique @db.VarChar(32)
+  password  String?  @db.VarChar(64)
+  nickname  String   @unique @db.VarChar(16)
+  createdAt DateTime
+  image     String   @db.VarChar(128)
+  role      Int      @default(0)
+  deleted   Boolean  @default(false)
 
   oauth      Oauth?
   writerInfo WriterInfo?
@@ -39,6 +38,7 @@ model Oauth {
 model WriterInfo {
   userId          Int      @id @unique
   moonjinId       String   @unique @db.VarChar(32)
+  description     String   @default("") @db.VarChar(256)
   createdAt       DateTime
   newsletterCount Int      @default(0)
   seriesCount     Int      @default(0)
@@ -81,7 +81,6 @@ model Post {
   id            Int       @id @default(autoincrement())
   title         String    @db.VarChar(32)
   subtitle      String    @default("") @db.VarChar(128)
-  content       String    @db.Text
   writerId      Int
   category      String    @db.VarChar(16)
   cover         String    @db.VarChar(128)
@@ -93,10 +92,11 @@ model Post {
   status        Boolean   @default(true)
   deleted       Boolean   @default(false)
 
-  writerInfo WriterInfo   @relation(fields: [writerId], references: [userId])
-  newsletter Newsletter[]
-  series     Series?      @relation(fields: [seriesId], references: [id])
-  stamp      Stamp[]
+  writerInfo  WriterInfo    @relation(fields: [writerId], references: [userId])
+  newsletter  Newsletter[]
+  series      Series?       @relation(fields: [seriesId], references: [id])
+  stamp       Stamp[]
+  PostContent PostContent[]
 
   @@index([writerId])
   @@index([seriesId])
@@ -163,4 +163,15 @@ model Letter {
 
   @@index([senderId])
   @@index([receiverId])
+}
+
+model PostContent {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  content   Json
+  createdAt DateTime
+
+  post Post @relation(fields: [postId], references: [id])
+
+  @@index([postId])
 }

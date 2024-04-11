@@ -21,6 +21,7 @@ import {FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
 import {NewsletterListWithPaginationDto} from "./dto";
 import {GetPagination} from "../common/pagination/decorator/GetPagination.decorator";
 import {PaginationOptionsDto} from "../common/pagination/dto";
+import {ICreatePostContent} from "./api-types/ICreatePostContent";
 
 
 @Controller('post')
@@ -204,5 +205,14 @@ export class PostController {
                 totalCount : postList.length
             }
         });
+    }
+
+    @TypedRoute.Post("content")
+    @UseGuards(WriterAuthGuard)
+    async updatePostContent(@TypedBody() postData : ICreatePostContent, @User() user:UserAuthDto)
+    {
+        await this.postService.assertWriterOfPost(postData.postId,user.id);
+        const postContent = await this.postService.updatePostContent(postData);
+        return createResponseForm(postContent)
     }
 }
