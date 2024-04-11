@@ -10,7 +10,7 @@ async function bootstrap() {
   swaggerBoot(app);
   app.use(cookieParser());
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: ['http://localhost:3000', 'http://13.125.224.11:3000'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

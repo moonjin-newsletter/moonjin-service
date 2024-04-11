@@ -42,8 +42,8 @@ rm "$destination_folder/*"
 # 원본 폴더 안의 모든 파일과 폴더를 대상 폴더로 복사
 rsync -av --progress "$source_folder/" "$destination_folder/"
 
-source_folder="src/common/dto"
-destination_folder="../../packages/api-types/src/api-types/common/dto"
+source_folder="src/common/pagination/dto"
+destination_folder="../../packages/api-types/src/api-types/common/pagination/dto"
 rm "$destination_folder/*"
 # 원본 폴더 안의 모든 파일과 폴더를 대상 폴더로 복사
 rsync -av --progress "$source_folder/" "$destination_folder/"

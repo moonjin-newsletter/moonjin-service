@@ -1,5 +1,5 @@
 import {createParamDecorator, ExecutionContext, InternalServerErrorException} from "@nestjs/common";
-import {UserAuthDto} from "../dto/userAuthDto";
+import {UserAuthDto} from "../dto";
 
 
 export const User = createParamDecorator((data : keyof UserAuthDto | undefined, context: ExecutionContext)=> {

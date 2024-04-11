@@ -16,10 +16,11 @@ import {FOLLOWER_NOT_FOUND} from "../response/error/user";
 import {IGetPostBySeriesId} from "./api-types/IGetPostBySeriesId";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
 import {UserService} from "../user/user.service";
-import CommonDtoMapper from "../common/commonDtoMapper";
-import {IPaginationQuery} from "../common/api-types/IPaginationQuery";
+import {generateNextPaginationUrl} from "../common";
 import {FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
 import {NewsletterListWithPaginationDto} from "./dto";
+import {GetPagination} from "../common/pagination/decorator/GetPagination.decorator";
+import {PaginationOptionsDto} from "../common/pagination/dto";
 
 
 @Controller('post')
@@ -27,7 +28,7 @@ export class PostController {
     constructor(
         private readonly postService: PostService,
         private readonly seriesService: SeriesService,
-        private readonly userSerivce:UserService
+        private readonly userService:UserService
     ) {}
 
     /**
@@ -63,7 +64,7 @@ export class PostController {
     : Promise<TryCatch<{sentCount: number}, POST_NOT_FOUND | FORBIDDEN_FOR_POST | FOLLOWER_NOT_FOUND>>{
         await this.postService.assertWriterOfPost(postId,user.id);
         const sentCount = await this.postService.sendNewsletter(postId);
-        await this.userSerivce.synchronizeNewsLetter(user.id, true);
+        await this.userService.synchronizeNewsLetter(user.id, true);
         return createResponseForm({
             sentCount : sentCount
         })
@@ -153,7 +154,7 @@ export class PostController {
         POST_NOT_FOUND | FORBIDDEN_FOR_POST>>
     {
         await this.postService.deletePost(postId,user.id);
-        await this.userSerivce.synchronizeNewsLetter(user.id, false);
+        await this.userService.synchronizeNewsLetter(user.id, false);
         return createResponseForm({
             message : "해당 글을 삭제했습니다."
         })
@@ -180,6 +181,7 @@ export class PostController {
     /**
      * @summary 모든 글 목록 가져오기
      * @param user
+     * @param paginationOption
      * @param series
      * @returns NewsletterDto[]
      * @throws SERIES_NOT_FOUND
@@ -187,19 +189,18 @@ export class PostController {
      */
     @TypedRoute.Get('page')
     @UseGuards(UserAuthGuard)
-    async getAllReleasedPosts(@User() user:UserAuthDto, @TypedQuery() series : IGetPostBySeriesId & IPaginationQuery) : Promise<TryCatch<
+    async getAllReleasedPosts(@User() user:UserAuthDto, @GetPagination() paginationOption : PaginationOptionsDto, @TypedQuery() series : IGetPostBySeriesId) : Promise<TryCatch<
         NewsletterListWithPaginationDto ,SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES>>{
-        const {seriesId, ...paginationOption} = series;
-        const paginationOptionDto = CommonDtoMapper.IPaginationQueryToPaginationOptionsDto(paginationOption);
-        if(seriesId) {
-            await this.seriesService.assertUserCanAccessToSeries(seriesId, user.id);
+        if(series.seriesId) {
+            await this.seriesService.assertUserCanAccessToSeries(series.seriesId, user.id);
         }
-        const postList = await this.postService.getReleasedPostListBySeriesId(seriesId, paginationOptionDto);
-        const nextUrl = postList.length > 0 ? CommonDtoMapper.generateNextPaginationUrl(paginationOptionDto.take, postList[postList.length - 1].post.id) : "";
+        const postList = await this.postService.getReleasedPostListBySeriesId(series.seriesId, paginationOption);
+        const nextUrl = postList.length > 0 ? generateNextPaginationUrl(paginationOption.take, postList[postList.length - 1].post.id) : "";
         return createResponseForm({
             newsletters : postList,
             paginationMetaData :{
                 nextUrl,
+                isLastPage : postList.length < paginationOption.take,
                 totalCount : postList.length
             }
         });

@@ -11,7 +11,7 @@ import {ReleasedPostDto, UnreleasedPostWithSeriesDto} from "./dto";
 import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
-import {PaginationOptionsDto} from "../common/dto";
+import {PaginationOptionsDto} from "../common/pagination/dto";
 
 @Injectable()
 export class PostService {

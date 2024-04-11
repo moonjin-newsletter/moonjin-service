@@ -1,6 +1,6 @@
 import {CanActivate, ExecutionContext, Injectable} from "@nestjs/common";
 import {ExceptionList} from "../../response/error/errorInstances";
-import {UserAuthDto} from "../dto/userAuthDto";
+import {UserAuthDto} from "../dto";
 import {AuthService} from "../auth.service";
 
 /**
