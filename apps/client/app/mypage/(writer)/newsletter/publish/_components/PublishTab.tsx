@@ -17,20 +17,41 @@ export default function PublishTab({
 }) {
   return (
     <Tab.Group>
-      <Tab.List className="w-full flex gap-x-4">
-        {["전체 뉴스레터", "시리즈"].map((category, index) => (
-          <Tab key={index} as={Fragment}>
-            {({ selected }) => (
+      <Tab.List className="w-full h-fit flex items-center gap-x-4">
+        <Tab as={Fragment}>
+          {({ selected }) => (
+            <button
+              className={`${
+                selected ? "border-b-2 font-semibold" : null
+              } border-primary whitespace-nowrap py-1 outline-none`}
+            >
+              전체 뉴스레터
+            </button>
+          )}
+        </Tab>
+        <Tab as={Fragment}>
+          {({ selected }) => (
+            <div className="flex w-full items-center  outline-none">
               <button
                 className={`${
                   selected ? "border-b-2 font-semibold" : null
                 } border-primary py-1 outline-none`}
               >
-                {category}
+                시리즈
               </button>
-            )}
-          </Tab>
-        ))}
+              {selected && (
+                <div className="ml-auto">
+                  <Link
+                    href="/mypage/newsletter/series/new"
+                    className={` py-1.5 px-4 bg-primary text-white text-sm rounded`}
+                  >
+                    시리즈 만들기
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+        </Tab>
       </Tab.List>
       <Tab.Panels className="w-full mt-4">
         <Tab.Panel>
@@ -58,13 +79,7 @@ export default function PublishTab({
 function SeriesLayout({ seriesList }: { seriesList: SeriesDto[] }) {
   return (
     <section className="w-full  gap-x-2.5 flex flex-col">
-      <Link
-        href="/mypage/newsletter/series/new"
-        className={` ml-auto py-1.5 px-4 bg-primary text-white text-sm rounded`}
-      >
-        시리즈 만들기
-      </Link>
-      <div className="w-full mt-8 grid grid-cols-3 grid-flow-row">
+      <div className="w-full mt-4 grid grid-cols-3 grid-flow-row">
         {seriesList.map((series, idx) => (
           <SeriesCardForWritter seriesInfo={series} key={idx} />
         ))}

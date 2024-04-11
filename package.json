@@ -12,6 +12,7 @@
     "build:packages": "yarn build --filter=@moonjin/api-types"
   },
   "devDependencies": {
+    "@types/add": "^2",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "dotenv-cli": "^7.3.0",
@@ -26,5 +27,11 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@editorjs/editorjs": "^2.29.1",
+    "add": "^2.0.6",
+    "client": "workspace:^",
+    "workspace": "^0.0.1-preview.1"
+  }
 }
