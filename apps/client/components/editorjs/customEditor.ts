@@ -1,6 +1,7 @@
 import EditorJS from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import ImageTool from "@editorjs/image";
+import Underline from "@editorjs/underline";
 import { fileUpload } from "../../lib/file/fileUpload";
 import { FileTypeEnum } from "@moonjin/api-types";
 
@@ -11,6 +12,7 @@ export const customEditorJS = (data?: any[]) =>
     readOnly: false,
     tools: {
       header: Header,
+      underline: Underline,
       image: {
         class: ImageTool,
         config: {
