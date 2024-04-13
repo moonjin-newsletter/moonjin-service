@@ -136,7 +136,7 @@ export default function Page() {
                   FileTypeEnum.COVER_IMAGE,
                 );
                 setCoverImage(URL.createObjectURL(e.target.files[0]));
-                setValue("cover", fileUrl);
+                setValue("cover", fileUrl?.file);
               } catch (e) {
                 toast.error("이미지 업로드 실패");
                 setCoverImage(null);
