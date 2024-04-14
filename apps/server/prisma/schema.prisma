@@ -169,7 +169,7 @@ model Letter {
 model PostContent {
   id        Int      @id @default(autoincrement())
   postId    Int
-  content   Json
+  content   String   @db.Text
   createdAt DateTime
 
   post Post @relation(fields: [postId], references: [id])

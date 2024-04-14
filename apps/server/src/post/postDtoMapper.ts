@@ -99,7 +99,7 @@ class PostDtoMapperClass {
     PostContentToPostContentDto(postContent: PostContent): PostContentDto {
         return {
             postId: postContent.postId,
-            content: postContent.content,
+            content: JSON.parse(postContent.content),
             createdAt: postContent.createdAt
         }
     }

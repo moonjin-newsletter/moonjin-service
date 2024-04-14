@@ -1,6 +1,4 @@
-import {JsonArray} from "@prisma/client/runtime/library";
-
-export interface EditorBlockDto extends JsonArray{
+export interface EditorBlockDto {
     id : string;
     type: string;
     data: object;

@@ -347,12 +347,13 @@ export class PostService {
         try{
             const postContent = await this.prismaService.postContent.create({
                 data: {
-                    ...postContentData,
+                    postId : postContentData.postId,
+                    content : JSON.stringify(postContentData.content),
                     createdAt : this.utilService.getCurrentDateInKorea(),
                 }
             });
             await this.updatePostPreview(postContentData.postId,convertEditorJsonToPostPreview(postContentData.content));
-            return postContent;
+            return PostDtoMapper.PostContentToPostContentDto(postContent);
         }catch (error){
             console.log(error);
             throw ExceptionList.CREATE_POST_ERROR;

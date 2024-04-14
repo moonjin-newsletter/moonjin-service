@@ -38,7 +38,7 @@ export interface ImageBlockDto extends EditorBlockDto {
 }
 
 
-export interface CheckListBoxDto {
+export interface CheckListBoxDto{
     text : string,
     checked : boolean
 }
