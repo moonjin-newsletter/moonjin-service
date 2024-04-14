@@ -22,13 +22,7 @@ module.exports = {
     extend: {
       fontFamily: {
         libre: ["var(--font-libre)"],
-        serif: [
-          "var(--font-noto-serif)",
-          "Cambria",
-          "Times New Roman",
-          "Times",
-          "serif",
-        ],
+        serif: ["Noto Serif KR", "serif"],
       },
       colors: {
         transparent: "transparent",

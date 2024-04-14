@@ -22,7 +22,7 @@ export async function fileUpload(file: File, fileType: FileTypeEnum) {
     });
     console.log("업로드 성공");
 
-    return fileUrl?.data?.file;
+    return fileUrl?.data;
   } catch (err) {
     console.log(err);
   }

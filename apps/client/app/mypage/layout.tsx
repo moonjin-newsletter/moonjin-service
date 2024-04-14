@@ -9,7 +9,7 @@ import { match } from "ts-pattern";
 
 export type userType = "작가" | "독자";
 
-export default async function RootLayout({
+export default async function MypageLayout({
   children,
 }: {
   children: ReactNode;
@@ -30,7 +30,7 @@ export default async function RootLayout({
 
   return (
     <div className="flex   w-full items-center flex-col bg-white p-0 outline-none ">
-      <section className="h-52 w-full bg-[#F7F7F7]" />
+      <section className="h-52 w-full bg-grayscale-200" />
       <Profile type={type} userInfo={userInfo.data} />
       <section className="max-w-[1006px] w-full mt-14 flex gap-x-10 pb-12 ">
         <Sidebar type={type} />

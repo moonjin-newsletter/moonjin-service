@@ -44,6 +44,11 @@ export default function RootLayout({
           as="style"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
         />
+        <link
+          href="https://cdn.rawgit.com/kattergil/NotoSerifKR-Web/5e08423b/stylesheet/NotoSerif-Web.css"
+          rel="stylesheet"
+          type="text/css"
+        />
       </head>
       <body
         className={`flex min-h-screen flex-col w-full h-full min-w-[1006px] `}
@@ -51,7 +56,7 @@ export default function RootLayout({
         <ClientProvider>
           <Header />
           {children}
-          <Footer />
+          {/*<Footer />*/}
         </ClientProvider>
       </body>
     </html>

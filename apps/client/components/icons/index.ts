@@ -9,6 +9,8 @@ import User from "./user.svg";
 import LetterIn from "./letter_in.svg";
 import LetterOut from "./letter_out.svg";
 import Empty from "./empty.svg";
+import PaperPlaneTilt from "./paper-plane-tilt.svg";
+import Save from "./save.svg";
 
 export {
   Kakao,
@@ -22,4 +24,6 @@ export {
   LetterOut,
   LetterIn,
   Empty,
+  PaperPlaneTilt,
+  Save,
 };
