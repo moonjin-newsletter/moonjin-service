@@ -37,7 +37,7 @@ export function UnreleasedNewsletterCard({
           <div className="max-w-[340px]">
             <div className="mt-2 font-medium">{value.post.title}</div>
             <span className="line-clamp-2 text-sm text-grayscale-500">
-              {value.post.content}
+              {value.post.preview}
             </span>
           </div>
           <div className="ml-auto text-sm text-grayscale-500">

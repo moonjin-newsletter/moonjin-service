@@ -5,14 +5,12 @@ import { customEditorJS } from "../../../components/editorjs/customEditor";
 import toast from "react-hot-toast";
 import { useOverlay } from "@toss/use-overlay";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import EditorJS from "@editorjs/editorjs";
-import dynamic, { LoaderComponent } from "next/dynamic";
 
-const editor = dynamic<LoaderComponent<EditorJS | LoaderComponent<any>>>(
-  import("../../../components/editorjs/customEditor")
-);
 export default function Page() {
+  const [editor, setEditor] = useState<EditorJS | null>(null);
+
   const overlay = useOverlay();
 
   function onClickSave() {
@@ -54,6 +52,18 @@ export default function Page() {
   //     window.removeEventListener("beforeunload", preventClose);
   //   };
   // }, []);
+
+  useEffect(() => {
+    const editorInstance = customEditorJS();
+    setEditor(editorInstance);
+
+    return () => {
+      // 컴포넌트가 unmount 될 때 EditorJS 인스턴스를 정리합니다.
+      if (editorInstance) {
+        editorInstance.destroy();
+      }
+    };
+  }, []);
 
   return (
     <main className=" w-full    flex flex-col items-center">

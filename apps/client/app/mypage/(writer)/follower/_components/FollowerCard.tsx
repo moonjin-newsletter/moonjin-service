@@ -35,7 +35,6 @@ export function FollowerCard({ follower }: { follower: FollowerDto }) {
       />
       <div className="flex flex-col ml-3">
         <h3 className="font-semibold">{follower.user.nickname}</h3>
-        <span>{follower.user.description}</span>
       </div>
       <div className="ml-auto flex items-center gap-x-2.5">
         <p className="text-grayscale-500 ml-auto text-sm gap-x-2.5">

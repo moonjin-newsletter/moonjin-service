@@ -37,7 +37,7 @@ export default function PublishedSeriesCard({
           <div className="max-w-[340px]">
             <div className="mt-2 font-medium">{letter.post.title}</div>
             <span className="line-clamp-2 text-sm text-grayscale-500">
-              {letter.post.content}
+              {letter.post.preview}
             </span>
           </div>
           <div className="ml-auto text-sm text-grayscale-500">

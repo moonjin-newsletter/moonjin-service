@@ -15,8 +15,10 @@ import Image from "next/image";
 import Link from "next/link";
 import * as Io from "react-icons/io";
 import useSWR from "swr";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
   const { data: userInfo } =
     useSWR<ResponseForm<{ user: UserDto } | WriterDto>>("user");
   const {
@@ -29,18 +31,8 @@ export default function Page() {
   } = useForm<any>();
 
   async function onClickSignup(data: any) {
-    if (data.password !== data.passwordCheck)
-      return toast.error("비밀번호를 확인해주세요");
-
-    delete data["passwordCheck"];
-
-    const auth = {
-      ...data,
-      role: parseInt(data.role),
-    };
-
     await csr
-      .post("auth/signup", { json: auth })
+      .post("user/writers", { json: data })
       .then((res) => {
         alert("메일을 확인해주세요!");
       })
@@ -104,16 +96,18 @@ export default function Page() {
               {errors.nickname?.message && (
                 <span className="text-xs mt-2 text-rose-500 ">{`${errors.nickname?.message}`}</span>
               )}
-              <label className="mt-4" htmlFor="email">
+              <label className="mt-4" htmlFor="moonjinId">
                 문진 이메일
               </label>
               <div className="flex items-center gap-x-2.5">
                 <input
-                  id="email"
+                  id="moonjinId"
                   type="text"
                   placeholder="이메일"
                   className="mt-2 w-full max-w-[180px] h-10 border border-grayscale-300 rounded-lg px-2 placeholder:text-sm"
-                  {...register("email", { required: "이메일을 입력해주세요" })}
+                  {...register("moonjinId", {
+                    required: "이메일을 입력해주세요",
+                  })}
                 />
                 <span className="text-grayscale-500">@moonjin.site</span>
               </div>
