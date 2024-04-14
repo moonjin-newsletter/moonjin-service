@@ -4,36 +4,42 @@ import * as I from "components/icons";
 import { customEditorJS } from "../../../components/editorjs/customEditor";
 import toast from "react-hot-toast";
 import { useOverlay } from "@toss/use-overlay";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import EditorJS from "@editorjs/editorjs";
+import dynamic, { LoaderComponent } from "next/dynamic";
 
+const editor = dynamic<LoaderComponent<EditorJS | LoaderComponent<any>>>(
+  import("../../../components/editorjs/customEditor")
+);
 export default function Page() {
-  const editor = customEditorJS();
   const overlay = useOverlay();
 
   function onClickSave() {
-    editor
-      .save()
-      .then((outputData) => {
-        console.log("Article data: ", outputData);
-        toast.success("글을 저장했습니다");
-      })
-      .catch((error) => {
-        console.log("Saving failed: ", error);
-      });
+    if (editor)
+      editor
+        .save()
+        .then((outputData) => {
+          console.log("Article data: ", outputData);
+          toast.success("글을 저장했습니다");
+        })
+        .catch((error) => {
+          console.log("Saving failed: ", error);
+        });
   }
 
   function onClickSubmit() {
-    editor
-      .save()
-      .then((outputData) => {
-        overlay.open(({ isOpen }) => {
-          return <OverlaySetting overlay={overlay} outputData={outputData} />;
+    if (editor)
+      editor
+        .save()
+        .then((outputData) => {
+          overlay.open(({ isOpen }) => {
+            return <OverlaySetting overlay={overlay} outputData={outputData} />;
+          });
+        })
+        .catch((error) => {
+          console.log("Saving failed: ", error);
         });
-      })
-      .catch((error) => {
-        console.log("Saving failed: ", error);
-      });
   }
 
   // const preventClose = (e: BeforeUnloadEvent) => {
