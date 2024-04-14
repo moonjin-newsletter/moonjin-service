@@ -3,6 +3,7 @@ export interface PostDto {
     title: string;
     category: string;
     writerId: number;
+    preview: string;
     clicks: number;
     cover: string | null;
     seriesId : number;

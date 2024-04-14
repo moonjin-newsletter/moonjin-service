@@ -82,6 +82,7 @@ model Post {
   title         String    @db.VarChar(32)
   subtitle      String    @default("") @db.VarChar(128)
   writerId      Int
+  preview       String    @default("") @db.VarChar(512)
   category      String    @db.VarChar(16)
   cover         String    @db.VarChar(128)
   clicks        Int       @default(0)

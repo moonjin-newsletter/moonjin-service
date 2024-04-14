@@ -212,7 +212,7 @@ export class PostController {
     async updatePostContent(@TypedBody() postData : ICreatePostContent, @User() user:UserAuthDto)
     {
         await this.postService.assertWriterOfPost(postData.postId,user.id);
-        const postContent = await this.postService.updatePostContent(postData);
+        const postContent = await this.postService.uploadPostContent(postData);
         return createResponseForm(postContent)
     }
 }

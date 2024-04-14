@@ -1,1 +1,2 @@
-export * from './pagination/pagination.function'
+export * from './pagination'
+export * from './editor'
