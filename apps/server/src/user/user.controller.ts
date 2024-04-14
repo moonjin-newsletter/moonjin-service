@@ -7,12 +7,21 @@ import {UserService} from "./user.service";
 import {createResponseForm, ResponseForm, ResponseMessage} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {
-    EMAIL_ALREADY_EXIST, MOONJIN_EMAIL_ALREADY_EXIST,
+    EMAIL_ALREADY_EXIST,
+    MOONJIN_EMAIL_ALREADY_EXIST,
     NICKNAME_ALREADY_EXIST,
     USER_NOT_FOUND,
-    USER_NOT_WRITER
+    USER_NOT_WRITER,
+    WRITER_SIGNUP_ERROR
 } from "../response/error/auth";
-import {UserDto, WriterDto, FollowingWriterProfileDto, ExternalFollowerDto, AllFollowerDto, UserWithPasswordDto} from "./dto";
+import {
+    AllFollowerDto,
+    ExternalFollowerDto,
+    FollowingWriterProfileDto,
+    UserDto,
+    UserWithPasswordDto,
+    WriterDto
+} from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {FOLLOWER_ALREADY_EXIST, FOLLOWER_NOT_FOUND} from "../response/error/user";
 import {ICreateExternalFollower} from "./api-types/ICreateExternalFollower";
@@ -29,6 +38,9 @@ import * as process from "process";
 import {ErrorCodeEnum} from "../response/error/enum/errorCode.enum";
 import {IChangeWriterProfile} from "./api-types/IChangeWriterProfile";
 import {PROFILE_CHANGE_ERROR} from "../response/error/user/user.error";
+import {ICreateWriterInfo} from "./api-types/ICreateWriterInfo";
+import {ExceptionList} from "../response/error/errorInstances";
+import {UserRoleEnum} from "../auth/enum/userRole.enum";
 
 @Controller('user')
 export class UserController {
@@ -276,6 +288,39 @@ export class UserController {
         await this.userService.deleteFollower(followerId, writer.id);
         return createResponseForm({
             message: "팔로워 삭제에 성공했습니다."
+        })
+    }
+
+    /**
+     * @summary 회원, 작가로 등록 API
+     * @param user
+     * @param writerData
+     * @returns
+     * @throws MOONJIN_EMAIL_ALREADY_EXIST
+     * @throws WRITER_SIGNUP_ERROR
+     * @throws NICKNAME_ALREADY_EXIST
+     */
+    @TypedRoute.Post("writer")
+    @UseGuards(UserAuthGuard)
+    async becomeWriter(@User() user:UserAuthDto, @TypedBody() writerData : ICreateWriterInfo, @Res() res:Response): Promise<TryCatch<ResponseMessage,
+        MOONJIN_EMAIL_ALREADY_EXIST | WRITER_SIGNUP_ERROR | NICKNAME_ALREADY_EXIST>> {
+        const writerInfo = await this.authService.writerSignup({moonjinId:writerData.moonjinId,description:writerData.description, userId:user.id});
+        try{
+            if(writerData.nickname)
+                await this.userService.changeUserProfile(user.id, {nickname: writerData.nickname});
+            await this.userService.updateUserRole(user.id, UserRoleEnum.WRITER);
+        }catch (error){
+            await this.userService.deleteWriterById(writerInfo.userId);
+            throw ExceptionList.NICKNAME_ALREADY_EXIST;
+        }
+        const {accessToken, refreshToken} = this.authService.getAccessTokens({...user,nickname:writerData.nickname?? user.nickname,role:UserRoleEnum.WRITER});
+        res.cookie('accessToken',accessToken)
+        res.cookie('refreshToken', refreshToken)
+        res.send(createResponseForm({
+            message: "작가로 등록되었습니다."
+        }));
+        return createResponseForm({
+            message: "작가로 등록되었습니다."
         })
     }
 }

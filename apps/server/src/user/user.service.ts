@@ -586,4 +586,35 @@ export class UserService {
         }
     }
 
+    /**
+     * @summary 작가 정보 삭제하기
+     * @param writerId
+     * @returns void
+     */
+    async deleteWriterById(writerId: number): Promise<void> {
+        await this.prismaService.writerInfo.delete({
+            where: {
+                userId: writerId
+            },
+        })
+    }
+
+    /**
+     * @summary 유저 role 업데이트
+     * @param userId
+     * @param role
+     * @returns void
+     * @throws USER_NOT_FOUND
+     */
+    async updateUserRole(userId: number,role: UserRoleEnum): Promise<void> {
+        await this.prismaService.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                role
+            }
+        })
+    }
+
 }
