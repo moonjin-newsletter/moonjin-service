@@ -6,4 +6,3 @@ export * from './unreleasedPostWithSeriesDto'
 export * from './releasedPost.dto'
 export * from './newsletter.dto'
 export * from './newsletterListWithPaginationDto'
-export * from "./createPostContent.dto"

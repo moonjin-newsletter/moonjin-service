@@ -1,6 +1,5 @@
 import {Injectable} from '@nestjs/common';
 import {
-    CreatePostContentDto,
     CreatePostDto,
     NewsletterDto,
     PostDto,
@@ -19,8 +18,9 @@ import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithP
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {PaginationOptionsDto} from "../common/pagination/dto";
-import {convertEditorJsonToPostPreview} from "../common/editor/editorJs.function";
+import {convertEditorJsonToPostPreview} from "../common";
 import {PostContentDto} from "./dto/postContent.dto";
+import {CreatePostContentDto} from "./server-dto/createPostContent.dto";
 
 @Injectable()
 export class PostService {
@@ -347,12 +347,13 @@ export class PostService {
         try{
             const postContent = await this.prismaService.postContent.create({
                 data: {
-                    ...postContentData,
+                    postId : postContentData.postId,
+                    content : JSON.stringify(postContentData.content),
                     createdAt : this.utilService.getCurrentDateInKorea(),
                 }
             });
             await this.updatePostPreview(postContentData.postId,convertEditorJsonToPostPreview(postContentData.content));
-            return postContent;
+            return PostDtoMapper.PostContentToPostContentDto(postContent);
         }catch (error){
             console.log(error);
             throw ExceptionList.CREATE_POST_ERROR;
@@ -363,7 +364,7 @@ export class PostService {
      * @summary 해당 글의 내용 가져오기
      * @param postId
      * @return PostContentDto
-     * @throws POST_NOT_FOUND
+     * @throws POST_CONTENT_NOT_FOUND
      */
     async getPostContent(postId : number): Promise<PostContentDto>{
         const postContent = await this.prismaService.postContent.findFirst({
@@ -374,7 +375,7 @@ export class PostService {
                 createdAt : 'desc'
             }
         })
-        if(!postContent) throw ExceptionList.POST_NOT_FOUND;
+        if(!postContent) throw ExceptionList.POST_CONTENT_NOT_FOUND;
         return PostDtoMapper.PostContentToPostContentDto(postContent)
     }
 

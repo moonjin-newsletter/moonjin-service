@@ -13,7 +13,13 @@ import {
     USER_NOT_FOUND,
     USER_NOT_FOUND_IN_SOCIAL, SIGNUP_ROLE_ERROR, USER_NOT_WRITER, OAUTH_NOT_FOUND
 } from "./auth";
-import {CREATE_POST_ERROR, FORBIDDEN_FOR_POST, POST_NOT_FOUND, STAMP_ALREADY_EXIST} from "./post";
+import {
+    CREATE_POST_ERROR,
+    FORBIDDEN_FOR_POST,
+    POST_CONTENT_NOT_FOUND,
+    POST_NOT_FOUND,
+    STAMP_ALREADY_EXIST
+} from "./post";
 import {FOLLOW_ALREADY_ERROR, FOLLOW_MYSELF_ERROR, FOLLOWER_ALREADY_EXIST, FOLLOWER_NOT_FOUND} from "./user";
 import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "./series";
 import {EMPTY_LIST_INPUT} from "./dev";
@@ -52,6 +58,7 @@ export const ExceptionList= {
     CREATE_POST_ERROR : new Exception(typia.random<CREATE_POST_ERROR>()),
     POST_NOT_FOUND : new Exception(typia.random<POST_NOT_FOUND>()),
     FORBIDDEN_FOR_POST : new Exception(typia.random<FORBIDDEN_FOR_POST>()),
+    POST_CONTENT_NOT_FOUND : new Exception(typia.random<POST_CONTENT_NOT_FOUND>()),
     /// stamp
     STAMP_ALREADY_EXIST : new Exception(typia.random<STAMP_ALREADY_EXIST>()),
 

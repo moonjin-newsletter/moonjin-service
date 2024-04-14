@@ -27,3 +27,12 @@ export interface FORBIDDEN_FOR_POST extends ERROR {
         message:"해당 글에 권한이 없습니다."
     }
 }
+
+export interface POST_CONTENT_NOT_FOUND extends ERROR {
+    result : false;
+    code: ErrorCodeEnum.POST_CONTENT_NOT_FOUND;
+    httpStatus: 404;
+    data: {
+        message:"해당하는 글의 내용을 찾을 수 없습니다."
+    }
+}

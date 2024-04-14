@@ -5,7 +5,13 @@ import {PostService} from "./post.service";
 import {StampedPostDto, UnreleasedPostWithSeriesDto, NewsletterDto, PostDto} from "./dto";
 import {createResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
-import {CREATE_POST_ERROR, FORBIDDEN_FOR_POST, POST_NOT_FOUND, STAMP_ALREADY_EXIST} from "../response/error/post";
+import {
+    CREATE_POST_ERROR,
+    FORBIDDEN_FOR_POST,
+    POST_CONTENT_NOT_FOUND,
+    POST_NOT_FOUND,
+    STAMP_ALREADY_EXIST
+} from "../response/error/post";
 import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
@@ -22,6 +28,7 @@ import {NewsletterListWithPaginationDto} from "./dto";
 import {GetPagination} from "../common/pagination/decorator/GetPagination.decorator";
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {ICreatePostContent} from "./api-types/ICreatePostContent";
+import {PostContentDto} from "./dto/postContent.dto";
 
 
 @Controller('post')
@@ -216,9 +223,15 @@ export class PostController {
         return createResponseForm(postContent)
     }
 
+    /**
+     * @summary 해당 글의 내용 가져오기
+     * @param postId
+     * @returns PostContentDto
+     * @throws POST_CONTENT_NOT_FOUND
+     */
     @TypedRoute.Get(":id/content")
     @UseGuards(UserAuthGuard)
-    async getPostContent(@TypedParam('id') postId : number)
+    async getPostContent(@TypedParam('id') postId : number): Promise<TryCatch<PostContentDto, POST_CONTENT_NOT_FOUND>>
     {
         const postContent = await this.postService.getPostContent(postId);
         return createResponseForm(postContent)

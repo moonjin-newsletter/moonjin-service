@@ -35,6 +35,7 @@ export enum ErrorCodeEnum {
     CREATE_POST_ERROR = "0100",
     POST_NOT_FOUND = "0101",
     FORBIDDEN_FOR_POST = "0102",
+    POST_CONTENT_NOT_FOUND = "0103",
     /// stamp
     STAMP_ALREADY_EXIST= "0110",
     // series
