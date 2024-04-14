@@ -27,4 +27,3 @@ export * from './src/api-types/series/dto/index';
 export * from './src/api-types/user/dto/index';
 export * from './src/api-types/file/dto/index';
 export * from './src/api-types/common/pagination/dto/index';
-export * from './src/api-types/common/editor/dto/index';

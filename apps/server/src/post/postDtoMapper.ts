@@ -1,5 +1,5 @@
 import {NewsletterDto, PostDto} from "./dto";
-import {Post} from "@prisma/client";
+import {Post, PostContent} from "@prisma/client";
 import {ReleasedPostWithWriterDto, StampedPostDto} from "./dto";
 import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
 import {ReleasedPostDto, UnreleasedPostWithSeriesDto} from "./dto";
@@ -8,6 +8,7 @@ import UserDtoMapper from "../user/userDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
+import {PostContentDto} from "./dto/postContent.dto";
 
 
 class PostDtoMapperClass {
@@ -92,6 +93,14 @@ class PostDtoMapperClass {
             stamp : {
                 createdAt: stamp.createdAt
             }
+        }
+    }
+
+    PostContentToPostContentDto(postContent: PostContent): PostContentDto {
+        return {
+            postId: postContent.postId,
+            content: postContent.content,
+            createdAt: postContent.createdAt
         }
     }
 

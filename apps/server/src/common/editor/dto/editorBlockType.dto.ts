@@ -1,4 +1,4 @@
-import {EditorBlockDto} from "./editorBlock.dto";
+import {EditorBlockDto, } from "./editorBlock.dto";
 import {EditorTextBlockDto} from "./editorTextBlock.dto";
 
 export interface ParagraphBlockDto extends EditorTextBlockDto {

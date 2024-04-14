@@ -215,4 +215,12 @@ export class PostController {
         const postContent = await this.postService.uploadPostContent(postData);
         return createResponseForm(postContent)
     }
+
+    @TypedRoute.Get(":id/content")
+    @UseGuards(UserAuthGuard)
+    async getPostContent(@TypedParam('id') postId : number)
+    {
+        const postContent = await this.postService.getPostContent(postId);
+        return createResponseForm(postContent)
+    }
 }

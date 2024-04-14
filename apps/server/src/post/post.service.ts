@@ -20,6 +20,7 @@ import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {convertEditorJsonToPostPreview} from "../common/editor/editorJs.function";
+import {PostContentDto} from "./dto/postContent.dto";
 
 @Injectable()
 export class PostService {
@@ -344,20 +345,37 @@ export class PostService {
 
     async uploadPostContent(postContentData : CreatePostContentDto){
         try{
-            const {postId,content} = postContentData;
             const postContent = await this.prismaService.postContent.create({
                 data: {
-                    postId,
-                    content : JSON.stringify(content),
+                    ...postContentData,
                     createdAt : this.utilService.getCurrentDateInKorea(),
                 }
             });
-            await this.updatePostPreview(postContentData.postId,convertEditorJsonToPostPreview(content));
+            await this.updatePostPreview(postContentData.postId,convertEditorJsonToPostPreview(postContentData.content));
             return postContent;
         }catch (error){
             console.log(error);
             throw ExceptionList.CREATE_POST_ERROR;
         }
+    }
+
+    /**
+     * @summary 해당 글의 내용 가져오기
+     * @param postId
+     * @return PostContentDto
+     * @throws POST_NOT_FOUND
+     */
+    async getPostContent(postId : number): Promise<PostContentDto>{
+        const postContent = await this.prismaService.postContent.findFirst({
+            where : {
+                postId
+            },
+            orderBy : {
+                createdAt : 'desc'
+            }
+        })
+        if(!postContent) throw ExceptionList.POST_NOT_FOUND;
+        return PostDtoMapper.PostContentToPostContentDto(postContent)
     }
 
     /**

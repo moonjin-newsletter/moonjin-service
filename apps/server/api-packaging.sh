@@ -48,10 +48,4 @@ rm "$destination_folder/*"
 # 원본 폴더 안의 모든 파일과 폴더를 대상 폴더로 복사
 rsync -av --progress "$source_folder/" "$destination_folder/"
 
-source_folder="src/common/editor/dto"
-destination_folder="../../packages/api-types/src/api-types/common/editor/dto"
-rm "$destination_folder/*"
-# 원본 폴더 안의 모든 파일과 폴더를 대상 폴더로 복사
-rsync -av --progress "$source_folder/" "$destination_folder/"
-
 echo "복사가 완료되었습니다."
