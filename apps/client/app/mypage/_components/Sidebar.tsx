@@ -9,7 +9,7 @@ export function Sidebar({ type }: { type: userType }) {
     <nav className="flex flex-col w-[200px] min-w-[200px]">
       <Link
         className="w-full mb-8 font-medium text-white justify-center flex  py-4 bg-primary  rounded-lg"
-        href=""
+        href={type === "작가" ? "/write/new" : "/auth/apply"}
       >
         {type === "작가" ? "뉴스레터 시작하기" : "작가로 시작하기"}
       </Link>

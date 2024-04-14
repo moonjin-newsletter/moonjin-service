@@ -34,7 +34,8 @@ export default function Header() {
   if (
     path.includes("login") ||
     path.includes("signup") ||
-    path.includes("auth/social")
+    path.includes("auth/social") ||
+    path.includes("auth/apply")
   )
     return null;
   return (
