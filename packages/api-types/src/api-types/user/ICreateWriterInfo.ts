@@ -1,5 +1,5 @@
 export interface ICreateWriterInfo{
     moonjinId: string;
-    nickname?: string;
+    nickname: string;
     description: string;
 }

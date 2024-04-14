@@ -295,6 +295,7 @@ export class UserController {
      * @summary 회원, 작가로 등록 API
      * @param user
      * @param writerData
+     * @param res
      * @returns
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      * @throws WRITER_SIGNUP_ERROR
@@ -306,7 +307,7 @@ export class UserController {
         MOONJIN_EMAIL_ALREADY_EXIST | WRITER_SIGNUP_ERROR | NICKNAME_ALREADY_EXIST>> {
         const writerInfo = await this.authService.writerSignup({moonjinId:writerData.moonjinId,description:writerData.description, userId:user.id});
         try{
-            if(writerData.nickname)
+            if(writerData.nickname != user.nickname)
                 await this.userService.changeUserProfile(user.id, {nickname: writerData.nickname});
             await this.userService.updateUserRole(user.id, UserRoleEnum.WRITER);
         }catch (error){
