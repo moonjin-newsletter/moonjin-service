@@ -4479,6 +4479,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@toss/use-overlay@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "@toss/use-overlay@npm:1.4.0"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18
+  checksum: fc317407e7f39f2f7b23a70dc192b02cade13393dc4b65ee06ad5850c1cfa64ec02a3eb2f5932d8dce6ef1c29dcfbc82411c5af8c37639f4b4c618ef61192572
+  languageName: node
+  linkType: hard
+
 "@toss/utils@npm:^1.4.6":
   version: 1.4.6
   resolution: "@toss/utils@npm:1.4.6"
@@ -6659,6 +6668,7 @@ __metadata:
     "@tailwindcss/forms": "npm:^0.5.7"
     "@toss/assert": "npm:^1.1.12"
     "@toss/date": "npm:^1.1.8"
+    "@toss/use-overlay": "npm:^1.4.0"
     "@toss/utils": "npm:^1.4.6"
     "@types/editorjs__header": "npm:^2"
     "@types/node": "npm:^17.0.12"
