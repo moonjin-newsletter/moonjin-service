@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {
     CreatePostDto,
     NewsletterDto,
-    PostDto,
+    PostDto, PostWithPostContentDto,
     ReleasedPostDto,
     StampedPostDto,
     UnreleasedPostWithSeriesDto
@@ -19,8 +19,8 @@ import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {convertEditorJsonToPostPreview} from "../common";
-import {PostContentDto} from "./dto/postContent.dto";
 import {CreatePostContentDto} from "./server-dto/createPostContent.dto";
+import {PostContentDto} from "./dto/postContent.dto";
 
 @Injectable()
 export class PostService {
@@ -343,14 +343,20 @@ export class PostService {
         return PostDtoMapper.PostWithSeriesAndWriterUserListToNewsLetterDtoList(postList);
     }
 
-    async uploadPostContent(postContentData : CreatePostContentDto){
+    /**
+     * @summary 해당 글의 내용 업로드
+     * @param postContentData
+     * @return PostContentDto
+     * @throws CREATE_POST_ERROR
+     */
+    async uploadPostContent(postContentData : CreatePostContentDto): Promise<PostContentDto>{
         try{
             const postContent = await this.prismaService.postContent.create({
                 data: {
                     postId : postContentData.postId,
                     content : JSON.stringify(postContentData.content),
                     createdAt : this.utilService.getCurrentDateInKorea(),
-                }
+                },
             });
             await this.updatePostPreview(postContentData.postId,convertEditorJsonToPostPreview(postContentData.content));
             return PostDtoMapper.PostContentToPostContentDto(postContent);
@@ -365,26 +371,36 @@ export class PostService {
      * @param postId
      * @return PostContentDto
      * @throws POST_CONTENT_NOT_FOUND
+     * @throws POST_NOT_FOUND
      */
-    async getPostContent(postId : number): Promise<PostContentDto>{
+    async getPostContentWithPostData(postId : number): Promise<PostWithPostContentDto>{
         const postContent = await this.prismaService.postContent.findFirst({
             where : {
                 postId
             },
+            include:{
+                post : true
+            },
+            relationLoadStrategy: 'join',
             orderBy : {
                 createdAt : 'desc'
             }
         })
         if(!postContent) throw ExceptionList.POST_CONTENT_NOT_FOUND;
-        return PostDtoMapper.PostContentToPostContentDto(postContent)
+        if(!postContent.post) throw ExceptionList.POST_NOT_FOUND;
+        return {
+            post: PostDtoMapper.PostToPostDto(postContent.post),
+            postContent: PostDtoMapper.PostContentToPostContentDto(postContent)
+        }
     }
 
     /**
      * @summary 해당 글의 preview 업데이트
      * @param postId
      * @param preview
+     * @throws POST_NOT_FOUND
      */
-    async updatePostPreview(postId: number, preview: string){
+    async updatePostPreview(postId: number, preview: string): Promise<void>{
         try{
             await this.prismaService.post.update({
                 where : {

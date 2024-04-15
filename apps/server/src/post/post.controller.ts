@@ -2,7 +2,7 @@ import {Controller, UseGuards} from '@nestjs/common';
 import {TypedBody, TypedParam, TypedQuery, TypedRoute} from "@nestia/core";
 import {ICreatePost} from "./api-types/ICreatePost";
 import {PostService} from "./post.service";
-import {StampedPostDto, UnreleasedPostWithSeriesDto, NewsletterDto, PostDto} from "./dto";
+import {StampedPostDto, UnreleasedPostWithSeriesDto, NewsletterDto, PostDto, PostWithPostContentDto} from "./dto";
 import {createResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {
@@ -214,9 +214,19 @@ export class PostController {
         });
     }
 
+    /**
+     * @summary 해당 글의 내용 업데이트
+     * @param postData
+     * @param user
+     * @returns PostContentDto
+     * @throws POST_NOT_FOUND
+     * @throws FORBIDDEN_FOR_POST
+     * @throws CREATE_POST_ERROR
+     */
     @TypedRoute.Post("content")
     @UseGuards(WriterAuthGuard)
-    async updatePostContent(@TypedBody() postData : ICreatePostContent, @User() user:UserAuthDto)
+    async updatePostContent(@TypedBody() postData : ICreatePostContent, @User() user:UserAuthDto) : Promise<
+        TryCatch<PostContentDto, POST_NOT_FOUND | FORBIDDEN_FOR_POST | CREATE_POST_ERROR>>
     {
         await this.postService.assertWriterOfPost(postData.postId,user.id);
         const postContent = await this.postService.uploadPostContent(postData);
@@ -226,14 +236,15 @@ export class PostController {
     /**
      * @summary 해당 글의 내용 가져오기
      * @param postId
-     * @returns PostContentDto
+     * @returns PostWithPostContentDto
      * @throws POST_CONTENT_NOT_FOUND
+     * @throws POST_NOT_FOUND
      */
     @TypedRoute.Get(":id/content")
     @UseGuards(UserAuthGuard)
-    async getPostContent(@TypedParam('id') postId : number): Promise<TryCatch<PostContentDto, POST_CONTENT_NOT_FOUND>>
+    async getPostContent(@TypedParam('id') postId : number): Promise<TryCatch<PostWithPostContentDto, POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
     {
-        const postContent = await this.postService.getPostContent(postId);
+        const postContent = await this.postService.getPostContentWithPostData(postId);
         return createResponseForm(postContent)
     }
 }
