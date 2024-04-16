@@ -29,6 +29,11 @@ export class UtilService {
         return date;
     }
 
+    /**
+     * @summary cover 없으면 default 이미지 처리
+     * @param cover
+     * @returns string
+     */
     processImageForCover(cover: string | undefined | null): string {
         const cdnUrl = process.env.CDN_URL?? "https://d1ppxineti4knh.cloudfront.net";
         if (cover) {

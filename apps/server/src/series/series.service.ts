@@ -70,7 +70,7 @@ export class SeriesService {
      * @param seriesId
      * @throws SERIES_NOT_FOUND
      */
-    async assertSeriesExist(seriesId : number) : Promise<void>{
+    async assertSeriesExist(seriesId : number) : Promise<SeriesDto>{
         const series = await this.prismaService.series.findUnique({
             where:{
                 id : seriesId,
@@ -78,6 +78,7 @@ export class SeriesService {
             }
         })
         if(!series) throw ExceptionList.SERIES_NOT_FOUND;
+        return SeriesDtoMapper.SeriesToSeriesDto(series);
     }
 
     /**

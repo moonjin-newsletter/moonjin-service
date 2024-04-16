@@ -2,7 +2,7 @@ import {Controller, UseGuards} from '@nestjs/common';
 import {TypedBody, TypedParam, TypedQuery, TypedRoute} from "@nestia/core";
 import {ICreatePost} from "./api-types/ICreatePost";
 import {PostService} from "./post.service";
-import {StampedPostDto, UnreleasedPostWithSeriesDto, NewsletterDto, PostDto, PostWithPostContentDto} from "./dto";
+import {StampedPostDto, UnreleasedPostWithSeriesDto, NewsletterDto, PostWithPostContentDto} from "./dto";
 import {createResponseForm} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {
@@ -50,10 +50,13 @@ export class PostController {
     @TypedRoute.Post()
     @UseGuards(WriterAuthGuard)
     async createPost(@TypedBody() postData : ICreatePost, @User() user:UserAuthDto): Promise<TryCatch<
-        PostDto, CREATE_POST_ERROR>>
+        PostWithPostContentDto, SERIES_NOT_FOUND | CREATE_POST_ERROR>>
     {
-        if(postData.seriesId) await this.seriesService.assertSeriesExist(postData.seriesId);
-        const post = await this.postService.createPost({writerId:user.id,...postData});
+        if(postData.seriesId) {
+            const series = await this.seriesService.assertSeriesExist(postData.seriesId);
+            postData.category = series.category;
+        }
+        const post = await this.postService.createPost(postData,user.id);
         return createResponseForm(post)
     }
 
@@ -223,7 +226,7 @@ export class PostController {
      * @throws FORBIDDEN_FOR_POST
      * @throws CREATE_POST_ERROR
      */
-    @TypedRoute.Post("content")
+    @TypedRoute.Patch("content")
     @UseGuards(WriterAuthGuard)
     async updatePostContent(@TypedBody() postData : ICreatePostContent, @User() user:UserAuthDto) : Promise<
         TryCatch<PostContentDto, POST_NOT_FOUND | FORBIDDEN_FOR_POST | CREATE_POST_ERROR>>

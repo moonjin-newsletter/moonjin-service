@@ -2,14 +2,14 @@ import {Injectable} from '@nestjs/common';
 import {
     CreatePostDto,
     NewsletterDto,
-    PostDto, PostWithPostContentDto,
+    PostWithPostContentDto,
     ReleasedPostDto,
     StampedPostDto,
     UnreleasedPostWithSeriesDto
 } from "./dto";
 import {PrismaService} from "../prisma/prisma.service";
 import PostDtoMapper from "./postDtoMapper";
-import {Follow, Post, Stamp} from "@prisma/client";
+import {Follow, Stamp} from "@prisma/client";
 import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
 import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
@@ -32,21 +32,38 @@ export class PostService {
 
     /**
      * @summary 게시글 생성
-     * @param postData
-     * @return PostDto
+     * @param createPostData
+     * @param writerId
+     * @return PostWithPostContentDto
      * @throws CREATE_POST_ERROR
      */
-    async createPost(postData : CreatePostDto) : Promise<PostDto> {
-        const cover = this.utilService.processImageForCover(postData.cover);
+    async createPost(createPostData : CreatePostDto, writerId: number) : Promise<PostWithPostContentDto> {
+        const cover = this.utilService.processImageForCover(createPostData.cover);
+        const {content,...postMetaData} = createPostData
         try {
-            const post: Post = await this.prismaService.post.create({
-                data : {
-                    ...postData,
+            const post = await this.prismaService.post.create({
+                data: {
+                    ...postMetaData,
+                    preview: convertEditorJsonToPostPreview(content),
+                    writerId,
                     cover,
-                    createdAt : this.utilService.getCurrentDateInKorea(),
-                }
+                    createdAt: this.utilService.getCurrentDateInKorea(),
+                    postContent: {
+                        create: {
+                            content: JSON.stringify(content),
+                            createdAt: this.utilService.getCurrentDateInKorea()
+                        }
+                    }
+                },
+                include:{
+                    postContent: true
+                },
             })
-            return PostDtoMapper.PostToPostDto(post);
+            const {postContent,...postData} = post;
+            return {
+                post: PostDtoMapper.PostToPostDto(postData),
+                postContent: PostDtoMapper.PostContentToPostContentDto(postContent[0]) // TODO: 위험하려나
+            }
         }catch (error){
             console.error(error);
             throw ExceptionList.CREATE_POST_ERROR;
