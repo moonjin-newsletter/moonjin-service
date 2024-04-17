@@ -28,8 +28,8 @@ export default function Profile({
             {type}
           </div>
         </div>
-        {userInfo.writerInfo.description != "" && (
-          <span className="mt-3">{userInfo.writerInfo.description}</span>
+        {userInfo.user.description != "" && (
+          <span className="mt-3">{userInfo.user.description}</span>
         )}
       </div>
       {type === "작가" && (

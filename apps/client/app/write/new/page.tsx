@@ -1,15 +1,25 @@
 "use client";
 
 import * as I from "components/icons";
-import { customEditorJS } from "../../../components/editorjs/customEditor";
 import toast from "react-hot-toast";
 import { useOverlay } from "@toss/use-overlay";
 import { useForm } from "react-hook-form";
-import { useEffect, useRef, useState } from "react";
 import EditorJS from "@editorjs/editorjs";
+import { EDITOR_JS_TOOLS } from "../../../components/editorjs/customEditorConfig";
 
 export default function Page() {
-  const [editor, setEditor] = useState<EditorJS | null>(null);
+  const editor = new EditorJS({
+    holder: "editorjs",
+    autofocus: true,
+    readOnly: false,
+    tools: EDITOR_JS_TOOLS,
+    data: {
+      blocks: [],
+    },
+    onReady: () => {
+      console.log("Editor.js is ready to work!");
+    },
+  });
 
   const overlay = useOverlay();
 
@@ -52,18 +62,6 @@ export default function Page() {
   //     window.removeEventListener("beforeunload", preventClose);
   //   };
   // }, []);
-
-  useEffect(() => {
-    const editorInstance = customEditorJS();
-    setEditor(editorInstance);
-
-    return () => {
-      // 컴포넌트가 unmount 될 때 EditorJS 인스턴스를 정리합니다.
-      if (editorInstance) {
-        editorInstance.destroy();
-      }
-    };
-  }, []);
 
   return (
     <main className=" w-full    flex flex-col items-center">
