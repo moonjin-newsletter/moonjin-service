@@ -11,7 +11,7 @@ type pageProps = {
 export default async function Page({ params }: { params: pageProps }) {
   const seriesId = parseInt(params.id, 10);
   const { data: seriesInfo } = await ssr(`series/writing/${seriesId}`).then(
-    (res) => res.json<ResponseForm<SeriesDto>>(),
+    (res) => res.json<ResponseForm<SeriesDto>>()
   );
 
   return (
@@ -56,7 +56,7 @@ export default async function Page({ params }: { params: pageProps }) {
           </div>
         </div>
         <Link
-          href=""
+          href={`/write/new?seriesId=${seriesId}`}
           className="mt-4 w-full font-medium bg-primary py-2 text-white rounded flex items-center justify-center"
         >
           글 작성하기

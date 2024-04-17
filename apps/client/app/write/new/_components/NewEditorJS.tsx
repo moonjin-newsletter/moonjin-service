@@ -7,8 +7,10 @@ import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useOverlay } from "@toss/use-overlay";
 import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function NewEditorJS() {
+  const searchParams = useSearchParams();
   const overlay = useOverlay();
   const editor = new EditorJS({
     holder: "editorjs",
@@ -88,6 +90,10 @@ export default function NewEditorJS() {
         </div>
       </section>
       <section className="mt-48 max-w-[680px] w-full">
+        {searchParams.get("seriesId") && (
+          <span className="px-4 font-serif text-grayscale-500"># 시리즈</span>
+        )}
+
         <input
           type="text"
           placeholder="제목을 입력해주세요"
@@ -97,7 +103,7 @@ export default function NewEditorJS() {
       </section>
 
       <section className="w-full max-w-[670px] mt-4 text-grayscale-500">
-        <div id="editorjs" className=" w-full"></div>
+        <div id="editorjs" className="w-full"></div>
       </section>
     </div>
   );
@@ -166,6 +172,9 @@ function OverlaySetting({
               <span>기타</span>
             </li>
           </ul>
+        </section>
+        <section className="mt-8">
+          <label>어떤 시리즈에 게시하시겠습니까?</label>
         </section>
       </div>{" "}
     </div>
