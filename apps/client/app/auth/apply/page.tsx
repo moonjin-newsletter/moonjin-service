@@ -32,9 +32,9 @@ export default function Page() {
 
   async function onClickSignup(data: any) {
     await csr
-      .post("user/writers", { json: data })
+      .post("user/writer", { json: data })
       .then((res) => {
-        alert("메일을 확인해주세요!");
+        return router.push("/mypage");
       })
       .catch((err) => {
         if (
@@ -43,7 +43,7 @@ export default function Page() {
         )
           return alert(err.data.message);
 
-        alert("회원가입 실패");
+        toast.error("작가등록을 실패했습니다");
       });
   }
 
