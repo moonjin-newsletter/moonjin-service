@@ -63,21 +63,25 @@ export class PostController {
 
     /**
      * @summary 해당 글의 내용 업데이트
-     * @param postData
+     * @param postId
+     * @param postUpdateData
      * @param user
      * @returns PostContentDto
      * @throws POST_NOT_FOUND
      * @throws FORBIDDEN_FOR_POST
      * @throws CREATE_POST_ERROR
      */
-    @TypedRoute.Patch()
+    @TypedRoute.Patch(':id')
     @UseGuards(WriterAuthGuard)
-    async updatePost(@TypedBody() postData : ICreatePostContent, @User() user:UserAuthDto) : Promise<
-        TryCatch<PostContentDto, POST_NOT_FOUND | FORBIDDEN_FOR_POST | CREATE_POST_ERROR>>
+    async updatePost(@TypedParam('id') postId : number, @TypedBody() postUpdateData : ICreatePost, @User() user:UserAuthDto) : Promise<
+        TryCatch<PostWithPostContentDto, POST_NOT_FOUND | FORBIDDEN_FOR_POST | SERIES_NOT_FOUND | CREATE_POST_ERROR>>
     {
-        await this.postService.assertWriterOfPost(postData.postId,user.id);
-        const postContent = await this.postService.uploadPostContent(postData);
-        return createResponseForm(postContent)
+        await this.postService.assertWriterOfPost(postId,user.id);
+        if(postUpdateData.seriesId) {
+            const series = await this.seriesService.assertSeriesExist(postUpdateData.seriesId);
+            postUpdateData.category = series.category;
+        }
+        return createResponseForm(await this.postService.updatePost(postId,postUpdateData))
     }
 
     /**

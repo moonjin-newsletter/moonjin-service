@@ -71,6 +71,48 @@ export class PostService {
     }
 
     /**
+     * @summary 게시글 수정
+     * @param postId
+     * @param updatePostData
+     * @return PostWithPostContentDto
+     * @throws CREATE_POST_ERROR
+     */
+    async updatePost(postId: number, updatePostData: CreatePostDto): Promise<PostWithPostContentDto> {
+        const cover = this.utilService.processImageForCover(updatePostData.cover);
+        const {content,...postMetaData} = updatePostData
+        try {
+            const post = await this.prismaService.post.update({
+                where :{
+                    id : postId
+                },
+                data: {
+                    ...postMetaData,
+                    preview: convertEditorJsonToPostPreview(content),
+                    cover,
+                    lastUpdatedAt: this.utilService.getCurrentDateInKorea(),
+                    postContent: {
+                        create: {
+                            content: JSON.stringify(content),
+                            createdAt: this.utilService.getCurrentDateInKorea()
+                        }
+                    }
+                },
+                include:{
+                    postContent: true
+                },
+            })
+            const {postContent,...postData} = post;
+            return {
+                post: PostDtoMapper.PostToPostDto(postData),
+                postContent: PostDtoMapper.PostContentToPostContentDto(postContent[0]) // TODO: 위험하려나
+            }
+        }catch (error){
+            console.error(error);
+            throw ExceptionList.CREATE_POST_ERROR;
+        }
+    }
+
+    /**
      * @summary 공개되어 있는 모든 게시글 가져오기
      * @return ReleasedPostDto[]
      */
