@@ -1,4 +1,3 @@
-export * from './createPost.dto'
 export * from './post.dto'
 export * from './releasedPostWithWriter.dto'
 export * from './stampedPost.dto'

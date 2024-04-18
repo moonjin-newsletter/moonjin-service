@@ -1,6 +1,5 @@
 import {Injectable} from '@nestjs/common';
 import {
-    CreatePostDto,
     NewsletterDto,
     PostWithPostContentDto,
     ReleasedPostDto,
@@ -21,6 +20,7 @@ import {PaginationOptionsDto} from "../common/pagination/dto";
 import {convertEditorJsonToPostPreview} from "../common";
 import {CreatePostContentDto} from "./server-dto/createPostContent.dto";
 import {PostContentDto} from "./dto/postContent.dto";
+import {CreatePostDto} from "./server-dto/createPost.dto";
 
 @Injectable()
 export class PostService {
