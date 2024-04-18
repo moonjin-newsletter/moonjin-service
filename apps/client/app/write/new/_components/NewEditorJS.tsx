@@ -8,24 +8,33 @@ import { useForm } from "react-hook-form";
 import { useOverlay } from "@toss/use-overlay";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { Simulate } from "react-dom/test-utils";
 
 export default function NewEditorJS() {
+  const {
+    setFocus,
+    setValue,
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm();
+
   const searchParams = useSearchParams();
   const overlay = useOverlay();
   const editor = new EditorJS({
     holder: "editorjs",
-    autofocus: true,
+    autofocus: false,
     readOnly: false,
     tools: EDITOR_JS_TOOLS,
-    data: {
-      blocks: [],
-    },
+
     onReady: () => {
       console.log("Editor.js is ready to work!");
     },
   });
+  register("title", { required: "제목을 입력해주세요" });
 
-  function onClickSave() {
+  function onClickSave(value: any) {
+    console.log({ ...value, content: [] });
     if (editor)
       editor
         .save()
@@ -82,7 +91,9 @@ export default function NewEditorJS() {
             <I.PaperPlaneTilt />글 게시
           </button>
           <button
-            onClick={onClickSave}
+            onClick={handleSubmit(onClickSave, () => {
+              toast.error("제목을 입력해주세요");
+            })}
             className="border hover:-translate-y-1 transition duration-300 ease-in-out gap-x-1 flex items-center text-sm font-medium border-grayscale-500 py-1.5 px-2 text-grayscale-500 rounded-full"
           >
             <I.Save />글 저장
@@ -96,9 +107,11 @@ export default function NewEditorJS() {
 
         <input
           type="text"
+          onChange={(e) => setValue("title", e.target.value)}
           placeholder="제목을 입력해주세요"
-          className="w-full py-4 font-serif text-grayscale-500 text-2xl outline-none focus:ring-0 border-none"
+          className="w-full py-2 font-serif text-grayscale-500 text-2xl outline-none focus:ring-0 border-none"
         />
+
         <hr className="border border-grayscale-100" />
       </section>
     </div>
