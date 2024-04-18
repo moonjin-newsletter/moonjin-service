@@ -6658,6 +6658,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "client@workspace:apps/client"
   dependencies:
+    "@editorjs/editorjs": "npm:^2.29.1"
     "@editorjs/header": "npm:^2.8.1"
     "@editorjs/image": "npm:^2.9.0"
     "@editorjs/simple-image": "npm:^1.6.0"
@@ -11336,7 +11337,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "moonjin-service@workspace:."
   dependencies:
-    "@editorjs/editorjs": "npm:^2.29.1"
     "@types/add": "npm:^2"
     "@typescript-eslint/eslint-plugin": "npm:^6.10.0"
     "@typescript-eslint/parser": "npm:^6.10.0"
