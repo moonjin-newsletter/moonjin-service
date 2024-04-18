@@ -10,7 +10,7 @@ async function bootstrap() {
   swaggerBoot(app);
   app.use(cookieParser());
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://13.125.224.11:3000'],
+    origin: ['http://localhost:3000', 'http://13.125.224.11:3000','https://moonjin-service-40ke4fguz-kimrottis-projects.vercel.app'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
