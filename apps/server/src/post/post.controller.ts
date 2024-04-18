@@ -22,13 +22,14 @@ import {FOLLOWER_NOT_FOUND} from "../response/error/user";
 import {IGetPostBySeriesId} from "./api-types/IGetPostBySeriesId";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
 import {UserService} from "../user/user.service";
-import {generateNextPaginationUrl} from "../common";
+import {editorJsToHtml, generateNextPaginationUrl} from "../common";
 import {FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
 import {NewsletterListWithPaginationDto} from "./dto";
 import {GetPagination} from "../common/pagination/decorator/GetPagination.decorator";
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {ICreatePostContent} from "./api-types/ICreatePostContent";
 import {PostContentDto} from "./dto/postContent.dto";
+import {ExceptionList} from "../response/error/errorInstances";
 
 
 @Controller('post')
@@ -58,6 +59,25 @@ export class PostController {
         }
         const post = await this.postService.createPost(postData,user.id);
         return createResponseForm(post)
+    }
+
+    /**
+     * @summary 해당 글의 내용 업데이트
+     * @param postData
+     * @param user
+     * @returns PostContentDto
+     * @throws POST_NOT_FOUND
+     * @throws FORBIDDEN_FOR_POST
+     * @throws CREATE_POST_ERROR
+     */
+    @TypedRoute.Patch()
+    @UseGuards(WriterAuthGuard)
+    async updatePost(@TypedBody() postData : ICreatePostContent, @User() user:UserAuthDto) : Promise<
+        TryCatch<PostContentDto, POST_NOT_FOUND | FORBIDDEN_FOR_POST | CREATE_POST_ERROR>>
+    {
+        await this.postService.assertWriterOfPost(postData.postId,user.id);
+        const postContent = await this.postService.uploadPostContent(postData);
+        return createResponseForm(postContent)
     }
 
     /**
@@ -249,5 +269,17 @@ export class PostController {
     {
         const postContent = await this.postService.getPostContentWithPostData(postId);
         return createResponseForm(postContent)
+    }
+
+    @TypedRoute.Get(':id/html')
+    @UseGuards(UserAuthGuard)
+    async getPostHtml(@TypedParam('id') postId : number): Promise<TryCatch<string, POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
+    {
+        const postContent = await this.postService.getPostContentWithPostData(postId);
+        try{
+            return createResponseForm(editorJsToHtml(postContent.postContent));
+        }catch (eror){
+            throw ExceptionList.FORBIDDEN_FOR_POST;
+        }
     }
 }
