@@ -62,21 +62,6 @@ export class PostController {
     }
 
     /**
-     * @summary 해당 글의 내용 가져오기
-     * @param postId
-     * @returns PostWithPostContentDto
-     * @throws POST_CONTENT_NOT_FOUND
-     * @throws POST_NOT_FOUND
-     */
-    @TypedRoute.Get(":id")
-    @UseGuards(UserAuthGuard)
-    async getPostContent(@TypedParam('id') postId : number): Promise<TryCatch<PostWithPostContentDto, POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
-    {
-        const postContent = await this.postService.getPostContentWithPostData(postId);
-        return createResponseForm(postContent)
-    }
-
-    /**
      * @summary 해당 글의 내용 업데이트
      * @param postId
      * @param postUpdateData
@@ -286,5 +271,20 @@ export class PostController {
         }catch (eror){
             throw ExceptionList.FORBIDDEN_FOR_POST;
         }
+    }
+
+    /**
+     * @summary 해당 글의 내용 가져오기
+     * @param postId
+     * @returns PostWithPostContentDto
+     * @throws POST_CONTENT_NOT_FOUND
+     * @throws POST_NOT_FOUND
+     */
+    @TypedRoute.Get(":id")
+    @UseGuards(UserAuthGuard)
+    async getPostContent(@TypedParam('id') postId : number): Promise<TryCatch<PostWithPostContentDto, POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
+    {
+        const postContent = await this.postService.getPostContentWithPostData(postId);
+        return createResponseForm(postContent)
     }
 }
