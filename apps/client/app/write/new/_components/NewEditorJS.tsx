@@ -9,6 +9,7 @@ import { useOverlay } from "@toss/use-overlay";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Simulate } from "react-dom/test-utils";
+import csr from "../../../../lib/fetcher/csr";
 
 export default function NewEditorJS() {
   const {
@@ -34,13 +35,20 @@ export default function NewEditorJS() {
   register("title", { required: "제목을 입력해주세요" });
 
   function onClickSave(value: any) {
-    console.log({ ...value, content: [] });
     if (editor)
       editor
         .save()
         .then((outputData) => {
           console.log("Article data: ", outputData);
-          toast.success("글을 저장했습니다");
+          csr
+            .post("post", {
+              json: {
+                ...value,
+                content: outputData,
+              },
+            })
+            .then(() => toast.success("글을 저장했습니다"))
+            .catch(() => toast.error("글 저장에 실패하였습니다"));
         })
         .catch((error) => {
           console.log("Saving failed: ", error);

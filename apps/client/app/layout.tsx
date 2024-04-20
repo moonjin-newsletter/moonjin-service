@@ -39,6 +39,12 @@ export default function RootLayout({
   return (
     <html className={`${libre.variable} `} lang="en">
       <head>
+        {/*추후에 제거 필요*/}
+        <meta
+          http-equiv="Content-Security-Policy"
+          content="upgrade-insecure-requests"
+        />
+
         <link
           rel="stylesheet"
           as="style"
