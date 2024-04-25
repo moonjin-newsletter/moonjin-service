@@ -92,6 +92,9 @@ export class SeriesService {
                 where: {
                     deleted: false,
                     writerId: writerId,
+                },
+                orderBy:{
+                    createdAt: 'desc'
                 }
             })
             return seriesList.map(series => SeriesDtoMapper.SeriesToSeriesDto(series));

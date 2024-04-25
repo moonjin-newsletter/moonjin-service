@@ -1,6 +1,6 @@
-export interface SeriesDto {
-    id : number;
-    title: string;
+import {SeriesSummaryDto} from "./seriesSummary.dto";
+
+export interface SeriesDto extends SeriesSummaryDto {
     writerId : number;
     category : string;
     clicks : number;

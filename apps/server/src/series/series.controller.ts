@@ -7,12 +7,13 @@ import {SeriesService} from "./series.service";
 import {createResponseForm} from "../response/responseForm";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
-import {SeriesWithWriterDto, SeriesDto} from "./dto";
+import {SeriesWithWriterDto, SeriesDto, SeriesSummaryDto} from "./dto";
 import {Try, TryCatch} from "../response/tryCatch";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
 import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
 import {UserService} from "../user/user.service";
+import SeriesDtoMapper from "./seriesDtoMapper";
 
 @Controller('series')
 export class SeriesController {
@@ -66,9 +67,21 @@ export class SeriesController {
     }
 
     /**
+     * @summary 내가 발행한 시리즈들 요약 가져오기
+     * @param user
+     * @returns SeriesSummaryDto[]
+     */
+    @TypedRoute.Get('me/summary')
+    @UseGuards(WriterAuthGuard)
+    async getAllMySeriesSummary(@User() user: UserAuthDto) : Promise<Try<SeriesSummaryDto[]>>{
+        const seriesList = await this.seriesService.getReleasedSeriesListByWriterId(user.id);
+        return createResponseForm(seriesList.map(series => SeriesDtoMapper.SeriesDtoToSeriesSummaryDto(series)))
+    }
+
+    /**
      * @summary 내가 발행한 시리즈들 가져오기
      * @param user
-     * @returns ReleasedSeriesDto[]
+     * @returns SeriesDto[]
      */
     @TypedRoute.Get('me')
     @UseGuards(WriterAuthGuard)
