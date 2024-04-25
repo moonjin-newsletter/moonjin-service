@@ -40,6 +40,7 @@ export enum ErrorCodeEnum {
     STAMP_ALREADY_EXIST= "0110",
     /// newsletter
     SEND_NEWSLETTER_ERROR = "0120",
+    NEWSLETTER_CATEGORY_NOT_FOUND = "0121",
 
     // series
     CREATE_SERIES_ERROR = "0201",

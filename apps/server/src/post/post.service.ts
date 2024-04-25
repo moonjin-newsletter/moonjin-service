@@ -160,7 +160,6 @@ export class PostService {
      * @throws POST_NOT_FOUND
      * @throws NEWSLETTER_CATEGORY_NOT_FOUND
      * @throws POST_CONTENT_NOT_FOUND
-     * @throws FOLLOWER_NOT_FOUND
      * @throws SEND_NEWSLETTER_ERROR
      * @throws USER_NOT_WRITER
      */
@@ -169,8 +168,6 @@ export class PostService {
         if(postWithContent.post.category == null || postWithContent.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
 
         const followers =await this.userService.getAllFollowerByWriterId(postWithContent.post.writerId);
-        if(followers.followerList.length == 0 && followers.externalFollowerList.length == 0) throw ExceptionList.FOLLOWER_NOT_FOUND;
-
         const sentCount = await this.sendWebNewsletter(postId, followers.followerList.map(follower => follower.user.id));
         const emailList = followers.externalFollowerList.map(follower => follower.email);
         const writer = await this.userService.getWriterInfoByUserId(postWithContent.post.writerId);

@@ -92,6 +92,13 @@ export class AuthService {
                     createdAt : this.utilService.getCurrentDateInKorea()
                 }
             })
+            await this.prismaService.follow.create({
+                data:{
+                    followerId : writerSignupData.userId,
+                    writerId :  writerSignupData.userId,
+                    createdAt : this.utilService.getCurrentDateInKorea()
+                }
+            });
             return UserDtoMapper.WriterInfoToWriterInfoDto(writerInfo);
         } catch (error){
             if(error instanceof PrismaClientKnownRequestError){

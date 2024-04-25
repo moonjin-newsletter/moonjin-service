@@ -28,13 +28,10 @@ import {
   NICKNAME_ALREADY_EXIST, SOCIAL_SIGNUP_ERROR, TOKEN_NOT_FOUND, PASSWORD_CHANGE_ERROR, SIGNUP_ROLE_ERROR
 } from "../response/error/auth";
 import {ISocialSignup} from "./api-types/ISocialSignup";
-import {RequestHeaderDto} from "./dto/requestHeader.dto";
-import {UserSocialProfileDto} from "./dto/userSocialProfile.dto";
+import {RequestHeaderDto, UserSocialProfileDto, UserAuthDto, SignupEmailCodePayloadDto} from "./dto";
 import * as process from "process";
-import {UserAuthDto} from "./dto/userAuthDto";
 import {AuthValidationService} from "./auth.validation.service";
 import {UserRoleEnum} from "./enum/userRole.enum";
-import {SignupEmailCodePayloadDto} from "./dto/signupEmailCodePayload.dto";
 
 @ApiTags('Auth')
 @Controller('auth')
