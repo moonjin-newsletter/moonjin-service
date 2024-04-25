@@ -160,6 +160,8 @@ export class PostService {
      * @throws POST_NOT_FOUND
      * @throws POST_CONTENT_NOT_FOUND
      * @throws FOLLOWER_NOT_FOUND
+     * @throws SEND_NEWSLETTER_ERROR
+     * @throws USER_NOT_WRITER
      */
     async sendNewsletter(postId : number) : Promise<number> {
         const postWithContent = await this.getPostWithContentByPostId(postId);

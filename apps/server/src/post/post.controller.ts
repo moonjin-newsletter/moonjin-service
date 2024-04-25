@@ -9,7 +9,7 @@ import {
     CREATE_POST_ERROR,
     FORBIDDEN_FOR_POST,
     POST_CONTENT_NOT_FOUND,
-    POST_NOT_FOUND,
+    POST_NOT_FOUND, SEND_NEWSLETTER_ERROR,
     STAMP_ALREADY_EXIST
 } from "../response/error/post";
 import {User} from "../auth/decorator/user.decorator";
@@ -122,12 +122,15 @@ export class PostController {
      * @returns {sentCount: number}
      * @throws POST_NOT_FOUND
      * @throws FORBIDDEN_FOR_POST
+     * @throws POST_CONTENT_NOT_FOUND
      * @throws FOLLOWER_NOT_FOUND
+     * @throws SEND_NEWSLETTER_ERROR
+     * @throws USER_NOT_WRITER
      */
     @TypedRoute.Post(':postId/newsletter')
     @UseGuards(WriterAuthGuard)
     async sendNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number)
-        : Promise<TryCatch<ResponseMessage, POST_NOT_FOUND | FORBIDDEN_FOR_POST | FOLLOWER_NOT_FOUND>>{
+        : Promise<TryCatch<ResponseMessage, POST_NOT_FOUND | FORBIDDEN_FOR_POST | POST_CONTENT_NOT_FOUND | FOLLOWER_NOT_FOUND | SEND_NEWSLETTER_ERROR | USER_NOT_WRITER>>{
         await this.postService.assertWriterOfPost(postId,user.id);
         const sentCount = await this.postService.sendNewsletter(postId);
         await this.userService.synchronizeNewsLetter(user.id, true);
