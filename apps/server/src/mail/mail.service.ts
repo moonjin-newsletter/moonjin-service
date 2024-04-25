@@ -121,16 +121,17 @@ export class MailService {
   }
 
   /**
-   * @summary 해당 email list에게 뉴스레터를 보내는 기능
+   * @summary 해당 emailList에게 html 뉴스레터를 보내는 기능
    * @param mailInfo
    */
   async sendNewsLetterWithHtml(mailInfo: sendNewsLetterWithHtmlDto): Promise<boolean> {
     try {
+      const recipientVariables= this.getRecipientVariables(mailInfo.emailList);
       await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
         from: `${mailInfo.senderName} <${mailInfo.senderMailAddress}>`,
-        to: `moonjin-newsletter@${this.MAILGUN_DOMAIN}`,
-        bcc: mailInfo.emailList,
+        to: mailInfo.emailList,
         subject: mailInfo.subject,
+        'recipient-variables': JSON.stringify(recipientVariables),
         html: mailInfo.html,
         'o:tracking': 'yes',
       });
@@ -139,5 +140,13 @@ export class MailService {
       console.log(error);
       throw ExceptionList.EMAIL_NOT_EXIST
     }
+  }
+
+  getRecipientVariables(emailList : string[]) {
+    let idx=0;
+    return Object.assign({}, ...emailList.map((email) => {
+      idx++;
+      return {[email]: {"id": idx}}
+    }));
   }
 }

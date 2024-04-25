@@ -17,12 +17,13 @@ import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithP
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {PaginationOptionsDto} from "../common/pagination/dto";
-import {convertEditorJsonToPostPreview} from "../common";
+import {convertEditorJsonToPostPreview, editorJsToHtml} from "../common";
 import {CreatePostContentDto} from "./server-dto/createPostContent.dto";
 import {PostContentDto} from "./dto/postContent.dto";
 import {CreatePostDto} from "./server-dto/createPost.dto";
 import {PostWithContents} from "./prisma/postWithContents.prisma.type";
 import {UserService} from "../user/user.service";
+import {MailService} from "../mail/mail.service";
 
 @Injectable()
 export class PostService {
@@ -31,6 +32,7 @@ export class PostService {
         private readonly utilService: UtilService,
         private readonly authValidationService: AuthValidationService,
         private readonly userService:UserService,
+        private readonly mailService : MailService
     ) {}
 
     /**
@@ -165,23 +167,21 @@ export class PostService {
         if(followers.followerList.length == 0 && followers.externalFollowerList.length == 0) throw ExceptionList.FOLLOWER_NOT_FOUND;
 
         const sentCount = await this.sendWebNewsletter(postId, followers.followerList.map(follower => follower.user.id));
+        const emailList = followers.externalFollowerList.map(follower => follower.email);
+        const writer = await this.userService.getWriterInfoByUserId(postWithContent.post.writerId);
 
-        // const emailList = followers.externalFollowerList.map(follower => follower.email);
-        // const writerInfo = await this.userService.getUserInfoById(postWithContent.post.writerId);
-        //
-        // followers.followerList.map(follower => {
-        //     emailList.push(follower.user.email)
-        // });
-        //
-        // const sendNewsLetterDto : sendNewsLetterWithHtmlDto = {
-        //     emailList,
-        //     senderName: string;
-        //     senderMailAddress: string;
-        //     subject: string;
-        //     html: string;
-        // }
-        // await this.mailService.sendNewsLetterToFollowers(postWithContent, followers.externalFollowerList.map(follower => follower.email));
+        followers.followerList.map(follower => {
+            emailList.push(follower.user.email)
+        });
 
+        const sendNewsLetterDto = {
+            emailList,
+            senderName: writer.user.nickname,
+            senderMailAddress: writer.writerInfo.moonjinId + '@' + process.env.MAILGUN_DOMAIN,
+            subject: postWithContent.post.title,
+            html: editorJsToHtml(postWithContent.postContent),
+        }
+        await this.mailService.sendNewsLetterWithHtml(sendNewsLetterDto);
         return sentCount;
     }
 

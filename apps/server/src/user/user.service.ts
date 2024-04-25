@@ -161,13 +161,25 @@ export class UserService {
      * @returns WriterInfoDto
      * @throws USER_NOT_WRITER
      */
-    async getWriterInfoByUserId(writerId: number): Promise<WriterInfoDto> {
-        const writerInfo = await this.prismaService.writerInfo.findUnique({
-            where: {
-                userId:writerId
-            }});
-        if(!writerInfo) throw ExceptionList.USER_NOT_WRITER;
-        return UserDtoMapper.WriterInfoToWriterInfoDto(writerInfo);
+    async getWriterInfoByUserId(writerId: number): Promise<WriterDto> {
+        const writer : WriterInfoWithUser | null = await this.prismaService.writerInfo.findUnique({
+            where : {
+                userId : writerId,
+                deleted : false,
+                user:{
+                    deleted : false
+                }
+            },
+            include :{
+                user : true
+            },
+            relationLoadStrategy: 'join',
+        })
+        if(!writer) throw ExceptionList.USER_NOT_WRITER;
+        return {
+            user : UserDtoMapper.UserToUserDto(writer.user),
+            writerInfo : UserDtoMapper.WriterInfoToWriterInfoDto(writer)
+        }
     }
 
     /**
@@ -182,28 +194,6 @@ export class UserService {
             where: {
                 id : {
                     in : userIdList
-                },
-                deleted : false,
-            },
-            select : {
-                id : true,
-                nickname : true,
-            }
-        })
-    }
-
-    /**
-     * @summary 유저 ID로 작가의 유저 정보를 가져오기
-     * @param writerIdList
-     * @returns {userId, nickname}[]
-     * @throws EMPTY_LIST_INPUT
-     */
-    async getUserIdentityDataListByWriterIdList(writerIdList : number[]) : Promise<UserIdentityDto[]> {
-        if (writerIdList.length === 0) throw ExceptionList.EMPTY_LIST_INPUT;
-        return this.prismaService.user.findMany({
-            where: {
-                id : {
-                    in : writerIdList
                 },
                 deleted : false,
             },
@@ -263,26 +253,6 @@ export class UserService {
             }
         })
         if(!user) throw ExceptionList.USER_NOT_FOUND;
-    }
-
-    /**
-     * @summary 해당 유저가 존재하는 지 확인
-     * @param email
-     * @returns {userId, email}
-     * @throws USER_NOT_FOUND
-     */
-    async assertUserExistByEmail(email : string): Promise<{userId: number, email: string}>{
-        const user = await this.prismaService.user.findUnique({
-            where : {
-                email,
-                deleted : false,
-            }
-        })
-        if(!user) throw ExceptionList.USER_NOT_FOUND;
-        return {
-            userId: user.id,
-            email
-        };
     }
 
     /**

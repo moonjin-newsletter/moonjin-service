@@ -3,7 +3,7 @@ import {TypedBody, TypedParam, TypedQuery, TypedRoute} from "@nestia/core";
 import {ICreatePost} from "./api-types/ICreatePost";
 import {PostService} from "./post.service";
 import {StampedPostDto, UnreleasedPostWithSeriesDto, NewsletterDto, PostWithPostContentDto} from "./dto";
-import {createResponseForm} from "../response/responseForm";
+import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {
     CREATE_POST_ERROR,
@@ -31,6 +31,8 @@ import {ICreatePostContent} from "./api-types/ICreatePostContent";
 import {PostContentDto} from "./dto/postContent.dto";
 import {ExceptionList} from "../response/error/errorInstances";
 import {MailService} from "../mail/mail.service";
+import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
+import {EMAIL_NOT_EXIST} from "../response/error/mail";
 
 
 @Controller('post')
@@ -88,27 +90,6 @@ export class PostController {
     }
 
     /**
-     * @summary 해당 글을 뉴스레터로 발송
-     * @param user
-     * @param postId
-     * @returns {sentCount: number}
-     * @throws POST_NOT_FOUND
-     * @throws FORBIDDEN_FOR_POST
-     * @throws FOLLOWER_NOT_FOUND
-     */
-    @TypedRoute.Post(':id/newsletter')
-    @UseGuards(WriterAuthGuard)
-    async sendNewsletter(@User() user:UserAuthDto, @TypedParam('id') postId : number)
-    : Promise<TryCatch<{sentCount: number}, POST_NOT_FOUND | FORBIDDEN_FOR_POST | FOLLOWER_NOT_FOUND>>{
-        await this.postService.assertWriterOfPost(postId,user.id);
-        const sentCount = await this.postService.sendNewsletter(postId);
-        await this.userService.synchronizeNewsLetter(user.id, true);
-        return createResponseForm({
-            sentCount : sentCount
-        })
-    }
-
-    /**
      * @summary 해당 유저의 뉴스레터 목록 가져오기
      * @param user
      * @param seriesOption
@@ -133,26 +114,55 @@ export class PostController {
         return createResponseForm(stampedPostList);
     }
 
+
     /**
-     * @summary stamp 기능
+     * @summary 해당 글을 뉴스레터로 발송
      * @param user
      * @param postId
-     * @throws STAMP_ALREADY_EXIST
+     * @returns {sentCount: number}
+     * @throws POST_NOT_FOUND
+     * @throws FORBIDDEN_FOR_POST
+     * @throws FOLLOWER_NOT_FOUND
+     */
+    @TypedRoute.Post(':postId/newsletter')
+    @UseGuards(WriterAuthGuard)
+    async sendNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number)
+        : Promise<TryCatch<ResponseMessage, POST_NOT_FOUND | FORBIDDEN_FOR_POST | FOLLOWER_NOT_FOUND>>{
+        await this.postService.assertWriterOfPost(postId,user.id);
+        const sentCount = await this.postService.sendNewsletter(postId);
+        await this.userService.synchronizeNewsLetter(user.id, true);
+        return createResponseForm({message : sentCount + "건의 테스트 뉴스레터를 발송했습니다."});
+    }
+
+    /**
+     * @summary 테스트 뉴스레터 전송
+     * @param user
+     * @param postId
+     * @param body
+     * @returns {message: string}
+     * @throws EMAIL_NOT_EXIST
+     * @throws POST_NOT_FOUND
+     * @throws FORBIDDEN_FOR_POST
+     * @throws POST_CONTENT_NOT_FOUND
+     * @throws USER_NOT_WRITER
      */
     @TypedRoute.Post(':postId/newsletter/test')
-    @UseGuards(UserAuthGuard)
-    async sendTestNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number): Promise<TryCatch<{
-        message: string }, USER_NOT_WRITER>>{
+    @UseGuards(WriterAuthGuard)
+    async sendTestNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number, @TypedBody() body:ISendTesNewsletter): Promise<TryCatch<
+        ResponseMessage, EMAIL_NOT_EXIST | POST_NOT_FOUND | FORBIDDEN_FOR_POST | POST_CONTENT_NOT_FOUND | USER_NOT_WRITER>>{
+        if(body.receiverEmails.length == 0 || body.receiverEmails.length > 5) throw ExceptionList.EMAIL_NOT_EXIST;
+        await this.postService.assertWriterOfPost(postId,user.id);
         const postWithPostContent = await this.postService.getPostContentWithPostData(postId);
-        const writerInfo = await this.userService.getWriterInfoByUserId(user.id);
+        const writer = await this.userService.getWriterInfoByUserId(user.id);
+
         await this.mailService.sendNewsLetterWithHtml({
-            emailList : [user.email],
-            senderMailAddress : writerInfo.moonjinId + "@moonjin.site",
+            emailList : body.receiverEmails,
+            senderMailAddress : writer.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
             senderName: user.nickname,
             subject: "[테스트 뉴스레터] "+postWithPostContent.post.title,
             html: editorJsToHtml(postWithPostContent.postContent)
         })
-        return createResponseForm({message : "테스트 뉴스레터를 발송했습니다."});
+        return createResponseForm({message : body.receiverEmails.length + "건의 테스트 뉴스레터를 발송했습니다."});
     }
 
     /**
