@@ -6,6 +6,7 @@ import {UtilModule} from "../util/util.module";
 import {AuthModule} from "../auth/auth.module";
 import {SeriesModule} from "../series/series.module";
 import {UserModule} from "../user/user.module";
+import {MailModule} from "../mail/mail.module";
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import {UserModule} from "../user/user.module";
       UtilModule,
       AuthModule,
       SeriesModule,
-      UserModule
+      UserModule,
+      MailModule
   ],
   providers: [PostService],
   controllers: [PostController]

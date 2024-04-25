@@ -17,7 +17,7 @@ import {
     CREATE_POST_ERROR,
     FORBIDDEN_FOR_POST,
     POST_CONTENT_NOT_FOUND,
-    POST_NOT_FOUND,
+    POST_NOT_FOUND, SEND_NEWSLETTER_ERROR,
     STAMP_ALREADY_EXIST
 } from "./post";
 import {FOLLOW_ALREADY_ERROR, FOLLOW_MYSELF_ERROR, FOLLOWER_ALREADY_EXIST, FOLLOWER_NOT_FOUND} from "./user";
@@ -61,6 +61,8 @@ export const ExceptionList= {
     POST_CONTENT_NOT_FOUND : new Exception(typia.random<POST_CONTENT_NOT_FOUND>()),
     /// stamp
     STAMP_ALREADY_EXIST : new Exception(typia.random<STAMP_ALREADY_EXIST>()),
+    /// newsletter
+    SEND_NEWSLETTER_ERROR : new Exception(typia.random<SEND_NEWSLETTER_ERROR>()),
 
     // Series
     CREATE_SERIES_ERROR : new Exception(typia.random<CREATE_SERIES_ERROR>()),

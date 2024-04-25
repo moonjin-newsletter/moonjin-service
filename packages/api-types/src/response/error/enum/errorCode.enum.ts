@@ -38,6 +38,9 @@ export enum ErrorCodeEnum {
     POST_CONTENT_NOT_FOUND = "0103",
     /// stamp
     STAMP_ALREADY_EXIST= "0110",
+    /// newsletter
+    SEND_NEWSLETTER_ERROR = "0120",
+
     // series
     CREATE_SERIES_ERROR = "0201",
     SERIES_NOT_FOUND = "0202",
@@ -57,6 +60,7 @@ export enum ErrorCodeEnum {
     FORBIDDEN_FOR_LETTER = "0501",
     LETTER_NOT_FOUND = "0502",
     LETTER_ALREADY_READ = "0503",
+
 
 
     //File

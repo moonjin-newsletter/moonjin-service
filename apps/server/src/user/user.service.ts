@@ -11,7 +11,7 @@ import {
     WriterDto,
     FollowerDto,
     ExternalFollowerDto,
-    ChangeUserProfileDto
+    ChangeUserProfileDto, AllFollowerDto
 } from "./dto";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import { WriterInfoDto} from "../auth/dto";
@@ -99,21 +99,15 @@ export class UserService {
     }
 
     /**
-     * @summary 해당 작가의 팔로워 목록을 가져오기
+     * @summary 해당 작가의 모든 팔로워 목록을 가져오기
      * @param writerId
-     * @returns userId[]
+     * @returns AllFollowerDto
      */
-    async getFollowerAllByUserId(writerId : number): Promise<number[] | null> {
-        const followerList = await this.prismaService.follow.findMany({ // TODO : 팔로워가 유저 삭제가 되었는지 확인 필요
-            where: {
-                writerId
-            },
-            select:{
-                followerId : true
-            }
-        })
-        if(!followerList) return null;
-        return followerList.map(follower => follower.followerId);
+    async getAllFollowerByWriterId(writerId : number): Promise<AllFollowerDto> {
+        return {
+            followerList: await this.getAllInternalFollowerByWriterId(writerId),
+            externalFollowerList: await this.getExternalFollowerListByWriterId(writerId)
+        }
     }
 
     /**
@@ -159,6 +153,21 @@ export class UserService {
             }
         });
         return writerInfoList.map(writerInfo => UserDtoMapper.WriterInfoToWriterInfoDto(writerInfo));
+    }
+
+    /**
+     * @summary 유저 ID로 작가 정보 가져오기
+     * @param writerId
+     * @returns WriterInfoDto
+     * @throws USER_NOT_WRITER
+     */
+    async getWriterInfoByUserId(writerId: number): Promise<WriterInfoDto> {
+        const writerInfo = await this.prismaService.writerInfo.findUnique({
+            where: {
+                userId:writerId
+            }});
+        if(!writerInfo) throw ExceptionList.USER_NOT_WRITER;
+        return UserDtoMapper.WriterInfoToWriterInfoDto(writerInfo);
     }
 
     /**
@@ -281,19 +290,20 @@ export class UserService {
      * @param writerId
      * @returns UserProfileDto[]
      */
-    async getFollowerListByWriterId(writerId: number): Promise<FollowerDto[]> {
+    async getAllInternalFollowerByWriterId(writerId: number): Promise<FollowerDto[]> {
         const followerList = await this.prismaService.follow.findMany({
-            where: {
+            where :{
                 writerId,
-                deleted: false,
+                user :{
+                    deleted : false
+                }
             },
-            include:{
+            include : {
                 user : true
             },
-            orderBy:{
-                createdAt: 'desc'
-            },
+            relationLoadStrategy: 'join'
         })
+        if(followerList.length == 0) return [];
         return followerList.map(follower => {
             return UserDtoMapper.FollowAndUserToFollowerDto(follower.user, follower.createdAt);
         })

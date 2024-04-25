@@ -4,6 +4,7 @@ import { newsLetterDto } from './dto/mail.dto';
 import * as process from "process";
 import FormData from "form-data";
 import {ExceptionList} from "../response/error/errorInstances";
+import {sendNewsLetterWithHtmlDto} from "./dto";
 
 @Injectable()
 export class MailService {
@@ -98,6 +99,10 @@ export class MailService {
     }
   }
 
+  /**
+   *
+   * @param mailInfo
+   */
   async sendNewsLetter(mailInfo: newsLetterDto): Promise<boolean> {
     try {
       await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
@@ -106,6 +111,27 @@ export class MailService {
         bcc: mailInfo.emailList,
         subject: mailInfo.subject,
         template: mailInfo.templateName,
+        'o:tracking': 'yes',
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      throw ExceptionList.EMAIL_NOT_EXIST
+    }
+  }
+
+  /**
+   * @summary 해당 email list에게 뉴스레터를 보내는 기능
+   * @param mailInfo
+   */
+  async sendNewsLetterWithHtml(mailInfo: sendNewsLetterWithHtmlDto): Promise<boolean> {
+    try {
+      await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
+        from: `${mailInfo.senderName} <${mailInfo.senderMailAddress}>`,
+        to: `moonjin-newsletter@${this.MAILGUN_DOMAIN}`,
+        bcc: mailInfo.emailList,
+        subject: mailInfo.subject,
+        html: mailInfo.html,
         'o:tracking': 'yes',
       });
       return true;

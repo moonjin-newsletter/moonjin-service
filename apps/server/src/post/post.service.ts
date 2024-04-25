@@ -8,7 +8,7 @@ import {
 } from "./dto";
 import {PrismaService} from "../prisma/prisma.service";
 import PostDtoMapper from "./postDtoMapper";
-import {Follow, Stamp} from "@prisma/client";
+import {Stamp} from "@prisma/client";
 import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
 import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
@@ -21,13 +21,16 @@ import {convertEditorJsonToPostPreview} from "../common";
 import {CreatePostContentDto} from "./server-dto/createPostContent.dto";
 import {PostContentDto} from "./dto/postContent.dto";
 import {CreatePostDto} from "./server-dto/createPost.dto";
+import {PostWithContents} from "./prisma/postWithContents.prisma.type";
+import {UserService} from "../user/user.service";
 
 @Injectable()
 export class PostService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
-        private readonly authValidationService: AuthValidationService
+        private readonly authValidationService: AuthValidationService,
+        private readonly userService:UserService,
     ) {}
 
     /**
@@ -153,30 +156,49 @@ export class PostService {
      * @param postId
      * @return 전송된 뉴스레터 수
      * @throws POST_NOT_FOUND
+     * @throws POST_CONTENT_NOT_FOUND
      * @throws FOLLOWER_NOT_FOUND
      */
     async sendNewsletter(postId : number) : Promise<number> {
-        const post = await this.prismaService.post.findUnique({
-            where : {
-                id : postId,
-                deleted : false,
-            }
-        })
-        if(!post) throw ExceptionList.POST_NOT_FOUND;
+        const postWithContent = await this.getPostWithContentByPostId(postId);
+        const followers =await this.userService.getAllFollowerByWriterId(postWithContent.post.writerId);
+        if(followers.followerList.length == 0 && followers.externalFollowerList.length == 0) throw ExceptionList.FOLLOWER_NOT_FOUND;
 
-        const followers : Follow[] = await this.prismaService.follow.findMany({ // TODO : follower 가 deleted 아닌 지 join해서 확인하는 로직 추가
-            where :{
-                writerId : post.writerId
-            }
-        })
-        if(followers.length === 0) throw ExceptionList.FOLLOWER_NOT_FOUND;
+        const sentCount = await this.sendWebNewsletter(postId, followers.followerList.map(follower => follower.user.id));
 
+        // const emailList = followers.externalFollowerList.map(follower => follower.email);
+        // const writerInfo = await this.userService.getUserInfoById(postWithContent.post.writerId);
+        //
+        // followers.followerList.map(follower => {
+        //     emailList.push(follower.user.email)
+        // });
+        //
+        // const sendNewsLetterDto : sendNewsLetterWithHtmlDto = {
+        //     emailList,
+        //     senderName: string;
+        //     senderMailAddress: string;
+        //     subject: string;
+        //     html: string;
+        // }
+        // await this.mailService.sendNewsLetterToFollowers(postWithContent, followers.externalFollowerList.map(follower => follower.email));
+
+        return sentCount;
+    }
+
+    /**
+     * 해당 유저들에게 Web 뉴스레터 전송하기
+     * @param postId
+     * @param receiverIdList
+     * @return 전송된 뉴스레터 수
+     * @throws SEND_NEWSLETTER_ERROR
+     */
+    async sendWebNewsletter(postId: number, receiverIdList: number[]): Promise<number>{
         try {
             const now = this.utilService.getCurrentDateInKorea();
-            const newsletterData = followers.map(follower => {
+            const newsletterData = receiverIdList.map(receiverId => {
                 return {
                     postId,
-                    receiverId : follower.followerId,
+                    receiverId,
                     sentAt : now,
                 }
             });
@@ -184,10 +206,41 @@ export class PostService {
                 data : newsletterData,
                 skipDuplicates : true
             })
+            console.log(sentNewsletter);
             return sentNewsletter.count;
         } catch (error) {
             console.error(error);
-            throw error;
+            throw ExceptionList.SEND_NEWSLETTER_ERROR;
+        }
+    }
+
+    /**
+     * @summary 해당 Post와 글 내용 반환
+     * @param postId
+     * @return PostWithPostContentDto
+     * @throws POST_NOT_FOUND
+     * @throws POST_CONTENT_NOT_FOUND
+     */
+    async getPostWithContentByPostId(postId: number): Promise<PostWithPostContentDto>{
+        const postWithContents: PostWithContents | null = await this.prismaService.post.findUnique({
+            where : {
+                id : postId,
+                deleted : false,
+            },
+            include:{
+                postContent:{
+                    orderBy:{
+                        createdAt : 'desc'
+                    }
+                }
+            },
+            relationLoadStrategy: 'join'
+        })
+        if(!postWithContents) throw ExceptionList.POST_NOT_FOUND;
+        if(postWithContents && postWithContents.postContent.length === 0) throw ExceptionList.POST_CONTENT_NOT_FOUND;
+        return {
+            post: PostDtoMapper.PostToPostDto(postWithContents),
+            postContent: PostDtoMapper.PostContentToPostContentDto(postWithContents.postContent[0])
         }
     }
 

@@ -30,6 +30,7 @@ import {PaginationOptionsDto} from "../common/pagination/dto";
 import {ICreatePostContent} from "./api-types/ICreatePostContent";
 import {PostContentDto} from "./dto/postContent.dto";
 import {ExceptionList} from "../response/error/errorInstances";
+import {MailService} from "../mail/mail.service";
 
 
 @Controller('post')
@@ -37,7 +38,8 @@ export class PostController {
     constructor(
         private readonly postService: PostService,
         private readonly seriesService: SeriesService,
-        private readonly userService:UserService
+        private readonly userService:UserService,
+        private readonly mailService: MailService
     ) {}
 
     /**
@@ -129,6 +131,28 @@ export class PostController {
     async getStampedNewsletter(@User() user:UserAuthDto): Promise<Try<StampedPostDto[]>>{
         const stampedPostList = await this.postService.getStampedPostListByUserId(user.id);
         return createResponseForm(stampedPostList);
+    }
+
+    /**
+     * @summary stamp 기능
+     * @param user
+     * @param postId
+     * @throws STAMP_ALREADY_EXIST
+     */
+    @TypedRoute.Post(':postId/newsletter/test')
+    @UseGuards(UserAuthGuard)
+    async sendTestNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number): Promise<TryCatch<{
+        message: string }, USER_NOT_WRITER>>{
+        const postWithPostContent = await this.postService.getPostContentWithPostData(postId);
+        const writerInfo = await this.userService.getWriterInfoByUserId(user.id);
+        await this.mailService.sendNewsLetterWithHtml({
+            emailList : [user.email],
+            senderMailAddress : writerInfo.moonjinId + "@moonjin.site",
+            senderName: user.nickname,
+            subject: "[테스트 뉴스레터] "+postWithPostContent.post.title,
+            html: editorJsToHtml(postWithPostContent.postContent)
+        })
+        return createResponseForm({message : "테스트 뉴스레터를 발송했습니다."});
     }
 
     /**

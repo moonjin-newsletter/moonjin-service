@@ -140,7 +140,7 @@ export class UserController {
     @TypedRoute.Get("follower")
     @UseGuards(WriterAuthGuard)
     async getFollowerList(@User() user : UserAuthDto) : Promise<Try<AllFollowerDto>> {
-        const followerList = await this.userService.getFollowerListByWriterId(user.id)
+        const followerList = await this.userService.getAllInternalFollowerByWriterId(user.id)
         const externalFollowerList = await this.userService.getExternalFollowerListByWriterId(user.id);
         return createResponseForm({
             followerList, externalFollowerList
