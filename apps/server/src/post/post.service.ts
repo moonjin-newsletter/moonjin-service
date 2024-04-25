@@ -184,6 +184,16 @@ export class PostService {
             html: editorJsToHtml(postWithContent.postContent),
         }
         await this.mailService.sendNewsLetterWithHtml(sendNewsLetterDto);
+        await this.prismaService.post.update({
+            where : {
+                id : postId
+            },
+            data : {
+                releasedAt : this.utilService.getCurrentDateInKorea(),
+                status : true
+            }
+
+        })
         return sentCount;
     }
 

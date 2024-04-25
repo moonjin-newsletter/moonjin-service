@@ -97,7 +97,7 @@ export class UserController {
     @UseGuards(UserAuthGuard)
     async getFollowingUserList(@User() user : UserAuthDto) : Promise<ResponseForm<FollowingWriterProfileDto[]>> {
         const followingWriterList = await this.userService.getFollowingWriterListByFollowerId(user.id);
-        return createResponseForm(followingWriterList);
+        return createResponseForm(followingWriterList.filter(writer => writer.user.id != user.id));
     }
 
     /**
@@ -143,7 +143,8 @@ export class UserController {
         const followerList = await this.userService.getAllInternalFollowerByWriterId(user.id)
         const externalFollowerList = await this.userService.getExternalFollowerListByWriterId(user.id);
         return createResponseForm({
-            followerList, externalFollowerList
+            followerList : followerList.filter(follower => follower.user.id != user.id)
+            ,externalFollowerList
         });
     }
 
