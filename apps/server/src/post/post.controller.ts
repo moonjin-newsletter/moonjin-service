@@ -7,7 +7,7 @@ import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {
     CREATE_POST_ERROR,
-    FORBIDDEN_FOR_POST,
+    FORBIDDEN_FOR_POST, NEWSLETTER_CATEGORY_NOT_FOUND,
     POST_CONTENT_NOT_FOUND,
     POST_NOT_FOUND, SEND_NEWSLETTER_ERROR,
     STAMP_ALREADY_EXIST
@@ -121,6 +121,7 @@ export class PostController {
      * @param postId
      * @returns {sentCount: number}
      * @throws POST_NOT_FOUND
+     * @throws NEWSLETTER_CATEGORY_NOT_FOUND
      * @throws FORBIDDEN_FOR_POST
      * @throws POST_CONTENT_NOT_FOUND
      * @throws FOLLOWER_NOT_FOUND
@@ -130,7 +131,7 @@ export class PostController {
     @TypedRoute.Post(':postId/newsletter')
     @UseGuards(WriterAuthGuard)
     async sendNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number)
-        : Promise<TryCatch<ResponseMessage, POST_NOT_FOUND | FORBIDDEN_FOR_POST | POST_CONTENT_NOT_FOUND | FOLLOWER_NOT_FOUND | SEND_NEWSLETTER_ERROR | USER_NOT_WRITER>>{
+        : Promise<TryCatch<ResponseMessage, POST_NOT_FOUND | FORBIDDEN_FOR_POST | NEWSLETTER_CATEGORY_NOT_FOUND | POST_CONTENT_NOT_FOUND | FOLLOWER_NOT_FOUND | SEND_NEWSLETTER_ERROR | USER_NOT_WRITER>>{
         await this.postService.assertWriterOfPost(postId,user.id);
         const sentCount = await this.postService.sendNewsletter(postId);
         await this.userService.synchronizeNewsLetter(user.id, true);
@@ -146,16 +147,18 @@ export class PostController {
      * @throws EMAIL_NOT_EXIST
      * @throws POST_NOT_FOUND
      * @throws FORBIDDEN_FOR_POST
+     * @throws NEWSLETTER_CATEGORY_NOT_FOUND
      * @throws POST_CONTENT_NOT_FOUND
      * @throws USER_NOT_WRITER
      */
     @TypedRoute.Post(':postId/newsletter/test')
     @UseGuards(WriterAuthGuard)
     async sendTestNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number, @TypedBody() body:ISendTesNewsletter): Promise<TryCatch<
-        ResponseMessage, EMAIL_NOT_EXIST | POST_NOT_FOUND | FORBIDDEN_FOR_POST | POST_CONTENT_NOT_FOUND | USER_NOT_WRITER>>{
+        ResponseMessage, EMAIL_NOT_EXIST | POST_NOT_FOUND | FORBIDDEN_FOR_POST | NEWSLETTER_CATEGORY_NOT_FOUND | POST_CONTENT_NOT_FOUND | USER_NOT_WRITER>>{
         if(body.receiverEmails.length == 0 || body.receiverEmails.length > 5) throw ExceptionList.EMAIL_NOT_EXIST;
         await this.postService.assertWriterOfPost(postId,user.id);
         const postWithPostContent = await this.postService.getPostContentWithPostData(postId);
+        if(postWithPostContent.post.category == null || postWithPostContent.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
         const writer = await this.userService.getWriterInfoByUserId(user.id);
 
         await this.mailService.sendNewsLetterWithHtml({

@@ -158,6 +158,7 @@ export class PostService {
      * @param postId
      * @return 전송된 뉴스레터 수
      * @throws POST_NOT_FOUND
+     * @throws NEWSLETTER_CATEGORY_NOT_FOUND
      * @throws POST_CONTENT_NOT_FOUND
      * @throws FOLLOWER_NOT_FOUND
      * @throws SEND_NEWSLETTER_ERROR
@@ -165,6 +166,8 @@ export class PostService {
      */
     async sendNewsletter(postId : number) : Promise<number> {
         const postWithContent = await this.getPostWithContentByPostId(postId);
+        if(postWithContent.post.category == null || postWithContent.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
+
         const followers =await this.userService.getAllFollowerByWriterId(postWithContent.post.writerId);
         if(followers.followerList.length == 0 && followers.externalFollowerList.length == 0) throw ExceptionList.FOLLOWER_NOT_FOUND;
 
