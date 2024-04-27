@@ -15,7 +15,6 @@ import {
   FileTypeEnum,
   PostWithPostContentDto,
   ResponseForm,
-  SeriesDto,
   SeriesSummaryDto,
 } from "@moonjin/api-types";
 import { Listbox } from "@headlessui/react";
@@ -24,10 +23,7 @@ import useSWR from "swr";
 import { fileUpload } from "../../../../lib/file/fileUpload";
 import Image from "next/image";
 
-export default function NewEditorJS() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const overlay = useOverlay();
+export default function SavedEditorJS() {
   const {
     watch,
     setValue,
@@ -38,11 +34,11 @@ export default function NewEditorJS() {
 
   const { data: seriesList } =
     useSWR<ResponseForm<SeriesSummaryDto[]>>("series/me/summary");
+  console.log(seriesList);
 
-  const isSeries = searchParams.get("seriesId") ?? null;
-  const seriesInfo = isSeries
-    ? useSWR<ResponseForm<SeriesDto>>(`series/writing/${isSeries}`)
-    : null;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const overlay = useOverlay();
 
   const editor = useMemo(() => {
     return new EditorJS({
@@ -70,7 +66,6 @@ export default function NewEditorJS() {
               json: {
                 ...value,
                 content: outputData,
-                seriesId: seriesInfo?.data?.data?.id,
               },
             })
             .then(async (res) => {
@@ -98,7 +93,6 @@ export default function NewEditorJS() {
                 overlay={overlay}
                 outputData={outputData}
                 title={title}
-                isSeries={seriesInfo?.data?.data}
               />
             );
           });
@@ -150,10 +144,8 @@ export default function NewEditorJS() {
         </div>
       </section>
       <section className="mt-48 max-w-[680px] w-full">
-        {isSeries && seriesInfo && (
-          <span className="px-4 font-serif text-grayscale-500">
-            # {seriesInfo?.data?.data?.title}
-          </span>
+        {searchParams.get("seriesId") && (
+          <span className="px-4 font-serif text-grayscale-500"># 시리즈</span>
         )}
 
         <input
@@ -174,19 +166,17 @@ function OverlaySetting({
   seriesList,
   title,
   outputData,
-  isSeries,
 }: {
   overlay: any;
   seriesList: any | null;
   title: any | null;
   outputData: any;
-  isSeries?: any;
 }) {
   const router = useRouter();
   const { register, handleSubmit, watch, setValue } = useForm<any>({
     defaultValues: {
-      type: isSeries ? "시리즈" : "자유글",
-      series: isSeries ? isSeries : seriesList?.data[0] ?? null,
+      type: "자유글",
+      series: seriesList?.data[0] ?? null,
       cover: null,
     },
   });

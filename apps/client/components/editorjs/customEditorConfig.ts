@@ -1,34 +1,32 @@
 import EditorJS from "@editorjs/editorjs";
 import Header from "@editorjs/header";
+import LinkTool from "@editorjs/link";
+import NestedList from "@editorjs/nested-list";
+import Quote from "@editorjs/quote";
+import Delimiter from "@editorjs/delimiter";
 import ImageTool from "@editorjs/image";
 import Underline from "@editorjs/underline";
 import { fileUpload } from "../../lib/file/fileUpload";
 import { FileTypeEnum } from "@moonjin/api-types";
 
-/**
-@deprecated:사용하지 않음
- */
-export const customEditorJS = (data?: any[]) =>
-  new EditorJS({
-    holder: "editorjs",
-    autofocus: true,
-    readOnly: false,
-
-    data: {
-      blocks: data ?? [],
-    },
-    /**
-     * Available Tools list.
-     * Pass Tool's class or Settings object for each Tool you want to use
-     */
-    onReady: () => {
-      console.log("Editor.js is ready to work!");
-    },
-  });
-
 export const EDITOR_JS_TOOLS = {
   header: Header,
   underline: Underline,
+  quote: Quote,
+  delimiter: Delimiter,
+  linkTool: {
+    class: LinkTool,
+    config: {
+      endpoint: "http://localhost:8008/fetchUrl", // Your backend endpoint for url data fetching,
+    },
+  },
+  list: {
+    class: NestedList,
+    inlineToolbar: true,
+    config: {
+      defaultStyle: "unordered",
+    },
+  },
   image: {
     class: ImageTool,
     config: {

@@ -11,6 +11,7 @@ import LetterOut from "./letter_out.svg";
 import Empty from "./empty.svg";
 import PaperPlaneTilt from "./paper-plane-tilt.svg";
 import Save from "./save.svg";
+import Image from "./image.svg";
 
 export {
   Kakao,
@@ -26,4 +27,5 @@ export {
   Empty,
   PaperPlaneTilt,
   Save,
+  Image,
 };
