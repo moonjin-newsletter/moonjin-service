@@ -39,9 +39,9 @@ export default function NewEditorJS() {
   const { data: seriesList } =
     useSWR<ResponseForm<SeriesSummaryDto[]>>("series/me/summary");
 
-  const isSeries = searchParams.get("seriesId") ?? null;
-  const seriesInfo = isSeries
-    ? useSWR<ResponseForm<SeriesDto>>(`series/writing/${isSeries}`)
+  const mySeriesId = searchParams.get("seriesId") ?? null;
+  const mySeries = mySeriesId
+    ? useSWR<ResponseForm<SeriesDto>>(`series/writing/${mySeriesId}`)
     : null;
 
   const editor = useMemo(() => {
@@ -70,7 +70,7 @@ export default function NewEditorJS() {
               json: {
                 ...value,
                 content: outputData,
-                seriesId: seriesInfo?.data?.data?.id,
+                seriesId: mySeries?.data?.data?.id,
               },
             })
             .then(async (res) => {
@@ -98,7 +98,7 @@ export default function NewEditorJS() {
                 overlay={overlay}
                 outputData={outputData}
                 title={title}
-                isSeries={seriesInfo?.data?.data}
+                mySeriesInfo={mySeries?.data?.data}
               />
             );
           });
@@ -150,9 +150,9 @@ export default function NewEditorJS() {
         </div>
       </section>
       <section className="mt-48 max-w-[680px] w-full">
-        {isSeries && seriesInfo && (
+        {mySeriesId && mySeries && (
           <span className="px-4 font-serif text-grayscale-500">
-            # {seriesInfo?.data?.data?.title}
+            # {mySeries?.data?.data?.title}
           </span>
         )}
 
@@ -174,19 +174,19 @@ function OverlaySetting({
   seriesList,
   title,
   outputData,
-  isSeries,
+  mySeriesInfo,
 }: {
   overlay: any;
   seriesList: any | null;
   title: any | null;
   outputData: any;
-  isSeries?: any;
+  mySeriesInfo?: any;
 }) {
   const router = useRouter();
   const { register, handleSubmit, watch, setValue } = useForm<any>({
     defaultValues: {
-      type: isSeries ? "시리즈" : "자유글",
-      series: isSeries ? isSeries : seriesList?.data[0] ?? null,
+      type: mySeriesInfo ? "시리즈" : "자유글",
+      series: mySeriesInfo ? mySeriesInfo : seriesList?.data[0] ?? null,
       cover: null,
     },
   });
