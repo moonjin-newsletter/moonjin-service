@@ -103,19 +103,6 @@ export class PostController {
     }
 
     /**
-     * @summary 해당 유저의 스탬프 이력 가져오기
-     * @param user
-     * @returns StampedPostDto[]
-     */
-    @TypedRoute.Get('stamp')
-    @UseGuards(UserAuthGuard)
-    async getStampedNewsletter(@User() user:UserAuthDto): Promise<Try<StampedPostDto[]>>{
-        const stampedPostList = await this.postService.getStampedPostListByUserId(user.id);
-        return createResponseForm(stampedPostList);
-    }
-
-
-    /**
      * @summary 해당 글을 뉴스레터로 발송
      * @param user
      * @param postId
@@ -157,13 +144,14 @@ export class PostController {
     @UseGuards(WriterAuthGuard)
     async sendTestNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number, @TypedBody() body:ISendTesNewsletter): Promise<TryCatch<
         ResponseMessage & {sentCount : number}, EMAIL_NOT_EXIST | POST_NOT_FOUND | FORBIDDEN_FOR_POST | NEWSLETTER_CATEGORY_NOT_FOUND | POST_CONTENT_NOT_FOUND | USER_NOT_WRITER>>{
+
         if(body.receiverEmails.length == 0 || body.receiverEmails.length > 5) throw ExceptionList.EMAIL_NOT_EXIST;
         await this.postService.assertWriterOfPost(postId,user.id);
         const postWithPostContent = await this.postService.getPostContentWithPostData(postId);
         if(postWithPostContent.post.category == null || postWithPostContent.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
         const writer = await this.userService.getWriterInfoByUserId(user.id);
 
-        await this.mailService.sendNewsLetterWithHtml({
+        const sentCount = await this.mailService.sendNewsLetterWithHtml({
             emailList : body.receiverEmails,
             senderMailAddress : writer.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
             senderName: user.nickname,
@@ -171,27 +159,8 @@ export class PostController {
             html: editorJsToHtml(postWithPostContent.postContent)
         })
         return createResponseForm({
-            message : body.receiverEmails.length + "건의 테스트 뉴스레터를 발송했습니다.",
-            sentCount : body.receiverEmails.length
-        });
-    }
-
-    /**
-     * @summary stamp 기능
-     * @param user
-     * @param postId
-     * @throws STAMP_ALREADY_EXIST
-     */
-    @TypedRoute.Post(':postId/stamp')
-    @UseGuards(UserAuthGuard)
-    async stampPost(@User() user:UserAuthDto, @TypedParam('postId') postId : number) : Promise<TryCatch<{
-        message: string,
-        createdAt: Date
-    }, STAMP_ALREADY_EXIST>>{
-        const stamp = await this.postService.stampPost( postId, user.id);
-        return createResponseForm({
-            message : "스탬프를 찍었습니다.",
-            createdAt : stamp.createdAt
+            message : sentCount + "건의 테스트 뉴스레터를 발송했습니다.",
+            sentCount,
         });
     }
 
@@ -313,7 +282,7 @@ export class PostController {
         const postContent = await this.postService.getPostContentWithPostData(postId);
         try{
             return createResponseForm(editorJsToHtml(postContent.postContent));
-        }catch (eror){
+        }catch (error){
             throw ExceptionList.FORBIDDEN_FOR_POST;
         }
     }
@@ -331,5 +300,38 @@ export class PostController {
     {
         const postContent = await this.postService.getPostContentWithPostData(postId);
         return createResponseForm(postContent)
+    }
+
+
+    /**
+     * @summary 해당 유저의 스탬프 이력 가져오기
+     * @param user
+     * @returns StampedPostDto[]
+     */
+    @TypedRoute.Get('stamp')
+    @UseGuards(UserAuthGuard)
+    async getStampedNewsletter(@User() user:UserAuthDto): Promise<Try<StampedPostDto[]>>{
+        const stampedPostList = await this.postService.getStampedPostListByUserId(user.id);
+        return createResponseForm(stampedPostList);
+    }
+
+
+    /**
+     * @summary stamp 기능
+     * @param user
+     * @param postId
+     * @throws STAMP_ALREADY_EXIST
+     */
+    @TypedRoute.Post(':postId/stamp')
+    @UseGuards(UserAuthGuard)
+    async stampPost(@User() user:UserAuthDto, @TypedParam('postId') postId : number) : Promise<TryCatch<{
+        message: string,
+        createdAt: Date
+    }, STAMP_ALREADY_EXIST>>{
+        const stamp = await this.postService.stampPost( postId, user.id);
+        return createResponseForm({
+            message : "스탬프를 찍었습니다.",
+            createdAt : stamp.createdAt
+        });
     }
 }

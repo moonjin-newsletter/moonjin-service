@@ -123,8 +123,9 @@ export class MailService {
   /**
    * @summary 해당 emailList에게 html 뉴스레터를 보내는 기능
    * @param mailInfo
+   * @throws EMAIL_NOT_EXIST
    */
-  async sendNewsLetterWithHtml(mailInfo: sendNewsLetterWithHtmlDto): Promise<boolean> {
+  async sendNewsLetterWithHtml(mailInfo: sendNewsLetterWithHtmlDto): Promise<number> {
     try {
       const recipientVariables= this.getRecipientVariables(mailInfo.emailList);
       await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
@@ -135,7 +136,7 @@ export class MailService {
         html: mailInfo.html,
         'o:tracking': 'yes',
       });
-      return true;
+      return mailInfo.emailList.length;
     } catch (error) {
       console.log(error);
       throw ExceptionList.EMAIL_NOT_EXIST

@@ -167,8 +167,8 @@ export class PostService {
         const postWithContent = await this.getPostWithContentByPostId(postId);
         if(postWithContent.post.category == null || postWithContent.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
 
-        const followers =await this.userService.getAllFollowerByWriterId(postWithContent.post.writerId);
-        const sentCount = await this.sendWebNewsletter(postId, followers.followerList.map(follower => follower.user.id));
+        const followers = await this.userService.getAllFollowerByWriterId(postWithContent.post.writerId);
+        await this.sendWebNewsletter(postId, followers.followerList.map(follower => follower.user.id));
         const emailList = followers.externalFollowerList.map(follower => follower.email);
         const writer = await this.userService.getWriterInfoByUserId(postWithContent.post.writerId);
 
@@ -183,7 +183,7 @@ export class PostService {
             subject: postWithContent.post.title,
             html: editorJsToHtml(postWithContent.postContent),
         }
-        await this.mailService.sendNewsLetterWithHtml(sendNewsLetterDto);
+        const sentCount = await this.mailService.sendNewsLetterWithHtml(sendNewsLetterDto);
         await this.prismaService.post.update({
             where : {
                 id : postId
@@ -218,7 +218,6 @@ export class PostService {
                 data : newsletterData,
                 skipDuplicates : true
             })
-            console.log(sentNewsletter);
             return sentNewsletter.count;
         } catch (error) {
             console.error(error);
