@@ -7,7 +7,7 @@ import {
     UnreleasedPostWithSeriesDto,
     NewsletterDto,
     PostWithContentDto,
-    PostWithContentAndSeriesDto, PostDto
+    PostWithContentAndSeriesDto, PostMetaDataDto
 } from "./dto";
 import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
@@ -306,7 +306,7 @@ export class PostController {
      */
     @TypedRoute.Get(":id/metadata")
     @UseGuards(UserAuthGuard)
-    async getPostMetadata(@TypedParam('id') postId : number): Promise<TryCatch<PostDto | UnreleasedPostWithSeriesDto,
+    async getPostMetadata(@TypedParam('id') postId : number): Promise<TryCatch<PostMetaDataDto | UnreleasedPostWithSeriesDto,
         POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
     {
         const postContent = await this.postService.getPostById(postId);
@@ -317,7 +317,9 @@ export class PostController {
                 series
             })
         }
-        return createResponseForm(postContent)
+        return createResponseForm({
+            post :postContent
+        })
     }
 
     @TypedRoute.Get(':id/html')
