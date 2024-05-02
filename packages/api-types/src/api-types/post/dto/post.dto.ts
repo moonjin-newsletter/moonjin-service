@@ -5,7 +5,7 @@ export interface PostDto {
     writerId: number;
     preview: string;
     clicks: number;
-    cover: string | null;
+    cover: string;
     seriesId : number;
     lastUpdatedAt: Date;
     releasedAt: Date | null;
