@@ -1,8 +1,8 @@
 "use client";
 
-import * as I from "../../../../components/icons";
+import * as I from "../../../../../components/icons";
 import EditorJS from "@editorjs/editorjs";
-import { EDITOR_JS_TOOLS } from "../../../../components/editorjs/customEditorConfig";
+import { EDITOR_JS_TOOLS } from "../../../../../components/editorjs/customEditorConfig";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useOverlay } from "@toss/use-overlay";
@@ -10,7 +10,7 @@ import { useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PiCaretUpDownBold } from "react-icons/pi";
 
-import csr from "../../../../lib/fetcher/csr";
+import csr from "../../../../../lib/fetcher/csr";
 import {
   FileTypeEnum,
   PostWithPostContentDto,
@@ -20,7 +20,7 @@ import {
 import { Listbox } from "@headlessui/react";
 import Link from "next/link";
 import useSWR from "swr";
-import { fileUpload } from "../../../../lib/file/fileUpload";
+import { fileUpload } from "../../../../../lib/file/fileUpload";
 import Image from "next/image";
 
 export default function SavedEditorJS() {

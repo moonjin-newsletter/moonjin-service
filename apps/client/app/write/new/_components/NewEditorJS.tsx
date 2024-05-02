@@ -13,7 +13,7 @@ import { PiCaretUpDownBold } from "react-icons/pi";
 import csr from "../../../../lib/fetcher/csr";
 import {
   FileTypeEnum,
-  PostWithPostContentDto,
+  PostWithContentDto,
   ResponseForm,
   SeriesDto,
   SeriesSummaryDto,
@@ -75,9 +75,9 @@ export default function NewEditorJS() {
             })
             .then(async (res) => {
               const { data: nInfo } =
-                await res.json<ResponseForm<PostWithPostContentDto>>();
+                await res.json<ResponseForm<PostWithContentDto>>();
               toast.success("글을 저장했습니다");
-              router.push(`/write/${nInfo.post.id}`);
+              router.push(`/write/edit/${nInfo.post.id}`);
             })
             .catch(() => toast.error("글 저장에 실패하였습니다"));
         })
@@ -207,9 +207,9 @@ function OverlaySetting({
       })
       .then(async (res) => {
         const { data: nInfo } =
-          await res.json<ResponseForm<PostWithPostContentDto>>();
+          await res.json<ResponseForm<PostWithContentDto>>();
         toast.success("글을 저장했습니다");
-        router.push(`/write/${nInfo.post.id}`);
+        router.push(`/write/publish/${nInfo.post.id}`);
       })
       .catch(() => toast.error("글 저장에 실패하였습니다"));
   }
@@ -224,7 +224,7 @@ function OverlaySetting({
       <form
         onSubmit={handleSubmit(onClickSave)}
         onClick={(e) => e.stopPropagation()}
-        className="w-fit max-h-[530px] overflow-y-auto py-8 px-8 rounded-lg bg-white"
+        className="w-fit max-h-[530px] min-w-[519px] overflow-y-auto py-8 px-8 rounded-lg bg-white"
       >
         <h1 className="text-lg font-semibold">뉴스레터 정보</h1>
 
@@ -352,7 +352,7 @@ function OverlaySetting({
               alt="커버이미지"
               width={200}
               height={200}
-              className="w-full mt-4 cursor-pointer min-w-[440px] justify-center flex flex-col items-center h-56 bg-grayscale-100 rounded-lg"
+              className="w-full object-contain mt-4 max-w-[440px] overflow-hidden cursor-pointer  max-h-[280px] justify-center flex flex-col items-center h-56 bg-grayscale-100 rounded-lg"
             />
           ) : (
             <>

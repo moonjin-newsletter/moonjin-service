@@ -12,14 +12,14 @@ import { FileTypeEnum } from "@moonjin/api-types";
 export const EDITOR_JS_TOOLS = {
   header: Header,
   underline: Underline,
-  quote: Quote,
+  // quote: Quote,
   delimiter: Delimiter,
-  linkTool: {
-    class: LinkTool,
-    config: {
-      endpoint: "http://localhost:8008/fetchUrl", // Your backend endpoint for url data fetching,
-    },
-  },
+  // linkTool: {
+  //   class: LinkTool,
+  // config: {
+  //   endpoint: "http://localhost:8008/fetchUrl", // Your backend endpoint for url data fetching,
+  // },
+  // },
   list: {
     class: NestedList,
     inlineToolbar: true,

@@ -36,7 +36,8 @@ export default function Header() {
     path.includes("signup") ||
     path.includes("auth/social") ||
     path.includes("auth/apply") ||
-    path.includes("write/")
+    path.includes("write/new") ||
+    path.includes("write/edit")
   )
     return null;
   return (

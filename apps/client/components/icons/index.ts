@@ -5,6 +5,7 @@ import AuthLogo from "./auth-logo.svg";
 import LogoLeft from "./logo-left.svg";
 import Logo from "./logo.svg";
 import LogoIcon from "./logo-icon.svg";
+import LogoIconGray from "./logo_icon_gray.svg";
 import User from "./user.svg";
 import LetterIn from "./letter_in.svg";
 import LetterOut from "./letter_out.svg";
@@ -28,4 +29,5 @@ export {
   PaperPlaneTilt,
   Save,
   Image,
+  LogoIconGray,
 };
