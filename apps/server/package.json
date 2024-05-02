@@ -25,7 +25,8 @@
     "prepare": "ts-patch install && typia patch",
     "swagger": "npx nestia swagger",
     "sdk:build": "npx nestia sdk && npx tsc -p tsconfig.api.json",
-    "sdk:publish": "cd ./api-sdk && npm publish --access=public"
+    "sdk:publish": "cd ./api-sdk && npm publish --access=public",
+    "pm2:deploy": "pm2 deploy ecosystem.config.json"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.540.0",
