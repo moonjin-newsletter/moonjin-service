@@ -7,7 +7,7 @@ import {
     UnreleasedPostWithSeriesDto,
     NewsletterDto,
     PostWithContentDto,
-    PostWithContentAndSeriesDto, PostMetaDataDto
+    PostWithContentAndSeriesDto
 } from "./dto";
 import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
@@ -300,13 +300,13 @@ export class PostController {
     /**
      * @summary 해당 글의 metadata 가져오기
      * @param postId
-     * @returns PostWithContentDto
+     * @returns PostMetaDataDto | UnreleasedPostWithSeriesDto
      * @throws POST_CONTENT_NOT_FOUND
      * @throws POST_NOT_FOUND
      */
     @TypedRoute.Get(":id/metadata")
     @UseGuards(UserAuthGuard)
-    async getPostMetadata(@TypedParam('id') postId : number): Promise<TryCatch<PostMetaDataDto | UnreleasedPostWithSeriesDto,
+    async getPostMetadata(@TypedParam('id') postId : number): Promise<TryCatch<UnreleasedPostWithSeriesDto,
         POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
     {
         const postContent = await this.postService.getPostById(postId);
@@ -318,7 +318,8 @@ export class PostController {
             })
         }
         return createResponseForm({
-            post :postContent
+            post :postContent,
+            series : null
         })
     }
 
