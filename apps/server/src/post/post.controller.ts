@@ -2,7 +2,13 @@ import {Controller, UseGuards} from '@nestjs/common';
 import {TypedBody, TypedParam, TypedQuery, TypedRoute} from "@nestia/core";
 import {ICreatePost} from "./api-types/ICreatePost";
 import {PostService} from "./post.service";
-import {StampedPostDto, UnreleasedPostWithSeriesDto, NewsletterDto, PostWithPostContentDto} from "./dto";
+import {
+    StampedPostDto,
+    UnreleasedPostWithSeriesDto,
+    NewsletterDto,
+    PostWithContentDto,
+    PostWithContentAndSeriesDto
+} from "./dto";
 import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {
@@ -55,7 +61,7 @@ export class PostController {
     @TypedRoute.Post()
     @UseGuards(WriterAuthGuard)
     async createPost(@TypedBody() postData : ICreatePost, @User() user:UserAuthDto): Promise<TryCatch<
-        PostWithPostContentDto, SERIES_NOT_FOUND | CREATE_POST_ERROR>>
+        PostWithContentDto, SERIES_NOT_FOUND | CREATE_POST_ERROR>>
     {
         if(postData.seriesId) {
             const series = await this.seriesService.assertSeriesExist(postData.seriesId);
@@ -79,7 +85,7 @@ export class PostController {
     @TypedRoute.Patch(':id')
     @UseGuards(WriterAuthGuard)
     async updatePost(@TypedParam('id') postId : number, @TypedBody() postUpdateData : ICreatePost, @User() user:UserAuthDto) : Promise<
-        TryCatch<PostWithPostContentDto, POST_NOT_FOUND | FORBIDDEN_FOR_POST | SERIES_NOT_FOUND | CREATE_POST_ERROR>>
+        TryCatch<PostWithContentDto, POST_NOT_FOUND | FORBIDDEN_FOR_POST | SERIES_NOT_FOUND | CREATE_POST_ERROR>>
     {
         await this.postService.assertWriterOfPost(postId,user.id);
         if(postUpdateData.seriesId) {
@@ -147,7 +153,7 @@ export class PostController {
 
         if(body.receiverEmails.length == 0 || body.receiverEmails.length > 5) throw ExceptionList.EMAIL_NOT_EXIST;
         await this.postService.assertWriterOfPost(postId,user.id);
-        const postWithPostContent = await this.postService.getPostContentWithPostData(postId);
+        const postWithPostContent = await this.postService.getPostWithContentAndSeries(postId);
         if(postWithPostContent.post.category == null || postWithPostContent.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
         const writer = await this.userService.getWriterInfoByUserId(user.id);
 
@@ -279,7 +285,7 @@ export class PostController {
     @UseGuards(UserAuthGuard)
     async getPostHtml(@TypedParam('id') postId : number): Promise<TryCatch<string, POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
     {
-        const postContent = await this.postService.getPostContentWithPostData(postId);
+        const postContent = await this.postService.getPostWithContentAndSeries(postId);
         try{
             return createResponseForm(editorJsToHtml(postContent.postContent));
         }catch (error){
@@ -290,15 +296,16 @@ export class PostController {
     /**
      * @summary 해당 글의 내용 가져오기
      * @param postId
-     * @returns PostWithPostContentDto
+     * @returns PostWithContentDto | PostWithContentAndSeriesDto
      * @throws POST_CONTENT_NOT_FOUND
      * @throws POST_NOT_FOUND
      */
     @TypedRoute.Get(":id")
     @UseGuards(UserAuthGuard)
-    async getPostContent(@TypedParam('id') postId : number): Promise<TryCatch<PostWithPostContentDto, POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
+    async getPostContent(@TypedParam('id') postId : number): Promise<TryCatch<PostWithContentDto | PostWithContentAndSeriesDto,
+        POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
     {
-        const postContent = await this.postService.getPostContentWithPostData(postId);
+        const postContent = await this.postService.getPostWithContentAndSeries(postId);
         return createResponseForm(postContent)
     }
 

@@ -1,7 +1,7 @@
 import {PostDto} from "./post.dto";
 import {PostContentDto} from "./postContent.dto";
 
-export interface PostWithPostContentDto {
+export interface PostWithContentDto {
     post : PostDto;
     postContent: PostContentDto;
 }

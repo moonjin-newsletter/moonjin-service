@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {
-    NewsletterDto,
-    PostWithPostContentDto,
+    NewsletterDto, PostWithContentAndSeriesDto,
+    PostWithContentDto,
     ReleasedPostDto,
     StampedPostDto,
     UnreleasedPostWithSeriesDto
@@ -24,6 +24,8 @@ import {CreatePostDto} from "./server-dto/createPost.dto";
 import {PostWithContents} from "./prisma/postWithContents.prisma.type";
 import {UserService} from "../user/user.service";
 import {MailService} from "../mail/mail.service";
+import SeriesDtoMapper from "../series/seriesDtoMapper";
+import {PostWithContentAndSeries} from "./prisma/postWithContentAndSeries.prisma";
 
 @Injectable()
 export class PostService {
@@ -39,10 +41,10 @@ export class PostService {
      * @summary 게시글 생성
      * @param createPostData
      * @param writerId
-     * @return PostWithPostContentDto
+     * @return PostWithContentDto
      * @throws CREATE_POST_ERROR
      */
-    async createPost(createPostData : CreatePostDto, writerId: number) : Promise<PostWithPostContentDto> {
+    async createPost(createPostData : CreatePostDto, writerId: number) : Promise<PostWithContentDto> {
         const cover = this.utilService.processImageForCover(createPostData.cover);
         const {content,...postMetaData} = createPostData
         try {
@@ -79,10 +81,10 @@ export class PostService {
      * @summary 게시글 수정
      * @param postId
      * @param updatePostData
-     * @return PostWithPostContentDto
+     * @return PostWithContentDto
      * @throws CREATE_POST_ERROR
      */
-    async updatePost(postId: number, updatePostData: CreatePostDto): Promise<PostWithPostContentDto> {
+    async updatePost(postId: number, updatePostData: CreatePostDto): Promise<PostWithContentDto> {
         const cover = this.utilService.processImageForCover(updatePostData.cover);
         const {content,...postMetaData} = updatePostData
         try {
@@ -228,11 +230,11 @@ export class PostService {
     /**
      * @summary 해당 Post와 글 내용 반환
      * @param postId
-     * @return PostWithPostContentDto
+     * @return PostWithContentDto
      * @throws POST_NOT_FOUND
      * @throws POST_CONTENT_NOT_FOUND
      */
-    async getPostWithContentByPostId(postId: number): Promise<PostWithPostContentDto>{
+    async getPostWithContentByPostId(postId: number): Promise<PostWithContentDto>{
         const postWithContents: PostWithContents | null = await this.prismaService.post.findUnique({
             where : {
                 id : postId,
@@ -496,23 +498,38 @@ export class PostService {
      * @throws POST_CONTENT_NOT_FOUND
      * @throws POST_NOT_FOUND
      */
-    async getPostContentWithPostData(postId : number): Promise<PostWithPostContentDto>{
-        const postContent = await this.prismaService.postContent.findFirst({
-            where : {
-                postId
+    async getPostWithContentAndSeries(postId : number): Promise<PostWithContentDto | PostWithContentAndSeriesDto>{
+        const postWithContentsAndSeries: PostWithContentAndSeries | null = await this.prismaService.postContent.findFirst({
+            where: {
+                postId,
             },
             include:{
-                post : true
+                post: {
+                    include:{
+                        series: true
+                    }
+                }
             },
             relationLoadStrategy: 'join',
-            orderBy : {
+            orderBy:{
                 createdAt : 'desc'
             }
         })
-        if(!postContent) throw ExceptionList.POST_CONTENT_NOT_FOUND;
-        if(!postContent.post) throw ExceptionList.POST_NOT_FOUND;
+
+        if(!postWithContentsAndSeries) throw ExceptionList.POST_CONTENT_NOT_FOUND;
+        if(!postWithContentsAndSeries.post) throw ExceptionList.POST_NOT_FOUND;
+
+        const {post, ...postContent} = postWithContentsAndSeries;
+        const {series, ...postData} = post;
+        if(series){
+            return {
+                post: PostDtoMapper.PostToPostDto(postData),
+                postContent: PostDtoMapper.PostContentToPostContentDto(postContent),
+                series: SeriesDtoMapper.SeriesToSeriesDto(series)
+            }
+        }
         return {
-            post: PostDtoMapper.PostToPostDto(postContent.post),
+            post: PostDtoMapper.PostToPostDto(postData),
             postContent: PostDtoMapper.PostContentToPostContentDto(postContent)
         }
     }

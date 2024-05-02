@@ -128,7 +128,7 @@ export class MailService {
   async sendNewsLetterWithHtml(mailInfo: sendNewsLetterWithHtmlDto): Promise<number> {
     try {
       const recipientVariables= this.getRecipientVariables(mailInfo.emailList);
-      await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
+      const messagesSendResult = await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
         from: `${mailInfo.senderName} <${mailInfo.senderMailAddress}>`,
         to: mailInfo.emailList,
         subject: mailInfo.subject,
@@ -136,6 +136,7 @@ export class MailService {
         html: mailInfo.html,
         'o:tracking': 'yes',
       });
+      console.log(messagesSendResult);
       return mailInfo.emailList.length;
     } catch (error) {
       console.log(error);
