@@ -13,6 +13,8 @@ import Empty from "./empty.svg";
 import PaperPlaneTilt from "./paper-plane-tilt.svg";
 import Save from "./save.svg";
 import Image from "./image.svg";
+import SendFilled from "./send-filled.svg";
+import SendOutline from "./send-outline.svg";
 
 export {
   Kakao,
@@ -30,4 +32,6 @@ export {
   Save,
   Image,
   LogoIconGray,
+  SendOutline,
+  SendFilled,
 };

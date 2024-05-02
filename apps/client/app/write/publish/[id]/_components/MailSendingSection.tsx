@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
+import * as I from "components/icons";
+import csr from "../../../../../lib/fetcher/csr";
 
-export default function MailSendingSection() {
+export default function MailSendingSection({ letterId }: { letterId: number }) {
   const [testAddUser, setTestAddUser] = useState<any[]>([]);
   const { handleSubmit, setValue, watch, register } = useForm({
     defaultValues: {
@@ -21,6 +23,19 @@ export default function MailSendingSection() {
     else {
       setTestAddUser((prev) => [...prev, testUser]);
       return setValue("testUser", null);
+    }
+  }
+
+  async function sendTestLetter() {
+    if (testAddUser.length > 0) {
+      await csr
+        .post(`post/${letterId}/newsletter/test`, {
+          json: { receiverEmails: testAddUser },
+        })
+        .then((res) => toast.success("메일함을 확인하세요"))
+        .catch((err) => toast.error("메일 전송오류"));
+    } else {
+      return toast.error("수신인을 추가해주세요");
     }
   }
 
@@ -42,13 +57,13 @@ export default function MailSendingSection() {
         <div className="w-full mt-2 flex gap-x-2.5 items-center h-12">
           <input
             {...register("testUser")}
-            type="text"
+            type="email"
             placeholder="뉴스레터 수신자의 이름을 입력해주세요"
             className="ring-0 w-full  outline-none focus:border-slate-400 focus:ring-0 h-full bg-grayscale-100 border border-grayscale-300 placeholder:text-grayscale-500 rounded"
           />
           <button
             onClick={AddTestUser}
-            className="h-full rounded whitespace-nowrap text-white bg-grayscale-700/90 px-4"
+            className="h-full text-sm rounded whitespace-nowrap text-white bg-grayscale-700/90 px-4"
           >
             추가
           </button>
@@ -71,6 +86,15 @@ export default function MailSendingSection() {
               </button>
             </div>
           ))}
+        </div>
+        <div className="flex py-20 items-end gap-x-2.5">
+          <hr className=" border-grayscale-200 w-full" />
+          <button
+            onClick={sendTestLetter}
+            className="bg-grayscale-400 flex items-center gap-x-1.5 text-sm whitespace-nowrap text-white py-2.5 px-4 rounded-lg"
+          >
+            <I.SendOutline /> 테스트 뉴스레터 발송하기
+          </button>
         </div>
       </div>
       <div className="flex items-center mt-16 gap-x-3 text-grayscale-700 text-xl font-semibold">
@@ -103,12 +127,19 @@ export default function MailSendingSection() {
             </span>
           </div>
           <Link
-            href=""
-            className="py-2.5 h-fit px-3 bg-grayscale-700/90 text-white rounded"
+            href="/mypage/follower"
+            target="_blank"
+            className="py-2.5 h-fit text-sm px-3 bg-grayscale-700/90 text-white rounded"
           >
             내 구독자 확인하기
           </Link>
         </div>
+      </div>
+      <div className="flex py-20 items-end gap-x-2.5">
+        <hr className=" border-grayscale-200 w-full" />
+        <button className="bg-primary flex items-center gap-x-1.5 text-sm whitespace-nowrap text-white py-2.5 px-4 rounded-lg">
+          <I.SendFilled /> 정식 뉴스레터 발송하기
+        </button>
       </div>
     </section>
   );

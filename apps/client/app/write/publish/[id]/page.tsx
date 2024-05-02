@@ -3,7 +3,6 @@ import Link from "next/link";
 import MailSendingSection from "./_components/MailSendingSection";
 import ssr from "../../../../lib/fetcher/ssr";
 import type {
-  PostMetaDataDto,
   ResponseForm,
   UnreleasedPostWithSeriesDto,
 } from "@moonjin/api-types";
@@ -19,8 +18,6 @@ export default async function Page({ params }: pageProps) {
     .get(`post/${letterId}/metadata`)
     .then((res) => res.json<ResponseForm<UnreleasedPostWithSeriesDto>>())
     .catch((err) => redirect("/"));
-
-  console.log(newsletterInfo);
 
   return (
     <main className="w-full mt-36 min-h-screen flex flex-col items-center ">
@@ -73,7 +70,7 @@ export default async function Page({ params }: pageProps) {
             글 상세정보 수정하기
           </Link>
         </section>
-        <MailSendingSection />
+        <MailSendingSection letterId={letterId} />
       </div>
     </main>
   );
