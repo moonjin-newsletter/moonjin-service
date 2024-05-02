@@ -8,4 +8,5 @@ export interface PostDto {
     cover: string | null;
     seriesId : number;
     lastUpdatedAt: Date;
+    releasedAt: Date | null;
 }

@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {
-    NewsletterDto, PostWithContentAndSeriesDto,
+    NewsletterDto, PostDto, PostWithContentAndSeriesDto,
     PostWithContentDto,
     ReleasedPostDto,
     StampedPostDto,
@@ -532,6 +532,21 @@ export class PostService {
             post: PostDtoMapper.PostToPostDto(postData),
             postContent: PostDtoMapper.PostContentToPostContentDto(postContent)
         }
+    }
+
+    /**
+     * @summary 해당 글의 메타데이터 가져오기
+     * @param postId
+     * @return PostDto
+     */
+    async getPostById(postId: number): Promise<PostDto> {
+        const post = await this.prismaService.post.findUnique({
+            where : {
+                id : postId
+            }
+        })
+        if(!post) throw ExceptionList.POST_NOT_FOUND;
+        return PostDtoMapper.PostToPostDto(post);
     }
 
     /**

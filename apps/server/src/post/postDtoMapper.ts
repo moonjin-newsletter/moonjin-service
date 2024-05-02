@@ -13,7 +13,7 @@ import {PostContentDto} from "./dto/postContent.dto";
 
 class PostDtoMapperClass {
     PostToPostDto(post: Post):PostDto {
-        const {deleted, createdAt , status, releasedAt,...postData} = post;
+        const {deleted, createdAt , status,...postData} = post;
         return postData;
     }
     PostToReleasedPostDto(post: Post, releasedDate : Date) : ReleasedPostDto {
