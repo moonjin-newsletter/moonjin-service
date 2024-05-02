@@ -281,18 +281,6 @@ export class PostController {
         return createResponseForm(postContent)
     }
 
-    @TypedRoute.Get(':id/html')
-    @UseGuards(UserAuthGuard)
-    async getPostHtml(@TypedParam('id') postId : number): Promise<TryCatch<string, POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
-    {
-        const postContent = await this.postService.getPostWithContentAndSeries(postId);
-        try{
-            return createResponseForm(editorJsToHtml(postContent.postContent));
-        }catch (error){
-            throw ExceptionList.FORBIDDEN_FOR_POST;
-        }
-    }
-
     /**
      * @summary 해당 글의 내용 가져오기
      * @param postId
@@ -312,17 +300,36 @@ export class PostController {
     /**
      * @summary 해당 글의 metadata 가져오기
      * @param postId
-     * @returns PostWithContentDto | PostWithContentAndSeriesDto
+     * @returns PostWithContentDto
      * @throws POST_CONTENT_NOT_FOUND
      * @throws POST_NOT_FOUND
      */
     @TypedRoute.Get(":id/metadata")
     @UseGuards(UserAuthGuard)
-    async getPostMetadata(@TypedParam('id') postId : number): Promise<TryCatch<PostDto,
+    async getPostMetadata(@TypedParam('id') postId : number): Promise<TryCatch<PostDto | UnreleasedPostWithSeriesDto,
         POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
     {
         const postContent = await this.postService.getPostById(postId);
+        if(postContent.seriesId > 0){
+            const series = await this.seriesService.getReleasedSeriesById(postContent.seriesId);
+            return createResponseForm({
+                post : postContent,
+                series
+            })
+        }
         return createResponseForm(postContent)
+    }
+
+    @TypedRoute.Get(':id/html')
+    @UseGuards(UserAuthGuard)
+    async getPostHtml(@TypedParam('id') postId : number): Promise<TryCatch<string, POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
+    {
+        const postContent = await this.postService.getPostWithContentAndSeries(postId);
+        try{
+            return createResponseForm(editorJsToHtml(postContent.postContent));
+        }catch (error){
+            throw ExceptionList.FORBIDDEN_FOR_POST;
+        }
     }
 
 
