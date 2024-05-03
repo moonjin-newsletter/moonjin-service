@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import MailSendingSection from "./_components/MailSendingSection";
+import MailSendingSection from "./MailSendingSection";
 import ssr from "../../../../lib/fetcher/ssr";
 import type {
   ResponseForm,

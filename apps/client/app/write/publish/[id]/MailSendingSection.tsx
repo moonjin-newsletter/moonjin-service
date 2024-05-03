@@ -1,12 +1,13 @@
 "use client";
-import { LogoIcon, LogoIconGray } from "../../../../../components/icons";
+import { LogoIcon, LogoIconGray } from "../../../../components/icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
 import * as I from "components/icons";
-import csr from "../../../../../lib/fetcher/csr";
+import csr from "../../../../lib/fetcher/csr";
+import { PiUserCircle } from "react-icons/pi";
 
 export default function MailSendingSection({ letterId }: { letterId: number }) {
   const [testAddUser, setTestAddUser] = useState<any[]>([]);
@@ -72,9 +73,12 @@ export default function MailSendingSection({ letterId }: { letterId: number }) {
           {testAddUser.map((name, index) => (
             <div
               key={index}
-              className="px-4 flex items-center gap-x-1 py-2 border border-slate-800 text-slate-800 rounded-full"
+              className="px-4 text-primary flex items-center gap-x-2 py-2 bg-grayscale-100  rounded-full"
             >
-              {name}
+              <div className="flex items-center gap-x-1">
+                <PiUserCircle className="text-primary text-2xl" />
+                {name}
+              </div>
               <button
                 onClick={() => {
                   setTestAddUser(
@@ -82,7 +86,7 @@ export default function MailSendingSection({ letterId }: { letterId: number }) {
                   );
                 }}
               >
-                <IoClose className="text-lg" />
+                <IoClose className="text-lg text-grayscale-500" />
               </button>
             </div>
           ))}
