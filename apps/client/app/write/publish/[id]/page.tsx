@@ -49,7 +49,7 @@ export default async function Page({ params }: pageProps) {
                       alt="뉴스레터 썸네일"
                       width={218}
                       height={210}
-                      className="w-[218px] min-w-[218px] mt-2 h-[210px] object-fill bg-grayscale-700/80 rounded-lg"
+                      className="w-[218px] min-w-[218px] mt-2 h-[210px] object-cover bg-grayscale-700/80 rounded-lg"
                     />
                   </li>
                 ) : (

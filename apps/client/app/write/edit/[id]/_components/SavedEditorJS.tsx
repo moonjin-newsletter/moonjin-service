@@ -1,44 +1,46 @@
 "use client";
 
-import * as I from "../../../../../components/icons";
 import EditorJS from "@editorjs/editorjs";
-import { EDITOR_JS_TOOLS } from "../../../../../components/editorjs/customEditorConfig";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useOverlay } from "@toss/use-overlay";
 import { useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PiCaretUpDownBold } from "react-icons/pi";
+import * as I from "components/icons";
 
-import csr from "../../../../../lib/fetcher/csr";
 import {
   FileTypeEnum,
-  PostWithPostContentDto,
+  PostWithContentDto,
   ResponseForm,
+  SeriesDto,
   SeriesSummaryDto,
 } from "@moonjin/api-types";
 import { Listbox } from "@headlessui/react";
 import Link from "next/link";
 import useSWR from "swr";
-import { fileUpload } from "../../../../../lib/file/fileUpload";
 import Image from "next/image";
+import { EDITOR_JS_TOOLS } from "../../../../../components/editorjs/customEditorConfig";
+import csr from "../../../../../lib/fetcher/csr";
+import { fileUpload } from "../../../../../lib/file/fileUpload";
 
-export default function SavedEditorJS() {
+export default function NewEditorJS({ letterData }: { letterData: any }) {
+  const router = useRouter();
+  const overlay = useOverlay();
   const {
     watch,
     setValue,
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      title: letterData.post.title,
+    },
+  });
 
   const { data: seriesList } =
     useSWR<ResponseForm<SeriesSummaryDto[]>>("series/me/summary");
-  console.log(seriesList);
-
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const overlay = useOverlay();
 
   const editor = useMemo(() => {
     return new EditorJS({
@@ -46,6 +48,7 @@ export default function SavedEditorJS() {
       autofocus: false,
       readOnly: false,
       tools: EDITOR_JS_TOOLS,
+      data: letterData.postContent.content,
 
       onReady: () => {
         console.log("Editor.js is ready to work!");
@@ -66,13 +69,14 @@ export default function SavedEditorJS() {
               json: {
                 ...value,
                 content: outputData,
+                // seriesId: mySeries?.data?.data?.id,
               },
             })
             .then(async (res) => {
               const { data: nInfo } =
-                await res.json<ResponseForm<PostWithPostContentDto>>();
+                await res.json<ResponseForm<PostWithContentDto>>();
               toast.success("글을 저장했습니다");
-              router.push(`/write/${nInfo.post.id}`);
+              router.push(`/write/edit/${nInfo.post.id}`);
             })
             .catch(() => toast.error("글 저장에 실패하였습니다"));
         })
@@ -93,6 +97,7 @@ export default function SavedEditorJS() {
                 overlay={overlay}
                 outputData={outputData}
                 title={title}
+                // mySeriesInfo={mySeries?.data?.data}
               />
             );
           });
@@ -144,13 +149,15 @@ export default function SavedEditorJS() {
         </div>
       </section>
       <section className="mt-48 max-w-[680px] w-full">
-        {searchParams.get("seriesId") && (
-          <span className="px-4 font-serif text-grayscale-500"># 시리즈</span>
+        {letterData.series && (
+          <span className="px-4 font-serif text-grayscale-500">
+            # {letterData.series.title}
+          </span>
         )}
 
         <input
           type="text"
-          onChange={(e) => setValue("title", e.target.value)}
+          {...register("title")}
           placeholder="제목을 입력해주세요"
           className="w-full py-2 font-serif text-grayscale-500 text-2xl outline-none focus:ring-0 border-none"
         />
@@ -166,17 +173,19 @@ function OverlaySetting({
   seriesList,
   title,
   outputData,
+  mySeriesInfo,
 }: {
   overlay: any;
   seriesList: any | null;
   title: any | null;
   outputData: any;
+  mySeriesInfo?: any;
 }) {
   const router = useRouter();
   const { register, handleSubmit, watch, setValue } = useForm<any>({
     defaultValues: {
-      type: "자유글",
-      series: seriesList?.data[0] ?? null,
+      type: mySeriesInfo ? "시리즈" : "자유글",
+      series: mySeriesInfo ? mySeriesInfo : seriesList?.data[0] ?? null,
       cover: null,
     },
   });
@@ -197,9 +206,9 @@ function OverlaySetting({
       })
       .then(async (res) => {
         const { data: nInfo } =
-          await res.json<ResponseForm<PostWithPostContentDto>>();
+          await res.json<ResponseForm<PostWithContentDto>>();
         toast.success("글을 저장했습니다");
-        router.push(`/write/${nInfo.post.id}`);
+        router.push(`/write/publish/${nInfo.post.id}`);
       })
       .catch(() => toast.error("글 저장에 실패하였습니다"));
   }
@@ -214,7 +223,7 @@ function OverlaySetting({
       <form
         onSubmit={handleSubmit(onClickSave)}
         onClick={(e) => e.stopPropagation()}
-        className="w-fit max-h-[530px] overflow-y-auto py-8 px-8 rounded-lg bg-white"
+        className="w-fit max-h-[530px] min-w-[519px] overflow-y-auto py-8 px-8 rounded-lg bg-white"
       >
         <h1 className="text-lg font-semibold">뉴스레터 정보</h1>
 
@@ -342,7 +351,7 @@ function OverlaySetting({
               alt="커버이미지"
               width={200}
               height={200}
-              className="w-full mt-4 cursor-pointer min-w-[440px] justify-center flex flex-col items-center h-56 bg-grayscale-100 rounded-lg"
+              className="w-full object-contain mt-4 max-w-[440px] overflow-hidden cursor-pointer  max-h-[280px] justify-center flex flex-col items-center h-56 bg-grayscale-100 rounded-lg"
             />
           ) : (
             <>

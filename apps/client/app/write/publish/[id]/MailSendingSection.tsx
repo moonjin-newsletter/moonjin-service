@@ -14,7 +14,6 @@ export default function MailSendingSection({ letterId }: { letterId: number }) {
   const { handleSubmit, setValue, watch, register } = useForm({
     defaultValues: {
       testUser: null,
-      deployUser: null,
     },
   });
   const testUser = watch("testUser");
@@ -40,6 +39,13 @@ export default function MailSendingSection({ letterId }: { letterId: number }) {
     }
   }
 
+  async function sendDeployLetter() {
+    await csr
+      .post(`post/${letterId}/newsletter`)
+      .then((res) => toast.success("메일 전송이 완료됐습니다"))
+      .catch((err) => toast.error("메일 전송오류"));
+  }
+
   return (
     <section className="w-full flex flex-col">
       <div className="flex items-center gap-x-3 text-grayscale-700 text-xl font-semibold">
@@ -59,7 +65,7 @@ export default function MailSendingSection({ letterId }: { letterId: number }) {
           <input
             {...register("testUser")}
             type="email"
-            placeholder="뉴스레터 수신자의 이름을 입력해주세요"
+            placeholder="뉴스레터 수신자의 이메일을 입력해주세요"
             className="ring-0 w-full  outline-none focus:border-slate-400 focus:ring-0 h-full bg-grayscale-100 border border-grayscale-300 placeholder:text-grayscale-500 rounded"
           />
           <button
@@ -141,7 +147,10 @@ export default function MailSendingSection({ letterId }: { letterId: number }) {
       </div>
       <div className="flex py-20 items-end gap-x-2.5">
         <hr className=" border-grayscale-200 w-full" />
-        <button className="bg-primary flex items-center gap-x-1.5 text-sm whitespace-nowrap text-white py-2.5 px-4 rounded-lg">
+        <button
+          onClick={sendDeployLetter}
+          className="bg-primary flex items-center gap-x-1.5 text-sm whitespace-nowrap text-white py-2.5 px-4 rounded-lg"
+        >
           <I.SendFilled /> 정식 뉴스레터 발송하기
         </button>
       </div>
