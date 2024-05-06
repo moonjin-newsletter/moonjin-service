@@ -8,6 +8,7 @@ import { useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PiCaretUpDownBold } from "react-icons/pi";
 import * as I from "components/icons";
+import "components/editorjs/customEditorView.css";
 
 import {
   FileTypeEnum,

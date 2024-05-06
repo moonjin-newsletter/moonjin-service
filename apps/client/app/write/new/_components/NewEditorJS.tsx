@@ -9,6 +9,7 @@ import { useOverlay } from "@toss/use-overlay";
 import { useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PiCaretUpDownBold } from "react-icons/pi";
+import "components/editorjs/customEditorView.css";
 
 import csr from "../../../../lib/fetcher/csr";
 import {

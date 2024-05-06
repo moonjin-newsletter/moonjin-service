@@ -1,0 +1,18 @@
+.image-tool__image {
+    background-color: transparent !important;
+}
+
+.ce-delimiter{
+    height: fit-content !important;
+    line-height: 1px !important;
+    padding: 0 !important;
+}
+
+.ce-delimiter:before{
+    content: "" !important;
+    width: 100%;
+    height: 1px !important;
+    margin: 15px 0;
+    background-color: #efefef;
+
+}
