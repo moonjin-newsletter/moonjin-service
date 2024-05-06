@@ -186,7 +186,7 @@ function OverlaySetting({
   const { register, handleSubmit, watch, setValue } = useForm<any>({
     defaultValues: {
       type: mySeriesInfo ? "시리즈" : "자유글",
-      series: mySeriesInfo ? mySeriesInfo : seriesList?.data[0] ?? null,
+      series: mySeriesInfo ? mySeriesInfo : null,
       cover: null,
     },
   });
@@ -201,8 +201,8 @@ function OverlaySetting({
           title: title,
           content: outputData,
           cover: value.cover,
-          seriesId: value.series.id,
-          // category: value.category ?? "",
+          seriesId: value?.series?.id,
+          category: value.category ?? "",
         },
       })
       .then(async (res) => {
@@ -301,7 +301,8 @@ function OverlaySetting({
                     onChange={(e) => setValue("series", e)}
                   >
                     <Listbox.Button className="w-full mt-2 py-2 px-2.5 bg-grayscale-100 rounded-lg flex items-center">
-                      {series?.title} <PiCaretUpDownBold className="ml-auto" />
+                      {series?.title ?? "시리즈를 선택해주세요"}{" "}
+                      <PiCaretUpDownBold className="ml-auto" />
                     </Listbox.Button>
                     <Listbox.Options className="mt-2 h-fit py-2 px-2.5 border rounded-lg w-full flex flex-col">
                       {seriesList?.data?.map((series: any) => (

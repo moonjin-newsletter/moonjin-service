@@ -9,7 +9,10 @@ export function UnreleasedNewsletterCard({
   value: UnreleasedPostWithSeriesDto;
 }) {
   return (
-    <Link href="" className="flex w-full  py-4 border-b border-grayscale-200">
+    <Link
+      href={`/write/edit/${value.post.id}`}
+      className="flex w-full  py-4 border-b border-grayscale-200"
+    >
       <Image
         src={value.post.cover ?? ""}
         alt="뉴스레터 썸네일"
@@ -19,14 +22,14 @@ export function UnreleasedNewsletterCard({
       />
       <div className="flex w-full flex-col ml-4">
         <div className="flex gap-x-1.5 items-center ">
-          <div className="border border-grayscale-400 text-grayscale-400 py-0.5 px-2 rounded text-xs">
-            # {value.post.category}
-          </div>
           {value.series && (
-            <div className="text-xs font-medium text-grayscale-400">
-              {value.series.title}
+            <div className="border border-grayscale-400 text-grayscale-400 py-0.5 px-2 rounded text-xs">
+              # {value.series.title}
             </div>
           )}
+          <div className="text-xs text-grayscale-400">
+            {value.post.category}
+          </div>
           {/*{value.post.category.map((category: any, index: number) => (*/}
           {/*  <div className="border border-grayscale-400 text-grayscale-400 py-0.5 px-2 rounded text-xs">*/}
           {/*    # {category}*/}

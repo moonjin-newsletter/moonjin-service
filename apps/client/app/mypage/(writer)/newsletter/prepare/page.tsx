@@ -12,7 +12,6 @@ export default async function Page() {
     res.json<ResponseForm<UnreleasedPostWithSeriesDto[]>>(),
   );
 
-  console.log(writingPostList);
   return (
     <main className="overflow-hidden w-full max-w-[748px]">
       <div className="flex ">

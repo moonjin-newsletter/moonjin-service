@@ -64,7 +64,7 @@ export default async function Page({ params }: pageProps) {
             ))}
           </ul>
           <Link
-            href={""}
+            href={`/write/edit/${letterId}`}
             className="border text-center mt-8 border-grayscale-700 text-grayscale-700 py-2.5 w-full rounded-lg "
           >
             글 상세정보 수정하기

@@ -11,6 +11,7 @@ import * as I from "components/icons";
 
 import {
   FileTypeEnum,
+  type PostWithContentAndSeriesDto,
   PostWithContentDto,
   ResponseForm,
   SeriesDto,
@@ -24,7 +25,13 @@ import { EDITOR_JS_TOOLS } from "../../../../../components/editorjs/customEditor
 import csr from "../../../../../lib/fetcher/csr";
 import { fileUpload } from "../../../../../lib/file/fileUpload";
 
-export default function NewEditorJS({ letterData }: { letterData: any }) {
+export default function NewEditorJS({
+  letterId,
+  letterData,
+}: {
+  letterId: number;
+  letterData: PostWithContentDto | PostWithContentAndSeriesDto | any;
+}) {
   const router = useRouter();
   const overlay = useOverlay();
   const {
@@ -65,7 +72,7 @@ export default function NewEditorJS({ letterData }: { letterData: any }) {
         .save()
         .then((outputData) => {
           csr
-            .post("post", {
+            .patch(`post/${letterId}`, {
               json: {
                 ...value,
                 content: outputData,
@@ -93,11 +100,19 @@ export default function NewEditorJS({ letterData }: { letterData: any }) {
           overlay.open(({ isOpen }) => {
             return (
               <OverlaySetting
+                letterId={letterId}
                 seriesList={seriesList}
                 overlay={overlay}
                 outputData={outputData}
                 title={title}
-                // mySeriesInfo={mySeries?.data?.data}
+                mySeriesInfo={
+                  letterData?.series && {
+                    id: letterData?.series.id,
+                    title: letterData?.series.title,
+                  }
+                }
+                savedCover={letterData?.post?.cover}
+                savedCategory={letterData?.post?.category}
               />
             );
           });
@@ -169,15 +184,21 @@ export default function NewEditorJS({ letterData }: { letterData: any }) {
 }
 
 function OverlaySetting({
+  letterId,
   overlay,
   seriesList,
   title,
   outputData,
   mySeriesInfo,
+  savedCover,
+  savedCategory,
 }: {
+  letterId: number;
   overlay: any;
   seriesList: any | null;
   title: any | null;
+  savedCover: any | null;
+  savedCategory: any | null;
   outputData: any;
   mySeriesInfo?: any;
 }) {
@@ -185,23 +206,25 @@ function OverlaySetting({
   const { register, handleSubmit, watch, setValue } = useForm<any>({
     defaultValues: {
       type: mySeriesInfo ? "시리즈" : "자유글",
-      series: mySeriesInfo ? mySeriesInfo : seriesList?.data[0] ?? null,
-      cover: null,
+      series: mySeriesInfo ? mySeriesInfo : null,
+      cover: savedCover ?? null,
+      category: savedCategory ?? null,
     },
   });
+
   const cover = watch("cover");
   const type = watch("type");
   const series = watch("series");
-
+  console.log(cover);
   function onClickSave(value: any) {
     csr
-      .post("post", {
+      .patch(`post/${letterId}`, {
         json: {
           title: title,
           content: outputData,
           cover: value.cover,
-          seriesId: value.series.id,
-          // category: value.category ?? "",
+          seriesId: value?.series?.id,
+          category: value.category ?? "",
         },
       })
       .then(async (res) => {
@@ -300,7 +323,8 @@ function OverlaySetting({
                     onChange={(e) => setValue("series", e)}
                   >
                     <Listbox.Button className="w-full mt-2 py-2 px-2.5 bg-grayscale-100 rounded-lg flex items-center">
-                      {series?.title} <PiCaretUpDownBold className="ml-auto" />
+                      {series?.title ?? "시리즈를 선택해주세요"}{" "}
+                      <PiCaretUpDownBold className="ml-auto" />
                     </Listbox.Button>
                     <Listbox.Options className="mt-2 h-fit py-2 px-2.5 border rounded-lg w-full flex flex-col">
                       {seriesList?.data?.map((series: any) => (

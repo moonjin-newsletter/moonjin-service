@@ -26,10 +26,9 @@ export default async function Page({ params }: pageProps) {
     )
     .catch((err) => redirect("write/new"));
 
-  console.log(letterData);
   return (
     <main className=" w-full    flex flex-col items-center">
-      <SavedEditorJS letterData={letterData} />
+      <SavedEditorJS letterId={letterId} letterData={letterData} />
       <section className="w-full max-w-[670px] mt-4 text-grayscale-500">
         <div id="editorjs" className="w-full"></div>
       </section>

@@ -8,8 +8,11 @@ import { IoClose } from "react-icons/io5";
 import * as I from "components/icons";
 import csr from "../../../../lib/fetcher/csr";
 import { PiUserCircle } from "react-icons/pi";
+import useSWR from "swr";
+import type { ResponseForm, WriterDto } from "@moonjin/api-types";
 
 export default function MailSendingSection({ letterId }: { letterId: number }) {
+  const { data: userInfo } = useSWR<ResponseForm<WriterDto>>("user");
   const [testAddUser, setTestAddUser] = useState<any[]>([]);
   const { handleSubmit, setValue, watch, register } = useForm({
     defaultValues: {
@@ -18,6 +21,7 @@ export default function MailSendingSection({ letterId }: { letterId: number }) {
   });
   const testUser = watch("testUser");
 
+  console.log(userInfo);
   function AddTestUser() {
     if (testAddUser.length > 4) toast.error("최대인원을 초과했습니다");
     else {
@@ -129,7 +133,10 @@ export default function MailSendingSection({ letterId }: { letterId: number }) {
             <div className="text-grayscale-600 ">
               내 구독자 수<span className="text-grayscale-200"> | </span>
               <span className="text-grayscale-700">
-                <strong className="text-primary font-medium">180</strong>명
+                <strong className="text-primary font-medium">
+                  {userInfo?.data?.writerInfo?.followerCount}
+                </strong>
+                명
               </span>
             </div>
             <span className="mt-1 text-sm font-medium text-grayscale-500">
