@@ -26,7 +26,7 @@
     "swagger": "npx nestia swagger",
     "sdk:build": "npx nestia sdk && npx tsc -p tsconfig.api.json",
     "sdk:publish": "cd ./api-sdk && npm publish --access=public",
-    "pm2:deploy": "pm2 deploy ecosystem.config.json"
+    "pm2:deploy": "pm2 start dist/src/main.js --name=api_server"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.540.0",
