@@ -200,6 +200,7 @@ export class AuthController {
       LOGIN_ERROR | INVALID_PASSWORD | USER_NOT_FOUND | SOCIAL_USER_ERROR>{
     const user = await this.authService.localLogin(localLoginData);
     const {accessToken, refreshToken }= this.authService.getAccessTokens(user);
+    console.log(process.env.VERSION === 'prod');
     res.cookie('accessToken', accessToken, {
       secure: process.env.VERSION === 'prod',
       sameSite: process.env.VERSION === 'prod' ? 'none' : false
