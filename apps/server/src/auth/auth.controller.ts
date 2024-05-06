@@ -87,8 +87,14 @@ export class AuthController {
       const {iat,exp,...userSignUpData} =  this.authService.getDataFromJwtToken<SignupEmailCodePayloadDto>(payload.code);
       const userData = await this.authService.localSignUp(userSignUpData);
       const {accessToken, refreshToken} = this.authService.getAccessTokens(userData)
-      res.cookie('accessToken',accessToken)
-      res.cookie('refreshToken', refreshToken)
+      res.cookie('accessToken',accessToken, {
+        secure: process.env.VERSION === 'prod',
+        sameSite: process.env.VERSION === 'prod' ? 'none' : false
+      })
+      res.cookie('refreshToken', refreshToken, {
+        secure: process.env.VERSION === 'prod',
+        sameSite: process.env.VERSION === 'prod' ? 'none' : false
+      })
       res.redirect(process.env.CLIENT_URL + "/");
     }catch (e){
       res.redirect(process.env.CLIENT_URL + "/auth/signup");
@@ -126,7 +132,10 @@ export class AuthController {
     try {
       const {iat,exp,...userData} = this.authService.getDataFromJwtToken<UserAuthDto>(payload.code);
       const passwordChangeToken = this.authService.generateJwtToken(userData);
-      res.cookie('passwordChangeToken', passwordChangeToken)
+      res.cookie('passwordChangeToken', passwordChangeToken, {
+        secure: process.env.VERSION === 'prod',
+        sameSite: process.env.VERSION === 'prod' ? 'none' : false
+      })
       res.redirect(process.env.CLIENT_URL + "/auth/password/new");
     }catch (error){
       console.log(error);
@@ -150,7 +159,11 @@ export class AuthController {
     const token = this.authService.getTokenFromCookie(header.cookie, "passwordChangeToken");
     const {iat,exp,...dataFromToken} = this.authService.getDataFromJwtToken<UserAuthDto>(token);
     await this.authService.passwordChange(dataFromToken.id, payload.password);
-    res.cookie("passwordChangeToken", "", {maxAge: 0}) // 쿠키 삭제
+    res.cookie("passwordChangeToken", "", {
+      secure: process.env.VERSION === 'prod',
+      sameSite: process.env.VERSION === 'prod' ? 'none' : false,
+      maxAge: 0
+    }) // 쿠키 삭제
     res.send(createResponseForm({message : "비밀번호가 변경되었습니다."}))
   }
 
@@ -187,8 +200,14 @@ export class AuthController {
       LOGIN_ERROR | INVALID_PASSWORD | USER_NOT_FOUND | SOCIAL_USER_ERROR>{
     const user = await this.authService.localLogin(localLoginData);
     const {accessToken, refreshToken }= this.authService.getAccessTokens(user);
-    res.cookie('accessToken', accessToken)
-    res.cookie('refreshToken', refreshToken)
+    res.cookie('accessToken', accessToken, {
+      secure: process.env.VERSION === 'prod',
+      sameSite: process.env.VERSION === 'prod' ? 'none' : false
+    })
+    res.cookie('refreshToken', refreshToken, {
+      secure: process.env.VERSION === 'prod',
+      sameSite: process.env.VERSION === 'prod' ? 'none' : false
+    })
     res.send(createResponseForm({
       message: "로그인이 완료되었습니다"
     }))
@@ -217,11 +236,20 @@ export class AuthController {
       const userData = await this.oauthService.socialLogin(socialLoginData);
       if(userData.result) { // login 처리
         const jwtTokens = this.authService.getAccessTokens(userData.data);
-        res.cookie('accessToken', jwtTokens.accessToken)
-        res.cookie('refreshToken', jwtTokens.refreshToken)
+        res.cookie('accessToken', jwtTokens.accessToken, {
+          secure: process.env.VERSION === 'prod',
+          sameSite: process.env.VERSION === 'prod' ? 'none' : false
+        })
+        res.cookie('refreshToken', jwtTokens.refreshToken, {
+          secure: process.env.VERSION === 'prod',
+          sameSite: process.env.VERSION === 'prod' ? 'none' : false
+        })
         res.redirect(process.env.CLIENT_URL + ""); // TODO : redirect to success page
       }else { // 추가 정보 입력 페이지로 이동
-        res.cookie('socialSignupToken', this.authService.generateJwtToken(userData.data));
+        res.cookie('socialSignupToken', this.authService.generateJwtToken(userData.data), {
+          secure: process.env.VERSION === 'prod',
+          sameSite: process.env.VERSION === 'prod' ? 'none' : false
+        });
         res.redirect(process.env.CLIENT_URL + "/auth/social?email=" + userData.data.email) // TODO : redirect to success page
       }
     }catch (error){ // 아예 인증이 안 됨
@@ -254,9 +282,19 @@ export class AuthController {
     const {iat,exp,...userSocialData} = this.authService.getDataFromJwtToken<UserSocialProfileDto>(socialSignupToken);
     const user = await this.authService.socialSignup({...userSocialData, ...socialSignupData});
     const {accessToken, refreshToken} = this.authService.getAccessTokens(user)
-    res.cookie('accessToken', accessToken)
-    res.cookie('refreshToken', refreshToken)
-    res.cookie('socialSignupToken', "", {maxAge: 0})
+    res.cookie('accessToken', accessToken, {
+      secure: process.env.VERSION === 'prod',
+      sameSite: process.env.VERSION === 'prod' ? 'none' : false
+    })
+    res.cookie('refreshToken', refreshToken, {
+      secure: process.env.VERSION === 'prod',
+      sameSite: process.env.VERSION === 'prod' ? 'none' : false
+    })
+    res.cookie('socialSignupToken', "",  {
+      secure: process.env.VERSION === 'prod',
+      sameSite: process.env.VERSION === 'prod' ? 'none' : false,
+      maxAge: 0
+    })
     res.send(createResponseForm({
       message: "회원가입이 완료되었습니다."
     }));
@@ -264,8 +302,16 @@ export class AuthController {
 
   @TypedRoute.Post('logout')
   async logout(@Res() res: Response):Promise<void>{
-    res.cookie('accessToken', "", {maxAge: 0})
-    res.cookie('refreshToken', "", {maxAge: 0})
+    res.cookie('accessToken', "", {
+      secure: process.env.VERSION === 'prod',
+      sameSite: process.env.VERSION === 'prod' ? 'none' : false,
+      maxAge: 0
+    })
+    res.cookie('refreshToken', "", {
+      secure: process.env.VERSION === 'prod',
+      sameSite: process.env.VERSION === 'prod' ? 'none' : false,
+      maxAge: 0
+    })
     res.send(createResponseForm({
       message: "로그아웃이 완료되었습니다."
     }))
