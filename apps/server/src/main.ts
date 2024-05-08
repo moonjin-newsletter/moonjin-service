@@ -10,7 +10,7 @@ async function bootstrap() {
   swaggerBoot(app);
   app.use(cookieParser());
   app.enableCors({
-    origin: ['http://localhost:3000','https://moonjin-service.vercel.app'],
+    origin: process.env.CLIENT_URL,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     preflightContinue: false,
