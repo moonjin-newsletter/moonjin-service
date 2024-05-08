@@ -40,7 +40,7 @@ export class AuthController {
     httpOnly: true,
     sameSite: 'none',
     secure: true,
-    domain: '*',
+    domain: process.env.CLIENT_URL
   }: {}
 
   constructor(private readonly authService : AuthService,
