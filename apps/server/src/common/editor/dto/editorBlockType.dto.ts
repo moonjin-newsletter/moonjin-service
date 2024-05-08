@@ -16,11 +16,16 @@ export interface HeaderBlockDto extends EditorTextBlockDto {
     }
 }
 
+export interface ListBlockItemDto {
+    content : string,
+    items : ListBlockItemDto[]
+}
+
 export interface ListBlockDto extends EditorBlockDto {
     type : "list";
     data: {
         type: "ordered" | "unordered";
-        items: string[];
+        items: ListBlockItemDto[];
     }
 }
 

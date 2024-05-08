@@ -9,7 +9,10 @@ export function convertEditorJsonToPostPreview(editorJson : EditorJsonDto): stri
         if(assertTextBlock(block)){
             preview += (block.data.text + " ");
         }else if(assertListBlock(block)){
-            preview += block.data.items.join(" ");
+            block.data.items.map(item => {
+                if(preview.length > MAX_PREVIEW_LENGTH) return;
+                    preview += ( "·" + item.content + " ");
+            })
         }else if(assertCheckListBlock(block)){
             const checkBoxList = block.data.items;
             checkBoxList.forEach(checkBox => {

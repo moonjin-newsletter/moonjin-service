@@ -4,7 +4,6 @@ import {SeriesDto, SeriesSummaryDto, SeriesWithWriterDto} from "./dto";
 
 class SeriesDtoMapperClass {
     SeriesToSeriesDto(series : Series): SeriesDto {
-        console.log(series)
         const {deleted, createdAt ,...seriesData} = series;
         return seriesData;
     }
