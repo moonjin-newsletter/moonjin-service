@@ -290,4 +290,13 @@ export class AuthController {
       message: "로그아웃이 완료되었습니다."
     }))
   }
+
+  @TypedRoute.Get("cookieTest")
+  async cookieTest(@Res() res: Response){
+      res.cookie("testCookie", "cookie",{
+        ...this.cookieOptions,
+        domain: "*"
+      });
+      res.send("cookie set")
+  }
 }
