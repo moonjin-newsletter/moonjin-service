@@ -118,7 +118,10 @@ export class UserService {
     async getFollowingWriterListByFollowerId(followerId : number): Promise<FollowingWriterProfileDto[]> {
         const followingList: FollowingWriterInfoWithUser[] = await this.prismaService.follow.findMany({
             where: {
-                followerId
+                followerId,
+                writerInfo: {
+                    deleted: false
+                }
             },
             include: {
                 writerInfo: {
