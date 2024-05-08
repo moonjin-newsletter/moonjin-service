@@ -70,7 +70,11 @@ export default async function Page({ params }: pageProps) {
             글 상세정보 수정하기
           </Link>
         </section>
-        <MailSendingSection letterId={letterId} />
+        <MailSendingSection
+          letterId={letterId}
+          letterTitle={newsletterInfo.post.title}
+          seriesTitle={newsletterInfo?.series?.title ?? null}
+        />
       </div>
     </main>
   );

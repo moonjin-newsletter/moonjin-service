@@ -11,9 +11,20 @@ import { PiUserCircle } from "react-icons/pi";
 import useSWR from "swr";
 import type { ResponseForm, WriterDto } from "@moonjin/api-types";
 
-export default function MailSendingSection({ letterId }: { letterId: number }) {
+export default function MailSendingSection({
+  letterId,
+  letterTitle,
+  seriesTitle,
+}: {
+  letterId: number;
+  letterTitle: string;
+  seriesTitle: string | null;
+}) {
   const { data: userInfo } = useSWR<ResponseForm<WriterDto>>("user");
   const [testAddUser, setTestAddUser] = useState<any[]>([]);
+  const [title, setTitle] = useState(
+    `${seriesTitle ? `[${seriesTitle}] ` : ""}${letterTitle}`,
+  );
   const { handleSubmit, setValue, watch, register } = useForm({
     defaultValues: {
       testUser: null,
@@ -21,7 +32,6 @@ export default function MailSendingSection({ letterId }: { letterId: number }) {
   });
   const testUser = watch("testUser");
 
-  console.log(userInfo);
   function AddTestUser() {
     if (testAddUser.length > 4) toast.error("최대인원을 초과했습니다");
     else {
@@ -45,7 +55,9 @@ export default function MailSendingSection({ letterId }: { letterId: number }) {
 
   async function sendDeployLetter() {
     await csr
-      .post(`post/${letterId}/newsletter`)
+      .post(`post/${letterId}/newsletter`, {
+        json: { newsletterTitle: title },
+      })
       .then((res) => toast.success("메일 전송이 완료됐습니다"))
       .catch((err) => toast.error("메일 전송오류"));
   }
@@ -122,7 +134,12 @@ export default function MailSendingSection({ letterId }: { letterId: number }) {
           주세요.
         </span>
         <input
-          defaultValue={"나의 뉴스레터"}
+          defaultValue={`${
+            seriesTitle ? `[${seriesTitle}] ` : ""
+          }${letterTitle}`}
+          onChange={(e) => {
+            setTitle(e.target.value);
+          }}
           className="ring-0 mt-2 w-full h-11 outline-none focus:border-slate-400 focus:ring-0  bg-grayscale-100 border border-grayscale-300 placeholder:text-grayscale-500 rounded"
         />
       </div>
