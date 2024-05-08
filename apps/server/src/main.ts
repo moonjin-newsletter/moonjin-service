@@ -10,7 +10,7 @@ async function bootstrap() {
   swaggerBoot(app);
   app.use(cookieParser());
   app.enableCors({
-    origin: process.env.CLIENT_URL,
+    origin: ["http://localhost:3000", "https://dev.moonjin.site"],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     preflightContinue: false,
