@@ -40,6 +40,7 @@ export class AuthController {
     httpOnly: true,
     sameSite: 'lax',
     secure: true,
+    domain: process.env.DOT_MOONJIN_DOMAIN
   }: {}
 
   constructor(private readonly authService : AuthService,
