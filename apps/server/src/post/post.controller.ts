@@ -39,6 +39,7 @@ import {ExceptionList} from "../response/error/errorInstances";
 import {MailService} from "../mail/mail.service";
 import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
 import {EMAIL_NOT_EXIST} from "../response/error/mail";
+import {ISendNewsLetter} from "./api-types/ISendNewsLetter";
 
 
 @Controller('post')
@@ -112,6 +113,7 @@ export class PostController {
      * @summary 해당 글을 뉴스레터로 발송
      * @param user
      * @param postId
+     * @param body
      * @returns {sentCount: number}
      * @throws POST_NOT_FOUND
      * @throws NEWSLETTER_CATEGORY_NOT_FOUND
@@ -122,10 +124,10 @@ export class PostController {
      */
     @TypedRoute.Post(':postId/newsletter')
     @UseGuards(WriterAuthGuard)
-    async sendNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number)
+    async sendNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number, @TypedBody() body:ISendNewsLetter)
         : Promise<TryCatch<ResponseMessage & {sentCount : number}, POST_NOT_FOUND | FORBIDDEN_FOR_POST | NEWSLETTER_CATEGORY_NOT_FOUND | POST_CONTENT_NOT_FOUND | FOLLOWER_NOT_FOUND | SEND_NEWSLETTER_ERROR | USER_NOT_WRITER>>{
         await this.postService.assertWriterOfPost(postId,user.id);
-        const sentCount = await this.postService.sendNewsletter(postId);
+        const sentCount = await this.postService.sendNewsletter(postId, body.newsletterTitle);
         await this.userService.synchronizeNewsLetter(user.id, true);
         return createResponseForm({
             message : sentCount + "건의 뉴스레터를 발송했습니다.",

@@ -158,6 +158,7 @@ export class PostService {
     /**
      * @summary 해당 글을 나를 구독 중인 사람들에게 뉴스레터로 전송
      * @param postId
+     * @param newsletterTitle
      * @return 전송된 뉴스레터 수
      * @throws POST_NOT_FOUND
      * @throws NEWSLETTER_CATEGORY_NOT_FOUND
@@ -165,12 +166,12 @@ export class PostService {
      * @throws SEND_NEWSLETTER_ERROR
      * @throws USER_NOT_WRITER
      */
-    async sendNewsletter(postId : number) : Promise<number> {
+    async sendNewsletter(postId : number, newsletterTitle: string) : Promise<number> {
         const postWithContent = await this.getPostWithContentByPostId(postId);
         if(postWithContent.post.category == null || postWithContent.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
 
         const followers = await this.userService.getAllFollowerByWriterId(postWithContent.post.writerId);
-        await this.sendWebNewsletter(postId, followers.followerList.map(follower => follower.user.id));
+        await this.sendWebNewsletter(postId,newsletterTitle, followers.followerList.map(follower => follower.user.id));
         const emailList = followers.externalFollowerList.map(follower => follower.email);
         const writer = await this.userService.getWriterInfoByUserId(postWithContent.post.writerId);
 
@@ -182,7 +183,7 @@ export class PostService {
             emailList,
             senderName: writer.user.nickname,
             senderMailAddress: writer.writerInfo.moonjinId + '@' + process.env.MAILGUN_DOMAIN,
-            subject: postWithContent.post.title,
+            subject: newsletterTitle,
             html: editorJsToHtml(postWithContent.postContent),
         }
         const sentCount = await this.mailService.sendNewsLetterWithHtml(sendNewsLetterDto);
@@ -202,17 +203,19 @@ export class PostService {
     /**
      * 해당 유저들에게 Web 뉴스레터 전송하기
      * @param postId
+     * @param title
      * @param receiverIdList
      * @return 전송된 뉴스레터 수
      * @throws SEND_NEWSLETTER_ERROR
      */
-    async sendWebNewsletter(postId: number, receiverIdList: number[]): Promise<number>{
+    async sendWebNewsletter(postId: number, title:string, receiverIdList: number[]): Promise<number>{
         try {
             const now = this.utilService.getCurrentDateInKorea();
             const newsletterData = receiverIdList.map(receiverId => {
                 return {
                     postId,
                     receiverId,
+                    title,
                     sentAt : now,
                 }
             });

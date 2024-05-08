@@ -5,13 +5,17 @@ import SeriesDtoMapper from "./seriesDtoMapper";
 import {ExceptionList} from "../response/error/errorInstances";
 import {SeriesDto, CreateSeriesDto, SeriesWithWriterDto} from "./dto";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
-import {FollowingSeriesAndWriter} from "./prisma/followingSeriesAndWriter.prisma.type";
+import { FollowingSeriesWithWriter,
+} from "./prisma/followingSeriesAndWriter.prisma.type";
+import {UserService} from "../user/user.service";
+import UserDtoMapper from "../user/userDtoMapper";
 
 @Injectable()
 export class SeriesService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
+        private readonly userService: UserService
     ) {}
 
     /**
@@ -44,25 +48,37 @@ export class SeriesService {
      * @param followerId
      */
     async getFollowingSeriesByFollowerId(followerId : number) : Promise<SeriesWithWriterDto[]>{
-        const followingSeriesList : FollowingSeriesAndWriter[] = await this.prismaService.follow.findMany({
-            where:{
-                followerId,
-            },
-            include : {
-                writerInfo: {
-                    include: {
-                        series: {
-                            where: {
-                                deleted: false,
-                            }
-                        },
-                        user: true
+        try{
+            const followingWriterList = await this.userService.getFollowingWriterListByFollowerId(followerId);
+            if(followingWriterList.length === 0) return [];
+            const followingWriterIdList= followingWriterList.map(writer => writer.user.id);
+            const followingSeriesWithWriterList : FollowingSeriesWithWriter[] = await this.prismaService.series.findMany({
+                where: {
+                    deleted: false,
+                    writerId: {
+                        in: followingWriterIdList
+                    }
+                },
+                include: {
+                    writerInfo: {
+                        include: {
+                            user: true
+                        }
                     }
                 }
-            }
-        })
-        if(!followingSeriesList) return [];
-        return followingSeriesList.map(followingSeries => SeriesDtoMapper.FollowingSeriesAndWriterToSeriesWithWriterDto(followingSeries));
+            })
+            if(followingSeriesWithWriterList.length === 0) return [];
+            return followingSeriesWithWriterList.map(seriesWithWriter => {
+                const { writerInfo, ...series} = seriesWithWriter
+                return {
+                    series: SeriesDtoMapper.SeriesToSeriesDto(series),
+                    writer: UserDtoMapper.UserToUserProfileDto(writerInfo.user)
+                }
+            })
+        }catch (error){
+            return [];
+        }
+
     }
 
     /**
