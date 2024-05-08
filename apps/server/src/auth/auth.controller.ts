@@ -38,7 +38,7 @@ import {UserRoleEnum} from "./enum/userRole.enum";
 export class AuthController {
   cookieOptions : CookieOptions = process.env.VERSION === 'prod' ? {
     httpOnly: true,
-    sameSite: 'none',
+    sameSite: 'lax',
     secure: true,
   }: {}
 
