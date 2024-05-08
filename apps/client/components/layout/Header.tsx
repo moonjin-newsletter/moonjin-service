@@ -8,9 +8,11 @@ import toast from "react-hot-toast";
 import * as I from "components/icons";
 import csr from "../../lib/fetcher/csr";
 import { useRouter } from "next/navigation";
+import useSWR from "swr";
 
 export default function Header() {
-  const userCookie = getCookie("accessToken");
+  const { data: userInfo } = useSWR("user");
+  console.log(userInfo);
   const path = usePathname();
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(false);
@@ -28,8 +30,8 @@ export default function Header() {
   }
 
   useEffect(() => {
-    userCookie ? setIsLogin(true) : setIsLogin(false);
-  }, [userCookie]);
+    userInfo ? setIsLogin(true) : setIsLogin(false);
+  }, [userInfo]);
 
   if (
     path.includes("login") ||
