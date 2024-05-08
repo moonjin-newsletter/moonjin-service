@@ -2,7 +2,10 @@
 
 import * as I from "../../../../components/icons";
 import EditorJS from "@editorjs/editorjs";
-import { EDITOR_JS_TOOLS } from "../../../../components/editorjs/customEditorConfig";
+import {
+  EDITOR_JS_I18N,
+  EDITOR_JS_TOOLS,
+} from "../../../../components/editorjs/customEditorConfig";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useOverlay } from "@toss/use-overlay";
@@ -51,7 +54,7 @@ export default function NewEditorJS() {
       autofocus: false,
       readOnly: false,
       tools: EDITOR_JS_TOOLS,
-
+      i18n: EDITOR_JS_I18N,
       onReady: () => {
         console.log("Editor.js is ready to work!");
       },

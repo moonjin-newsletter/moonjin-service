@@ -22,7 +22,10 @@ import { Listbox } from "@headlessui/react";
 import Link from "next/link";
 import useSWR from "swr";
 import Image from "next/image";
-import { EDITOR_JS_TOOLS } from "../../../../../components/editorjs/customEditorConfig";
+import {
+  EDITOR_JS_I18N,
+  EDITOR_JS_TOOLS,
+} from "../../../../../components/editorjs/customEditorConfig";
 import csr from "../../../../../lib/fetcher/csr";
 import { fileUpload } from "../../../../../lib/file/fileUpload";
 
@@ -56,6 +59,7 @@ export default function NewEditorJS({
       autofocus: false,
       readOnly: false,
       tools: EDITOR_JS_TOOLS,
+      i18n: EDITOR_JS_I18N,
       data: letterData.postContent.content,
 
       onReady: () => {

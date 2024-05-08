@@ -12,7 +12,6 @@ import useSWR from "swr";
 
 export default function Header() {
   const { data: userInfo } = useSWR("user");
-  console.log(userInfo);
   const path = usePathname();
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(false);
