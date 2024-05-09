@@ -4,7 +4,7 @@ import EditorJS from "@editorjs/editorjs";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useOverlay } from "@toss/use-overlay";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PiCaretUpDownBold } from "react-icons/pi";
 import * as I from "components/icons";
@@ -38,6 +38,7 @@ export default function NewEditorJS({
 }) {
   const router = useRouter();
   const overlay = useOverlay();
+  const [editor, setEditor] = useState<null | EditorJS>(null);
   const {
     watch,
     setValue,
@@ -52,21 +53,6 @@ export default function NewEditorJS({
 
   const { data: seriesList } =
     useSWR<ResponseForm<SeriesSummaryDto[]>>("series/me/summary");
-
-  const editor = useMemo(() => {
-    return new EditorJS({
-      holder: "editorjs",
-      autofocus: false,
-      readOnly: false,
-      tools: EDITOR_JS_TOOLS,
-      i18n: EDITOR_JS_I18N,
-      data: letterData.postContent.content,
-
-      onReady: () => {
-        console.log("Editor.js is ready to work!");
-      },
-    });
-  }, []);
 
   const title = watch("title");
   register("title", { required: "제목을 입력해주세요" });
@@ -131,6 +117,24 @@ export default function NewEditorJS({
     e.preventDefault();
     e.returnValue = "";
   };
+  useEffect(() => {
+    const editorInstance = new EditorJS({
+      holder: "editorjs",
+      autofocus: false,
+      readOnly: false,
+      tools: EDITOR_JS_TOOLS,
+      i18n: EDITOR_JS_I18N,
+      onReady: () => {
+        console.log("Editor.js is ready to work!");
+      },
+    });
+
+    setEditor(editorInstance);
+
+    return () => {
+      editorInstance.destroy();
+    };
+  }, []);
 
   useEffect(() => {
     (() => {
