@@ -124,6 +124,7 @@ export default function NewEditorJS({
       readOnly: false,
       tools: EDITOR_JS_TOOLS,
       i18n: EDITOR_JS_I18N,
+      data: letterData.postContent.content,
       onReady: () => {
         console.log("Editor.js is ready to work!");
       },
