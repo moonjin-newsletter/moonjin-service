@@ -47,7 +47,7 @@ export class SeriesController {
      */
     @TypedRoute.Get('following')
     @UseGuards(UserAuthGuard)
-    async getSeries(@User() user: UserAuthDto) : Promise<Try<SeriesWithWriterDto[]>>{
+    async getFollowingSeries(@User() user: UserAuthDto) : Promise<Try<SeriesWithWriterDto[]>>{
         const seriesList = await this.seriesService.getFollowingSeriesByFollowerId(user.id);
         return createResponseForm(seriesList)
     }

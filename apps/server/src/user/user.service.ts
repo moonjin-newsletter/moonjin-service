@@ -134,9 +134,8 @@ export class UserService {
                 createdAt: 'desc'
             }
         })
-        return followingList.map(following => {
-            return UserDtoMapper.FollowingWriterInfoWithUserToFollowingWriterDto(following);
-        })
+        if(followingList.length === 0) return [];
+        return followingList.map(following => UserDtoMapper.FollowingWriterInfoWithUserToFollowingWriterDto(following));
     }
 
     /**
