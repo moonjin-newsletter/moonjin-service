@@ -32,6 +32,8 @@ import {RequestHeaderDto, UserSocialProfileDto, UserAuthDto, SignupEmailCodePayl
 import * as process from "process";
 import {AuthValidationService} from "./auth.validation.service";
 import {UserRoleEnum} from "./enum/userRole.enum";
+import {JwtUtilService} from "./jwtUtil.service";
+import UserDtoMapper from "../user/userDtoMapper";
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -47,7 +49,8 @@ export class AuthController {
               private readonly authValidationService: AuthValidationService,
               private readonly utilService: UtilService,
               private readonly mailService: MailService,
-              private readonly oauthService: OauthService) {}
+              private readonly oauthService: OauthService,
+              private readonly jwtUtilService:JwtUtilService) {}
 
   /**
    * @summary 로컬 회원가입 버튼 눌렀을 시
@@ -70,8 +73,8 @@ export class AuthController {
     if((role === UserRoleEnum.WRITER && !userUniqueData.moonjinId) || (role === UserRoleEnum.USER && userUniqueData.moonjinId)) throw ExceptionList.SIGNUP_ROLE_ERROR;
     await this.authValidationService.assertSignupDataUnique(userUniqueData);
     const hashedPassword = this.utilService.getHashCode(localSignUpData.password);
-    const emailVerificationCode = this.authService.generateJwtToken<SignupEmailCodePayloadDto>({...userUniqueData, role, hashedPassword});
-    await this.mailService.sendVerificationMail(localSignUpData.email, emailVerificationCode);
+    const emailVerificationCode = this.jwtUtilService.generateJwtToken<SignupEmailCodePayloadDto>({...userUniqueData, role, hashedPassword});
+    await this.mailService.sendSignupVerificationMail(localSignUpData.email, emailVerificationCode);
     return createResponseForm({message : "메일이 전송되었습니다."})
   }
 
@@ -91,9 +94,17 @@ export class AuthController {
   async emailVerification(@TypedQuery() payload: IEmailVerification, @Res() res:Response):Promise<void>
   {
     try {
-      const {iat,exp,...userSignUpData} =  this.authService.getDataFromJwtToken<SignupEmailCodePayloadDto>(payload.code);
-      const userData = await this.authService.localSignUp(userSignUpData);
-      const {accessToken, refreshToken} = this.authService.getAccessTokens(userData)
+      const {iat,exp,moonjinId,role,...userSignUpData} =  this.jwtUtilService.getDataFromJwtToken<SignupEmailCodePayloadDto>(payload.code);
+      let createdUser: UserAuthDto;
+      if(!moonjinId){
+        createdUser = await this.authService.localUserSignup(userSignUpData);
+      }else{
+        createdUser = await this.authService.localWriterSignup({
+          ...userSignUpData,
+          moonjinId
+        })
+      }
+      const {accessToken, refreshToken} = this.jwtUtilService.getAccessTokens(createdUser)
       res.cookie('accessToken',accessToken, this.cookieOptions)
       res.cookie('refreshToken', refreshToken, this.cookieOptions)
       res.redirect(process.env.CLIENT_URL + "/");
@@ -113,10 +124,8 @@ export class AuthController {
   async sendPasswordChangeMail(@TypedBody() payload: ICheckEmailExist):Promise<TryCatch<
       ResponseMessage,
       USER_NOT_FOUND | EMAIL_NOT_EXIST>>{
-    const user = await this.authService.getUserByEmail(payload.email)
-    if(!user) throw ExceptionList.USER_NOT_FOUND;
-
-    const passwordChangeToken = this.authService.generateJwtToken(user);
+    const user = await this.authService.getUserByEmail(payload.email);
+    const passwordChangeToken = this.jwtUtilService.generateJwtToken(UserDtoMapper.UserDtoToUserAuthDto(user));
     await this.mailService.sendMailForPasswordChangePage(payload.email, passwordChangeToken);
     return createResponseForm({message : "비밀번호 변경 메일이 전송되었습니다."})
   }
@@ -131,12 +140,12 @@ export class AuthController {
   @TypedRoute.Get("password/email/verification")
   async emailVerificationForPasswordChange(@TypedQuery() payload: IEmailVerification, @Res() res:Response):Promise<void> {
     try {
-      const {iat,exp,...userData} = this.authService.getDataFromJwtToken<UserAuthDto>(payload.code);
-      const passwordChangeToken = this.authService.generateJwtToken(userData);
+      const {iat,exp,...userData} = this.jwtUtilService.getDataFromJwtToken<UserAuthDto>(payload.code);
+      const passwordChangeToken = this.jwtUtilService.generateJwtToken(userData);
       res.cookie('passwordChangeToken', passwordChangeToken, this.cookieOptions)
       res.redirect(process.env.CLIENT_URL + "/auth/password/new");
     }catch (error){
-      console.log(error);
+      console.error(error);
       res.redirect(process.env.CLIENT_URL + "/auth/password/failed"); // TODO : redirect Page 변경 필요
     }
   }
@@ -154,8 +163,8 @@ export class AuthController {
   @TypedRoute.Patch("password")
   async passwordChange(@TypedBody() payload: ILocalLogin, @TypedHeaders() header:RequestHeaderDto, @Res() res:Response):Promise<
       void | TOKEN_NOT_FOUND | INVALID_TOKEN | PASSWORD_CHANGE_ERROR>{
-    const token = this.authService.getTokenFromCookie(header.cookie, "passwordChangeToken");
-    const {iat,exp,...dataFromToken} = this.authService.getDataFromJwtToken<UserAuthDto>(token);
+    const token = this.jwtUtilService.getTokenFromCookie(header.cookie, "passwordChangeToken");
+    const {iat,exp,...dataFromToken} = this.jwtUtilService.getDataFromJwtToken<UserAuthDto>(token);
     await this.authService.passwordChange(dataFromToken.id, payload.password);
     res.cookie("passwordChangeToken", "", {
       ...this.cookieOptions,
@@ -193,11 +202,9 @@ export class AuthController {
    */
   @TypedRoute.Post("login")
   async localLogin(@TypedBody() localLoginData: ILocalLogin, @Res() res:Response):Promise<
-      void |
-      LOGIN_ERROR | INVALID_PASSWORD | USER_NOT_FOUND | SOCIAL_USER_ERROR>{
+      void | LOGIN_ERROR | INVALID_PASSWORD | USER_NOT_FOUND | SOCIAL_USER_ERROR>{
     const user = await this.authService.localLogin(localLoginData);
-    const {accessToken, refreshToken }= this.authService.getAccessTokens(user);
-    console.log(process.env.VERSION === 'prod');
+    const {accessToken, refreshToken }= this.jwtUtilService.getAccessTokens(user);
     res.cookie('accessToken', accessToken, this.cookieOptions)
     res.cookie('refreshToken', refreshToken, this.cookieOptions)
     res.send(createResponseForm({
@@ -227,12 +234,12 @@ export class AuthController {
     try {
       const userData = await this.oauthService.socialLogin(socialLoginData);
       if(userData.result) { // login 처리
-        const jwtTokens = this.authService.getAccessTokens(userData.data);
+        const jwtTokens = this.jwtUtilService.getAccessTokens(userData.data);
         res.cookie('accessToken', jwtTokens.accessToken, this.cookieOptions)
         res.cookie('refreshToken', jwtTokens.refreshToken, this.cookieOptions)
         res.redirect(process.env.CLIENT_URL + ""); // TODO : redirect to success page
       }else { // 추가 정보 입력 페이지로 이동
-        res.cookie('socialSignupToken', this.authService.generateJwtToken(userData.data), this.cookieOptions);
+        res.cookie('socialSignupToken', this.jwtUtilService.generateJwtToken(userData.data), this.cookieOptions);
         res.redirect(process.env.CLIENT_URL + "/auth/social?email=" + userData.data.email) // TODO : redirect to success page
       }
     }catch (error){ // 아예 인증이 안 됨
@@ -261,10 +268,17 @@ export class AuthController {
       TOKEN_NOT_FOUND | INVALID_TOKEN | EMAIL_ALREADY_EXIST | NICKNAME_ALREADY_EXIST | MOONJIN_EMAIL_ALREADY_EXIST | SOCIAL_SIGNUP_ERROR>
   {
     if((socialSignupData.role === UserRoleEnum.WRITER && !socialSignupData.moonjinId) || (socialSignupData.role === UserRoleEnum.USER && socialSignupData.moonjinId)) throw ExceptionList.SIGNUP_ROLE_ERROR;
-    const socialSignupToken = this.authService.getTokenFromCookie(header.cookie, "socialSignupToken");
-    const {iat,exp,...userSocialData} = this.authService.getDataFromJwtToken<UserSocialProfileDto>(socialSignupToken);
-    const user = await this.authService.socialSignup({...userSocialData, ...socialSignupData});
-    const {accessToken, refreshToken} = this.authService.getAccessTokens(user)
+    const socialSignupToken = this.jwtUtilService.getTokenFromCookie(header.cookie, "socialSignupToken");
+    const {iat,exp,...userSocialData} = this.jwtUtilService.getDataFromJwtToken<UserSocialProfileDto>(socialSignupToken);
+    const {role, moonjinId, ...socialUserSignupData} = socialSignupData;
+
+    let user:UserAuthDto;
+    if(moonjinId){
+      user = await this.authService.socialWriterSignup({...userSocialData, ...socialUserSignupData,moonjinId});
+    }else{
+      user = await this.authService.socialUserSignup({...userSocialData, ...socialUserSignupData});
+    }
+    const {accessToken, refreshToken} = this.jwtUtilService.getAccessTokens(user)
     res.cookie('accessToken', accessToken, this.cookieOptions)
     res.cookie('refreshToken', refreshToken, this.cookieOptions)
     res.cookie('socialSignupToken', "",  {

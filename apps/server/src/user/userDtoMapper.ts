@@ -65,6 +65,8 @@ class UserDtoMapperClass {
             }
         }
     }
+
+
 }
 const UserDtoMapper = new UserDtoMapperClass();
 export default UserDtoMapper;

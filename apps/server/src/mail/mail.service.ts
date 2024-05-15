@@ -1,10 +1,9 @@
 import {  Injectable } from '@nestjs/common';
 import Mailgun from 'mailgun.js';
-import { newsLetterDto } from './dto/mail.dto';
+import { newsLetterDto, sendNewsLetterWithHtmlDto } from './dto';
 import * as process from "process";
 import FormData from "form-data";
 import {ExceptionList} from "../response/error/errorInstances";
-import {sendNewsLetterWithHtmlDto} from "./dto";
 
 @Injectable()
 export class MailService {
@@ -22,7 +21,7 @@ export class MailService {
    * @param code
    * @throws MAIL_NOT_EXISTS
    */
-  async sendVerificationMail(
+  async sendSignupVerificationMail(
     email: string,
     code : string
   ): Promise<void> {

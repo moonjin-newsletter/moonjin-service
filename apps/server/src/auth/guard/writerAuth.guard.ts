@@ -1,8 +1,8 @@
 import {CanActivate, ExecutionContext, Injectable} from "@nestjs/common";
 import {ExceptionList} from "../../response/error/errorInstances";
-import {UserAuthDto} from "../dto/userAuthDto";
-import {AuthService} from "../auth.service";
+import {UserAuthDto} from "../dto";
 import {AuthValidationService} from "../auth.validation.service";
+import {JwtUtilService} from "../jwtUtil.service";
 
 /**
  * @summary 작가의 인증을 담당하는 Guard
@@ -15,7 +15,7 @@ import {AuthValidationService} from "../auth.validation.service";
 @Injectable()
 export class WriterAuthGuard implements CanActivate {
     constructor(
-        private readonly authService: AuthService,
+        private readonly jwtUtilService: JwtUtilService,
         private readonly authValidationService: AuthValidationService
     ) {}
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -24,7 +24,7 @@ export class WriterAuthGuard implements CanActivate {
         if(!accessToken) throw ExceptionList.TOKEN_NOT_FOUND;
 
         try {
-            const {iat, exp ,...userData} = this.authService.getDataFromJwtToken<UserAuthDto>(accessToken);
+            const {iat, exp ,...userData} = this.jwtUtilService.getDataFromJwtToken<UserAuthDto>(accessToken);
             await this.authValidationService.assertWriter(userData.id)
             request.user = userData;
             return true;

@@ -224,7 +224,7 @@ export class OauthService {
      * @param userId
      * @throws SOCIAL_USER_ERROR
      */
-    async assertUserNotSocial(userId: number) {
+    async assertUserNotSocialUser(userId: number) {
         const oauth = await this.prismaService.oauth.findUnique({
             where: {
                 userId

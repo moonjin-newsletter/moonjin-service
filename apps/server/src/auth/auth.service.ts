@@ -5,77 +5,97 @@ import * as console from "console";
 import {UtilService} from "../util/util.service";
 import {
     UserAuthDto,
-    SignupDataDto,
     LocalLoginDto,
-    UserAccessTokensDto,
-    WriterSignupDto,
+    EnrollWriterDto,
     WriterInfoDto,
-    SocialSignupDto
+    SocialUserSignupDto
 } from "./dto";
-import {Exception} from "../response/error/error";
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
 import {UserRoleEnum} from "./enum/userRole.enum";
 import UserDtoMapper from "../user/userDtoMapper";
-import { JwtService } from '@nestjs/jwt';
 import {OauthService} from "./oauth.service";
+import {LocalUserSignupDto,LocalWriterSignupDto} from "./dto";
+import {UserDto} from "../user/dto";
+import {SocialWriterSignupDto} from "./dto/socialWriterSignup.dto";
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
-        private readonly jwtService: JwtService,
         private readonly oauthService: OauthService
     ) {}
 
     /**
-     * @summary 작가 | 독자의 회원가입을 진행하는 기능
-     *
-     * @param signUpData
+     * @summary 독자의 회원가입을 진행하는 기능
+     * @param localSignupData
      * @returns UserAuthDto
      * @throws EMAIL_ALREADY_EXIST
      * @throws NICKNAME_ALREADY_EXIST
-     * @throws MOONJIN_EMAIL_ALREADY_EXIST
      * @throws SIGNUP_ERROR
      * @throws WRITER_SIGNUP_ERROR
      */
-    async localSignUp(signUpData : SignupDataDto): Promise<UserAuthDto> {
-        let userId = 0;
+    async localUserSignup(localSignupData :LocalUserSignupDto): Promise<UserAuthDto>{
         try {
-            const defaultProfile = process.env.CDN_URL + '/profile/default.png';
-            const {moonjinId, hashedPassword ,...data} = signUpData;
-            // 공통 회원가입
-            const createdUser : User = await this.prismaService.user.create({
-                data : {
-                    ...data,
-                    image : defaultProfile,
+            let {image, hashedPassword,...signupData} = localSignupData;
+            if(!image) image=this.utilService.processImageForProfile(image);
+
+            const createdUser: User = await this.prismaService.user.create({
+                data:{
+                    ...signupData,
                     password : hashedPassword,
+                    role: UserRoleEnum.USER,
+                    image,
                     createdAt : this.utilService.getCurrentDateInKorea()
                 }
-            });
-            userId = createdUser.id;
-            if (signUpData.role === UserRoleEnum.WRITER && moonjinId){ // 작가 회원가입
-                await this.writerSignup({userId, moonjinId});
-            }
+            })
             return UserDtoMapper.UserToUserAuthDto(createdUser);
-        }catch(error){
-            if(userId > 0){ // writerSignup Error : user가 생성되었으니 transaction rollback
-                await this.prismaService.user.delete({
-                    where:{
-                        id : userId
-                    }
-                })
-                throw error;
-            }
+        }catch (error){
             this.prismaSignupErrorHandling(error);
-            if(error instanceof Exception){
-                throw error;
-            }
             console.error(error)
             throw ExceptionList.SIGNUP_ERROR;
         }
     }
+
+    /**
+     * @summary 작가의 회원가입을 진행하는 기능
+     * @param localWriterSignupData
+     * @returns UserAuthDto
+     * @throws EMAIL_ALREADY_EXIST
+     * @throws NICKNAME_ALREADY_EXIST
+     * @throws SIGNUP_ERROR
+     * @throws WRITER_SIGNUP_ERROR
+     */
+    async localWriterSignup(localWriterSignupData :LocalWriterSignupDto): Promise<UserAuthDto>{
+        try {
+            let {image, hashedPassword,moonjinId,description,...signupData} = localWriterSignupData;
+            if(!image) image = this.utilService.processImageForProfile(image);
+
+            const createdUser= await this.prismaService.user.create({
+                data:{
+                    ...signupData,
+                    password : hashedPassword,
+                    role: UserRoleEnum.WRITER,
+                    image,
+                    createdAt : this.utilService.getCurrentDateInKorea(),
+                    writerInfo:{
+                        create:{
+                            moonjinId,
+                            description,
+                            createdAt : this.utilService.getCurrentDateInKorea()
+                        }
+                    }
+                }
+            })
+            return UserDtoMapper.UserToUserAuthDto(createdUser);
+        }catch (error){
+            this.prismaSignupErrorHandling(error);
+            console.error(error)
+            throw ExceptionList.WRITER_SIGNUP_ERROR;
+        }
+    }
+
 
     /**
      * @summary 작가 회원가입을 진행하는 함수
@@ -84,21 +104,22 @@ export class AuthService {
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      * @throws WRITER_SIGNUP_ERROR
      */
-    async writerSignup(writerSignupData : WriterSignupDto) : Promise<WriterInfoDto>{
+    async enrollWriter(writerSignupData : EnrollWriterDto) : Promise<WriterInfoDto>{
         try {
             const writerInfo = await this.prismaService.writerInfo.create({
                 data:{
                     ...writerSignupData,
                     createdAt : this.utilService.getCurrentDateInKorea()
+                },
+            })
+            await this.prismaService.user.update({
+                where:{
+                    id: writerSignupData.userId
+                },
+                data:{
+                    role : UserRoleEnum.WRITER
                 }
             })
-            await this.prismaService.follow.create({
-                data:{
-                    followerId : writerSignupData.userId,
-                    writerId :  writerSignupData.userId,
-                    createdAt : this.utilService.getCurrentDateInKorea()
-                }
-            });
             return UserDtoMapper.WriterInfoToWriterInfoDto(writerInfo);
         } catch (error){
             if(error instanceof PrismaClientKnownRequestError){
@@ -117,12 +138,11 @@ export class AuthService {
      * @returns void
      */
     async passwordChange(id : number, password : string): Promise<void> {
-        await this.oauthService.assertUserNotSocial(id);
+        await this.oauthService.assertUserNotSocialUser(id);
         try {
             await this.prismaService.user.update({
                 where:{
                     id,
-                    deleted : false
                 },
                 data:{
                     password : this.utilService.getHashCode(password)
@@ -134,14 +154,21 @@ export class AuthService {
         }
     }
 
-    async getUserByEmail(email : string): Promise<UserAuthDto | null> {
+    /**
+     * @summary 유저 정보를 이메일로 가져오는 함수
+     * @param email
+     * @returns UserAuthDto
+     * @throws USER_NOT_FOUND
+     */
+    async getUserByEmail(email : string): Promise<UserDto> {
         const user = await this.prismaService.user.findUnique({
             where:{
                 email,
                 deleted : false
             }
         })
-        return user ? UserDtoMapper.UserToUserAuthDto(user) : null;
+        if(!user) throw ExceptionList.USER_NOT_FOUND;
+        return UserDtoMapper.UserToUserDto(user);
     }
 
     /**
@@ -154,74 +181,94 @@ export class AuthService {
      * @throws LOGIN_ERROR
      */
     async localLogin(loginData : LocalLoginDto) : Promise<UserAuthDto> {
-        try {
-            const user = await this.prismaService.user.findUnique({
-                where:{
-                    email: loginData.email,
-                }
-            })
-            if(!user)
-                throw ExceptionList.USER_NOT_FOUND;
-            if(!user.password) // 소셜 유저
-                throw ExceptionList.SOCIAL_USER_ERROR;
-            if (!this.utilService.compareHash(loginData.password, user.password)) // 비밀번호 틀림
-                throw ExceptionList.INVALID_PASSWORD;
-
-            return UserDtoMapper.UserToUserAuthDto(user);
-        } catch (error) {
-            console.error(error)
-            if(error instanceof PrismaClientKnownRequestError){
-                throw ExceptionList.LOGIN_ERROR;
+        const user = await this.prismaService.user.findUnique({
+            where:{
+                email: loginData.email,
             }
-            throw error;
-        }
+        })
+        if(!user)
+            throw ExceptionList.USER_NOT_FOUND;
+        if(!user.password || user.password.length < 2) // 소셜 유저
+            throw ExceptionList.SOCIAL_USER_ERROR;
+        if (!this.utilService.compareHash(loginData.password, user.password)) // 비밀번호 틀림
+            throw ExceptionList.INVALID_PASSWORD;
+
+        return UserDtoMapper.UserToUserAuthDto(user);
     }
 
 
     /**
-     * @summary 소셜 회원가입을 진행하는 함수
-     * @param socialSignupData
-     * @returns UserDto | WriterDto
+     * @summary 소셜 독자 회원가입을 진행하는 함수
+     * @param socialUserSignupData
+     * @throws EMAIL_ALREADY_EXIST
+     * @throws NICKNAME_ALREADY_EXIST
+     * @throws SIGNUP_ERROR
      * @throws SOCIAL_SIGNUP_ERROR
+     */
+    async socialUserSignup(socialUserSignupData:SocialUserSignupDto) : Promise<UserAuthDto>{
+        let {image, oauthId,social,...signupData} = socialUserSignupData;
+        if(!image) image = this.utilService.processImageForProfile(image);
+        try{
+            const createdUser = await this.prismaService.user.create({
+                data:{
+                    ...signupData,
+                    password : "",
+                    role : UserRoleEnum.USER,
+                    image,
+                    createdAt : this.utilService.getCurrentDateInKorea(),
+                    oauth:{
+                        create:{
+                            oauthId,
+                            social
+                        }
+                    }
+                }
+            });
+            return UserDtoMapper.UserToUserAuthDto(createdUser);
+        }catch (error){
+            this.prismaSignupErrorHandling(error);
+            console.error(error);
+            throw ExceptionList.SOCIAL_SIGNUP_ERROR;
+        }
+    }
+
+    /**
+     * @summary 소셜 작가 회원가입을 진행하는 함수
+     * @param socialWriterSignupData
      * @throws EMAIL_ALREADY_EXIST
      * @throws NICKNAME_ALREADY_EXIST
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
+     * @throws SIGNUP_ERROR
+     * @throws SOCIAL_SIGNUP_ERROR
      */
-    async socialSignup(socialSignupData : SocialSignupDto): Promise<UserAuthDto> {
-        let createdUserId = 0
-        let createdOauthId = ""
-        const image = this.utilService.processImageForProfile(socialSignupData.image)
-        try {
-            const {oauthId, social, moonjinId, ...userSignupData} = socialSignupData;
+    async socialWriterSignup(socialWriterSignupData:SocialWriterSignupDto) : Promise<UserAuthDto>{
+        let {image, oauthId,social,description,moonjinId,...signupData} = socialWriterSignupData;
+        if(!image) image = this.utilService.processImageForProfile(image);
+        try{
             const createdUser = await this.prismaService.user.create({
-                data: {
-                    ...userSignupData,
+                data:{
+                    ...signupData,
+                    password : "",
+                    role : UserRoleEnum.WRITER,
                     image,
-                    createdAt : this.utilService.getCurrentDateInKorea()
+                    createdAt : this.utilService.getCurrentDateInKorea(),
+                    oauth:{
+                        create:{
+                            oauthId,
+                            social
+                        }
+                    },
+                    writerInfo:{
+                        create:{
+                            moonjinId,
+                            description: description?? "",
+                            createdAt : this.utilService.getCurrentDateInKorea()
+                        }
+                    }
                 }
-            })
-            createdUserId = createdUser.id;
-            const createdOauth = await this.oauthService.oauthSignup({oauthId, social, userId: createdUser.id});
-            createdOauthId = createdOauth.oauthId
-            if(userSignupData.role === UserRoleEnum.WRITER && moonjinId){ // 작가 회원가입
-                await this.writerSignup({userId: createdUser.id, moonjinId});
-            }
-            return UserDtoMapper.UserToUserAuthDto(createdUser)
-        } catch (error){
-            if(createdOauthId){ // transaction rollback
-                await this.prismaService.oauth.delete({
-                    where:{
-                        oauthId : createdOauthId
-                    }
-                })
-            }
-            if(createdUserId > 0){ // transaction rollback
-                await this.prismaService.user.delete({
-                    where:{
-                        id : createdUserId
-                    }
-                })
-            }
+            });
+            return UserDtoMapper.UserToUserAuthDto(createdUser);
+        }catch (error){
             this.prismaSignupErrorHandling(error);
             console.error(error);
             throw ExceptionList.SOCIAL_SIGNUP_ERROR;
@@ -254,53 +301,4 @@ export class AuthService {
         }
     }
 
-
-    /**
-     * @summary 쿠키에서 토큰을 가져오는 함수.
-     * @param cookies
-     * @param cookieToFind
-     * @throws TOKEN_NOT_FOUND
-     * @returns token
-     */
-    getTokenFromCookie(cookies : string[], cookieToFind: string): string {
-        const token = cookies.find(cookie => cookie.includes(cookieToFind));
-        if(!token) throw ExceptionList.TOKEN_NOT_FOUND;
-        return token.split('=')[1];
-    }
-
-    /**
-     * @summary jwtToken 생성
-     * @param payload extends object
-     * @param time 기본값 1 day
-     * @returns jwtToken
-     */
-    generateJwtToken<T extends object>(payload: T, time = 60*60*24): string{
-        return this.jwtService.sign(payload, {
-            expiresIn: time,
-        });
-    }
-
-    /**
-     * @summary jwtToken의 payload를 가져오는 함수.
-     * @param jwtToken
-     * @throws INVALID_TOKEN
-     */
-    getDataFromJwtToken<T>(jwtToken: string) : T & {iat:number,exp: number}{
-        try {
-            return this.jwtService.decode<T>(jwtToken) as T & {iat:number,exp: number};
-        } catch (error){
-            throw ExceptionList.INVALID_TOKEN;
-        }
-    }
-
-    /**
-     * @summary userData가 담긴 atk, rtk을 발급
-     * @param userData
-     * @returns {accessToken, refreshToken}
-     */
-    getAccessTokens(userData: UserAuthDto) : UserAccessTokensDto {
-        const accessToken = this.generateJwtToken(userData,60 * 15);
-        const refreshToken = this.generateJwtToken(userData, 60 * 60 * 24 * 7);
-        return {accessToken, refreshToken}
-    }
 }

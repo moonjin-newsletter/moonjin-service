@@ -41,6 +41,7 @@ import {PROFILE_CHANGE_ERROR} from "../response/error/user/user.error";
 import {ICreateWriterInfo} from "./api-types/ICreateWriterInfo";
 import {ExceptionList} from "../response/error/errorInstances";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
+import {JwtUtilService} from "../auth/jwtUtil.service";
 
 @Controller('user')
 export class UserController {
@@ -54,7 +55,8 @@ export class UserController {
         private readonly userService: UserService,
         private readonly authService: AuthService,
         private readonly oauthService: OauthService,
-        private readonly mailService: MailService
+        private readonly mailService: MailService,
+        private readonly jwtUtilService : JwtUtilService
     ) {}
 
     /**
@@ -208,7 +210,7 @@ export class UserController {
     async changeUserProfile(@User() user:UserAuthDto, @Res() res: Response, @TypedBody() newProfile : IChangeUserProfile): Promise<TryCatch<UserDto,
         PROFILE_CHANGE_ERROR | NICKNAME_ALREADY_EXIST | USER_NOT_FOUND>> {
         const newUser = await this.userService.changeUserProfile(user.id, newProfile);
-        const {accessToken, refreshToken }= this.authService.getAccessTokens(UserDtoMapper.UserDtoToUserAuthDto(newUser));
+        const {accessToken, refreshToken }= this.jwtUtilService.getAccessTokens(UserDtoMapper.UserDtoToUserAuthDto(newUser));
         res.cookie('accessToken', accessToken, this.cookieOptions)
         res.cookie('refreshToken', refreshToken, this.cookieOptions)
         res.send(createResponseForm(newUser));
@@ -232,7 +234,7 @@ export class UserController {
     async changeWriterProfile(@User() user:UserAuthDto, @Res() res: Response, @TypedBody() newProfile : IChangeWriterProfile): Promise<TryCatch<UserDto,
         PROFILE_CHANGE_ERROR | NICKNAME_ALREADY_EXIST | USER_NOT_WRITER | USER_NOT_FOUND | MOONJIN_EMAIL_ALREADY_EXIST>> {
         const newUser = await this.userService.changeWriterProfile(user.id, newProfile);
-        const {accessToken, refreshToken }= this.authService.getAccessTokens(UserDtoMapper.UserDtoToUserAuthDto(newUser));
+        const {accessToken, refreshToken }= this.jwtUtilService.getAccessTokens(UserDtoMapper.UserDtoToUserAuthDto(newUser));
         res.cookie('accessToken', accessToken,this.cookieOptions)
         res.cookie('refreshToken', refreshToken,this.cookieOptions)
         res.send(createResponseForm(newUser));
@@ -251,7 +253,7 @@ export class UserController {
     @UseGuards(UserAuthGuard)
     async changeUserPassword(@User() user:UserAuthDto, @Res() res: Response, @TypedBody() body : IChangePassword): Promise<TryCatch<ResponseMessage,
         EMAIL_NOT_EXIST>> {
-        const passwordChangeCode = this.authService.generateJwtToken<UserWithPasswordDto>({userId: user.id, password: body.newPassword});
+        const passwordChangeCode = this.jwtUtilService.generateJwtToken<UserWithPasswordDto>({userId: user.id, password: body.newPassword});
         await this.mailService.sendMailForPasswordChange(user.email,passwordChangeCode);
         res.cookie('passwordChangeCode', passwordChangeCode, this.cookieOptions);
         res.send(createResponseForm({message: "비밀번호 변경을 위한 이메일을 발송했습니다."}));
@@ -266,7 +268,7 @@ export class UserController {
     @TypedRoute.Get('password/change')
     async callBackForChangeUserPassword(@TypedQuery() payload: IEmailVerification, @Res() res:Response): Promise<void>{
         try{
-            const jwtData = this.authService.getDataFromJwtToken<UserWithPasswordDto>(payload.code);
+            const jwtData = this.jwtUtilService.getDataFromJwtToken<UserWithPasswordDto>(payload.code);
             await this.authService.passwordChange(jwtData.userId, jwtData.password);
             res.cookie('passwordChangeCode', '', {
                 ...this.cookieOptions,
@@ -315,7 +317,7 @@ export class UserController {
     @UseGuards(UserAuthGuard)
     async becomeWriter(@User() user:UserAuthDto, @TypedBody() writerData : ICreateWriterInfo, @Res() res:Response): Promise<TryCatch<ResponseMessage,
         MOONJIN_EMAIL_ALREADY_EXIST | WRITER_SIGNUP_ERROR | NICKNAME_ALREADY_EXIST>> {
-        const writerInfo = await this.authService.writerSignup({moonjinId:writerData.moonjinId,description:writerData.description, userId:user.id});
+        const writerInfo = await this.authService.enrollWriter({moonjinId:writerData.moonjinId,description:writerData.description, userId:user.id});
         try{
             if(writerData.nickname != user.nickname)
                 await this.userService.changeUserProfile(user.id, {nickname: writerData.nickname});
@@ -324,7 +326,7 @@ export class UserController {
             await this.userService.deleteWriterById(writerInfo.userId);
             throw ExceptionList.NICKNAME_ALREADY_EXIST;
         }
-        const {accessToken, refreshToken} = this.authService.getAccessTokens({...user,nickname:writerData.nickname?? user.nickname,role:UserRoleEnum.WRITER});
+        const {accessToken, refreshToken} = this.jwtUtilService.getAccessTokens({...user,nickname:writerData.nickname?? user.nickname,role:UserRoleEnum.WRITER});
         res.cookie('accessToken',accessToken, this.cookieOptions)
         res.cookie('refreshToken', refreshToken,this.cookieOptions)
         res.send(createResponseForm({

@@ -22,7 +22,7 @@ import {
 } from "./post";
 import {FOLLOW_ALREADY_ERROR, FOLLOW_MYSELF_ERROR, FOLLOWER_ALREADY_EXIST, FOLLOWER_NOT_FOUND} from "./user";
 import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "./series";
-import {EMPTY_LIST_INPUT} from "./dev";
+import {EMPTY_LIST_INPUT, EMPTY_VALUE_INPUT} from "./dev";
 import {LETTER_ALREADY_READ, LETTER_NOT_FOUND, FORBIDDEN_FOR_LETTER, SEND_LETTER_ERROR} from "./letter";
 import {FILE_EXTENTION_ERROR, FILE_UPLOAD_ERROR} from "./file";
 import {PROFILE_CHANGE_ERROR} from "./user/user.error";
@@ -87,4 +87,5 @@ export const ExceptionList= {
     FILE_UPLOAD_ERROR: new Exception(typia.random<FILE_UPLOAD_ERROR>()),
     //dev
     EMPTY_LIST_INPUT : new Exception(typia.random<EMPTY_LIST_INPUT>()),
+    EMPTY_VALUE_INPUT : new Exception(typia.random<EMPTY_VALUE_INPUT>()),
 }

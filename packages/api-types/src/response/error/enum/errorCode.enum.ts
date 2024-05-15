@@ -70,4 +70,5 @@ export enum ErrorCodeEnum {
 
     // dev
     EMPTY_LIST_INPUT = "9000",
+    EMPTY_VALUE_INPUT = "9001",
 }

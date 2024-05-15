@@ -7,16 +7,17 @@ import {PrismaService} from "../prisma/prisma.service";
 import {UtilModule} from "../util/util.module";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import {HttpModule} from "@nestjs/axios";
-import {SignupDataDto} from "./dto/signupData.dto";
+import {SignupDataDto,EnrollWriterDto} from "./dto";
 import {UserRoleEnum} from "./enum/userRole.enum";
-import {WriterSignupDto} from "./dto/writerSignup.dto";
 import { JwtModule } from '@nestjs/jwt';
 import typia from 'typia';
+import {JwtUtilService} from "./jwtUtil.service";
 
 describe('인증 서비스', () => {
     let authService: AuthService;
     let authValidationService : AuthValidationService;
     let prismaService: PrismaService
+    let jwtUtilService : JwtUtilService
 
     beforeEach(async () => {
         const authModule = await Test.createTestingModule({
@@ -42,6 +43,7 @@ describe('인증 서비스', () => {
         authService = authModule.get<AuthService>(AuthService);
         authValidationService = authModule.get<AuthValidationService>(AuthValidationService);
         prismaService = authModule.get<PrismaService>(PrismaService);
+        jwtUtilService = authModule.get<JwtUtilService>(JwtUtilService);
     });
 
     describe("유효성 검사", () => {
@@ -99,7 +101,7 @@ describe('인증 서비스', () => {
             } )
             const userMoonjinIdList : Record<string, boolean> = {}
             let numberOfWriter = 0;
-            authService.writerSignup = jest.fn().mockImplementation(async (writerSignupData : WriterSignupDto) => {
+            authService.enrollWriter = jest.fn().mockImplementation(async (writerSignupData : EnrollWriterDto) => {
                 if(userMoonjinIdList[writerSignupData.moonjinId]) throw "moonjinId already exist"
                 userMoonjinIdList[writerSignupData.moonjinId] = true;
                 return {
@@ -127,25 +129,25 @@ describe('인증 서비스', () => {
                 role : UserRoleEnum.WRITER,
                 moonjinId : "writer1"
             }
-            const reader = await authService.localSignUp(readerSignupData);
-            const writer = await authService.localSignUp(writerSignupData);
+            const reader = await authService.localUserSignup(readerSignupData);
+            const writer = await authService.localUserSignup(writerSignupData);
 
             //then
             expect(reader.email).toEqual(readerSignupData.email);
-            await expect(authService.localSignUp(readerSignupData)).rejects.toThrow()
+            await expect(authService.localUserSignup(readerSignupData)).rejects.toThrow()
             expect(writer.email).toEqual(writerSignupData.email);
-            await expect(authService.localSignUp(writerSignupData)).rejects.toThrow()
+            await expect(authService.localUserSignup(writerSignupData)).rejects.toThrow()
         })
     })
 
     describe("쿠키", () => {
         it("쿠키에서 토큰 가져오기", () => {
-            const token = authService.getTokenFromCookie(['testCookie=1234', 'NotTestCookie=4321'], 'testCookie');
+            const token = jwtUtilService.getTokenFromCookie(['testCookie=1234', 'NotTestCookie=4321'], 'testCookie');
             expect(token).toBe('1234');
         })
 
         it("쿠키에 찾는 토큰이 없는 경우", () => {
-            expect(() => authService.getTokenFromCookie(['testCookie=1234', 'NotTestCookie=4321'], 'notExistCookie')).toThrow();
+            expect(() => jwtUtilService.getTokenFromCookie(['testCookie=1234', 'NotTestCookie=4321'], 'notExistCookie')).toThrow();
         })
 
         it("JWT 쿠키 생성 및 정보 가져오기" ,() => {
@@ -155,8 +157,8 @@ describe('인증 서비스', () => {
                 id : number,
             }
             const payload = typia.random<payloadType>()
-            const jwtToken = authService.generateJwtToken(payload);
-            const {iat,exp,...dataFromJwtToken} = authService.getDataFromJwtToken<payloadType>(jwtToken);
+            const jwtToken = jwtUtilService.generateJwtToken(payload);
+            const {iat,exp,...dataFromJwtToken} = jwtUtilService.getDataFromJwtToken<payloadType>(jwtToken);
             expect(dataFromJwtToken).toEqual(payload);
         })
 
