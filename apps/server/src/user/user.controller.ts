@@ -28,7 +28,7 @@ import {ICreateExternalFollower} from "./api-types/ICreateExternalFollower";
 import {OauthService} from "../auth/oauth.service";
 import {IChangeUserProfile} from "./api-types/IChangeUserProfile";
 import {AuthService} from "../auth/auth.service";
-import {Response} from "express";
+import {CookieOptions, Response} from "express";
 import UserDtoMapper from "./userDtoMapper";
 import {IChangePassword} from "./api-types/IChangePassword";
 import {MailService} from "../mail/mail.service";
@@ -44,6 +44,12 @@ import {UserRoleEnum} from "../auth/enum/userRole.enum";
 
 @Controller('user')
 export class UserController {
+    cookieOptions : CookieOptions = process.env.VERSION === 'prod' ? {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: true,
+        domain: process.env.DOT_MOONJIN_DOMAIN
+    }: {}
     constructor(
         private readonly userService: UserService,
         private readonly authService: AuthService,
@@ -203,8 +209,8 @@ export class UserController {
         PROFILE_CHANGE_ERROR | NICKNAME_ALREADY_EXIST | USER_NOT_FOUND>> {
         const newUser = await this.userService.changeUserProfile(user.id, newProfile);
         const {accessToken, refreshToken }= this.authService.getAccessTokens(UserDtoMapper.UserDtoToUserAuthDto(newUser));
-        res.cookie('accessToken', accessToken)
-        res.cookie('refreshToken', refreshToken)
+        res.cookie('accessToken', accessToken, this.cookieOptions)
+        res.cookie('refreshToken', refreshToken, this.cookieOptions)
         res.send(createResponseForm(newUser));
         return createResponseForm(newUser);
     }
@@ -227,8 +233,8 @@ export class UserController {
         PROFILE_CHANGE_ERROR | NICKNAME_ALREADY_EXIST | USER_NOT_WRITER | USER_NOT_FOUND | MOONJIN_EMAIL_ALREADY_EXIST>> {
         const newUser = await this.userService.changeWriterProfile(user.id, newProfile);
         const {accessToken, refreshToken }= this.authService.getAccessTokens(UserDtoMapper.UserDtoToUserAuthDto(newUser));
-        res.cookie('accessToken', accessToken)
-        res.cookie('refreshToken', refreshToken)
+        res.cookie('accessToken', accessToken,this.cookieOptions)
+        res.cookie('refreshToken', refreshToken,this.cookieOptions)
         res.send(createResponseForm(newUser));
         return createResponseForm(newUser);
     }
@@ -247,7 +253,7 @@ export class UserController {
         EMAIL_NOT_EXIST>> {
         const passwordChangeCode = this.authService.generateJwtToken<UserWithPasswordDto>({userId: user.id, password: body.newPassword});
         await this.mailService.sendMailForPasswordChange(user.email,passwordChangeCode);
-        res.cookie('passwordChangeCode', passwordChangeCode);
+        res.cookie('passwordChangeCode', passwordChangeCode, this.cookieOptions);
         res.send(createResponseForm({message: "비밀번호 변경을 위한 이메일을 발송했습니다."}));
         return createResponseForm({message: "비밀번호 변경을 위한 이메일을 발송했습니다."});
     }
@@ -262,7 +268,10 @@ export class UserController {
         try{
             const jwtData = this.authService.getDataFromJwtToken<UserWithPasswordDto>(payload.code);
             await this.authService.passwordChange(jwtData.userId, jwtData.password);
-            res.cookie('passwordChangeCode', '', {maxAge: 0});
+            res.cookie('passwordChangeCode', '', {
+                ...this.cookieOptions,
+                maxAge: 0
+            });
             res.redirect(process.env.CLIENT_URL ?? "http://localhost:3000" + "/password/change/success");
         }catch (error){
             if(error.code == ErrorCodeEnum.INVALID_TOKEN)
@@ -293,7 +302,7 @@ export class UserController {
     }
 
     /**
-     * @summary 회원, 작가로 등록 API
+     * @summary 작가 시작하기 API
      * @param user
      * @param writerData
      * @param res
@@ -316,8 +325,8 @@ export class UserController {
             throw ExceptionList.NICKNAME_ALREADY_EXIST;
         }
         const {accessToken, refreshToken} = this.authService.getAccessTokens({...user,nickname:writerData.nickname?? user.nickname,role:UserRoleEnum.WRITER});
-        res.cookie('accessToken',accessToken)
-        res.cookie('refreshToken', refreshToken)
+        res.cookie('accessToken',accessToken, this.cookieOptions)
+        res.cookie('refreshToken', refreshToken,this.cookieOptions)
         res.send(createResponseForm({
             message: "작가로 등록되었습니다."
         }));
