@@ -564,6 +564,9 @@ export class UserService {
         }
     }
 
+
+
+
     /**
      * @summary 작가 정보 삭제하기
      * @param writerId
@@ -594,5 +597,4 @@ export class UserService {
             }
         })
     }
-
 }

@@ -123,7 +123,7 @@ describe('인증 서비스', () => {
                 role : UserRoleEnum.USER
             }
             const writerSignupData : SignupDataDto = {
-                email : "writer@moonjin.site",
+                email : "subscribe@moonjin.site",
                 nickname : "writer",
                 hashedPassword : "test12test12test12test12",
                 role : UserRoleEnum.WRITER,

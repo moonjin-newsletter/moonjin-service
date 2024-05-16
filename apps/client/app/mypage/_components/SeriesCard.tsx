@@ -67,7 +67,7 @@ export function SeriesCardForWritter({
           {seriesInfo.description}
         </span>
         {/*<span className="text-xs mt-0.5 line-clamp-1 text-grayscale-400">*/}
-        {/*  written by.{seriesInfo.writer.nickname}*/}
+        {/*  written by.{seriesInfo.subscribe.nickname}*/}
         {/*</span>*/}
       </div>
     </Link>

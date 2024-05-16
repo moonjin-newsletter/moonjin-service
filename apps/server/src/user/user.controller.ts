@@ -108,7 +108,7 @@ export class UserController {
     /**
      * @summary 내 정보 가져오기
      * @param user
-     * @returns {user:UserDto, writer?: WriterInfoDto}
+     * @returns {user:UserDto, subscribe?: WriterInfoDto}
      * @throws USER_NOT_FOUND
      * @throws USER_NOT_WRITER
      */
@@ -220,7 +220,7 @@ export class UserController {
      * @throws USER_NOT_FOUND
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      */
-    @TypedRoute.Patch('writer/profile')
+    @TypedRoute.Patch('subscribe/profile')
     @UseGuards(WriterAuthGuard)
     async changeWriterProfile(@User() user:UserAuthDto, @Res() res: Response, @TypedBody() newProfile : IChangeWriterProfile): Promise<TryCatch<UserDto,
         PROFILE_CHANGE_ERROR | NICKNAME_ALREADY_EXIST | USER_NOT_WRITER | USER_NOT_FOUND | MOONJIN_EMAIL_ALREADY_EXIST>> {

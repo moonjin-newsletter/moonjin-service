@@ -13,6 +13,8 @@ import { SeriesModule } from './series/series.module';
 import { LetterModule } from './letter/letter.module';
 import { AwsModule } from './aws/aws.module';
 import { FileModule } from './file/file.module';
+import { SubscribeModule } from './subscribe/subscribe.module';
+import { WriterModule } from './writer/writer.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { FileModule } from './file/file.module';
     LetterModule,
     AwsModule,
     FileModule,
+    SubscribeModule,
+    WriterModule,
   ],
   controllers: [AppController],
   providers: [AppService],
