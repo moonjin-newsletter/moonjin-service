@@ -243,9 +243,9 @@ function WriterProfileLayout({ userInfo }: { userInfo?: any }) {
           자기 소개
         </label>
         <input
-          {...register("description", { maxLength: 128 })}
-          placeholder="변경을 원하시는 한 줄 소개를 입력해주세요 (최대 128자)"
-          maxLength={128}
+          {...register("description", { maxLength: 120 })}
+          placeholder="변경을 원하시는 한 줄 소개를 입력해주세요 (최대 120자)"
+          maxLength={120}
           className="w-full mt-2 h-10 bg-grayscale-100 outline-0 border-0 rounded px-2 focus:ring-0 placeholder:text-sm placeholder:text-grayscale-400"
         />
 
