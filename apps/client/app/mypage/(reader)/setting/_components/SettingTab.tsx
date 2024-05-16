@@ -157,16 +157,10 @@ function ProfileLayout({ userInfo }: { userInfo?: any }) {
           className="w-full mt-2 h-10 bg-grayscale-100 outline-0 border-0 rounded px-2 focus:ring-0 placeholder:text-sm placeholder:text-grayscale-400"
         />
 
-        <a
-          href="mailto:moonjin6239@gmail.com"
-          className="text-rose-500 underline mt-8"
-        >
-          계정 탈퇴하기
-        </a>
         <button
           disabled={!isValid}
           type="submit"
-          className="w-full h-12 bg-primary text-white rounded mt-4"
+          className="w-full h-12 bg-primary text-white rounded mt-8"
         >
           설정 완료
         </button>
@@ -292,16 +286,10 @@ function WriterProfileLayout({ userInfo }: { userInfo?: any }) {
           />
         </label>
 
-        <a
-          href="mailto:moonjin6239@gmail.com"
-          className="text-rose-500 underline mt-8"
-        >
-          계정 탈퇴하기
-        </a>
         <button
           disabled={!isValid}
           type="submit"
-          className="w-full h-12 bg-primary text-white rounded mt-4"
+          className="w-full h-12 bg-primary text-white rounded mt-8"
         >
           설정 완료
         </button>
