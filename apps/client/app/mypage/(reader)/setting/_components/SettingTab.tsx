@@ -138,7 +138,10 @@ function ProfileLayout({ userInfo }: { userInfo?: any }) {
   function onClickSubmit(value: any) {
     csr
       .patch("user/profile", { json: value })
-      .then((res) => toast.success("프로필이 변경됐습니다"))
+      .then((res) => {
+        toast.success("프로필이 변경됐습니다");
+        window.location.reload();
+      })
       .catch((err) => {
         if (err.code === ErrorCodeEnum.NICKNAME_ALREADY_EXIST)
           toast.error("이미 존재하는 이메일입니다");
@@ -194,7 +197,10 @@ function WriterProfileLayout({ userInfo }: { userInfo?: any }) {
   function onClickSubmit(value: IChangeWriterProfile) {
     csr
       .patch("user/writer/profile", { json: value })
-      .then((res) => toast.success("프로필이 변경됐습니다"))
+      .then((res) => {
+        toast.success("프로필이 변경됐습니다");
+        window.location.reload();
+      })
       .catch((err) => {
         if (err.code === ErrorCodeEnum.NICKNAME_ALREADY_EXIST)
           toast.error("이미 존재하는 이메일입니다");
