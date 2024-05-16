@@ -128,7 +128,7 @@ export default function NewEditorJS() {
     (() => {
       window.addEventListener("beforeunload", preventClose);
     })();
-    console.log("mount!!!!!");
+
     return () => {
       window.removeEventListener("beforeunload", preventClose);
     };

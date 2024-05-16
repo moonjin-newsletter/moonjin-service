@@ -38,14 +38,15 @@ export default function Header() {
     path.includes("auth/social") ||
     path.includes("auth/apply") ||
     path.includes("write/new") ||
-    path.includes("write/edit")
+    path.includes("write/edit") ||
+    path.includes("/form")
   )
     return null;
   return (
     <header className="fixed z-50 top-0 left-0 w-full flex h-16  items-center justify-center bg-black/40">
       <div className="flex  w-[1006px] h-full items-center  font-normal">
         <Link className="flex  items-center h-full text-white" href="/">
-          <I.Logo height="29" viewBox="0 0 149 39" width="139" />
+          <I.Logo fill="white" height="29" viewBox="0 0 149 39" width="139" />
         </Link>
         <div className="flex h-full ml-72 gap-x-8 items-center text-white">
           <Link className="flex items-center  h-full" href="">
