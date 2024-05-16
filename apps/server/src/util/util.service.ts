@@ -29,6 +29,10 @@ export class UtilService {
         return date;
     }
 
+    isNullObject(obj: object): boolean {
+        return Object.keys(obj).length === 0;
+    }
+
     /**
      * @summary cover 없으면 default 이미지 처리
      * @param cover

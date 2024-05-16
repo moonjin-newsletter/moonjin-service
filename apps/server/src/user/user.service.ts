@@ -35,8 +35,8 @@ export class UserService {
      * @param writerId
      * @returns void
      * @throws FOLLOW_MYSELF_ERROR
-     * @throws USER_NOT_WRITER
      * @throws FOLLOW_ALREADY_ERROR
+     * @throws USER_NOT_WRITER
      */
     async followWriter(followerId : number, writerId : number): Promise<void> {
         if(followerId === writerId) throw ExceptionList.FOLLOW_MYSELF_ERROR;
@@ -49,10 +49,9 @@ export class UserService {
                     createdAt : this.utilService.getCurrentDateInKorea()
                 }
             });
+            await this.synchronizeFollower(writerId);
         }catch (error) {
-            if(error instanceof PrismaClientKnownRequestError){
-                throw ExceptionList.FOLLOW_ALREADY_ERROR;
-            }
+            throw ExceptionList.FOLLOW_ALREADY_ERROR;
         }
     }
 
@@ -76,6 +75,7 @@ export class UserService {
                     }
                 }
             });
+            await this.synchronizeFollower(writerId);
         }catch (error) {
             console.log(error);
         }
@@ -305,11 +305,12 @@ export class UserService {
      * @param followerId
      * @param writerId
      * @returns void
-     * @throws USER_NOT_FOUND
+     * @throws USER_NOT_WRITER
      * @throws FOLLOWER_NOT_FOUND
+     * @throws FOLLOW_MYSELF_ERROR
      */
-    async deleteFollower(followerId: number, writerId: number): Promise<void> {
-        await this.assertUserExistById(followerId);
+    async hideFollower(followerId: number, writerId: number): Promise<void> {
+        await this.authValidationService.assertWriter(followerId);
         try {
              await this.prismaService.follow.update({
                 where: {
@@ -322,6 +323,7 @@ export class UserService {
                     deleted: true
                 }
             }) // update는 updateMany와 달리, 찾으려는 column이 없을 경우 에러를 발생시킵니다.
+            await this.synchronizeFollower(writerId);
         }catch (error){
             console.log(error);
             throw ExceptionList.FOLLOWER_NOT_FOUND;
@@ -339,14 +341,14 @@ export class UserService {
     async addExternalFollowerByEmail(writerId: number, followerEmail: string): Promise<ExternalFollowerDto> {
         await this.authValidationService.assertEmailUnique(followerEmail);
         try{
-            const follow = await this.prismaService.externalFollow.create({
+            const externalFollow = await this.prismaService.externalFollow.create({
                 data: {
                     writerId,
                     followerEmail,
                     createdAt: this.utilService.getCurrentDateInKorea()
                 }
             })
-            return UserDtoMapper.ExternalFollowerToExternalFollowerDto(follow)
+            return UserDtoMapper.ExternalFollowerToExternalFollowerDto(externalFollow)
         }catch (error){
             console.log(error);
             throw ExceptionList.FOLLOWER_ALREADY_EXIST;
@@ -415,7 +417,7 @@ export class UserService {
      * @throws USER_NOT_FOUND
      */
     async changeUserProfile(userId: number, newUserProfile: ChangeUserProfileDto): Promise<UserDto> {
-        if(Object.keys(newUserProfile).length === 0) throw ExceptionList.PROFILE_CHANGE_ERROR;
+        if(this.utilService.isNullObject(newUserProfile)) throw ExceptionList.PROFILE_CHANGE_ERROR;
         try {
             const user = await this.prismaService.user.update({
                 where: {
@@ -445,11 +447,11 @@ export class UserService {
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      */
     async changeWriterProfile(userId: number, newWriterProfile: ChangeWriterProfileDto): Promise<UserDto> {
-        if(Object.keys(newWriterProfile).length === 0) throw ExceptionList.PROFILE_CHANGE_ERROR;
+        if(this.utilService.isNullObject(newWriterProfile)) throw ExceptionList.PROFILE_CHANGE_ERROR;
 
         const {moonjinId, description,...newUserProfile} = newWriterProfile;
         const {nickname,image, ...newWriterInfoProfile} = newWriterProfile;
-        if(!moonjinId && !description) return this.changeUserProfile(userId, newUserProfile);
+        if(this.utilService.isNullObject(newWriterInfoProfile)) return this.changeUserProfile(userId, newUserProfile);
 
         try{
             const writerInfoWithUser : WriterInfoWithUser = await this.prismaService.writerInfo.update({
@@ -517,17 +519,16 @@ export class UserService {
     /**
      * @summary 작가 시리즈 수 증가
      * @param userId
-     * @param isIncrement
      * @returns void
      * @throws USER_NOT_WRITER
      */
-    async synchronizeSeries(userId :number, isIncrement: boolean) {
+    async synchronizeSeries(userId :number) {
         try{
-            const seriesCount = isIncrement ? {
-                increment: 1
-            } : {
-                decrement: 1
-            };
+            const seriesCount = await this.prismaService.series.count({
+                where: {
+                    writerId: userId
+                }
+            })
             await this.prismaService.writerInfo.update({
                 where: {
                     userId
@@ -544,27 +545,22 @@ export class UserService {
     /**
      * @summary 작가 시리즈 수 증가
      * @param userId
-     * @param isIncrement
      * @returns void
      * @throws USER_NOT_WRITER
      */
-    async synchronizeFollower(userId :number, isIncrement: boolean) {
+    async synchronizeFollower(userId :number) {
+        const followerList = await this.getAllInternalFollowerByWriterId(userId);
         try{
-            const followerCount = isIncrement ? {
-                increment: 1
-            } : {
-                decrement: 1
-            };
             await this.prismaService.writerInfo.update({
                 where: {
                     userId
                 },
-                data: {
-                    followerCount
+                data : {
+                    followerCount :followerList.length
                 }
             })
         }catch (error){
-            throw ExceptionList.USER_NOT_WRITER
+                throw ExceptionList.USER_NOT_WRITER
         }
     }
 

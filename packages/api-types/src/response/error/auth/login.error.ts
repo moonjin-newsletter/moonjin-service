@@ -69,6 +69,6 @@ export interface SOCIAL_USER_ERROR extends ERROR {
     code : ErrorCodeEnum.SOCIAL_USER_ERROR;
     httpStatus: 401;
     data : {
-        message: "소셜 유저입니다. 소셜 로그인으로 로그인 해주세요."
+        message: "소셜 유저입니다. 해당 요청을 진행할 수 없습니다."
     }
 }

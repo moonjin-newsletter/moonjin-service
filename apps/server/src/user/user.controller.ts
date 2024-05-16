@@ -9,7 +9,7 @@ import {Try, TryCatch} from "../response/tryCatch";
 import {
     EMAIL_ALREADY_EXIST,
     MOONJIN_EMAIL_ALREADY_EXIST,
-    NICKNAME_ALREADY_EXIST,
+    NICKNAME_ALREADY_EXIST, SOCIAL_USER_ERROR,
     USER_NOT_FOUND,
     USER_NOT_WRITER,
     WRITER_SIGNUP_ERROR
@@ -39,7 +39,6 @@ import {ErrorCodeEnum} from "../response/error/enum/errorCode.enum";
 import {IChangeWriterProfile} from "./api-types/IChangeWriterProfile";
 import {PROFILE_CHANGE_ERROR} from "../response/error/user/user.error";
 import {ICreateWriterInfo} from "./api-types/ICreateWriterInfo";
-import {ExceptionList} from "../response/error/errorInstances";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import {JwtUtilService} from "../auth/jwtUtil.service";
 
@@ -72,7 +71,6 @@ export class UserController {
     @UseGuards(UserAuthGuard)
     async follow(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
         await this.userService.followWriter(user.id, writerId);
-        await this.userService.synchronizeFollower(writerId, true);
         return createResponseForm({
             message: "팔로우 성공"
         })
@@ -90,7 +88,6 @@ export class UserController {
     @UseGuards(UserAuthGuard)
     async unfollow(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
         await this.userService.unfollowWriter(user.id, writerId);
-        await this.userService.synchronizeFollower(writerId, false);
         return createResponseForm({
             message: "팔로우 취소 성공"
         })
@@ -105,7 +102,7 @@ export class UserController {
     @UseGuards(UserAuthGuard)
     async getFollowingUserList(@User() user : UserAuthDto) : Promise<ResponseForm<FollowingWriterProfileDto[]>> {
         const followingWriterList = await this.userService.getFollowingWriterListByFollowerId(user.id);
-        return createResponseForm(followingWriterList.filter(writer => writer.user.id != user.id));
+        return createResponseForm(followingWriterList);
     }
 
     /**
@@ -148,12 +145,8 @@ export class UserController {
     @TypedRoute.Get("follower")
     @UseGuards(WriterAuthGuard)
     async getFollowerList(@User() user : UserAuthDto) : Promise<Try<AllFollowerDto>> {
-        const followerList = await this.userService.getAllInternalFollowerByWriterId(user.id)
-        const externalFollowerList = await this.userService.getExternalFollowerListByWriterId(user.id);
-        return createResponseForm({
-            followerList : followerList.filter(follower => follower.user.id != user.id)
-            ,externalFollowerList
-        });
+        const allFollowerList = await this.userService.getAllFollowerByWriterId(user.id);
+        return createResponseForm(allFollowerList);
     }
 
     /**
@@ -169,7 +162,6 @@ export class UserController {
     async addExternalFollower(@User() user:UserAuthDto,@TypedBody() followerData : ICreateExternalFollower)
     :Promise<TryCatch<ResponseMessage & ExternalFollowerDto, EMAIL_ALREADY_EXIST | FOLLOWER_ALREADY_EXIST>>{
         const externalFollower = await this.userService.addExternalFollowerByEmail(user.id,followerData.followerEmail);
-        await this.userService.synchronizeFollower(user.id, true);
         return createResponseForm({
             message: "구독자 추가에 성공했습니다.",
             ...externalFollower,
@@ -188,7 +180,6 @@ export class UserController {
     async deleteExternalFollower(@User() user:UserAuthDto, @TypedBody() followerData : ICreateExternalFollower)
         :Promise<TryCatch<ResponseMessage & ExternalFollowerDto, FOLLOWER_NOT_FOUND>>{
         const externalFollower = await this.userService.deleteExternalFollowerByEmail(user.id,followerData.followerEmail);
-        await this.userService.synchronizeFollower(user.id, false);
         return createResponseForm({
             message: "구독자 삭제에 성공했습니다.",
             ...externalFollower,
@@ -248,11 +239,13 @@ export class UserController {
      * @param body
      * @returns
      * @throws EMAIL_NOT_EXIST
+     * @throws SOCIAL_USER_ERROR
      */
     @TypedRoute.Patch('password')
     @UseGuards(UserAuthGuard)
     async changeUserPassword(@User() user:UserAuthDto, @Res() res: Response, @TypedBody() body : IChangePassword): Promise<TryCatch<ResponseMessage,
-        EMAIL_NOT_EXIST>> {
+        SOCIAL_USER_ERROR | EMAIL_NOT_EXIST>> {
+        await this.oauthService.assertUserNotSocialUser(user.id);
         const passwordChangeCode = this.jwtUtilService.generateJwtToken<UserWithPasswordDto>({userId: user.id, password: body.newPassword});
         await this.mailService.sendMailForPasswordChange(user.email,passwordChangeCode);
         res.cookie('passwordChangeCode', passwordChangeCode, this.cookieOptions);
@@ -263,6 +256,7 @@ export class UserController {
     /**
      * @summary 비밀번호 변경 메일 링크 클릭
      * @param payload
+     * @param res
      * @returns
      */
     @TypedRoute.Get('password/change')
@@ -274,30 +268,30 @@ export class UserController {
                 ...this.cookieOptions,
                 maxAge: 0
             });
-            res.redirect(process.env.CLIENT_URL ?? "http://localhost:3000" + "/password/change/success");
+            res.redirect(process.env.CLIENT_URL + "/password/change/success");
         }catch (error){
             if(error.code == ErrorCodeEnum.INVALID_TOKEN)
-                res.redirect(process.env.CLIENT_URL ?? "http://localhost:3000" + "/password/change/fail?error=invalidToken");
+                res.redirect(process.env.CLIENT_URL + "/password/change/fail?error=invalidToken");
             else if(error.code == ErrorCodeEnum.PASSWORD_CHANGE_ERROR)
-                res.redirect(process.env.CLIENT_URL ?? "http://localhost:3000" + "/password/change/fail?error=passwordChangeError");
+                res.redirect(process.env.CLIENT_URL + "/password/change/fail?error=passwordChangeError");
             else
-                res.redirect(process.env.CLIENT_URL ?? "http://localhost:3000" + "/password/change/fail?error=socialUserError");
+                res.redirect(process.env.CLIENT_URL + "/password/change/fail?error=socialUserError");
         }
     }
 
     /**
-     * @summary 팔로워 삭제 API
+     * @summary 팔로워 숨기기 API
      * @param followerId
      * @param writer
      * @returns
-     * @throws USER_NOT_FOUND
+     * @throws USER_NOT_WRITER
      * @throws FOLLOWER_NOT_FOUND
      */
     @TypedRoute.Delete('follower/:id')
     @UseGuards(WriterAuthGuard)
     async deleteFollower(@TypedParam("id") followerId : number, @User() writer : UserAuthDto): Promise<TryCatch<{message:string},
-        USER_NOT_FOUND | FOLLOWER_NOT_FOUND>> {
-        await this.userService.deleteFollower(followerId, writer.id);
+        USER_NOT_WRITER | FOLLOWER_NOT_FOUND>> {
+        await this.userService.hideFollower(followerId, writer.id);
         return createResponseForm({
             message: "팔로워 삭제에 성공했습니다."
         })
@@ -317,16 +311,8 @@ export class UserController {
     @UseGuards(UserAuthGuard)
     async becomeWriter(@User() user:UserAuthDto, @TypedBody() writerData : ICreateWriterInfo, @Res() res:Response): Promise<TryCatch<ResponseMessage,
         MOONJIN_EMAIL_ALREADY_EXIST | WRITER_SIGNUP_ERROR | NICKNAME_ALREADY_EXIST>> {
-        const writerInfo = await this.authService.enrollWriter({moonjinId:writerData.moonjinId,description:writerData.description, userId:user.id});
-        try{
-            if(writerData.nickname != user.nickname)
-                await this.userService.changeUserProfile(user.id, {nickname: writerData.nickname});
-            await this.userService.updateUserRole(user.id, UserRoleEnum.WRITER);
-        }catch (error){
-            await this.userService.deleteWriterById(writerInfo.userId);
-            throw ExceptionList.NICKNAME_ALREADY_EXIST;
-        }
-        const {accessToken, refreshToken} = this.jwtUtilService.getAccessTokens({...user,nickname:writerData.nickname?? user.nickname,role:UserRoleEnum.WRITER});
+        const newWriter = await this.authService.enrollWriter({moonjinId:writerData.moonjinId,description:writerData.description, userId:user.id}, writerData.nickname);
+        const {accessToken, refreshToken} = this.jwtUtilService.getAccessTokens({...user,nickname:newWriter.user.nickname,role:UserRoleEnum.WRITER});
         res.cookie('accessToken',accessToken, this.cookieOptions)
         res.cookie('refreshToken', refreshToken,this.cookieOptions)
         res.send(createResponseForm({

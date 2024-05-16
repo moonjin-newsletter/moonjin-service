@@ -159,6 +159,7 @@ export class PostService {
      * @summary 해당 글을 나를 구독 중인 사람들에게 뉴스레터로 전송
      * @param postId
      * @param newsletterTitle
+     * @param userEmail
      * @return 전송된 뉴스레터 수
      * @throws POST_NOT_FOUND
      * @throws NEWSLETTER_CATEGORY_NOT_FOUND
@@ -166,7 +167,7 @@ export class PostService {
      * @throws SEND_NEWSLETTER_ERROR
      * @throws USER_NOT_WRITER
      */
-    async sendNewsletter(postId : number, newsletterTitle: string) : Promise<number> {
+    async sendNewsletter(postId : number, newsletterTitle: string, userEmail: string) : Promise<number> {
         const postWithContent = await this.getPostWithContentByPostId(postId);
         if(postWithContent.post.category == null || postWithContent.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
 
@@ -178,6 +179,7 @@ export class PostService {
         followers.followerList.map(follower => {
             emailList.push(follower.user.email)
         });
+        emailList.push(userEmail); // 본인에게도 보내기.
 
         const sendNewsLetterDto = {
             emailList,
@@ -195,7 +197,6 @@ export class PostService {
                 releasedAt : this.utilService.getCurrentDateInKorea(),
                 status : true
             }
-
         })
         return sentCount;
     }
