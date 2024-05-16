@@ -519,17 +519,16 @@ export class UserService {
     /**
      * @summary 작가 시리즈 수 증가
      * @param userId
-     * @param isIncrement
      * @returns void
      * @throws USER_NOT_WRITER
      */
-    async synchronizeSeries(userId :number, isIncrement: boolean) {
+    async synchronizeSeries(userId :number) {
         try{
-            const seriesCount = isIncrement ? {
-                increment: 1
-            } : {
-                decrement: 1
-            };
+            const seriesCount = await this.prismaService.series.count({
+                where: {
+                    writerId: userId
+                }
+            })
             await this.prismaService.writerInfo.update({
                 where: {
                     userId
