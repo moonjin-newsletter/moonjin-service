@@ -129,7 +129,11 @@ function ProfileLayout({ userInfo }: { userInfo?: any }) {
     formState: { errors, isValid },
     handleSubmit,
     register,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      nickname: userInfo?.data?.user?.nickname,
+    },
+  });
 
   function onClickSubmit(value: any) {
     csr
@@ -153,7 +157,7 @@ function ProfileLayout({ userInfo }: { userInfo?: any }) {
         </label>
         <input
           {...register("nickname")}
-          placeholder={userInfo?.data?.user?.nickname}
+          placeholder="변경할 프로필명을 입력해주세요"
           className="w-full mt-2 h-10 bg-grayscale-100 outline-0 border-0 rounded px-2 focus:ring-0 placeholder:text-sm placeholder:text-grayscale-400"
         />
 
@@ -197,8 +201,6 @@ function WriterProfileLayout({ userInfo }: { userInfo?: any }) {
         else toast.error("닉네임 변경에 실패하였습니다");
       });
   }
-
-  function profileUpload(image: any) {}
 
   return (
     <section className="flex flex-col w-full">
