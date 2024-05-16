@@ -20,6 +20,8 @@ export default function WriterCard({
     });
   }
 
+  console.log(writerInfo);
+
   return (
     <Link
       href={``}

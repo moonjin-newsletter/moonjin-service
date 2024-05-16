@@ -11,16 +11,9 @@ export default function NewsLetterCard({
   return (
     <Link
       href=""
-      className="flex hover:bg-gray-50 w-full  py-4 border-b border-grayscale-200"
+      className="flex hover:bg-gray-50 w-full gap-x-2  py-4 border-b border-grayscale-200"
     >
-      <Image
-        src={value.post.cover ?? ""}
-        alt="뉴스레터 썸네일"
-        width={120}
-        height={120}
-        className="size-[120px] min-w-[120px]  bg-gray-600 rounded"
-      />
-      <div className="flex w-full flex-col ml-4">
+      <div className="flex w-full flex-col ">
         <div className="flex gap-x-1.5 ">
           <div className="text-grayscale-400 py-0.5  rounded text-xs">
             {value.post.category}
@@ -47,6 +40,13 @@ export default function NewsLetterCard({
           </div>
         </div>
       </div>
+      <Image
+        src={value.post.cover ?? ""}
+        alt="뉴스레터 썸네일"
+        width={120}
+        height={120}
+        className="size-[120px] min-w-[120px]  bg-gray-600 rounded"
+      />
     </Link>
   );
 }

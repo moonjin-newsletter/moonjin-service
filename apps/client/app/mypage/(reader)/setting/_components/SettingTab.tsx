@@ -4,9 +4,16 @@ import { Fragment, useEffect } from "react";
 
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
-import { ErrorCodeEnum, ResponseForm } from "@moonjin/api-types";
+import {
+  ErrorCodeEnum,
+  FileTypeEnum,
+  IChangeWriterProfile,
+  ResponseForm,
+} from "@moonjin/api-types";
 import csr from "../../../../../lib/fetcher/csr";
 import toast from "react-hot-toast";
+import { fileUpload } from "../../../../../lib/file/fileUpload";
+import Image from "next/image";
 
 export default function SettingTab() {
   const { data: userInfo } = useSWR<ResponseForm<any>>("user");
@@ -33,7 +40,11 @@ export default function SettingTab() {
       </Tab.List>
       <Tab.Panels className="w-full mt-4">
         <Tab.Panel>
-          <ProfileLayout userInfo={userInfo} />
+          {userInfo?.data?.user?.role === 1 ? (
+            <WriterProfileLayout userInfo={userInfo} />
+          ) : (
+            <ProfileLayout userInfo={userInfo} />
+          )}
         </Tab.Panel>
         <Tab.Panel>
           <PasswordLayout userInfo={userInfo} userSocial={userSocial} />
@@ -113,6 +124,7 @@ function PasswordLayout({
 }
 
 function ProfileLayout({ userInfo }: { userInfo?: any }) {
+  console.log(userInfo);
   const {
     formState: { errors, isValid },
     handleSubmit,
@@ -144,6 +156,142 @@ function ProfileLayout({ userInfo }: { userInfo?: any }) {
           placeholder={userInfo?.data?.user?.nickname}
           className="w-full mt-2 h-10 bg-grayscale-100 outline-0 border-0 rounded px-2 focus:ring-0 placeholder:text-sm placeholder:text-grayscale-400"
         />
+
+        <a
+          href="mailto:moonjin6239@gmail.com"
+          className="text-rose-500 underline mt-8"
+        >
+          계정 탈퇴하기
+        </a>
+        <button
+          disabled={!isValid}
+          type="submit"
+          className="w-full h-12 bg-primary text-white rounded mt-4"
+        >
+          설정 완료
+        </button>
+      </form>
+    </section>
+  );
+}
+
+function WriterProfileLayout({ userInfo }: { userInfo?: any }) {
+  console.log(userInfo);
+  const {
+    formState: { errors, isValid },
+    handleSubmit,
+    register,
+    watch,
+    setValue,
+  } = useForm({
+    defaultValues: {
+      nickname: userInfo?.data?.user?.nickname,
+      moonjinId: userInfo?.data?.writerInfo?.moonjinId,
+      description: userInfo?.data?.writerInfo?.description,
+      image: userInfo?.data?.user?.image,
+    },
+  });
+  const userData = watch();
+
+  function onClickSubmit(value: IChangeWriterProfile) {
+    csr
+      .patch("user/writer/profile", { json: value })
+      .then((res) => toast.success("프로필이 변경됐습니다"))
+      .catch((err) => {
+        if (err.code === ErrorCodeEnum.NICKNAME_ALREADY_EXIST)
+          toast.error("이미 존재하는 이메일입니다");
+        else toast.error("닉네임 변경에 실패하였습니다");
+      });
+  }
+
+  function profileUpload(image: any) {}
+
+  return (
+    <section className="flex flex-col w-full">
+      <form
+        onSubmit={handleSubmit(onClickSubmit)}
+        className="w-full flex flex-col"
+      >
+        <label className="mt-2 text-sm font-medium" htmlFor="nickname">
+          문진 아이디
+        </label>
+        <input
+          {...register("moonjinId")}
+          placeholder="변경을 원하시는 아이디를 입력해주세요"
+          className="w-full mt-2 h-10 bg-grayscale-100 outline-0 border-0 rounded px-2 focus:ring-0 placeholder:text-sm placeholder:text-grayscale-400"
+        />
+        <div className="flex flex-col mt-2 gap-y-1.5">
+          <span className="text-sm text-grayscale-500">
+            문진 이메일 :{" "}
+            {userData?.moonjinId
+              ? userData?.moonjinId
+              : userInfo?.data?.writerInfo?.moonjinId}
+            @moonjin.site
+          </span>
+          <span className="text-sm text-grayscale-500">
+            작가 URL : https://moonjin.site/
+            {userData?.moonjinId
+              ? userData?.moonjinId
+              : userInfo?.data?.writerInfo?.moonjinId}
+          </span>
+        </div>
+
+        <label className="mt-8 text-sm font-medium" htmlFor="nickname">
+          프로필명
+        </label>
+        <input
+          {...register("nickname")}
+          placeholder="변경을 원하시는 프로필 이름을 입력해주세요"
+          className="w-full mt-2 h-10 bg-grayscale-100 outline-0 border-0 rounded px-2 focus:ring-0 placeholder:text-sm placeholder:text-grayscale-400"
+        />
+
+        <label className="mt-8 text-sm font-medium" htmlFor="nickname">
+          자기 소개
+        </label>
+        <input
+          {...register("description", { maxLength: 128 })}
+          placeholder="변경을 원하시는 한 줄 소개를 입력해주세요 (최대 128자)"
+          maxLength={128}
+          className="w-full mt-2 h-10 bg-grayscale-100 outline-0 border-0 rounded px-2 focus:ring-0 placeholder:text-sm placeholder:text-grayscale-400"
+        />
+
+        <span className="mt-8 text-sm font-medium">프로필 이미지</span>
+        <label className="mt-2 w-fit cursor-pointer">
+          {userData?.image ? (
+            <Image
+              width={140}
+              height={140}
+              src={userData.image}
+              alt="유저 프로필 이미지"
+              className="object-cover rounded border"
+            />
+          ) : (
+            <div className="w-[140px] h-[140px] rounded bg-grayscale-100" />
+          )}
+          <div className="py-2 w-full bg-grayscale-500 text-white rounded mt-2 flex items-center justify-center text-sm">
+            변경하기
+          </div>
+          <input
+            onChange={async (e) => {
+              if (e?.target?.files) {
+                try {
+                  const fileUrl = await fileUpload(
+                    e.target.files[0],
+                    FileTypeEnum.COVER_IMAGE,
+                  );
+                  setValue("image", fileUrl?.file);
+                } catch (e) {
+                  toast.error("이미지 업로드 실패");
+                }
+              }
+            }}
+            multiple={false}
+            type="file"
+            accept="image/*"
+            className="hidden"
+          />
+        </label>
+
         <a
           href="mailto:moonjin6239@gmail.com"
           className="text-rose-500 underline mt-8"

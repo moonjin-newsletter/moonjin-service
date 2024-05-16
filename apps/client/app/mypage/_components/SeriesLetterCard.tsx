@@ -7,16 +7,9 @@ export default function SeriesLetterCard({ value }: { value: NewsletterDto }) {
   return (
     <Link
       href=""
-      className="flex w-full hover:bg-gray-50 py-4 border-b border-grayscale-200"
+      className="flex w-full hover:bg-gray-50 gap-x-2  py-4 border-b border-grayscale-200"
     >
-      <Image
-        src={value.post.cover ?? ""}
-        alt="뉴스레터 썸네일"
-        width={120}
-        height={120}
-        className="size-[120px] min-w-[120px]  bg-gray-600 rounded"
-      />
-      <div className="flex w-full flex-col ml-4">
+      <div className="flex w-full flex-col ">
         <div className="flex gap-x-1.5 items-center ">
           <div className=" rounded py-0.5 px-2 border border-primary text-primary  text-xs font-light">
             # {value.series?.title}
@@ -41,6 +34,13 @@ export default function SeriesLetterCard({ value }: { value: NewsletterDto }) {
           </div>
         </div>
       </div>
+      <Image
+        src={value.post.cover ?? ""}
+        alt="뉴스레터 썸네일"
+        width={120}
+        height={120}
+        className="size-[120px] min-w-[120px]  bg-gray-600 rounded"
+      />
     </Link>
   );
 }
