@@ -125,7 +125,7 @@ export default function Page() {
                 placeholder="간단한 작가소개를 적어주세요"
                 className="mt-2 w-full  h-10 border border-grayscale-300 rounded-lg px-2 placeholder:text-sm"
                 {...register("description", {
-                  maxLength: 5,
+                  maxLength: 120,
                 })}
               />
               {errors.description?.message && (
