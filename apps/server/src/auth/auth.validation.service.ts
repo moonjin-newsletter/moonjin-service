@@ -79,4 +79,20 @@ export class AuthValidationService {
             throw ExceptionList.USER_NOT_WRITER
         }
     }
+
+    /**
+     * @summary 작가가 아닌지 확인. 작가면 에러
+     * @param userId
+     * @throws WRITER_SIGNUP_ERROR
+     */
+    async assertUserNotWriter(userId : number){
+        const user = await this.prismaService.writerInfo.findUnique({
+            where: {
+                userId: userId
+            }
+        });
+        if (user) {
+            throw ExceptionList.WRITER_SIGNUP_ERROR
+        }
+    }
 }

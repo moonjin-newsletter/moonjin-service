@@ -198,7 +198,6 @@ export class OauthService {
             });
             return OauthDtoMapper.OauthToOauthDto(oauth)
         } catch (error){
-            console.error(error);
             throw ExceptionList.OAUTH_NOT_FOUND;
         }
     }

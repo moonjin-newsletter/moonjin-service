@@ -7,24 +7,23 @@ import {
     UserAuthDto,
     LocalLoginDto,
     EnrollWriterDto,
-    WriterInfoDto,
-    SocialUserSignupDto
+    SocialUserSignupDto,LocalUserSignupDto,LocalWriterSignupDto, SocialWriterSignupDto
 } from "./dto";
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
 import {UserRoleEnum} from "./enum/userRole.enum";
 import UserDtoMapper from "../user/userDtoMapper";
 import {OauthService} from "./oauth.service";
-import {LocalUserSignupDto,LocalWriterSignupDto} from "./dto";
-import {UserDto} from "../user/dto";
-import {SocialWriterSignupDto} from "./dto/socialWriterSignup.dto";
+import {UserDto, WriterDto} from "../user/dto";
+import {AuthValidationService} from "./auth.validation.service";
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
-        private readonly oauthService: OauthService
+        private readonly oauthService: OauthService,
+        private readonly authValidationService: AuthValidationService
     ) {}
 
     /**
@@ -98,29 +97,37 @@ export class AuthService {
 
 
     /**
-     * @summary 작가 회원가입을 진행하는 함수
+     * @summary 작가 회원가입을 진행하는 함수. 닉네임 변경 Optional
      * @param writerSignupData
+     * @param newNickname
      * @returns WriterInfoDto
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      * @throws WRITER_SIGNUP_ERROR
      */
-    async enrollWriter(writerSignupData : EnrollWriterDto) : Promise<WriterInfoDto>{
+    async enrollWriter(writerSignupData : EnrollWriterDto, newNickname? : string) : Promise<WriterDto>{
+        await this.authValidationService.assertUserNotWriter(writerSignupData.userId)
         try {
-            const writerInfo = await this.prismaService.writerInfo.create({
+            const createWriterInfo = this.prismaService.writerInfo.create({
                 data:{
                     ...writerSignupData,
-                    createdAt : this.utilService.getCurrentDateInKorea()
+                    createdAt : this.utilService.getCurrentDateInKorea(),
                 },
             })
-            await this.prismaService.user.update({
+            const changeUserNickname = (newNickname) ? {nickname : newNickname} : {};
+            const userUpdate = this.prismaService.user.update({
                 where:{
                     id: writerSignupData.userId
                 },
                 data:{
-                    role : UserRoleEnum.WRITER
+                    role : UserRoleEnum.WRITER,
+                    ...changeUserNickname
                 }
             })
-            return UserDtoMapper.WriterInfoToWriterInfoDto(writerInfo);
+            const transactionResult = await this.prismaService.$transaction([createWriterInfo, userUpdate]);
+            return {
+                user : UserDtoMapper.UserToUserDto(transactionResult[1]),
+                writerInfo : UserDtoMapper.WriterInfoToWriterInfoDto(transactionResult[0])
+            }
         } catch (error){
             if(error instanceof PrismaClientKnownRequestError){
                 throw ExceptionList.MOONJIN_EMAIL_ALREADY_EXIST;
