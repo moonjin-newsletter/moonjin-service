@@ -11,6 +11,7 @@ import {
 import Image from "next/image";
 import { format } from "date-fns";
 import { ExternalCard, FollowerCard } from "./_components/FollowerCard";
+import AddFollower from "./_components/AddFollower";
 
 export default async function Page() {
   const { data: groupList } = await ssr("user/follower").then((res) =>
@@ -24,11 +25,16 @@ export default async function Page() {
 
   return (
     <main className="overflow-hidden w-full max-w-[748px]">
-      <div className="flex ">
-        <div className="border-b font-semibold border-primary">구독자 목록</div>
-        <div className="py-1 font-semibold px-2 ml-2 text-sm rounded bg-gray-200 text-gray-400">
+      <div className="flex items-center">
+        <div className="border-b pb-1 h-fit font-semibold border-primary">
+          구독자 목록
+        </div>
+        <div className="py-1 h-fit font-semibold px-2 ml-2 text-sm rounded bg-gray-200 text-gray-400">
           {isNotNil(newList) ? newList.length : 0}
         </div>
+        <section className="ml-auto flex items-center gap-x-2.5">
+          <AddFollower />
+        </section>
       </div>
       <section className="flex flex-col w-full mt-4">
         {isNonEmptyArray(newList ?? []) ? (

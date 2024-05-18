@@ -14,19 +14,9 @@ export default function NewsLetterCard({
       className="flex hover:bg-gray-50 w-full gap-x-2  py-4 border-b border-grayscale-200"
     >
       <div className="flex w-full flex-col ">
-        <div className="flex gap-x-1.5 ">
-          <div className="text-grayscale-400 py-0.5  rounded text-xs">
-            {value.post.category}
-          </div>
-          {/*{value.post.category.map((category: any, index: number) => (*/}
-          {/*  <div className="border border-grayscale-400 text-grayscale-400 py-0.5 px-2 rounded text-xs">*/}
-          {/*    # {category}*/}
-          {/*  </div>*/}
-          {/*))}*/}
-        </div>
         <div className="flex gap-y-1 flex-col w-full h-full">
-          <div className="w-full">
-            <div className="mt-1.5 font-medium">{value.post.title}</div>
+          <div className="w-full flex flex-col gap-y-1.5">
+            <div className=" font-medium">{value.post.title}</div>
             <span className="line-clamp-2 text-sm text-grayscale-500">
               {value.post.preview}
             </span>

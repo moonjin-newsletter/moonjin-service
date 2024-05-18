@@ -22,7 +22,7 @@ export default async function Page() {
           {isNotNil(writingPostList) ? writingPostList.length : 0}
         </div>
       </div>
-      <section className="flex flex-col w-full mt-4">
+      <section className="flex flex-col w-full ">
         {isNonEmptyArray(writingPostList ?? []) ? (
           writingPostList.map((post, index) => (
             <UnreleasedNewsletterCard value={post} />

@@ -231,7 +231,7 @@ function WriterProfileLayout({ userInfo }: { userInfo?: any }) {
             @moonjin.site
           </span>
           <span className="text-sm text-grayscale-500">
-            작가 URL : https://moonjin.site/
+            작가 URL : https://moonjin.site/@
             {userData?.moonjinId
               ? userData?.moonjinId
               : userInfo?.data?.writerInfo?.moonjinId}

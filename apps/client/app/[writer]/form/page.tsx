@@ -7,9 +7,16 @@ import Image from "next/image";
 export default function Page() {
   const { setValue, register, handleSubmit, watch } = useForm();
 
+  function onClickSubmit(value: any) {
+    return;
+  }
+
   return (
     <main className="w-full min-h-screen flex py-12 flex-col items-center">
-      <form className="w-full max-w-[400px] px-6 flex flex-col items-center">
+      <form
+        onSubmit={handleSubmit(onClickSubmit)}
+        className="w-full max-w-[400px] px-6 flex flex-col items-center"
+      >
         <section className=" w-full">
           <Image
             width={160}
@@ -35,6 +42,7 @@ export default function Page() {
             이름 <strong className="text-primary">*</strong>
           </label>
           <input
+            {...register("1", { required: "이름을 입력해주세요" })}
             type="text"
             maxLength={20}
             placeholder="이름을 입력해주세요"
@@ -46,12 +54,13 @@ export default function Page() {
             이메일 주소 <strong className="text-primary">*</strong>
           </label>
           <input
+            {...register("2", { required: "이메일을 입력해주세요" })}
             type="email"
             placeholder="뉴스레터를 받을 이메일을 입력해주세요"
             className="ring-0 mt-2 w-full h-11 outline-none focus:border-slate-400 focus:ring-0  bg-grayscale-100 border border-grayscale-300 placeholder:text-grayscale-500 rounded"
           />
         </section>
-        <section className="w-full fixed px-6 bottom-0 py-4 mt-6">
+        <section className="w-full fixed max-w-[400px] px-6 bottom-0 py-4 mt-6">
           <button
             type="submit"
             className="w-full py-2.5 font-medium bg-primary text-white rounded"

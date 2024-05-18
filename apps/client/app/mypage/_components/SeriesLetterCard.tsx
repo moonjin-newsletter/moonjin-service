@@ -14,13 +14,10 @@ export default function SeriesLetterCard({ value }: { value: NewsletterDto }) {
           <div className=" rounded py-0.5 px-2 border border-primary text-primary  text-xs font-light">
             # {value.series?.title}
           </div>
-          <div className="text-grayscale-400 py-0.5 px-1 rounded text-xs">
-            {value.post.category}
-          </div>
         </div>
-        <div className="flex gap-y-1 flex-col w-full h-full">
-          <div className="w-full">
-            <div className="mt-2  font-medium">{value.post.title}</div>
+        <div className="flex gap-y-1 mt-2 flex-col w-full h-full">
+          <div className="w-full flex flex-col gap-y-1.5">
+            <div className="  font-medium">{value.post.title}</div>
             <span className="line-clamp-2 text-sm text-grayscale-500">
               {value.post.preview}
             </span>
