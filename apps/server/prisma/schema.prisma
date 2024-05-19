@@ -21,7 +21,7 @@ model User {
 
   oauth      Oauth?
   writerInfo WriterInfo?
-  follow     Follow[]
+  follow     Subscribe[]
   newsletter Newsletter[]
   stamp      Stamp[]
   letter     Letter[]     @relation(name: "sender")
@@ -47,17 +47,18 @@ model WriterInfo {
   deleted         Boolean  @default(false)
 
   user           User             @relation(fields: [userId], references: [id])
-  follow         Follow[]
+  follow         Subscribe[]
   post           Post[]
   series         Series[]
   ExternalFollow ExternalFollow[]
 }
 
-model Follow {
+model Subscribe {
   followerId Int
   writerId   Int
+  level      Int      @default(0)
   createdAt  DateTime
-  deleted    Boolean  @default(false)
+  hide       Boolean  @default(false)
 
   user       User       @relation(fields: [followerId], references: [id])
   writerInfo WriterInfo @relation(fields: [writerId], references: [userId])

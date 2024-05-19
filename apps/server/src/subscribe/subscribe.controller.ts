@@ -29,5 +29,4 @@ export class SubscribeController {
         await this.subscribeService.addExternalSubscriberByEmail(writerPublicCard.user.id, body.email);
         return createResponseForm({message: "구독 신청되었습니다."})
     }
-
 }

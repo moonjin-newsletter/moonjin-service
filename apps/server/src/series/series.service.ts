@@ -186,7 +186,7 @@ export class SeriesService {
         if(!series) throw ExceptionList.SERIES_NOT_FOUND;
         if(series.writerId === userId) return;
 
-        const follower = await this.prismaService.follow.findUnique({
+        const follower = await this.prismaService.subscribe.findUnique({
             where : {
                 followerId_writerId: {
                     followerId : userId,

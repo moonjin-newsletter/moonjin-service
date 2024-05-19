@@ -1,6 +1,6 @@
 import {Prisma} from "@prisma/client";
 
-const followingWriterInfoWithUser = Prisma.validator<Prisma.FollowDefaultArgs>()({
+const followingWriterInfoWithUser = Prisma.validator<Prisma.SubscribeDefaultArgs>()({
     include: {
         writerInfo: {
             include : {
@@ -10,4 +10,4 @@ const followingWriterInfoWithUser = Prisma.validator<Prisma.FollowDefaultArgs>()
     },
 })
 
-export type FollowingWriterInfoWithUser = Prisma.FollowGetPayload<typeof followingWriterInfoWithUser>;
+export type FollowingWriterInfoWithUser = Prisma.SubscribeGetPayload<typeof followingWriterInfoWithUser>;

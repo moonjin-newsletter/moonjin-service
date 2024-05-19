@@ -42,7 +42,7 @@ export class UserService {
         if(followerId === writerId) throw ExceptionList.FOLLOW_MYSELF_ERROR;
         await this.authValidationService.assertWriter(writerId);
         try {
-            await this.prismaService.follow.create({
+            await this.prismaService.subscribe.create({
                 data: {
                     followerId,
                     writerId,
@@ -67,7 +67,7 @@ export class UserService {
         if(followerId === writerId) throw ExceptionList.FOLLOW_MYSELF_ERROR;
         await this.authValidationService.assertWriter(writerId);
         try {
-            await this.prismaService.follow.delete({ // TODO : 과거의 팔로우 기록을 남기는 방법이 필요한가 고민 필요
+            await this.prismaService.subscribe.delete({ // TODO : 과거의 팔로우 기록을 남기는 방법이 필요한가 고민 필요
                 where :{
                     followerId_writerId : {
                         followerId,
@@ -116,7 +116,7 @@ export class UserService {
      * @returns FollowingWriterProfileDto[]
      */
     async getFollowingWriterListByFollowerId(followerId : number): Promise<FollowingWriterProfileDto[]> {
-        const followingList: FollowingWriterInfoWithUser[] = await this.prismaService.follow.findMany({
+        const followingList: FollowingWriterInfoWithUser[] = await this.prismaService.subscribe.findMany({
             where: {
                 followerId,
                 writerInfo: {
@@ -263,7 +263,7 @@ export class UserService {
      * @returns UserProfileDto[]
      */
     async getAllInternalFollowerByWriterId(writerId: number): Promise<FollowerDto[]> {
-        const followerList = await this.prismaService.follow.findMany({
+        const followerList = await this.prismaService.subscribe.findMany({
             where :{
                 writerId,
                 user :{
@@ -312,7 +312,7 @@ export class UserService {
     async hideFollower(followerId: number, writerId: number): Promise<void> {
         await this.authValidationService.assertWriter(followerId);
         try {
-             await this.prismaService.follow.update({
+             await this.prismaService.subscribe.update({
                 where: {
                     followerId_writerId: {
                         writerId,
@@ -320,7 +320,7 @@ export class UserService {
                     }
                 },
                 data: {
-                    deleted: true
+                    hide: true
                 }
             }) // update는 updateMany와 달리, 찾으려는 column이 없을 경우 에러를 발생시킵니다.
             await this.synchronizeFollower(writerId);
