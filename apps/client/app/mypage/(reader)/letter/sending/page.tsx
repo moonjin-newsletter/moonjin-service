@@ -55,6 +55,7 @@ export default function Page() {
           </label>
           <input
             {...register("title", { required: "제목을 작성해주세요" })}
+            maxLength={64}
             placeholder="제목을 입력해주세요"
             type="text"
             className="ml-4 w-full focus:ring-0 border-0 outline-none "
