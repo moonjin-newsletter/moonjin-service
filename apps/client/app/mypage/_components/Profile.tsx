@@ -29,7 +29,7 @@ export default function Profile({
         </div>
 
         {type === "작가" && userInfo?.writerInfo?.description != "" && (
-          <span className="mt-3 text-grayscale-500 ">
+          <span className="mt-3 text-grayscale-500 line-clamp-2 text-sm">
             {userInfo.writerInfo.description}
           </span>
         )}
