@@ -81,7 +81,7 @@ function SendLetterCard({ letter }: { letter: LetterWithUserDto }) {
     >
       <div className="w-full flex items-center ">
         <I.LetterOut />
-        <p className="ml-2.5 line-clamp-1 font-semibold text-grayscale-700">
+        <p className="ml-2.5 line-clamp-1 font-semibold max-w-[350px] text-grayscale-700">
           {letter.title}
         </p>
         <span className="ml-2 text-sm text-grayscale-500 whitespace-nowrap">
