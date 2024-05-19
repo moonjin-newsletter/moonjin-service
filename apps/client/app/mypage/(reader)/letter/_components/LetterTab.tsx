@@ -103,7 +103,7 @@ function ReceivedLetterCard({ letter }: { letter: LetterWithUserDto }) {
     <Link
       href={`/mypage/letter/receive-${letter.id}`}
       className={`${
-        letter.readAt && "bg-grayscale-500/10"
+        letter.readAt ? "bg-grayscale-500/10" : "bg-white"
       } flex flex-col w-full border-b border-grayscale-200 py-4 hover:bg-grayscale-700/10 rounded`}
     >
       <div className="w-full flex items-center ">
