@@ -10,17 +10,16 @@ export default function Profile({
 }) {
   return (
     <section className="flex items-end relative w-full max-w-[1006px] pt-7  gap-x-6">
-      {type === "작가" && (
-        <div className="py-11 px-20">
-          <Image
-            alt="작가 프로필 이미지"
-            className=" absolute left-0 rounded-lg -top-12 bg-gray-600 w-40 h-40 object-fill"
-            height={160}
-            src={userInfo.user.image}
-            width={160}
-          />
-        </div>
-      )}
+      <div className="py-11 px-20">
+        <Image
+          alt="작가 프로필 이미지"
+          className=" absolute left-0 rounded-lg -top-12 bg-gray-600 w-40 h-40 object-fill"
+          height={160}
+          src={userInfo.user.image}
+          width={160}
+        />
+      </div>
+
       <div className="flex h-fit  w-full  flex-col  ">
         <div className="flex font-medium text-3xl items-center gap-x-2.5 ">
           {userInfo.user.nickname}
