@@ -11,7 +11,7 @@ export function Sidebar({ type }: { type: userType }) {
         className="w-full mb-8 font-medium text-white justify-center flex  py-4 bg-primary  rounded-lg"
         href={type === "작가" ? "/write/new" : "/auth/apply"}
       >
-        {type === "작가" ? "뉴스레터 시작하기" : "작가로 시작하기"}
+        {type === "작가" ? "뉴스레터 작성하기" : "작가로 시작하기"}
       </Link>
 
       <div className="flex flex-col w-full ">

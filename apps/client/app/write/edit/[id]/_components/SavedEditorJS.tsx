@@ -8,6 +8,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PiCaretUpDownBold } from "react-icons/pi";
 import * as I from "components/icons";
+import { RiDeleteBin6Line } from "react-icons/ri";
+
 import "components/editorjs/customEditorView.css";
 
 import {
@@ -56,6 +58,15 @@ export default function NewEditorJS({
 
   const title = watch("title");
   register("title", { required: "제목을 입력해주세요" });
+
+  function onClickDelete() {
+    if (window.confirm("작성 중인 글을 삭제하시겠습니까?")) {
+      csr
+        .delete(`post/${letterId}`)
+        .then((res) => router.push("/mypage/newsletter/prepare"))
+        .catch((err) => toast.error("잠시 후 다시 시도해주세요"));
+    }
+  }
 
   function onClickSave(value: any) {
     if (editor)
@@ -170,6 +181,12 @@ export default function NewEditorJS({
             className="border hover:-translate-y-1 transition duration-300 ease-in-out gap-x-1 flex items-center text-sm font-medium border-grayscale-500 py-1.5 px-2 text-grayscale-500 rounded-full"
           >
             <I.Save />글 저장
+          </button>
+          <button
+            onClick={onClickDelete}
+            className="border hover:-translate-y-1 transition duration-300 ease-in-out gap-x-1 flex items-center text-sm font-medium border-grayscale-500 py-1.5 px-2 text-grayscale-500 rounded-full"
+          >
+            <RiDeleteBin6Line />글 삭제
           </button>
         </div>
       </section>
