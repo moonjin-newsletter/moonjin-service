@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import type { userType } from "../layout";
+
 import { usePathname } from "next/navigation";
+import { userType } from "@utils/CheckUser";
 
 export function Sidebar({ type }: { type: userType }) {
   return (

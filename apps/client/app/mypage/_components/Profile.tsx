@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { userType } from "../layout";
+import { userType } from "@utils/CheckUser";
 
 export default function Profile({
   userInfo,
