@@ -17,6 +17,8 @@
     "jsx": "preserve",
     "plugins": [{ "name": "next" }],
     "paths": {
+      "@components/*" : ["components/*"],
+      "@lib/*" : ["lib/*"],
       "@utils/*" : ["utils/*"]
     }
   },
