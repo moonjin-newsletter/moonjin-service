@@ -1,7 +1,8 @@
 import { match } from "ts-pattern";
-import { userType } from "../app/mypage/layout";
 
-export function userType(level: number) {
+export type userType = "작가" | "독자";
+
+export function checkType(level: number) {
   return match(level)
     .returnType<userType>()
     .with(0, () => "독자")

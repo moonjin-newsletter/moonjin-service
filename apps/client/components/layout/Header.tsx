@@ -1,15 +1,13 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getCookie } from "cookies-next";
-import * as Fi from "react-icons/fi";
 import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import * as I from "components/icons";
 import csr from "../../lib/fetcher/csr";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
-import { userType } from "@utils/CheckUser";
+import { checkType } from "@utils/CheckUser";
 
 export default function Header() {
   const { data: userInfo } = useSWR("user");
@@ -65,7 +63,7 @@ export default function Header() {
               <Link
                 className="border gap-x-2 flex items-center border-grayscale-600 text-sm font-medium py-2 px-3 mx-3 rounded-full"
                 href={
-                  userType(userInfo?.data?.user?.role) === "작가"
+                  checkType(userInfo?.data?.user?.role) === "작가"
                     ? "/write/new"
                     : "auth/apply"
                 }
@@ -75,7 +73,7 @@ export default function Header() {
               </Link>
               <div className="h-fit gap-x-4 px-4 group  flex  bg-transparent hover:bg-black/80 rounded-full  items-center">
                 <nav className=" items-center  gap-x-4 text-sm font-medium transition duration-300 ease-in-out   overflow-hidden  text-grayscale-100 h-full  w-fit hidden  whitespace-nowrap  hover:flex group-hover:flex ">
-                  {userType(userInfo?.data?.user?.role) === "작가" && (
+                  {checkType(userInfo?.data?.user?.role) === "작가" && (
                     <Link
                       className="py-1.5 "
                       href={`/@${userInfo?.data?.user?.nickname}`}
