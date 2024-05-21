@@ -11,12 +11,14 @@ export default function NewsLetterCard({
   return (
     <Link
       href=""
-      className="flex hover:bg-gray-50 w-full gap-x-2  py-4 border-b border-grayscale-200"
+      className="flex group w-full gap-x-2  py-4 border-b border-grayscale-200"
     >
       <div className="flex w-full flex-col ">
         <div className="flex gap-y-1 flex-col w-full h-full">
           <div className="w-full flex flex-col gap-y-1.5">
-            <div className=" font-medium">{value.post.title}</div>
+            <div className="group-hover:underline font-medium">
+              {value.post.title}
+            </div>
             <span className="line-clamp-2 text-sm text-grayscale-500">
               {value.post.preview}
             </span>

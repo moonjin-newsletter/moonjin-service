@@ -9,9 +9,8 @@ export default function WritterHome({
 }: {
   myNewsletterList: NewsletterDto[];
 }) {
-  console.log(myNewsletterList);
   return (
-    <div className="flex flex-col w-full gap-y-12 max-w-[740px]">
+    <div className="flex flex-col w-full gap-y-12 mt-2 max-w-[740px]">
       <section className="w-full flex flex-col">
         {isNonEmptyArray(myNewsletterList ?? []) ? (
           myNewsletterList.map((newsletter, index) => (

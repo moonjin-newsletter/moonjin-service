@@ -15,6 +15,8 @@ import Save from "./save.svg";
 import Image from "./image.svg";
 import SendFilled from "./send-filled.svg";
 import SendOutline from "./send-outline.svg";
+import SignOut from "./sign-out.svg";
+import PencilSimpleLine from "./pencil-simple-line.svg";
 
 export {
   Kakao,
@@ -34,4 +36,6 @@ export {
   LogoIconGray,
   SendOutline,
   SendFilled,
+  SignOut,
+  PencilSimpleLine,
 };

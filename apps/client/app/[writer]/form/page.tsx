@@ -8,7 +8,7 @@ export default function Page() {
   const { setValue, register, handleSubmit, watch } = useForm();
 
   function onClickSubmit(value: any) {
-    return;
+    if (confirm("로그인하고 구독하시겠습니끼?")) return;
   }
 
   return (

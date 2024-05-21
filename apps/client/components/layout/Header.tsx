@@ -9,6 +9,7 @@ import * as I from "components/icons";
 import csr from "../../lib/fetcher/csr";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
+import { userType } from "@utils/CheckUser";
 
 export default function Header() {
   const { data: userInfo } = useSWR("user");
@@ -28,6 +29,8 @@ export default function Header() {
       });
   }
 
+  console.log();
+
   useEffect(() => {
     userInfo ? setIsLogin(true) : setIsLogin(false);
   }, [userInfo]);
@@ -43,17 +46,14 @@ export default function Header() {
   )
     return null;
   return (
-    <header className="fixed z-50 top-0 left-0 w-full flex h-16  items-center justify-center bg-black/40">
+    <header className="fixed z-50 top-0 left-0 w-full flex h-16  items-center justify-center bg-white/90 border-b border-grayscale-200">
       <div className="flex  w-[1006px] h-full items-center  font-normal">
         <Link className="flex  items-center h-full text-white" href="/">
-          <I.Logo fill="white" height="29" viewBox="0 0 149 39" width="139" />
+          <I.Logo fill="#7b0000" height="29" viewBox="0 0 149 39" width="139" />
         </Link>
-        <div className="flex h-full ml-72 gap-x-8 items-center text-white">
+        <div className="flex h-full text-sm font-medium ml-10 gap-x-8 items-center text-grayscale-600">
           <Link className="flex items-center  h-full" href="">
-            Brand
-          </Link>
-          <Link className="flex items-center  h-full" href="">
-            시리즈
+            시리즈 뉴스레터
           </Link>
           <Link className="flex items-center  h-full" href="">
             전체 뉴스레터
@@ -61,37 +61,45 @@ export default function Header() {
         </div>
         <div className="flex h-full items-center ml-auto">
           {isLogin ? (
-            <div className="w-fit h-full flex items-center gap-x-4 relative text-white">
+            <div className="w-fit h-full   items-center flex  relative text-grayscale-600">
               <Link
-                className="border border-white text-sm py-1.5 px-2.5 rounded-full"
-                href=""
+                className="border gap-x-2 flex items-center border-grayscale-600 text-sm font-medium py-2 px-3 mx-3 rounded-full"
+                href={
+                  userType(userInfo?.data?.user?.role) === "작가"
+                    ? "/write/new"
+                    : "auth/apply"
+                }
               >
+                <I.PencilSimpleLine />
                 시작하기
               </Link>
-              <div className="h-fit group  flex  bg-black/50 rounded-l-full rounded-r-full items-center">
-                <nav className=" items-center  transition duration-300 ease-in-out   overflow-hidden font-medium text-[15px] text-grayscale-100 h-full  w-fit hidden  whitespace-nowrap  hover:flex group-hover:flex ">
-                  <Link className=" py-1.5 px-4" href="/mypage">
+              <div className="h-fit gap-x-4 px-4 group  flex  bg-transparent hover:bg-black/80 rounded-full  items-center">
+                <nav className=" items-center  gap-x-4 text-sm font-medium transition duration-300 ease-in-out   overflow-hidden  text-grayscale-100 h-full  w-fit hidden  whitespace-nowrap  hover:flex group-hover:flex ">
+                  {userType(userInfo?.data?.user?.role) === "작가" && (
+                    <Link
+                      className="py-1.5 "
+                      href={`/@${userInfo?.data?.user?.nickname}`}
+                    >
+                      작가의 공간
+                    </Link>
+                  )}
+
+                  <Link className=" py-1.5 " href="/mypage">
                     마이페이지
                   </Link>
-
-                  <button className="py-2 px-3" onClick={onClickLogout}>
-                    로그아웃
-                  </button>
                 </nav>
-                <button className="h-full px-2.5 py-2.5 relative  text-white ">
-                  <I.User height="23" viewBox="0 0 24 25" width="22" />
+                <button className="h-full  py-2.5 relative  text-white ">
+                  <I.User
+                    class={`fill-grayscale-600 group-hover:fill-white`}
+                    height="23"
+                    viewBox="0 0 24 25"
+                    width="22"
+                  />
                 </button>
               </div>
-
-              {/*<nav className="absolute bg-black/80 bortder rounded-lg overflow-hidden font-medium text-[15px] text-grayscale-100 h-fit w-fit hidden flex-col whitespace-nowrap right-0 top-14 hover:flex peer-hover:flex ">*/}
-              {/*  <Link className=" py-2 px-3" href="">*/}
-              {/*    마이페이지*/}
-              {/*  </Link>*/}
-
-              {/*  <button onClick={onClickLogout} className="py-2 px-3">*/}
-              {/*    로그아웃*/}
-              {/*  </button>*/}
-              {/*</nav>*/}
+              <button className="py-2.5 px-3" onClick={onClickLogout}>
+                <I.SignOut />
+              </button>
             </div>
           ) : (
             <Link

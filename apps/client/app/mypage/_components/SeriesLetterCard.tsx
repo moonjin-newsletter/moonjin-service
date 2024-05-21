@@ -7,7 +7,7 @@ export default function SeriesLetterCard({ value }: { value: NewsletterDto }) {
   return (
     <Link
       href=""
-      className="flex w-full hover:bg-gray-50 gap-x-2  py-4 border-b border-grayscale-200"
+      className="flex w-full group gap-x-2  py-4 border-b border-grayscale-200"
     >
       <div className="flex w-full flex-col ">
         <div className="flex gap-x-1.5 items-center ">
@@ -17,7 +17,9 @@ export default function SeriesLetterCard({ value }: { value: NewsletterDto }) {
         </div>
         <div className="flex gap-y-1 mt-2 flex-col w-full h-full">
           <div className="w-full flex flex-col gap-y-1.5">
-            <div className="  font-medium">{value.post.title}</div>
+            <div className="  group-hover:underline font-medium">
+              {value.post.title}
+            </div>
             <span className="line-clamp-2 text-sm text-grayscale-500">
               {value.post.preview}
             </span>
