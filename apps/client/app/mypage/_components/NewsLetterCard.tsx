@@ -11,24 +11,24 @@ export default function NewsLetterCard({
   return (
     <Link
       href=""
-      className="flex group w-full gap-x-2  py-4 border-b border-grayscale-200"
+      className="flex h-fit items-center group w-full gap-x-6  py-5 border-b border-grayscale-200"
     >
-      <div className="flex w-full flex-col ">
-        <div className="flex gap-y-1 flex-col w-full h-full">
-          <div className="w-full flex flex-col gap-y-1.5">
-            <div className="group-hover:underline font-medium">
-              {value.post.title}
-            </div>
-            <span className="line-clamp-2 text-sm text-grayscale-500">
-              {value.post.preview}
-            </span>
+      <div className="flex justify-between w-full h-full min-h-[120px] flex-col ">
+        <div className="w-full flex flex-col gap-y-2">
+          <strong className="group-hover:underline text-lg text-grayscale-600 font-medium">
+            {value.post.title}
+          </strong>
+          <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400">
+            {value.post.preview}
+          </span>
+        </div>
+        <div className="mt-4  gap-x-4 flex items-center text-sm text-grayscale-400">
+          <div>
+            <span className="italic">by.</span>
+            {value.writer.nickname}
           </div>
-          <div className="mt-auto font-light gap-x-1.5 flex items-center text-sm text-grayscale-500">
-            <div>{format(new Date(value.post.releasedAt), "yyyy.MM.dd")}</div>
-            <div>
-              <span className="italic">by.</span>
-              {value.writer.nickname}
-            </div>
+          <div>
+            발행일자.{format(new Date(value.post.releasedAt), "yyyy.MM.dd")}
           </div>
         </div>
       </div>
@@ -37,7 +37,7 @@ export default function NewsLetterCard({
         alt="뉴스레터 썸네일"
         width={120}
         height={120}
-        className="size-[120px] min-w-[120px]  bg-gray-600 rounded"
+        className="size-[120px] min-w-[120px]  bg-gray-600 rounded object-cover"
       />
     </Link>
   );

@@ -5,7 +5,7 @@ import type {
   UnreleasedPostWithSeriesDto,
 } from "@moonjin/api-types";
 import EmptyCard from "../../../_components/EmptyCard";
-import { UnreleasedNewsletterCard } from "./_components/UnreleasedCard";
+import { UnreleasedNewsletterCard } from "../_components/UnreleasedCard";
 
 export default async function Page() {
   const { data: writingPostList } = await ssr("post/writing").then((res) =>

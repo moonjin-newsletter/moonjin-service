@@ -1,23 +1,19 @@
 import Link from "next/link";
 import * as Io from "react-icons/io";
-import Image from "next/image";
 import NewsLetterCard from "./NewsLetterCard";
 
-import type {
-  ReleasedPostWithWriterDto,
-  ResponseForm,
-  SeriesWithWriterDto,
-} from "@moonjin/api-types";
+import type { NewsletterDto, SeriesWithWriterDto } from "@moonjin/api-types";
 import { isNonEmptyArray } from "@toss/utils";
 import EmptyCard from "./EmptyCard";
 import { SeriesCardForReader } from "./SeriesCard";
+import SeriesLetterCard from "./SeriesLetterCard";
 
 export function ReaderHome({
   seriesList,
   newsletterList,
 }: {
   seriesList: SeriesWithWriterDto[];
-  newsletterList: ReleasedPostWithWriterDto[];
+  newsletterList: NewsletterDto[];
 }) {
   return (
     <div className="flex flex-col w-full gap-y-12 max-w-[740px]">
@@ -61,7 +57,7 @@ function SeriesNewsletter({
 function NewsletterList({
   newsletterList,
 }: {
-  newsletterList: ReleasedPostWithWriterDto[];
+  newsletterList: NewsletterDto[];
 }) {
   return (
     <section className="flex flex-col w-full">
@@ -83,7 +79,13 @@ function NewsletterList({
       <div className="flex flex-col w-full mt-4">
         {isNonEmptyArray(newsletterList ?? []) ? (
           newsletterList.map((value, index) => (
-            <NewsLetterCard key={index} value={value} />
+            <>
+              {value.series ? (
+                <SeriesLetterCard value={value} />
+              ) : (
+                <NewsLetterCard key={index} value={value} />
+              )}
+            </>
           ))
         ) : (
           <EmptyCard text="구독 중인 뉴스레터가 없습니다" />

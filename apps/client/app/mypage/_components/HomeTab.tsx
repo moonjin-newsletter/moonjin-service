@@ -18,7 +18,7 @@ export default function HomeTab({
 }: {
   userType: any;
   seriesList: SeriesWithWriterDto[];
-  newsletterList: ReleasedPostWithWriterDto[];
+  newsletterList: NewsletterDto[];
   myNewsletterList?: NewsletterDto[];
 }) {
   const tabList =
