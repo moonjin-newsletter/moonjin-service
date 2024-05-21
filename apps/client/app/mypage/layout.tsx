@@ -5,7 +5,7 @@ import ssr from "../../lib/fetcher/ssr";
 import { Sidebar } from "./_components/Sidebar";
 import Profile from "./_components/Profile";
 import type { ResponseForm, UserDto, WriterDto } from "@moonjin/api-types";
-import { match } from "ts-pattern";
+import { userType } from "@utils/CheckUser";
 
 export type userType = "작가" | "독자";
 
@@ -21,12 +21,7 @@ export default async function MypageLayout({
   if (!userInfo?.data) notFound();
   const userRole = userInfo?.data?.user?.role ?? 0;
 
-  const type = match(userRole)
-    .returnType<userType>()
-    .with(0, () => "독자")
-    .with(1, () => "작가")
-    .with(2, () => "작가")
-    .otherwise(() => "독자");
+  const type = userType(userRole);
 
   return (
     <div className="flex   w-full items-center flex-col bg-white p-0 outline-none ">
