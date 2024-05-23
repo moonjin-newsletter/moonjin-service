@@ -11,43 +11,35 @@ export function UnreleasedNewsletterCard({
   return (
     <Link
       href={`/write/edit/${value.post.id}`}
-      className="flex w-full justify-between  py-4 border-b border-grayscale-200"
+      className="flex h-fit items-center w-full group gap-x-6  py-5 border-b border-grayscale-200"
     >
-      <div className="flex w-full flex-col ">
-        <div className="flex gap-x-1.5 items-center ">
+      <div className="flex  min-h-[120px] w-full justify-between h-full  flex-col ">
+        <div className="flex flex-col h-fit gap-y-2  ">
           {value.series && (
-            <div className="border border-grayscale-400 mb-2 text-grayscale-400 py-0.5 px-2 rounded text-xs">
-              # {value.series.title}
-            </div>
+            <strong className="  text-primary  text-sm font-semibold">
+              [{value.series?.title}]
+            </strong>
           )}
 
-          {/*{value.post.category.map((category: any, index: number) => (*/}
-          {/*  <div className="border border-grayscale-400 text-grayscale-400 py-0.5 px-2 rounded text-xs">*/}
-          {/*    # {category}*/}
-          {/*  </div>*/}
-          {/*))}*/}
+          <strong className="group-hover:underline text-lg text-grayscale-600 font-medium">
+            {value.post.title}
+          </strong>
+          <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400">
+            {value.post.preview}
+          </span>
         </div>
-        <div className="flex w-full h-full">
-          <div className="max-w-[340px] h-full flex flex-col gap-y-2">
-            <div className=" font-medium">{value.post.title}</div>
-            <span className="line-clamp-2 text-sm text-grayscale-500">
-              {value.post.preview}
-            </span>
-            <div className="mt-auto font-light gap-x-1.5 flex items-center text-sm text-grayscale-500">
-              <div>
-                수정일 :{" "}
-                {format(new Date(value.post.lastUpdatedAt), "yyyy.MM.dd")}
-              </div>
-            </div>
+        <div className="mt-4 gap-x-4 flex items-center text-sm text-grayscale-400">
+          <div>
+            수정일.{format(new Date(value.post.lastUpdatedAt), "yyyy.MM.dd")}
           </div>
         </div>
       </div>
       <Image
         src={value.post.cover ?? ""}
         alt="뉴스레터 썸네일"
-        width={80}
-        height={80}
-        className="w-28 min-w-[112px] h-28 bg-gray-600 rounded-lg object-cover"
+        width={120}
+        height={120}
+        className="size-[120px] min-w-[120px]  bg-gray-600 rounded object-cover"
       />
     </Link>
   );

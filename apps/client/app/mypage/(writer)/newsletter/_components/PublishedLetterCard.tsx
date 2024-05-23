@@ -5,45 +5,38 @@ import { NewsletterDto } from "@moonjin/api-types";
 
 export function PublishedLetterCard({ letter }: { letter: NewsletterDto }) {
   return (
-    <Link href="" className="flex w-full  py-4 border-b border-grayscale-200">
-      <Image
-        src={letter.post.cover ?? ""}
-        alt="뉴스레터 썸네일"
-        width={80}
-        height={80}
-        className="w-28 min-w-[112px] h-28 bg-gray-600 rounded-lg object-cover"
-      />
-      <div className="flex w-full flex-col ml-4">
-        <div className="flex gap-x-1.5 items-center ">
-          <div className="border border-grayscale-400 text-grayscale-400 py-0.5 px-2 rounded text-xs">
-            # {letter.post.category}
-          </div>
+    <Link
+      href=""
+      className="flex h-fit items-center w-full group gap-x-6  py-5 border-b border-grayscale-200"
+    >
+      <div className="flex  min-h-[120px] w-full justify-between h-full  flex-col ">
+        <div className="flex flex-col h-fit gap-y-2  ">
           {letter.series && (
-            <div className="text-xs font-medium text-grayscale-400">
-              {letter.series.title}
-            </div>
+            <strong className="  text-primary  text-sm font-semibold">
+              [{letter.series?.title}]
+            </strong>
           )}
-          {/*{value.post.category.map((category: any, index: number) => (*/}
-          {/*  <div className="border border-grayscale-400 text-grayscale-400 py-0.5 px-2 rounded text-xs">*/}
-          {/*    # {category}*/}
-          {/*  </div>*/}
-          {/*))}*/}
+
+          <strong className="group-hover:underline text-lg text-grayscale-600 font-medium">
+            {letter.post.title}
+          </strong>
+          <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400">
+            {letter.post.preview}
+          </span>
         </div>
-        <div className="flex w-full">
-          <div className="max-w-[340px]">
-            <div className="mt-2 font-medium">{letter.post.title}</div>
-            <span className="line-clamp-2 text-sm text-grayscale-500">
-              {letter.post.preview}
-            </span>
-          </div>
-          <div className="ml-auto text-sm text-grayscale-500">
-            <div>
-              발행일:{" "}
-              {format(new Date(letter.post.lastUpdatedAt), "yyyy-MM-dd")}
-            </div>
+        <div className="mt-4 gap-x-4 flex items-center text-sm text-grayscale-400">
+          <div>
+            발행일자.{format(new Date(letter.post.releasedAt), "yyyy.MM.dd")}
           </div>
         </div>
       </div>
+      <Image
+        src={letter.post.cover ?? ""}
+        alt="뉴스레터 썸네일"
+        width={120}
+        height={120}
+        className="size-[120px] min-w-[120px]  bg-gray-600 rounded object-cover"
+      />
     </Link>
   );
 }
