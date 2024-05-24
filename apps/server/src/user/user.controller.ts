@@ -16,7 +16,6 @@ import {
 import {
     UserDto,
     UserWithPasswordDto,
-    WriterDto
 } from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {OauthService} from "../auth/oauth.service";
@@ -35,6 +34,7 @@ import {PROFILE_CHANGE_ERROR} from "../response/error/user";
 import {ICreateWriterInfo} from "./api-types/ICreateWriterInfo";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import {JwtUtilService} from "../auth/jwtUtil.service";
+import {UserOrWriterDto} from "./dto/UserOrWriter.dto";
 
 @Controller('user')
 export class UserController {
@@ -61,8 +61,7 @@ export class UserController {
      */
     @TypedRoute.Get()
     @UseGuards(UserAuthGuard)
-    async getUser(@User() user : UserAuthDto): Promise<TryCatch<{user:UserDto} | WriterDto,
-    USER_NOT_FOUND | USER_NOT_WRITER>>
+    async getUser(@User() user : UserAuthDto): Promise<TryCatch<UserOrWriterDto,USER_NOT_FOUND | USER_NOT_WRITER>>
     {
         const userData = await this.userService.getUserData(user.id, user.role);
         return createResponseForm(userData);

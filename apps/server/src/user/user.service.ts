@@ -15,6 +15,7 @@ import UserDtoMapper from "./userDtoMapper";
 import {WriterInfoWithUser} from "./prisma/writerInfoWithUser.prisma.type";
 import * as process from "process";
 import {ChangeWriterProfileDto} from "./dto";
+import {UserOrWriterDto} from "./dto/UserOrWriter.dto";
 
 @Injectable()
 export class UserService {
@@ -99,7 +100,7 @@ export class UserService {
      * @throws USER_NOT_FOUND
      * @throws USER_NOT_WRITER
      */
-    async getUserData(userId : number, role : UserRoleEnum):Promise<{user:UserDto} | WriterDto> {
+    async getUserData(userId : number, role : UserRoleEnum):Promise<UserOrWriterDto> {
         if(role === UserRoleEnum.WRITER){
             const writer : WriterInfoWithUser | null = await this.prismaService.writerInfo.findUnique({
                 where : {
@@ -122,7 +123,7 @@ export class UserService {
             }
         })
         if(!user) throw ExceptionList.USER_NOT_FOUND;
-        return {user : UserDtoMapper.UserToUserDto(user)};
+        return {user : UserDtoMapper.UserToUserDto(user), writerInfo : null};
     }
 
 
