@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { PiCaretUpDownBold } from "react-icons/pi";
 import * as I from "components/icons";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
+import { CgSpinner } from "react-icons/cg";
 import "components/editorjs/customEditorView.css";
 
 import {
@@ -46,7 +46,7 @@ export default function NewEditorJS({
     setValue,
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
   } = useForm({
     defaultValues: {
       title: letterData.post.title,
@@ -156,6 +156,9 @@ export default function NewEditorJS({
       window.removeEventListener("beforeunload", preventClose);
     };
   }, []);
+
+  console.log(isSubmitting);
+
   return (
     <div className=" w-full    flex flex-col items-center">
       <section className="w-full  flex justify-between text-grayscale-600 fixed top-0 py-6 px-8">
@@ -166,6 +169,12 @@ export default function NewEditorJS({
           <I.LogoIcon width="36" height="36" viewBox="0 0 67 67" /> moonjin
         </a>
         <div className="flex items-center gap-x-4">
+          {isSubmitting && (
+            <div className="px-4 font-medium text-sm flex items-center gap-x-2 text-grayscale-400">
+              <CgSpinner className="animate-spin" /> 저장 중
+            </div>
+          )}
+
           <button
             onClick={handleSubmit(onClickSubmit, () => {
               toast.error("제목을 입력해주세요");
@@ -435,6 +444,9 @@ function OverlaySetting({
               />
             </>
           )}
+          <span className="mt-2 text-sm ">
+            * 썸네일이 없을 시, 문진 기본 이미지로 대체됩니다
+          </span>
         </section>
         <section className="w-full mt-8 justify-center items-center flex gap-x-4">
           <button

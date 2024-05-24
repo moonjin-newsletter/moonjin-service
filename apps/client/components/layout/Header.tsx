@@ -8,11 +8,13 @@ import csr from "../../lib/fetcher/csr";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { checkType } from "@utils/CheckUser";
+import useScroll from "@utils/hooks/useScroll";
 
 export default function Header() {
   const { data: userInfo } = useSWR("user");
   const path = usePathname();
   const router = useRouter();
+  const scroll = useScroll();
   const [isLogin, setIsLogin] = useState(false);
 
   function onClickLogout() {
@@ -27,8 +29,6 @@ export default function Header() {
       });
   }
 
-  console.log();
-
   useEffect(() => {
     userInfo ? setIsLogin(true) : setIsLogin(false);
   }, [userInfo]);
@@ -41,10 +41,16 @@ export default function Header() {
     path.includes("write/new") ||
     path.includes("write/edit") ||
     path.includes("/form")
-  )
+  ) {
     return null;
+  }
+
   return (
-    <header className="fixed z-50 top-0 left-0 w-full flex h-16  items-center justify-center bg-white/90 border-b border-grayscale-200">
+    <header
+      className={`${
+        scroll.y === 0 ? "bg-transparent" : "bg-white/90 border-b"
+      }  transition duration-300 fixed z-50 top-0 left-0 w-full flex h-16  items-center justify-center  border-grayscale-200`}
+    >
       <div className="flex  w-[1006px] h-full items-center  font-normal">
         <Link className="flex  items-center h-full text-white" href="/">
           <I.Logo fill="#7b0000" height="29" viewBox="0 0 149 39" width="139" />

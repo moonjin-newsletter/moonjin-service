@@ -5,11 +5,11 @@ import EditorJS from "@editorjs/editorjs";
 import {
   EDITOR_JS_I18N,
   EDITOR_JS_TOOLS,
-} from "../../../../components/editorjs/customEditorConfig";
+} from "@components/editorjs/customEditorConfig";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useOverlay } from "@toss/use-overlay";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PiCaretUpDownBold } from "react-icons/pi";
 import "components/editorjs/customEditorView.css";
@@ -25,8 +25,9 @@ import {
 import { Listbox } from "@headlessui/react";
 import Link from "next/link";
 import useSWR from "swr";
-import { fileUpload } from "../../../../lib/file/fileUpload";
+import { fileUpload } from "@lib/file/fileUpload";
 import Image from "next/image";
+import { CgSpinner } from "react-icons/cg";
 
 export default function NewEditorJS() {
   const router = useRouter();
@@ -38,7 +39,7 @@ export default function NewEditorJS() {
     setValue,
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
   } = useForm();
 
   const { data: seriesList } =
@@ -133,6 +134,7 @@ export default function NewEditorJS() {
       window.removeEventListener("beforeunload", preventClose);
     };
   }, []);
+
   return (
     <div className=" w-full    flex flex-col items-center">
       <section className="w-full  flex justify-between text-grayscale-600 fixed top-0 py-6 px-8">
@@ -143,6 +145,11 @@ export default function NewEditorJS() {
           <I.LogoIcon width="36" height="36" viewBox="0 0 67 67" /> moonjin
         </a>
         <div className="flex items-center gap-x-4">
+          {isSubmitting && (
+            <div className="px-4 font-medium text-sm flex items-center gap-x-2 text-grayscale-400">
+              <CgSpinner className="animate-spin" /> 저장 중
+            </div>
+          )}
           <button
             onClick={handleSubmit(onClickSubmit, () => {
               toast.error("제목을 입력해주세요");
