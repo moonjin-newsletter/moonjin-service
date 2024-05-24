@@ -43,11 +43,11 @@ export function Sidebar({ type }: { type: userType }) {
         <MenuLink title="편지함" url="/mypage/letter" />
         <MenuLink title="프로필 설정" url="/mypage/setting" />
       </div>
-      <div className="w-full mt-2">
-        <button className="w-full   flex justify-center items-center py-4 text-rose-500">
-          로그아웃
-        </button>
-      </div>
+      {/*<div className="w-full mt-2">*/}
+      {/*  <button className="w-full   flex justify-center items-center py-4 text-rose-500">*/}
+      {/*    로그아웃*/}
+      {/*  </button>*/}
+      {/*</div>*/}
     </nav>
   );
 }

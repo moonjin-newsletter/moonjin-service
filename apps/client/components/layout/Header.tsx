@@ -9,9 +9,11 @@ import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { checkType } from "@utils/CheckUser";
 import useScroll from "@utils/hooks/useScroll";
+import type { ResponseForm, UserDto, WriterDto } from "@moonjin/api-types";
 
 export default function Header() {
-  const { data: userInfo } = useSWR("user");
+  const { data: userInfo } =
+    useSWR<ResponseForm<{ user: UserDto } | WriterDto>>("user");
   const path = usePathname();
   const router = useRouter();
   const scroll = useScroll();
@@ -48,7 +50,7 @@ export default function Header() {
   return (
     <header
       className={`${
-        scroll.y === 0 ? "bg-transparent" : "bg-white/90 border-b"
+        scroll.y === 0 ? "bg-transparent border-none" : "bg-white/90 border-b"
       }  transition duration-300 fixed z-50 top-0 left-0 w-full flex h-16  items-center justify-center  border-grayscale-200`}
     >
       <div className="flex  w-[1006px] h-full items-center  font-normal">
@@ -64,7 +66,7 @@ export default function Header() {
           </Link>
         </div>
         <div className="flex h-full items-center ml-auto">
-          {isLogin ? (
+          {userInfo && isLogin ? (
             <div className="w-fit h-full   items-center flex  relative text-grayscale-600">
               <Link
                 className="border gap-x-2 flex items-center border-grayscale-600 text-sm font-medium py-2 px-3 mx-3 rounded-full"

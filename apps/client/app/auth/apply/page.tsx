@@ -8,6 +8,7 @@ import {
   ErrorCodeEnum,
   type ResponseForm,
   type UserDto,
+  UserOrWriterDto,
   type WriterDto,
 } from "@moonjin/api-types";
 import Background from "public/images/background.png";
@@ -19,8 +20,7 @@ import { useRouter } from "next/navigation";
 
 export default function Page() {
   const router = useRouter();
-  const { data: userInfo } =
-    useSWR<ResponseForm<{ user: UserDto } | WriterDto>>("user");
+  const { data: userInfo } = useSWR<ResponseForm<UserOrWriterDto>>("user");
   const {
     register,
     setValue,

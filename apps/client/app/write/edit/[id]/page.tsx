@@ -24,7 +24,7 @@ export default async function Page({ params }: pageProps) {
         ResponseForm<PostWithContentDto | PostWithContentAndSeriesDto>
       >(),
     )
-    .catch((err) => redirect("write/new"));
+    .catch((err) => redirect("/write/new"));
 
   return (
     <main className=" w-full    flex flex-col items-center">

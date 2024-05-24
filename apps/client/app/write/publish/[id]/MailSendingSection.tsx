@@ -10,6 +10,7 @@ import csr from "../../../../lib/fetcher/csr";
 import { PiUserCircle } from "react-icons/pi";
 import useSWR from "swr";
 import type { ResponseForm, WriterDto } from "@moonjin/api-types";
+import { useRouter } from "next/navigation";
 
 export default function MailSendingSection({
   letterId,
@@ -20,6 +21,7 @@ export default function MailSendingSection({
   letterTitle: string;
   seriesTitle: string | null;
 }) {
+  const router = useRouter();
   const { data: userInfo } = useSWR<ResponseForm<WriterDto>>("user");
   const [testAddUser, setTestAddUser] = useState<any[]>([]);
   const [title, setTitle] = useState(
@@ -58,7 +60,10 @@ export default function MailSendingSection({
       .post(`post/${letterId}/newsletter`, {
         json: { newsletterTitle: title },
       })
-      .then((res) => toast.success("메일 전송이 완료됐습니다"))
+      .then((res) => {
+        toast.success("메일 전송이 완료됐습니다");
+        return router.push(`/write/publish/${letterId}/success`);
+      })
       .catch((err) => toast.error("메일 전송오류"));
   }
 

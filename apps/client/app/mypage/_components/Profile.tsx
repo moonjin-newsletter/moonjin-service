@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { userType } from "@utils/CheckUser";
+import { UserOrWriterDto } from "@moonjin/api-types";
 
 export default function Profile({
   userInfo,
   type,
 }: {
-  userInfo: any;
+  userInfo: UserOrWriterDto;
   type: userType;
 }) {
   return (
@@ -28,23 +29,23 @@ export default function Profile({
           </div>
         </div>
 
-        {type === "작가" && userInfo?.writerInfo?.description != "" && (
+        {userInfo?.user?.description != "" && (
           <span className="mt-3 text-grayscale-500 line-clamp-2 text-sm">
-            {userInfo.writerInfo.description}
+            {userInfo.user.description}
           </span>
         )}
       </div>
       {type === "작가" && (
         <div className="ml-auto flex ">
           {[
-            { title: "뉴스레터", body: userInfo.writerInfo.newsletterCount },
+            { title: "뉴스레터", body: userInfo?.writerInfo?.newsletterCount },
             {
               title: "시리즈",
-              body: userInfo.writerInfo.seriesCount,
+              body: userInfo?.writerInfo?.seriesCount,
             },
             {
               title: "구독자",
-              body: userInfo.writerInfo.followerCount,
+              body: userInfo?.writerInfo?.followerCount,
             },
           ].map((value, index) => (
             <div

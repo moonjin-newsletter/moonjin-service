@@ -1,15 +1,15 @@
 import ssr from "../../../../lib/fetcher/ssr";
 import type {
-  FollowingWriterProfileDto,
   ResponseForm,
+  SubscribingWriterProfileDto,
 } from "@moonjin/api-types";
 import { isNonEmptyArray, isNotNil } from "@toss/utils";
 import WriterCard from "../../_components/WriterCard";
 import EmptyCard from "../../_components/EmptyCard";
 
 export default async function Page() {
-  const writerList = await ssr("user/following").then((res) =>
-    res.json<ResponseForm<FollowingWriterProfileDto[]>>(),
+  const writerList = await ssr("subscribe/writer/all").then((res) =>
+    res.json<ResponseForm<SubscribingWriterProfileDto[]>>(),
   );
 
   return (

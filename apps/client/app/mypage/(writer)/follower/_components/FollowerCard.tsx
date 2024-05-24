@@ -1,5 +1,5 @@
 "use client";
-import { ExternalFollowerDto, FollowerDto } from "@moonjin/api-types";
+import { ExternalSubscriberDto, SubscriberDto } from "@moonjin/api-types";
 import Image from "next/image";
 import { format } from "date-fns";
 import csr from "../../../../../lib/fetcher/csr";
@@ -8,12 +8,12 @@ import { useRouter } from "next/navigation";
 
 async function deleteFollower(userId?: number, externalEmail?: string) {
   if (userId) {
-    return await csr.delete(`user/follower/${userId}`).then((res) => {
+    return await csr.patch(`subscribe/${userId}/hide`).then((res) => {
       toast.success("구독목록에서 삭제됐습니다");
     });
   } else {
     return await csr
-      .delete(`user/follower/external`, {
+      .delete(`subscribe/subscriber/external`, {
         json: { followerEmail: externalEmail },
       })
       .then((res) => {
@@ -22,7 +22,7 @@ async function deleteFollower(userId?: number, externalEmail?: string) {
   }
 }
 
-export function FollowerCard({ follower }: { follower: FollowerDto }) {
+export function FollowerCard({ follower }: { follower: SubscriberDto }) {
   const router = useRouter();
   return (
     <div className="w-full rounded-lg p-4 border border-grayscale-100 flex items-center">
@@ -41,7 +41,7 @@ export function FollowerCard({ follower }: { follower: FollowerDto }) {
       </div>
       <div className="ml-auto flex items-center gap-x-2.5">
         <p className="text-grayscale-500 ml-auto text-sm gap-x-2.5">
-          {format(new Date(follower.following.createdAt), "yyyy-MM-dd")}부터
+          {format(new Date(follower.subscribe.createdAt), "yyyy-MM-dd")}부터
           구독
         </p>
         <button
@@ -58,7 +58,11 @@ export function FollowerCard({ follower }: { follower: FollowerDto }) {
   );
 }
 
-export function ExternalCard({ follower }: { follower: ExternalFollowerDto }) {
+export function ExternalCard({
+  follower,
+}: {
+  follower: ExternalSubscriberDto;
+}) {
   const router = useRouter();
   return (
     <div className="w-full rounded-lg p-4 bg-grayscale-100 flex items-center">
