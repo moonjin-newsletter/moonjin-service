@@ -157,8 +157,6 @@ export default function NewEditorJS({
     };
   }, []);
 
-  console.log(isSubmitting);
-
   return (
     <div className=" w-full    flex flex-col items-center">
       <section className="w-full  flex justify-between text-grayscale-600 fixed top-0 py-6 px-8">

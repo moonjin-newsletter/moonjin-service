@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import type { FollowingWriterProfileDto } from "@moonjin/api-types";
+import type { SubscribingWriterProfileDto } from "@moonjin/api-types";
 import { format } from "date-fns";
 import csr from "../../../lib/fetcher/csr";
 import toast from "react-hot-toast";
@@ -11,16 +11,14 @@ import { useRouter } from "next/navigation";
 export default function WriterCard({
   writerInfo,
 }: {
-  writerInfo: FollowingWriterProfileDto;
+  writerInfo: SubscribingWriterProfileDto;
 }) {
   const router = useRouter();
   function deleteSubscribe(writerId: number) {
-    return csr.delete(`user/${writerId}/follow`).then((res) => {
+    return csr.delete(`subscribe/${writerId}`).then((res) => {
       toast.success("구독목록에서 삭제됐습니다");
     });
   }
-
-  console.log(writerInfo);
 
   return (
     <Link
@@ -36,7 +34,7 @@ export default function WriterCard({
       />
       <div className="flex flex-col ml-3">
         <h3 className="font-semibold">{writerInfo.user.nickname}</h3>
-        <span>{writerInfo.writerInfo.description}</span>
+        <span>{writerInfo.user.description}</span>
       </div>
       <div className="flex flex-col ml-auto gap-y-1">
         <div className="flex text-sm text-grayscale-500">

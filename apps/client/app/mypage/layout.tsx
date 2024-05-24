@@ -1,10 +1,10 @@
-import React, { ReactElement, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { notFound, redirect } from "next/navigation";
 
 import ssr from "../../lib/fetcher/ssr";
 import { Sidebar } from "./_components/Sidebar";
 import Profile from "./_components/Profile";
-import type { ResponseForm, UserDto, WriterDto } from "@moonjin/api-types";
+import type { ResponseForm, UserOrWriterDto } from "@moonjin/api-types";
 import { checkType } from "@utils/CheckUser";
 
 export default async function MypageLayout({
@@ -13,7 +13,7 @@ export default async function MypageLayout({
   children: ReactNode;
 }) {
   const userInfo = await ssr("user")
-    .json<ResponseForm<{ user: UserDto } | WriterDto>>()
+    .json<ResponseForm<UserOrWriterDto>>()
     .catch((err) => redirect("/auth/login"));
 
   if (!userInfo?.data) notFound();

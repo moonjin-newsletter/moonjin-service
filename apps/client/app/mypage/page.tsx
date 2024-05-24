@@ -5,23 +5,26 @@ import type {
   ReleasedPostWithWriterDto,
   ResponseForm,
   SeriesWithWriterDto,
+  UserDto,
+  WriterDto,
 } from "@moonjin/api-types";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { IoIosArrowForward } from "react-icons/io";
 import { LogoIconGray } from "../../components/icons";
+import { checkType } from "@utils/CheckUser";
 
 export default async function Page() {
   const userInfo = await ssr("user")
-    .then((res) => res.json<any>())
+    .then((res) => res.json<ResponseForm<{ user: UserDto } | WriterDto>>())
     .catch((err) => redirect("/auth/login"));
 
-  const userType = userInfo?.data?.user?.role === 1 ? "작가" : "독자";
+  const userType = checkType(userInfo.data.user.role);
 
   const seriesList = await ssr("series/following").then((res) =>
     res.json<ResponseForm<SeriesWithWriterDto[]>>(),
   );
-  const newsletterList = await ssr("post/newsletter").then((res) =>
+  const newsletterList = await ssr("newsletter").then((res) =>
     res.json<ResponseForm<NewsletterDto[]>>(),
   );
   const myNewsletterList =

@@ -9,14 +9,15 @@ import {
   FileTypeEnum,
   IChangeWriterProfile,
   ResponseForm,
+  UserOrWriterDto,
 } from "@moonjin/api-types";
 import csr from "../../../../../lib/fetcher/csr";
 import toast from "react-hot-toast";
-import { fileUpload } from "../../../../../lib/file/fileUpload";
+import { fileUpload } from "@lib/file/fileUpload";
 import Image from "next/image";
 
 export default function SettingTab() {
-  const { data: userInfo } = useSWR<ResponseForm<any>>("user");
+  const { data: userInfo } = useSWR<ResponseForm<UserOrWriterDto>>("user");
   const { data: userSocial } =
     useSWR<ResponseForm<{ social: string }>>("user/oauth");
 
@@ -176,7 +177,11 @@ function ProfileLayout({ userInfo }: { userInfo?: any }) {
   );
 }
 
-function WriterProfileLayout({ userInfo }: { userInfo?: any }) {
+function WriterProfileLayout({
+  userInfo,
+}: {
+  userInfo?: ResponseForm<UserOrWriterDto>;
+}) {
   console.log(userInfo);
   const {
     formState: { errors, isValid },
@@ -188,7 +193,7 @@ function WriterProfileLayout({ userInfo }: { userInfo?: any }) {
     defaultValues: {
       nickname: userInfo?.data?.user?.nickname,
       moonjinId: userInfo?.data?.writerInfo?.moonjinId,
-      description: userInfo?.data?.writerInfo?.description,
+      description: userInfo?.data?.user?.description,
       image: userInfo?.data?.user?.image,
     },
   });
