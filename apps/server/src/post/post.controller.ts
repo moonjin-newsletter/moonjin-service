@@ -3,19 +3,17 @@ import {TypedBody, TypedParam, TypedQuery, TypedRoute} from "@nestia/core";
 import {ICreatePost} from "./api-types/ICreatePost";
 import {PostService} from "./post.service";
 import {
-    StampedPostDto,
     UnreleasedPostWithSeriesDto,
-    NewsletterDto,
     PostWithContentDto,
     PostWithContentAndSeriesDto
 } from "./dto";
-import {createResponseForm, ResponseMessage} from "../response/responseForm";
-import {Try, TryCatch} from "../response/tryCatch";
+import {createResponseForm} from "../response/responseForm";
+import { TryCatch} from "../response/tryCatch";
 import {
     CREATE_POST_ERROR,
-    FORBIDDEN_FOR_POST, NEWSLETTER_CATEGORY_NOT_FOUND,
+    FORBIDDEN_FOR_POST,
     POST_CONTENT_NOT_FOUND,
-    POST_NOT_FOUND, SEND_NEWSLETTER_ERROR,
+    POST_NOT_FOUND,
     STAMP_ALREADY_EXIST
 } from "../response/error/post";
 import {User} from "../auth/decorator/user.decorator";
@@ -24,9 +22,7 @@ import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {SeriesService} from "../series/series.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {USER_NOT_WRITER} from "../response/error/auth";
-import {FOLLOWER_NOT_FOUND} from "../response/error/user";
 import {IGetPostBySeriesId} from "./api-types/IGetPostBySeriesId";
-import {IGetNewsletter} from "./api-types/IGetNewsletter";
 import {UserService} from "../user/user.service";
 import {editorJsToHtml, generateNextPaginationUrl} from "../common";
 import {FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
@@ -34,12 +30,9 @@ import {NewsletterListWithPaginationDto} from "./dto";
 import {GetPagination} from "../common/pagination/decorator/GetPagination.decorator";
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {ICreatePostContent} from "./api-types/ICreatePostContent";
-import {PostContentDto} from "./dto/postContent.dto";
+import {PostContentDto} from "./dto";
 import {ExceptionList} from "../response/error/errorInstances";
-import {MailService} from "../mail/mail.service";
-import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
-import {EMAIL_NOT_EXIST} from "../response/error/mail";
-import {ISendNewsLetter} from "./api-types/ISendNewsLetter";
+import {NewsletterDto} from "../newsletter/dto";
 
 
 @Controller('post')
@@ -48,7 +41,6 @@ export class PostController {
         private readonly postService: PostService,
         private readonly seriesService: SeriesService,
         private readonly userService:UserService,
-        private readonly mailService: MailService
     ) {}
 
     /**
@@ -94,82 +86,6 @@ export class PostController {
             postUpdateData.category = series.category;
         }
         return createResponseForm(await this.postService.updatePost(postId,postUpdateData))
-    }
-
-    /**
-     * @summary 해당 유저의 뉴스레터 목록 가져오기
-     * @param user
-     * @param seriesOption
-     * @returns NewsletterDto[]
-     */
-    @TypedRoute.Get('newsletter')
-    @UseGuards(UserAuthGuard)
-    async getNewsletter(@User() user:UserAuthDto, @TypedQuery() seriesOption : IGetNewsletter) : Promise<Try<NewsletterDto[]>>{
-        const newsletterList = await this.postService.getNewsletterListByUserId(user.id, seriesOption.seriesOnly?? false);
-        return createResponseForm(newsletterList);
-    }
-
-    /**
-     * @summary 해당 글을 뉴스레터로 발송
-     * @param user
-     * @param postId
-     * @param body
-     * @returns {sentCount: number}
-     * @throws POST_NOT_FOUND
-     * @throws NEWSLETTER_CATEGORY_NOT_FOUND
-     * @throws FORBIDDEN_FOR_POST
-     * @throws POST_CONTENT_NOT_FOUND
-     * @throws SEND_NEWSLETTER_ERROR
-     * @throws USER_NOT_WRITER
-     */
-    @TypedRoute.Post(':postId/newsletter')
-    @UseGuards(WriterAuthGuard)
-    async sendNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number, @TypedBody() body:ISendNewsLetter)
-        : Promise<TryCatch<ResponseMessage & {sentCount : number}, POST_NOT_FOUND | FORBIDDEN_FOR_POST | NEWSLETTER_CATEGORY_NOT_FOUND | POST_CONTENT_NOT_FOUND | FOLLOWER_NOT_FOUND | SEND_NEWSLETTER_ERROR | USER_NOT_WRITER>>{
-        await this.postService.assertWriterOfPost(postId,user.id);
-        const sentCount = await this.postService.sendNewsletter(postId, body.newsletterTitle, user.email);
-        await this.userService.synchronizeNewsLetter(user.id, true);
-        return createResponseForm({
-            message : sentCount + "건의 뉴스레터를 발송했습니다.",
-            sentCount,
-        });
-    }
-
-    /**
-     * @summary 테스트 뉴스레터 전송
-     * @param user
-     * @param postId
-     * @param body
-     * @returns {message: string}
-     * @throws EMAIL_NOT_EXIST
-     * @throws POST_NOT_FOUND
-     * @throws FORBIDDEN_FOR_POST
-     * @throws NEWSLETTER_CATEGORY_NOT_FOUND
-     * @throws POST_CONTENT_NOT_FOUND
-     * @throws USER_NOT_WRITER
-     */
-    @TypedRoute.Post(':postId/newsletter/test')
-    @UseGuards(WriterAuthGuard)
-    async sendTestNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number, @TypedBody() body:ISendTesNewsletter): Promise<TryCatch<
-        ResponseMessage & {sentCount : number}, EMAIL_NOT_EXIST | POST_NOT_FOUND | FORBIDDEN_FOR_POST | NEWSLETTER_CATEGORY_NOT_FOUND | POST_CONTENT_NOT_FOUND | USER_NOT_WRITER>>{
-
-        if(body.receiverEmails.length == 0 || body.receiverEmails.length > 5) throw ExceptionList.EMAIL_NOT_EXIST;
-        await this.postService.assertWriterOfPost(postId,user.id);
-        const postWithPostContent = await this.postService.getPostWithContentAndSeries(postId);
-        if(postWithPostContent.post.category == null || postWithPostContent.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
-        const writer = await this.userService.getWriterInfoByUserId(user.id);
-
-        const sentCount = await this.mailService.sendNewsLetterWithHtml({
-            emailList : body.receiverEmails,
-            senderMailAddress : writer.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
-            senderName: user.nickname,
-            subject: "[테스트 뉴스레터] "+postWithPostContent.post.title,
-            html: editorJsToHtml(postWithPostContent.postContent)
-        })
-        return createResponseForm({
-            message : sentCount + "건의 테스트 뉴스레터를 발송했습니다.",
-            sentCount,
-        });
     }
 
     /**
@@ -336,20 +252,6 @@ export class PostController {
             throw ExceptionList.FORBIDDEN_FOR_POST;
         }
     }
-
-
-    /**
-     * @summary 해당 유저의 스탬프 이력 가져오기
-     * @param user
-     * @returns StampedPostDto[]
-     */
-    @TypedRoute.Get('stamp')
-    @UseGuards(UserAuthGuard)
-    async getStampedNewsletter(@User() user:UserAuthDto): Promise<Try<StampedPostDto[]>>{
-        const stampedPostList = await this.postService.getStampedPostListByUserId(user.id);
-        return createResponseForm(stampedPostList);
-    }
-
 
     /**
      * @summary stamp 기능

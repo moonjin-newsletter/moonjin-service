@@ -1,1 +1,1 @@
-export * from "./follow.error"
+export * from "./user.error"

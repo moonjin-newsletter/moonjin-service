@@ -1,142 +1,27 @@
 import {Injectable} from '@nestjs/common';
-import {AuthValidationService} from "../auth/auth.validation.service";
 import {PrismaService} from "../prisma/prisma.service";
 import {PrismaClientKnownRequestError} from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
 import {
     UserIdentityDto,
-    FollowingWriterProfileDto,
     UserDto,
     WriterDto,
-    FollowerDto,
-    ExternalFollowerDto,
-    ChangeUserProfileDto, AllFollowerDto
+    ChangeUserProfileDto
 } from "./dto";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import { WriterInfoDto} from "../auth/dto";
 import UserDtoMapper from "./userDtoMapper";
 import {WriterInfoWithUser} from "./prisma/writerInfoWithUser.prisma.type";
 import * as process from "process";
-import {FollowingWriterInfoWithUser} from "./prisma/followingWriterInfoWithUser.prisma.type";
 import {ChangeWriterProfileDto} from "./dto";
 
 @Injectable()
 export class UserService {
     constructor(
-       private readonly authValidationService : AuthValidationService,
        private readonly prismaService: PrismaService,
        private readonly utilService: UtilService,
     ) {}
-
-    /**
-     * @summary 작가를 팔로우
-     * @param followerId
-     * @param writerId
-     * @returns void
-     * @throws FOLLOW_MYSELF_ERROR
-     * @throws FOLLOW_ALREADY_ERROR
-     * @throws USER_NOT_WRITER
-     */
-    async followWriter(followerId : number, writerId : number): Promise<void> {
-        if(followerId === writerId) throw ExceptionList.FOLLOW_MYSELF_ERROR;
-        await this.authValidationService.assertWriter(writerId);
-        try {
-            await this.prismaService.subscribe.create({
-                data: {
-                    followerId,
-                    writerId,
-                    createdAt : this.utilService.getCurrentDateInKorea()
-                }
-            });
-            await this.synchronizeFollower(writerId);
-        }catch (error) {
-            throw ExceptionList.FOLLOW_ALREADY_ERROR;
-        }
-    }
-
-    /**
-     * @summary 작가 팔로우 취소
-     * @param followerId
-     * @param writerId
-     * @returns void
-     * @throws FOLLOW_MYSELF_ERROR
-     * @throws USER_NOT_WRITER
-     */
-    async unfollowWriter(followerId : number, writerId : number): Promise<void> {
-        if(followerId === writerId) throw ExceptionList.FOLLOW_MYSELF_ERROR;
-        await this.authValidationService.assertWriter(writerId);
-        try {
-            await this.prismaService.subscribe.delete({ // TODO : 과거의 팔로우 기록을 남기는 방법이 필요한가 고민 필요
-                where :{
-                    followerId_writerId : {
-                        followerId,
-                        writerId
-                    }
-                }
-            });
-            await this.synchronizeFollower(writerId);
-        }catch (error) {
-            console.log(error);
-        }
-    }
-
-    /**
-     * @summary 외부 팔로워 목록 가져오기
-     * @param writerId
-     * @returns ExternalFollowerDto[]
-     */
-    async getExternalFollowerListByWriterId(writerId: number): Promise<ExternalFollowerDto[]> {
-        const externalFollowerList = await this.prismaService.externalFollow.findMany({
-            where: {
-                writerId
-            },
-            orderBy: {
-                createdAt: 'desc'
-            }
-        })
-        return externalFollowerList.map(externalFollower => UserDtoMapper.ExternalFollowerToExternalFollowerDto(externalFollower));
-    }
-
-    /**
-     * @summary 해당 작가의 모든 팔로워 목록을 가져오기
-     * @param writerId
-     * @returns AllFollowerDto
-     */
-    async getAllFollowerByWriterId(writerId : number): Promise<AllFollowerDto> {
-        return {
-            followerList: await this.getAllInternalFollowerByWriterId(writerId),
-            externalFollowerList: await this.getExternalFollowerListByWriterId(writerId)
-        }
-    }
-
-    /**
-     * @summary 해당 유저의 팔로잉 목록을 가져오기
-     * @param followerId
-     * @returns FollowingWriterProfileDto[]
-     */
-    async getFollowingWriterListByFollowerId(followerId : number): Promise<FollowingWriterProfileDto[]> {
-        const followingList: FollowingWriterInfoWithUser[] = await this.prismaService.subscribe.findMany({
-            where: {
-                followerId,
-                writerInfo: {
-                    deleted: false
-                }
-            },
-            include: {
-                writerInfo: {
-                    include : {
-                        user: true
-                    }
-                }
-            },
-            orderBy: {
-                createdAt: 'desc'
-            }
-        })
-        if(followingList.length === 0) return [];
-        return followingList.map(following => UserDtoMapper.FollowingWriterInfoWithUserToFollowingWriterDto(following));
-    }
 
     /**
      * @summary 유저 ID로 작가 정보 가져오기
@@ -258,30 +143,6 @@ export class UserService {
     }
 
     /**
-     * @summary 해당 작가의 팔로워 목록 가져오기
-     * @param writerId
-     * @returns UserProfileDto[]
-     */
-    async getAllInternalFollowerByWriterId(writerId: number): Promise<FollowerDto[]> {
-        const followerList = await this.prismaService.subscribe.findMany({
-            where :{
-                writerId,
-                user :{
-                    deleted : false
-                }
-            },
-            include : {
-                user : true
-            },
-            relationLoadStrategy: 'join'
-        })
-        if(followerList.length == 0) return [];
-        return followerList.map(follower => {
-            return UserDtoMapper.FollowAndUserToFollowerDto(follower.user, follower.createdAt);
-        })
-    }
-
-    /**
      * @summary 해당 작가가 존재하는 지 확인
      * @param moonjinId
      * @returns {userId, moonjinId}
@@ -298,84 +159,6 @@ export class UserService {
             userId: writer.userId,
             moonjinId
         };
-    }
-
-    /**
-     * @summary 팔로워 삭제하기
-     * @param followerId
-     * @param writerId
-     * @returns void
-     * @throws USER_NOT_WRITER
-     * @throws FOLLOWER_NOT_FOUND
-     * @throws FOLLOW_MYSELF_ERROR
-     */
-    async hideFollower(followerId: number, writerId: number): Promise<void> {
-        await this.authValidationService.assertWriter(followerId);
-        try {
-             await this.prismaService.subscribe.update({
-                where: {
-                    followerId_writerId: {
-                        writerId,
-                        followerId
-                    }
-                },
-                data: {
-                    hide: true
-                }
-            }) // update는 updateMany와 달리, 찾으려는 column이 없을 경우 에러를 발생시킵니다.
-            await this.synchronizeFollower(writerId);
-        }catch (error){
-            console.log(error);
-            throw ExceptionList.FOLLOWER_NOT_FOUND;
-        }
-    }
-
-    /**
-     * @summary 외부 팔로워 추가하기
-     * @param writerId
-     * @param followerEmail
-     * @returns ExternalFollowerDto
-     * @throws EMAIL_ALREADY_EXIST
-     * @throws FOLLOWER_ALREADY_EXIST
-     */
-    async addExternalFollowerByEmail(writerId: number, followerEmail: string): Promise<ExternalFollowerDto> {
-        await this.authValidationService.assertEmailUnique(followerEmail);
-        try{
-            const externalFollow = await this.prismaService.externalFollow.create({
-                data: {
-                    writerId,
-                    followerEmail,
-                    createdAt: this.utilService.getCurrentDateInKorea()
-                }
-            })
-            return UserDtoMapper.ExternalFollowerToExternalFollowerDto(externalFollow)
-        }catch (error){
-            console.log(error);
-            throw ExceptionList.FOLLOWER_ALREADY_EXIST;
-        }
-    }
-
-    /**
-     * @summary 외부 팔로워 삭제하기
-     * @param writerId
-     * @param followerEmail
-     * @returns ExternalFollowerDto
-     * @throws FOLLOWER_NOT_FOUND
-     */
-    async deleteExternalFollowerByEmail(writerId: number, followerEmail: string): Promise<ExternalFollowerDto> {
-        try{
-            const externalFollow = await this.prismaService.externalFollow.delete({
-                where: {
-                    followerEmail_writerId: {
-                        writerId,
-                        followerEmail
-                    }
-                }
-            })
-            return UserDtoMapper.ExternalFollowerToExternalFollowerDto(externalFollow);
-        }catch (error){
-            throw ExceptionList.FOLLOWER_NOT_FOUND;
-        }
     }
 
     /**
@@ -449,9 +232,8 @@ export class UserService {
     async changeWriterProfile(userId: number, newWriterProfile: ChangeWriterProfileDto): Promise<UserDto> {
         if(this.utilService.isNullObject(newWriterProfile)) throw ExceptionList.PROFILE_CHANGE_ERROR;
 
-        const {moonjinId, description,...newUserProfile} = newWriterProfile;
-        const {nickname,image, ...newWriterInfoProfile} = newWriterProfile;
-        if(this.utilService.isNullObject(newWriterInfoProfile)) return this.changeUserProfile(userId, newUserProfile);
+        const {moonjinId,...newUserProfile} = newWriterProfile;
+        if(!moonjinId) return this.changeUserProfile(userId, newUserProfile);
 
         try{
             const writerInfoWithUser : WriterInfoWithUser = await this.prismaService.writerInfo.update({
@@ -459,7 +241,7 @@ export class UserService {
                     userId
                 },
                 data: {
-                    ...newWriterInfoProfile,
+                    moonjinId,
                     user: {
                         update: {
                             ...newUserProfile
@@ -541,31 +323,6 @@ export class UserService {
             throw ExceptionList.USER_NOT_WRITER
         }
     }
-
-    /**
-     * @summary 작가 시리즈 수 증가
-     * @param userId
-     * @returns void
-     * @throws USER_NOT_WRITER
-     */
-    async synchronizeFollower(userId :number) {
-        const followerList = await this.getAllInternalFollowerByWriterId(userId);
-        try{
-            await this.prismaService.writerInfo.update({
-                where: {
-                    userId
-                },
-                data : {
-                    followerCount :followerList.length
-                }
-            })
-        }catch (error){
-                throw ExceptionList.USER_NOT_WRITER
-        }
-    }
-
-
-
 
     /**
      * @summary 작가 정보 삭제하기

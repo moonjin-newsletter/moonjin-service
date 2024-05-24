@@ -10,14 +10,15 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique @db.VarChar(32)
-  password  String?  @db.VarChar(64)
-  nickname  String   @unique @db.VarChar(16)
-  createdAt DateTime
-  image     String   @db.VarChar(128)
-  role      Int      @default(0)
-  deleted   Boolean  @default(false)
+  id          Int      @id @default(autoincrement())
+  email       String   @unique @db.VarChar(32)
+  password    String?  @db.VarChar(64)
+  nickname    String   @unique @db.VarChar(16)
+  createdAt   DateTime
+  description String   @default("문진 독자입니다.") @db.VarChar(256)
+  image       String   @db.VarChar(128)
+  role        Int      @default(0)
+  deleted     Boolean  @default(false)
 
   oauth      Oauth?
   writerInfo WriterInfo?
@@ -38,7 +39,6 @@ model Oauth {
 model WriterInfo {
   userId          Int      @id @unique
   moonjinId       String   @unique @db.VarChar(32)
-  description     String   @default("") @db.VarChar(256)
   createdAt       DateTime
   newsletterCount Int      @default(0)
   seriesCount     Int      @default(0)
@@ -46,11 +46,11 @@ model WriterInfo {
   status          Boolean  @default(true)
   deleted         Boolean  @default(false)
 
-  user           User             @relation(fields: [userId], references: [id])
-  follow         Subscribe[]
-  post           Post[]
-  series         Series[]
-  ExternalFollow ExternalFollow[]
+  user              User                @relation(fields: [userId], references: [id])
+  post              Post[]
+  series            Series[]
+  subscribe         Subscribe[]
+  subscribeExternal SubscribeExternal[]
 }
 
 model Subscribe {
@@ -68,7 +68,7 @@ model Subscribe {
   @@index([followerId])
 }
 
-model ExternalFollow {
+model SubscribeExternal {
   writerId      Int
   followerEmail String
   createdAt     DateTime
@@ -104,19 +104,56 @@ model Post {
   @@index([seriesId])
 }
 
-model Newsletter {
-  postId     Int
-  receiverId Int
-  title      String   @db.VarChar(128)
-  sentAt     DateTime
-  status     Boolean  @default(true)
+model PostContent {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  content   String   @db.Text
+  createdAt DateTime
 
-  post Post @relation(fields: [postId], references: [id])
-  user User @relation(fields: [receiverId], references: [id])
+  post       Post         @relation(fields: [postId], references: [id])
+  Newsletter Newsletter[]
 
-  @@id([postId, receiverId])
   @@index([postId])
-  @@index([receiverId])
+}
+
+model Newsletter {
+  id            Int      @id @default(autoincrement())
+  postId        Int
+  postContentId Int
+  title         String   @db.VarChar(128)
+  sentAt        DateTime
+  status        Boolean  @default(true)
+
+  post             Post               @relation(fields: [postId], references: [id])
+  postContent      PostContent        @relation(fields: [postContentId], references: [id])
+  user             User?              @relation(fields: [userId], references: [id])
+  userId           Int?
+  newsletterInMail NewsletterInMail[]
+  newsletterInWeb  NewsletterInWeb[]
+
+  @@index([postId])
+}
+
+model NewsletterInMail {
+  newsletterId  Int
+  receiverEmail String
+  isSent        Boolean @default(false)
+  isOpened      Boolean @default(false)
+
+  newsletter Newsletter @relation(fields: [newsletterId], references: [id])
+
+  @@id([newsletterId, receiverEmail])
+}
+
+model NewsletterInWeb {
+  newsletterId   Int
+  receiverId     Int
+  isRead         Boolean @default(false)
+  hideByReceiver Boolean @default(false)
+
+  newsletter Newsletter @relation(fields: [newsletterId], references: [id])
+
+  @@id([newsletterId, receiverId])
 }
 
 model Series {
@@ -155,7 +192,7 @@ model Letter {
   id         Int       @id @default(autoincrement())
   senderId   Int
   receiverId Int
-  title      String    @db.VarChar(64)
+  title      String    @db.VarChar(128)
   content    String    @db.Text
   createdAt  DateTime
   readAt     DateTime?
@@ -166,15 +203,4 @@ model Letter {
 
   @@index([senderId])
   @@index([receiverId])
-}
-
-model PostContent {
-  id        Int      @id @default(autoincrement())
-  postId    Int
-  content   String   @db.Text
-  createdAt DateTime
-
-  post Post @relation(fields: [postId], references: [id])
-
-  @@index([postId])
 }

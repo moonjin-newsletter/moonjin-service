@@ -9,6 +9,7 @@ export * from "./src/response/error/post/index";
 export * from "./src/response/error/user/index";
 export * from "./src/response/error/series/index";
 export * from "./src/response/error/file/index";
+export * from "./src/response/error/subscribe/index";
 
 //api-types
 export * from './src/api-types/auth/index';
@@ -29,4 +30,6 @@ export * from './src/api-types/user/dto/index';
 export * from './src/api-types/file/dto/index';
 export * from './src/api-types/mail/dto/index';
 export * from './src/api-types/writer/dto/index';
+export * from './src/api-types/newsletter/dto/index';
+export * from './src/api-types/subscribe/dto/index';
 export * from './src/api-types/common/pagination/dto/index';

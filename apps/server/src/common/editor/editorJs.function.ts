@@ -21,7 +21,11 @@ export function convertEditorJsonToPostPreview(editorJson : EditorJsonDto): stri
             })
         }
     })
-    return preview;
+    if(preview.length < MAX_PREVIEW_LENGTH)
+        return preview
+    else {
+        return preview.substring(0, MAX_PREVIEW_LENGTH-3) + "...";
+    }
 }
 
 export function assertTextBlock(block : EditorBlockDto): block is EditorTextBlockDto{

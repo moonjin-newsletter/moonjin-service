@@ -7,15 +7,15 @@ import {SeriesDto, CreateSeriesDto, SeriesWithWriterDto} from "./dto";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
 import { FollowingSeriesWithWriter,
 } from "./prisma/followingSeriesAndWriter.prisma.type";
-import {UserService} from "../user/user.service";
 import UserDtoMapper from "../user/userDtoMapper";
+import {SubscribeService} from "../subscribe/subscribe.service";
 
 @Injectable()
 export class SeriesService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
-        private readonly userService: UserService
+        private readonly subscribeService: SubscribeService
     ) {}
 
     /**
@@ -49,7 +49,7 @@ export class SeriesService {
      */
     async getFollowingSeriesByFollowerId(followerId : number) : Promise<SeriesWithWriterDto[]>{
         try{
-            const followingWriterList = await this.userService.getFollowingWriterListByFollowerId(followerId);
+            const followingWriterList = await this.subscribeService.getSubscribingWriterListBySubscriberId(followerId);
             if(followingWriterList.length === 0) return [];
             const followingWriterIdList= followingWriterList.map(writer => writer.user.id);
             const followingSeriesWithWriterList : FollowingSeriesWithWriter[] = await this.prismaService.series.findMany({

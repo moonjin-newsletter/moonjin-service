@@ -18,6 +18,7 @@ import {MailModule} from "../mail/mail.module";
       MailModule
   ],
   providers: [PostService],
-  controllers: [PostController]
+  controllers: [PostController],
+    exports: [PostService]
 })
 export class PostModule {}

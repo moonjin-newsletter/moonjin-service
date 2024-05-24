@@ -48,11 +48,11 @@ export enum ErrorCodeEnum {
     FORBIDDEN_FOR_SERIES = "0203",
 
     // user
-    /// follow
-    FOLLOW_MYSELF_ERROR = "0400",
-    FOLLOW_ALREADY_ERROR = "0401",
-    FOLLOWER_NOT_FOUND = "0402",
-    FOLLOWER_ALREADY_EXIST = "0403",
+    /// subscribe
+    SUBSCRIBE_MYSELF_ERROR = "0400",
+    SUBSCRIBE_ALREADY_ERROR = "0401",
+    SUBSCRIBER_NOT_FOUND = "0402",
+    SUBSCRIBER_ALREADY_EXIST = "0403",
     //user
     PROFILE_CHANGE_ERROR = "0410",
 

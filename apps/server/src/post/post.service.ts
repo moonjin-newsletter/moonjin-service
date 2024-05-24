@@ -1,9 +1,7 @@
 import {Injectable} from '@nestjs/common';
-import {
-    NewsletterDto, PostDto, PostWithContentAndSeriesDto,
+import {PostDto, PostWithContentAndSeriesDto,
     PostWithContentDto,
     ReleasedPostDto,
-    StampedPostDto,
     UnreleasedPostWithSeriesDto
 } from "./dto";
 import {PrismaService} from "../prisma/prisma.service";
@@ -11,21 +9,18 @@ import PostDtoMapper from "./postDtoMapper";
 import {Stamp} from "@prisma/client";
 import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
-import {StampedPost} from "./prisma/stampedPostWithWriter.prisma.type";
 import {AuthValidationService} from "../auth/auth.validation.service";
-import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {PaginationOptionsDto} from "../common/pagination/dto";
-import {convertEditorJsonToPostPreview, editorJsToHtml} from "../common";
+import {convertEditorJsonToPostPreview} from "../common";
 import {CreatePostContentDto} from "./server-dto/createPostContent.dto";
 import {PostContentDto} from "./dto/postContent.dto";
 import {CreatePostDto} from "./server-dto/createPost.dto";
 import {PostWithContents} from "./prisma/postWithContents.prisma.type";
-import {UserService} from "../user/user.service";
-import {MailService} from "../mail/mail.service";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {PostWithContentAndSeries} from "./prisma/postWithContentAndSeries.prisma";
+import {NewsletterDto} from "../newsletter/dto";
 
 @Injectable()
 export class PostService {
@@ -33,8 +28,6 @@ export class PostService {
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
         private readonly authValidationService: AuthValidationService,
-        private readonly userService:UserService,
-        private readonly mailService : MailService
     ) {}
 
     /**
@@ -156,82 +149,6 @@ export class PostService {
     }
 
     /**
-     * @summary 해당 글을 나를 구독 중인 사람들에게 뉴스레터로 전송
-     * @param postId
-     * @param newsletterTitle
-     * @param userEmail
-     * @return 전송된 뉴스레터 수
-     * @throws POST_NOT_FOUND
-     * @throws NEWSLETTER_CATEGORY_NOT_FOUND
-     * @throws POST_CONTENT_NOT_FOUND
-     * @throws SEND_NEWSLETTER_ERROR
-     * @throws USER_NOT_WRITER
-     */
-    async sendNewsletter(postId : number, newsletterTitle: string, userEmail: string) : Promise<number> {
-        const postWithContent = await this.getPostWithContentByPostId(postId);
-        if(postWithContent.post.category == null || postWithContent.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
-
-        const followers = await this.userService.getAllFollowerByWriterId(postWithContent.post.writerId);
-        await this.sendWebNewsletter(postId,newsletterTitle, followers.followerList.map(follower => follower.user.id));
-        const emailList = followers.externalFollowerList.map(follower => follower.email);
-        const writer = await this.userService.getWriterInfoByUserId(postWithContent.post.writerId);
-
-        followers.followerList.map(follower => {
-            emailList.push(follower.user.email)
-        });
-        emailList.push(userEmail); // 본인에게도 보내기.
-
-        const sendNewsLetterDto = {
-            emailList,
-            senderName: writer.user.nickname,
-            senderMailAddress: writer.writerInfo.moonjinId + '@' + process.env.MAILGUN_DOMAIN,
-            subject: newsletterTitle,
-            html: editorJsToHtml(postWithContent.postContent),
-        }
-        const sentCount = await this.mailService.sendNewsLetterWithHtml(sendNewsLetterDto);
-        await this.prismaService.post.update({
-            where : {
-                id : postId
-            },
-            data : {
-                releasedAt : this.utilService.getCurrentDateInKorea(),
-                status : true
-            }
-        })
-        return sentCount;
-    }
-
-    /**
-     * 해당 유저들에게 Web 뉴스레터 전송하기
-     * @param postId
-     * @param title
-     * @param receiverIdList
-     * @return 전송된 뉴스레터 수
-     * @throws SEND_NEWSLETTER_ERROR
-     */
-    async sendWebNewsletter(postId: number, title:string, receiverIdList: number[]): Promise<number>{
-        try {
-            const now = this.utilService.getCurrentDateInKorea();
-            const newsletterData = receiverIdList.map(receiverId => {
-                return {
-                    postId,
-                    receiverId,
-                    title,
-                    sentAt : now,
-                }
-            });
-            const sentNewsletter = await this.prismaService.newsletter.createMany({
-                data : newsletterData,
-                skipDuplicates : true
-            })
-            return sentNewsletter.count;
-        } catch (error) {
-            console.error(error);
-            throw ExceptionList.SEND_NEWSLETTER_ERROR;
-        }
-    }
-
-    /**
      * @summary 해당 Post와 글 내용 반환
      * @param postId
      * @return PostWithContentDto
@@ -261,42 +178,6 @@ export class PostService {
         }
     }
 
-    /**
-     * @summary 해당 유저의 뉴스레터 가져오기
-     * @param userId
-     * @param seriesOnly
-     * @return NewsletterDto[]
-     */
-    async getNewsletterListByUserId(userId : number, seriesOnly = false) : Promise<NewsletterDto[]>{
-        const newsletterList : NewsletterWithPostAndSeriesAndWriterUser[] = await this.prismaService.newsletter.findMany({
-            where : {
-                receiverId : userId,
-                post : {
-                    seriesId : seriesOnly ? {
-                        gt : 0
-                    } : undefined
-                },
-            },
-            select : {
-                sentAt : true,
-                post : {
-                    include : {
-                        writerInfo : {
-                            include : {
-                                user : true
-                            }
-                        },
-                        series : true
-                    },
-                },
-            },
-            relationLoadStrategy: 'join',
-            orderBy : {
-                sentAt : 'desc'
-            }
-        })
-        return newsletterList.map(newsletter => PostDtoMapper.NewsletterWithPostAndSeriesAndWriterUserToNewsletterDto(newsletter));
-    }
 
     /**
      * @summary post를 stamp 찍기
@@ -318,28 +199,6 @@ export class PostService {
         } catch (error) {
             throw ExceptionList.STAMP_ALREADY_EXIST; // TODO: Stamp를 찍었던 날짜를 돌려주는 게 맞을지 고민해보기
         }
-    }
-
-    /**
-     * @summary 해당 유저의 스탬프 이력 가져오기
-     * @param userId
-     * @return StampedPostDto[]
-     */
-    async getStampedPostListByUserId(userId : number): Promise<StampedPostDto[]> {
-        const stampedPostList : StampedPost[] = await this.prismaService.stamp.findMany({
-            where : {
-                userId
-            },
-            include: {
-                post : true
-            },
-            relationLoadStrategy: 'join',
-            orderBy : {
-                createdAt : 'desc'
-            }
-        })
-        if(stampedPostList.length === 0) return [];
-        return PostDtoMapper.StampedPostListToStampedPostDtoList(stampedPostList);
     }
 
     /**

@@ -20,12 +20,12 @@ import {
     POST_NOT_FOUND, SEND_NEWSLETTER_ERROR,
     STAMP_ALREADY_EXIST
 } from "./post";
-import {FOLLOW_ALREADY_ERROR, FOLLOW_MYSELF_ERROR, FOLLOWER_ALREADY_EXIST, FOLLOWER_NOT_FOUND} from "./user";
+import {SUBSCRIBE_ALREADY_ERROR, SUBSCRIBE_MYSELF_ERROR, SUBSCRIBER_ALREADY_EXIST, SUBSCRIBER_NOT_FOUND} from "./subscribe";
 import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "./series";
 import {EMPTY_LIST_INPUT, EMPTY_VALUE_INPUT} from "./dev";
 import {LETTER_ALREADY_READ, LETTER_NOT_FOUND, FORBIDDEN_FOR_LETTER, SEND_LETTER_ERROR} from "./letter";
 import {FILE_EXTENTION_ERROR, FILE_UPLOAD_ERROR} from "./file";
-import {PROFILE_CHANGE_ERROR} from "./user/user.error";
+import {PROFILE_CHANGE_ERROR} from "./user";
 
 export const ExceptionList= {
     EMAIL_ALREADY_EXIST: new Exception(typia.random<EMAIL_ALREADY_EXIST>()),
@@ -71,10 +71,10 @@ export const ExceptionList= {
     FORBIDDEN_FOR_SERIES : new Exception(typia.random<FORBIDDEN_FOR_SERIES>()),
 
     // User
-    FOLLOW_MYSELF_ERROR : new Exception(typia.random<FOLLOW_MYSELF_ERROR>()),
-    FOLLOW_ALREADY_ERROR : new Exception(typia.random<FOLLOW_ALREADY_ERROR>()),
-    FOLLOWER_NOT_FOUND : new Exception(typia.random<FOLLOWER_NOT_FOUND>()),
-    FOLLOWER_ALREADY_EXIST : new Exception(typia.random<FOLLOWER_ALREADY_EXIST>()),
+    SUBSCRIBE_MYSELF_ERROR : new Exception(typia.random<SUBSCRIBE_MYSELF_ERROR>()),
+    SUBSCRIBE_ALREADY_ERROR : new Exception(typia.random<SUBSCRIBE_ALREADY_ERROR>()),
+    SUBSCRIBER_NOT_FOUND : new Exception(typia.random<SUBSCRIBER_NOT_FOUND>()),
+    SUBSCRIBER_ALREADY_EXIST : new Exception(typia.random<SUBSCRIBER_ALREADY_EXIST>()),
     PROFILE_CHANGE_ERROR : new Exception(typia.random<PROFILE_CHANGE_ERROR>()),
 
     // Letter

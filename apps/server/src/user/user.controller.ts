@@ -1,13 +1,12 @@
-import {TypedBody, TypedParam, TypedQuery, TypedRoute} from '@nestia/core';
+import {TypedBody, TypedQuery, TypedRoute} from '@nestia/core';
 import {Controller, Res, UseGuards} from '@nestjs/common';
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto";
 import {UserService} from "./user.service";
-import {createResponseForm, ResponseForm, ResponseMessage} from "../response/responseForm";
+import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {
-    EMAIL_ALREADY_EXIST,
     MOONJIN_EMAIL_ALREADY_EXIST,
     NICKNAME_ALREADY_EXIST, SOCIAL_USER_ERROR,
     USER_NOT_FOUND,
@@ -15,16 +14,11 @@ import {
     WRITER_SIGNUP_ERROR
 } from "../response/error/auth";
 import {
-    AllFollowerDto,
-    ExternalFollowerDto,
-    FollowingWriterProfileDto,
     UserDto,
     UserWithPasswordDto,
     WriterDto
 } from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
-import {FOLLOWER_ALREADY_EXIST, FOLLOWER_NOT_FOUND} from "../response/error/user";
-import {ICreateExternalFollower} from "./api-types/ICreateExternalFollower";
 import {OauthService} from "../auth/oauth.service";
 import {IChangeUserProfile} from "./api-types/IChangeUserProfile";
 import {AuthService} from "../auth/auth.service";
@@ -37,7 +31,7 @@ import {IEmailVerification} from "../auth/api-types/IEmailVerification";
 import * as process from "process";
 import {ErrorCodeEnum} from "../response/error/enum/errorCode.enum";
 import {IChangeWriterProfile} from "./api-types/IChangeWriterProfile";
-import {PROFILE_CHANGE_ERROR} from "../response/error/user/user.error";
+import {PROFILE_CHANGE_ERROR} from "../response/error/user";
 import {ICreateWriterInfo} from "./api-types/ICreateWriterInfo";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import {JwtUtilService} from "../auth/jwtUtil.service";
@@ -57,53 +51,6 @@ export class UserController {
         private readonly mailService: MailService,
         private readonly jwtUtilService : JwtUtilService
     ) {}
-
-    /**
-     * @summary 팔로우 기능
-     * @param writerId
-     * @param user
-     * @returns
-     * @throws USER_NOT_WRITER
-     * @throws FOLLOW_MYSELF_ERROR
-     * @throws FOLLOW_ALREADY_ERROR
-     */
-    @TypedRoute.Post(":id/Follow")
-    @UseGuards(UserAuthGuard)
-    async follow(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
-        await this.userService.followWriter(user.id, writerId);
-        return createResponseForm({
-            message: "팔로우 성공"
-        })
-    }
-
-    /**
-     * @summary 팔로우 취소 기능
-     * @param writerId
-     * @param user
-     * @returns
-     * @throws USER_NOT_WRITER
-     * @throws FOLLOW_MYSELF_ERROR
-     */
-    @TypedRoute.Delete(":id/Follow")
-    @UseGuards(UserAuthGuard)
-    async unfollow(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
-        await this.userService.unfollowWriter(user.id, writerId);
-        return createResponseForm({
-            message: "팔로우 취소 성공"
-        })
-    }
-
-    /**
-     * @summary 유저의 팔로잉 작가 목록 가져오기
-     * @param user
-     * @returns FollowingWriterProfileDto[]
-     */
-    @TypedRoute.Get("Following")
-    @UseGuards(UserAuthGuard)
-    async getFollowingUserList(@User() user : UserAuthDto) : Promise<ResponseForm<FollowingWriterProfileDto[]>> {
-        const followingWriterList = await this.userService.getFollowingWriterListByFollowerId(user.id);
-        return createResponseForm(followingWriterList);
-    }
 
     /**
      * @summary 내 정보 가져오기
@@ -135,55 +82,6 @@ export class UserController {
         } catch (error){
             return createResponseForm({ social : "moonjin" });
         }
-    }
-
-    /**
-     * @summary 작가의 팔로워 목록 보기
-     * @param user
-     * @returns AllFollowerDto
-     */
-    @TypedRoute.Get("follower")
-    @UseGuards(WriterAuthGuard)
-    async getFollowerList(@User() user : UserAuthDto) : Promise<Try<AllFollowerDto>> {
-        const allFollowerList = await this.userService.getAllFollowerByWriterId(user.id);
-        return createResponseForm(allFollowerList);
-    }
-
-    /**
-     * @summary 외부 구독자 추가 API
-     * @param user
-     * @param followerData
-     * @returns ResponseMessage & ExternalFollowerDto
-     * @throws EMAIL_ALREADY_EXIST
-     * @throws FOLLOWER_ALREADY_EXIST
-     */
-    @TypedRoute.Post('follower/external')
-    @UseGuards(WriterAuthGuard)
-    async addExternalFollower(@User() user:UserAuthDto,@TypedBody() followerData : ICreateExternalFollower)
-    :Promise<TryCatch<ResponseMessage & ExternalFollowerDto, EMAIL_ALREADY_EXIST | FOLLOWER_ALREADY_EXIST>>{
-        const externalFollower = await this.userService.addExternalFollowerByEmail(user.id,followerData.followerEmail);
-        return createResponseForm({
-            message: "구독자 추가에 성공했습니다.",
-            ...externalFollower,
-        })
-    }
-
-    /**
-     * @summary 외부 구독자 제거 API
-     * @param user
-     * @param followerData
-     * @returns ResponseMessage & ExternalFollowerDto
-     * @throws FOLLOWER_NOT_FOUND
-     */
-    @TypedRoute.Delete('follower/external')
-    @UseGuards(WriterAuthGuard)
-    async deleteExternalFollower(@User() user:UserAuthDto, @TypedBody() followerData : ICreateExternalFollower)
-        :Promise<TryCatch<ResponseMessage & ExternalFollowerDto, FOLLOWER_NOT_FOUND>>{
-        const externalFollower = await this.userService.deleteExternalFollowerByEmail(user.id,followerData.followerEmail);
-        return createResponseForm({
-            message: "구독자 삭제에 성공했습니다.",
-            ...externalFollower,
-        })
     }
 
     /**
@@ -277,24 +175,6 @@ export class UserController {
             else
                 res.redirect(process.env.CLIENT_URL + "/password/change/fail?error=socialUserError");
         }
-    }
-
-    /**
-     * @summary 팔로워 숨기기 API
-     * @param followerId
-     * @param writer
-     * @returns
-     * @throws USER_NOT_WRITER
-     * @throws FOLLOWER_NOT_FOUND
-     */
-    @TypedRoute.Delete('follower/:id')
-    @UseGuards(WriterAuthGuard)
-    async deleteFollower(@TypedParam("id") followerId : number, @User() writer : UserAuthDto): Promise<TryCatch<{message:string},
-        USER_NOT_WRITER | FOLLOWER_NOT_FOUND>> {
-        await this.userService.hideFollower(followerId, writer.id);
-        return createResponseForm({
-            message: "팔로워 삭제에 성공했습니다."
-        })
     }
 
     /**

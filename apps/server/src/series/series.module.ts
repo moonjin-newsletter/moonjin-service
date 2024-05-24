@@ -5,13 +5,15 @@ import {AuthModule} from "../auth/auth.module";
 import {PrismaModule} from "../prisma/prisma.module";
 import {UtilModule} from "../util/util.module";
 import {UserModule} from "../user/user.module";
+import {SubscribeModule} from "../subscribe/subscribe.module";
 
 @Module({
   imports: [
       PrismaModule,
       AuthModule,
       UtilModule,
-      UserModule
+      UserModule,
+      SubscribeModule
   ],
   providers: [SeriesService],
   controllers: [SeriesController],

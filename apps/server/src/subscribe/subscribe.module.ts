@@ -16,6 +16,7 @@ import {AuthModule} from "../auth/auth.module";
       AuthModule
   ],
   controllers: [SubscribeController],
-  providers: [SubscribeService]
+  providers: [SubscribeService],
+    exports: [SubscribeService]
 })
 export class SubscribeModule {}
