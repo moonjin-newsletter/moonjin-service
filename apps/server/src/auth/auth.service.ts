@@ -46,6 +46,7 @@ export class AuthService {
                     password : hashedPassword,
                     role: UserRoleEnum.USER,
                     image,
+                    description : "문진 독자입니다.",
                     createdAt : this.utilService.getCurrentDateInKorea()
                 }
             })
@@ -69,6 +70,7 @@ export class AuthService {
     async localWriterSignup(localWriterSignupData :LocalWriterSignupDto): Promise<UserAuthDto>{
         try {
             let {image, hashedPassword,moonjinId,description,...signupData} = localWriterSignupData;
+            if(!description || description.length == 0) description = "문진 작가입니다.";
             if(!image) image = this.utilService.processImageForProfile(image);
 
             const createdUser= await this.prismaService.user.create({
@@ -115,7 +117,9 @@ export class AuthService {
                 },
             })
             const changeUserNickname = (newNickname) ? {nickname : newNickname} : {};
-            const changeDescription = (description) ? {description} : {};
+            const changeDescription = (description) ? {description} : {
+                description: "문진 작가입니다."
+            };
             const userUpdate = this.prismaService.user.update({
                 where:{
                     id: writerSignupData.userId
@@ -225,6 +229,7 @@ export class AuthService {
                     password : "",
                     role : UserRoleEnum.USER,
                     image,
+                    description: "문진 독자입니다.",
                     createdAt : this.utilService.getCurrentDateInKorea(),
                     oauth:{
                         create:{
@@ -253,6 +258,7 @@ export class AuthService {
      */
     async socialWriterSignup(socialWriterSignupData:SocialWriterSignupDto) : Promise<UserAuthDto>{
         let {image, oauthId,social,description,moonjinId,...signupData} = socialWriterSignupData;
+        if(!description || description.length == 0) description = "문진 작가입니다.";
         if(!image) image = this.utilService.processImageForProfile(image);
         try{
             const createdUser = await this.prismaService.user.create({

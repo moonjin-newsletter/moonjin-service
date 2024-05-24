@@ -15,7 +15,7 @@ model User {
   password    String?  @db.VarChar(64)
   nickname    String   @unique @db.VarChar(16)
   createdAt   DateTime
-  description String   @default("문진 독자입니다.") @db.VarChar(256)
+  description String   @default("") @db.VarChar(256)
   image       String   @db.VarChar(128)
   role        Int      @default(0)
   deleted     Boolean  @default(false)

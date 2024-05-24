@@ -15,7 +15,7 @@ import UserDtoMapper from "./userDtoMapper";
 import {WriterInfoWithUser} from "./prisma/writerInfoWithUser.prisma.type";
 import * as process from "process";
 import {ChangeWriterProfileDto} from "./dto";
-import {UserOrWriterDto} from "./dto/UserOrWriter.dto";
+import {UserOrWriterDto} from "./dto/userOrWriter.dto";
 
 @Injectable()
 export class UserService {

@@ -34,7 +34,7 @@ import {PROFILE_CHANGE_ERROR} from "../response/error/user";
 import {ICreateWriterInfo} from "./api-types/ICreateWriterInfo";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import {JwtUtilService} from "../auth/jwtUtil.service";
-import {UserOrWriterDto} from "./dto/UserOrWriter.dto";
+import {UserOrWriterDto} from "./dto/userOrWriter.dto";
 
 @Controller('user')
 export class UserController {
