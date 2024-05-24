@@ -119,7 +119,7 @@ model PostContent {
 model Newsletter {
   id            Int      @id @default(autoincrement())
   postId        Int
-  postContentId Int
+  postContentId Int      @default(0)
   title         String   @db.VarChar(128)
   sentAt        DateTime
   status        Boolean  @default(true)
