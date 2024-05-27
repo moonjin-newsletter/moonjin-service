@@ -1,5 +1,4 @@
 import { isNonEmptyArray, isNotNil } from "@toss/utils";
-import { UnreleasedNewsletterCard } from "../newsletter/_components/UnreleasedCard";
 import EmptyCard from "../../_components/EmptyCard";
 import ssr from "../../../../lib/fetcher/ssr";
 import { AllSubscriberDto, ResponseForm } from "@moonjin/api-types";
