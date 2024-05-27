@@ -44,7 +44,7 @@ function SeriesNewsletter({
       >
         {isNonEmptyArray(seriesList) ? (
           seriesList.map((value, index) => (
-            <SeriesCardForReader seriesInfo={value} key={index} />
+            <SeriesCardForReader seriesInfo={value} key={index} width={190} />
           ))
         ) : (
           <EmptyCard text="구독 중인 시리즈가 없습니다" />
@@ -65,7 +65,7 @@ function NewsletterList({
         <div className="border-b font-semibold border-primary">
           구독한 뉴스레터
         </div>
-        <div className="py-1 font-semibold px-2 ml-2 text-sm rounded bg-gray-200 text-gray-400">
+        <div className="py-0.5 font-semibold px-2 ml-2 text-sm rounded bg-primary text-white">
           {newsletterList?.length ?? 0}
         </div>
 
