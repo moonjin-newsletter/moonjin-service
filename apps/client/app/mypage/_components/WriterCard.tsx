@@ -36,7 +36,7 @@ export default function WriterCard({
         <h3 className="font-semibold">{writerInfo.user.nickname}</h3>
         <span>{writerInfo.user.description}</span>
       </div>
-      <div className="flex whitespace-nowrap flex-col ml-auto gap-y-1">
+      <div className="flex whitespace-nowrap flex-col ml-auto pl-4 gap-y-1">
         <div className="flex text-sm text-grayscale-500">
           {format(new Date(writerInfo.following.createdAt), "yyyy-MM-dd")}부터
           구독
