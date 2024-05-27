@@ -39,10 +39,10 @@ export class UtilService {
      * @returns string
      */
     processImageForCover(cover: string | undefined | null): string {
-        const cdnUrl = process.env.CDN_URL?? "https://d1ppxineti4knh.cloudfront.net";
         if (cover) {
             return cover;
         } else {
+            const cdnUrl = process.env.CDN_URL?? "https://d1ppxineti4knh.cloudfront.net";
             return cdnUrl + '/cover/default.png';
         }
     }

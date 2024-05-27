@@ -78,7 +78,7 @@ export class PostService {
      * @throws CREATE_POST_ERROR
      */
     async updatePost(postId: number, updatePostData: CreatePostDto): Promise<PostWithContentDto> {
-        const cover = this.utilService.processImageForCover(updatePostData.cover);
+        const cover = (updatePostData.cover) ? {cover : updatePostData.cover} : {};
         const {content,...postMetaData} = updatePostData
         try {
             const post = await this.prismaService.post.update({
@@ -88,7 +88,7 @@ export class PostService {
                 data: {
                     ...postMetaData,
                     preview: convertEditorJsonToPostPreview(content),
-                    cover,
+                    ...cover,
                     lastUpdatedAt: this.utilService.getCurrentDateInKorea(),
                     postContent: {
                         create: {
