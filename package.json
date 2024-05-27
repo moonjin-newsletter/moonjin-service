@@ -9,7 +9,8 @@
     "deploy": "./env-deploy.sh && pm2 start npm --name moonjin-service -- start",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "preinstall": "turbo run preinstall",
-    "build:packages": "yarn build --filter=@moonjin/api-types"
+    "build:packages": "turbo run build --filter=@moonjin/api-types",
+    "build:client": "turbo run build --filter=client"
   },
   "devDependencies": {
     "@types/add": "^2",
