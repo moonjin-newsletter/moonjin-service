@@ -7,24 +7,24 @@ export function convertEditorJsonToPostPreview(editorJson : EditorJsonDto): stri
     editorJson.blocks.forEach(block => {
         if(preview.length > MAX_PREVIEW_LENGTH) return;
         if(assertTextBlock(block)){
-            preview += (block.data.text + " ");
+            preview += (block.data.text + " ").trim();
         }else if(assertListBlock(block)){
             block.data.items.map(item => {
                 if(preview.length > MAX_PREVIEW_LENGTH) return;
-                    preview += ( "·" + item.content + " ");
+                preview += ( "·" + item.content.trim() + " ");
             })
         }else if(assertCheckListBlock(block)){
             const checkBoxList = block.data.items;
             checkBoxList.forEach(checkBox => {
                 if(preview.length > MAX_PREVIEW_LENGTH) return;
-                preview += (checkBox.text + " ");
+                preview += (checkBox.text.trim() + " ");
             })
         }
     })
     if(preview.length < MAX_PREVIEW_LENGTH)
         return preview
     else {
-        return preview.substring(0, MAX_PREVIEW_LENGTH-3) + "...";
+        return preview.substring(0, MAX_PREVIEW_LENGTH-4) + "...";
     }
 }
 
