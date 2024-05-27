@@ -28,7 +28,7 @@ export default function SubscribeTab({
               /* Use the `selected` state to conditionally style the selected tab. */
               <button
                 className={`${
-                  selected ? "border-b-2 font-semibold" : null
+                  selected ? "border-b font-semibold" : null
                 } border-primary py-1 outline-none`}
               >
                 {category}

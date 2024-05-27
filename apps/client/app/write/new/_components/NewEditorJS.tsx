@@ -305,7 +305,7 @@ function OverlaySetting({
           </section>
         )}
         {type === "시리즈" && (
-          <section className="mt-8">
+          <section className="mt-8 flex flex-col">
             <div className="text-primary">
               *{" "}
               <span className="font-medium text-grayscale-700">
@@ -349,7 +349,7 @@ function OverlaySetting({
               <Link
                 target="_blank"
                 href="/mypage/newsletter/series/new"
-                className="py-1.5 w-full"
+                className="py-1.5  w-fit border border-grayscale-200 rounded-lg mt-2 text-sm px-2"
               >
                 새로운 시리즈 만들기 +
               </Link>

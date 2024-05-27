@@ -18,7 +18,7 @@ export default async function Page() {
         <div className="border-b font-semibold border-primary">
           작성중인 뉴스레터
         </div>
-        <div className="py-1 font-semibold px-2 ml-2 text-sm rounded bg-gray-200 text-gray-400">
+        <div className="py-0.5 px-2 h-fit font-semibold  ml-2 text-sm rounded bg-primary text-white">
           {isNotNil(writingPostList) ? writingPostList.length : 0}
         </div>
       </div>

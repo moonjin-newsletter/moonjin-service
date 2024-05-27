@@ -16,7 +16,7 @@ export default async function Page() {
     <main className="flex flex-col w-full">
       <div className="flex ">
         <div className="border-b font-semibold border-primary">구독한 작가</div>
-        <div className="py-1 font-semibold px-2 ml-2 text-sm rounded bg-gray-200 text-gray-400">
+        <div className="py-0.5 font-semibold px-2 ml-2 text-sm rounded bg-primary text-white">
           {isNotNil(writerList) ? writerList.data.length : 0}
         </div>
       </div>

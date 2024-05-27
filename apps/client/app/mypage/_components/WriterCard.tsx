@@ -36,12 +36,12 @@ export default function WriterCard({
         <h3 className="font-semibold">{writerInfo.user.nickname}</h3>
         <span>{writerInfo.user.description}</span>
       </div>
-      <div className="flex flex-col ml-auto gap-y-1">
+      <div className="flex whitespace-nowrap flex-col ml-auto gap-y-1">
         <div className="flex text-sm text-grayscale-500">
           {format(new Date(writerInfo.following.createdAt), "yyyy-MM-dd")}부터
           구독
         </div>
-        <div className="flex gap-x-1 items-center text-sm text-grayscale-500">
+        <div className="flex  gap-x-1 items-center text-sm text-grayscale-500">
           <p>총 게시물 : {writerInfo.writerInfo.newsletterCount}</p>
           <div className="w-[1px] h-3 bg-grayscale-400" />
           <p>총 시리즈 : {writerInfo.writerInfo.newsletterCount}</p>

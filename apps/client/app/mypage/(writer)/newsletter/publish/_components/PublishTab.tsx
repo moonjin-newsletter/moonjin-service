@@ -22,7 +22,7 @@ export default function PublishTab({
           {({ selected }) => (
             <button
               className={`${
-                selected ? "border-b-2 font-semibold" : null
+                selected ? "border-b font-semibold" : null
               } border-primary whitespace-nowrap py-1 outline-none`}
             >
               전체 뉴스레터
@@ -34,7 +34,7 @@ export default function PublishTab({
             <div className="flex w-full items-center  outline-none">
               <button
                 className={`${
-                  selected ? "border-b-2 font-semibold" : null
+                  selected ? "border-b font-semibold" : null
                 } border-primary py-1 outline-none`}
               >
                 시리즈

@@ -19,11 +19,11 @@ export default async function Page() {
 
   return (
     <main className="overflow-hidden w-full max-w-[748px]">
-      <div className="flex items-center">
+      <div className="flex ">
         <div className="border-b pb-1 h-fit font-semibold border-primary">
           구독자 목록
         </div>
-        <div className="py-1 h-fit font-semibold px-2 ml-2 text-sm rounded bg-gray-200 text-gray-400">
+        <div className="py-0.5 h-fit font-semibold px-2 ml-2 text-sm rounded bg-primary  text-white">
           {isNotNil(newList) ? newList.length : 0}
         </div>
         <section className="ml-auto flex items-center gap-x-2.5">
