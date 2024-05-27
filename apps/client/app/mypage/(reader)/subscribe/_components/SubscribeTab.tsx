@@ -58,7 +58,7 @@ export default function SubscribeTab({
         <Tab.Panel>
           <section className=" w-full">
             {isNonEmptyArray(seriesList) ? (
-              <div className="grid grid-cols-3">
+              <div className="grid grid-cols-3 gap-x-4 gap-y-1">
                 {seriesList.map((value, index) => (
                   <SeriesCardForReader seriesInfo={value} key={index} />
                 ))}

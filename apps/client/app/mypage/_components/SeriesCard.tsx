@@ -2,13 +2,20 @@ import Link from "next/link";
 import Image from "next/image";
 import type { SeriesDto } from "@moonjin/api-types";
 
-export function SeriesCardForReader({ seriesInfo }: { seriesInfo: any }) {
+export function SeriesCardForReader({
+  seriesInfo,
+  width,
+}: {
+  seriesInfo: any;
+  width?: number;
+}) {
   return (
-    <Link
-      href={""}
-      className="flex flex-col min-w-[190px] w-[190px] h-fit pb-6"
-    >
-      <div className="group w-full h-fit relative">
+    <Link href={""} className="flex flex-col w-full h-fit pb-6">
+      <div
+        className={`group ${
+          width ? `w-[${width}px] min-w-[${width}px]` : "w-full"
+        }  h-fit relative`}
+      >
         <Image
           width={190}
           height={230}

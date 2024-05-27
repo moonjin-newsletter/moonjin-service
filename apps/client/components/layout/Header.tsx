@@ -86,7 +86,7 @@ export default function Header() {
                       className="py-1.5 "
                       href={`/@${userInfo?.data?.user?.nickname}`}
                     >
-                      작가의 공간
+                      작가의 서재
                     </Link>
                   )}
 
