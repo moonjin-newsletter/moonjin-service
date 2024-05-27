@@ -14,7 +14,6 @@ import {
     FORBIDDEN_FOR_POST,
     POST_CONTENT_NOT_FOUND,
     POST_NOT_FOUND,
-    STAMP_ALREADY_EXIST
 } from "../response/error/post";
 import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto";
@@ -253,22 +252,4 @@ export class PostController {
         }
     }
 
-    /**
-     * @summary stamp 기능
-     * @param user
-     * @param postId
-     * @throws STAMP_ALREADY_EXIST
-     */
-    @TypedRoute.Post(':postId/stamp')
-    @UseGuards(UserAuthGuard)
-    async stampPost(@User() user:UserAuthDto, @TypedParam('postId') postId : number) : Promise<TryCatch<{
-        message: string,
-        createdAt: Date
-    }, STAMP_ALREADY_EXIST>>{
-        const stamp = await this.postService.stampPost( postId, user.id);
-        return createResponseForm({
-            message : "스탬프를 찍었습니다.",
-            createdAt : stamp.createdAt
-        });
-    }
 }

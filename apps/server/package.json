@@ -7,9 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "init": "yarn typia setup --manager yarn",
-    "preinstall": "npx prisma migrate dev --name init",
-    "prisma:build": "npx prisma migrate dev --name init",
-    "prisma:create": "yarn prisma migrate dev --create-only --name init",
+    "preinstall": "prisma generate",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

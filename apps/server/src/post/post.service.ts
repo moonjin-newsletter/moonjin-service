@@ -2,11 +2,11 @@ import {Injectable} from '@nestjs/common';
 import {PostDto, PostWithContentAndSeriesDto,
     PostWithContentDto,
     ReleasedPostDto,
-    UnreleasedPostWithSeriesDto
+    UnreleasedPostWithSeriesDto,
+    PostContentDto
 } from "./dto";
 import {PrismaService} from "../prisma/prisma.service";
 import PostDtoMapper from "./postDtoMapper";
-import {Stamp} from "@prisma/client";
 import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
 import {AuthValidationService} from "../auth/auth.validation.service";
@@ -15,7 +15,6 @@ import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {convertEditorJsonToPostPreview} from "../common";
 import {CreatePostContentDto} from "./server-dto/createPostContent.dto";
-import {PostContentDto} from "./dto/postContent.dto";
 import {CreatePostDto} from "./server-dto/createPost.dto";
 import {PostWithContents} from "./prisma/postWithContents.prisma.type";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
@@ -175,29 +174,6 @@ export class PostService {
         return {
             post: PostDtoMapper.PostToPostDto(postWithContents),
             postContent: PostDtoMapper.PostContentToPostContentDto(postWithContents.postContent[0])
-        }
-    }
-
-
-    /**
-     * @summary post를 stamp 찍기
-     * @param userId
-     * @param postId
-     * @return Stamp
-     * @throws STAMP_ALREADY_EXIST
-     */
-    async stampPost(postId: number, userId : number) : Promise<Stamp>{
-        const createdAt = this.utilService.getCurrentDateInKorea();
-        try{
-            return await this.prismaService.stamp.create({
-                data: {
-                    userId,
-                    postId,
-                    createdAt
-                }
-            });
-        } catch (error) {
-            throw ExceptionList.STAMP_ALREADY_EXIST; // TODO: Stamp를 찍었던 날짜를 돌려주는 게 맞을지 고민해보기
         }
     }
 

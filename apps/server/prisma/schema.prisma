@@ -24,7 +24,6 @@ model User {
   writerInfo WriterInfo?
   follow     Subscribe[]
   newsletter Newsletter[]
-  stamp      Stamp[]
   letter     Letter[]     @relation(name: "sender")
   letter2    Letter[]     @relation(name: "receiver")
 }
@@ -97,7 +96,6 @@ model Post {
   writerInfo  WriterInfo    @relation(fields: [writerId], references: [userId])
   newsletter  Newsletter[]
   series      Series?       @relation(fields: [seriesId], references: [id])
-  stamp       Stamp[]
   postContent PostContent[]
 
   @@index([writerId])
@@ -173,19 +171,6 @@ model Series {
   post       Post[]
 
   @@index([writerId])
-}
-
-model Stamp {
-  userId    Int
-  postId    Int
-  createdAt DateTime
-
-  user User @relation(fields: [userId], references: [id])
-  post Post @relation(fields: [postId], references: [id])
-
-  @@id([userId, postId])
-  @@index([userId])
-  @@index([postId])
 }
 
 model Letter {
