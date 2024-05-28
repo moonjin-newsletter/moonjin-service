@@ -75,6 +75,7 @@ model SubscribeExternal {
   writerInfo WriterInfo @relation(fields: [writerId], references: [userId])
 
   @@id([followerEmail, writerId])
+  @@index([writerId])
 }
 
 model Post {
@@ -130,6 +131,7 @@ model Newsletter {
   newsletterInWeb  NewsletterInWeb[]
 
   @@index([postId])
+  @@index([userId])
 }
 
 model NewsletterInMail {
@@ -141,6 +143,7 @@ model NewsletterInMail {
   newsletter Newsletter @relation(fields: [newsletterId], references: [id])
 
   @@id([newsletterId, receiverEmail])
+  @@index([newsletterId])
 }
 
 model NewsletterInWeb {
@@ -152,6 +155,7 @@ model NewsletterInWeb {
   newsletter Newsletter @relation(fields: [newsletterId], references: [id])
 
   @@id([newsletterId, receiverId])
+  @@index([newsletterId])
 }
 
 model Series {
