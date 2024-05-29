@@ -21,7 +21,7 @@ import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {OauthService} from "../auth/oauth.service";
 import {IChangeUserProfile} from "./api-types/IChangeUserProfile";
 import {AuthService} from "../auth/auth.service";
-import {CookieOptions, Response} from "express";
+import {Response} from "express";
 import UserDtoMapper from "./userDtoMapper";
 import {IChangePassword} from "./api-types/IChangePassword";
 import {MailService} from "../mail/mail.service";
@@ -29,20 +29,17 @@ import {EMAIL_NOT_EXIST} from "../response/error/mail";
 import {IEmailVerification} from "../auth/api-types/IEmailVerification";
 import * as process from "process";
 import {ErrorCodeEnum} from "../response/error/enum/errorCode.enum";
-import {IChangeWriterProfile} from "./api-types/IChangeWriterProfile";
+import {IChangeWriterProfile} from "../writer/api-types/IChangeWriterProfile";
 import {PROFILE_CHANGE_ERROR} from "../response/error/user";
-import {ICreateWriterInfo} from "./api-types/ICreateWriterInfo";
+import {ICreateWriterInfo} from "../writer/api-types/ICreateWriterInfo";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import {JwtUtilService} from "../auth/jwtUtil.service";
+import httpsCookieOption from "../auth/httpsCookieOption";
 
 @Controller('user')
 export class UserController {
-    cookieOptions : CookieOptions = process.env.VERSION === 'prod' ? {
-        httpOnly: true,
-        sameSite: 'lax',
-        secure: true,
-        domain: process.env.DOT_MOONJIN_DOMAIN
-    }: {}
+    cookieOptions = httpsCookieOption;
+
     constructor(
         private readonly userService: UserService,
         private readonly authService: AuthService,
@@ -116,7 +113,7 @@ export class UserController {
      * @throws USER_NOT_FOUND
      * @throws MOONJIN_EMAIL_ALREADY_EXIST
      */
-    @TypedRoute.Patch('subscribe/profile')
+    @TypedRoute.Patch('writer/profile')
     @UseGuards(WriterAuthGuard)
     async changeWriterProfile(@User() user:UserAuthDto, @Res() res: Response, @TypedBody() newProfile : IChangeWriterProfile): Promise<TryCatch<UserDto,
         PROFILE_CHANGE_ERROR | NICKNAME_ALREADY_EXIST | USER_NOT_WRITER | USER_NOT_FOUND | MOONJIN_EMAIL_ALREADY_EXIST>> {

@@ -19,6 +19,7 @@ export * from './src/api-types/series/index';
 export * from './src/api-types/user/index';
 export * from './src/api-types/file/index';
 export * from './src/api-types/subscribe/index';
+export * from './src/api-types/writer/index';
 export * from './src/api-types/common/pagination/index';
 
 /// dto

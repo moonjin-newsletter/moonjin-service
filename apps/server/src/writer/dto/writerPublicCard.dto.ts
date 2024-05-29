@@ -1,4 +1,4 @@
-import {WriterProfileDto} from "../../user/dto";
+import {WriterProfileDto} from "./writerProfile.dto"
 
 export interface WriterPublicCardDto extends WriterProfileDto{
 

@@ -14,8 +14,9 @@ import {ExceptionList} from "../response/error/errorInstances";
 import {UserRoleEnum} from "./enum/userRole.enum";
 import UserDtoMapper from "../user/userDtoMapper";
 import {OauthService} from "./oauth.service";
-import {UserDto, WriterDto} from "../user/dto";
+import {UserDto} from "../user/dto";
 import {AuthValidationService} from "./auth.validation.service";
+import {WriterDto} from "../writer/dto";
 
 @Injectable()
 export class AuthService {

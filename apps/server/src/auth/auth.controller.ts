@@ -4,7 +4,7 @@ import {ILocalSignUp} from "./api-types/ILocalSignUp";
 import {AuthService} from "./auth.service";
 import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {UtilService} from "../util/util.service";
-import {CookieOptions, Response} from 'express';
+import {Response} from 'express';
 import {TryCatch} from "../response/tryCatch";
 import {MailService} from "../mail/mail.service";
 import {EMAIL_NOT_EXIST} from "../response/error/mail";
@@ -34,16 +34,12 @@ import {AuthValidationService} from "./auth.validation.service";
 import {UserRoleEnum} from "./enum/userRole.enum";
 import {JwtUtilService} from "./jwtUtil.service";
 import UserDtoMapper from "../user/userDtoMapper";
+import httpsCookieOption from './httpsCookieOption';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  cookieOptions : CookieOptions = process.env.VERSION === 'prod' ? {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: true,
-    domain: process.env.DOT_MOONJIN_DOMAIN
-  }: {}
+  cookieOptions = httpsCookieOption;
 
   constructor(private readonly authService : AuthService,
               private readonly authValidationService: AuthValidationService,
