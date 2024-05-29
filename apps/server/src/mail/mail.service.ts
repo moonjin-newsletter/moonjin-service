@@ -1,5 +1,5 @@
 import {  Injectable } from '@nestjs/common';
-import Mailgun from 'mailgun.js';
+import Mailgun, {MessagesSendResult} from 'mailgun.js';
 import { newsLetterDto, sendNewsLetterWithHtmlDto } from './dto';
 import * as process from "process";
 import FormData from "form-data";
@@ -124,7 +124,7 @@ export class MailService {
    * @param mailInfo
    * @throws EMAIL_NOT_EXIST
    */
-  async sendNewsLetterWithHtml(mailInfo: sendNewsLetterWithHtmlDto): Promise<number> {
+  async sendNewsLetterWithHtml(mailInfo: sendNewsLetterWithHtmlDto): Promise<MessagesSendResult> {
     try {
       const recipientVariables= this.getRecipientVariables(mailInfo.emailList);
       const messagesSendResult = await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
@@ -136,11 +136,19 @@ export class MailService {
         'o:tracking': 'yes',
       });
       console.log(messagesSendResult);
-      return mailInfo.emailList.length;
+      return messagesSendResult;
+      // return mailInfo.emailList.length;
     } catch (error) {
       console.log(error);
       throw ExceptionList.EMAIL_NOT_EXIST
     }
+  }
+
+  async getEventsByMessagesSendResult(messageId: string){
+    return await this.mailgunClient.events.get(this.MAILGUN_DOMAIN, {
+        'message-id': messageId,
+        // end: "1716987800.9048312"
+    })
   }
 
   getRecipientVariables(emailList : string[]) {
