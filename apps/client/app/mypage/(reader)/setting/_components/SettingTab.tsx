@@ -201,7 +201,7 @@ function WriterProfileLayout({
 
   function onClickSubmit(value: IChangeWriterProfile) {
     csr
-      .patch("user/writer/profile", { json: value })
+      .patch("writer/profile", { json: value })
       .then((res) => {
         toast.success("프로필이 변경됐습니다");
         window.location.reload();
