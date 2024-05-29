@@ -32,9 +32,9 @@ export default function Page() {
 
   async function onClickSignup(data: any) {
     await csr
-      .post("user/writer", { json: data })
+      .post("writer", { json: data })
       .then((res) => {
-        return router.push("/mypage");
+        return router.push("/");
       })
       .catch((err) => {
         if (
