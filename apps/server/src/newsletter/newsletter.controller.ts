@@ -84,16 +84,17 @@ export class NewsletterController {
         if(postWithPostContent.post.category == null || postWithPostContent.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
         const writer = await this.userService.getWriterInfoByUserId(user.id);
 
-        const sentCount = await this.mailService.sendNewsLetterWithHtml({
+        await this.mailService.sendNewsLetterWithHtml({
             emailList : body.receiverEmails,
             senderMailAddress : writer.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
             senderName: user.nickname,
             subject: "[테스트 뉴스레터] "+postWithPostContent.post.title,
             html: editorJsToHtml(postWithPostContent.postContent)
         })
+
         return createResponseForm({
-            message : sentCount + "건의 테스트 뉴스레터를 발송했습니다.",
-            sentCount,
+            message : 1 + "건의 테스트 뉴스레터를 발송했습니다.",
+            sentCount : 1,
         });
     }
 
@@ -108,5 +109,31 @@ export class NewsletterController {
     async getNewsletter(@User() user:UserAuthDto, @TypedQuery() seriesOption : IGetNewsletter) : Promise<Try<NewsletterDto[]>>{
         const newsletterList = await this.newsletterService.getNewsletterListByUserId(user.id, seriesOption.seriesOnly?? false);
         return createResponseForm(newsletterList);
+    }
+
+    @TypedRoute.Get('analysis')
+    @UseGuards(UserAuthGuard)
+    async getNewsletterAnalysis(){
+        const result = await this.mailService.getEventsByMessagesSendResult('<20240529130312.d5a50152cd8f29f9@moonjin.site>');
+        console.log(result)
+        return createResponseForm({});
+    }
+
+    @TypedRoute.Get("webhook/delivered")
+    async webhookDelivered(@TypedQuery() query:object){
+        console.log(query)
+        return createResponseForm(query);
+    }
+
+    @TypedRoute.Get("webhook/opened")
+    async webhookOpened(@TypedQuery() query:object){
+        console.log(query)
+        return createResponseForm(query);
+    }
+
+    @TypedRoute.Get("webhook/clicked")
+    async webhookClicked(@TypedQuery() query:object){
+        console.log(query)
+        return createResponseForm(query);
     }
 }
