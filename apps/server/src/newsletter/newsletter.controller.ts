@@ -119,21 +119,21 @@ export class NewsletterController {
         return createResponseForm({});
     }
 
-    @TypedRoute.Get("webhook/delivered")
-    async webhookDelivered(@TypedQuery() query:object){
-        console.log(query)
-        return createResponseForm(query);
+    @TypedRoute.Post("webhook/delivered")
+    async webhookDelivered(@TypedBody() body:object){
+        console.log(body)
+        return createResponseForm(body);
     }
 
-    @TypedRoute.Get("webhook/opened")
-    async webhookOpened(@TypedQuery() query:object){
-        console.log(query)
-        return createResponseForm(query);
+    @TypedRoute.Post("webhook/opened")
+    async webhookOpened(@TypedBody() body:object){
+        console.log(body)
+        return createResponseForm(body);
     }
 
-    @TypedRoute.Get("webhook/clicked")
-    async webhookClicked(@TypedQuery() query:object){
-        console.log(query)
-        return createResponseForm(query);
+    @TypedRoute.Post("webhook/clicked")
+    async webhookClicked(@TypedBody() body:object){
+        console.log(body)
+        return createResponseForm(body);
     }
 }
