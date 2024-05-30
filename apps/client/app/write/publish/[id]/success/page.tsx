@@ -68,10 +68,10 @@ export default function Page({ params }: pageProps) {
                   뉴스레터 발송일자
                 </span>
                 <div className="font-semibold text-lg">
-                  {format(
-                    new Date(newsletterInfo.data.post.releasedAt),
-                    "yyyy년 MM월 dd일",
-                  )}
+                  {/*{format(*/}
+                  {/*  new Date(newsletterInfo.data.post.releasedAt),*/}
+                  {/*  "yyyy년 MM월 dd일",*/}
+                  {/*)}*/}
                 </div>
               </div>
             </section>
