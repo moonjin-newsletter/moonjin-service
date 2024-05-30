@@ -16,18 +16,16 @@ export class MailgunController {
     @TypedRoute.Post("webhook/:event")
     @UseGuards(MailgunWebhookGuard)
     async webhookHandler(@WebhookPayload() webhookPayload : IMailgunWebhookPayload){
-        try{
-            const createSendEventDto = {
-                id: webhookPayload.eventData.id,
-                newsletterId: Number(webhookPayload.eventData["user-variables"]["newsletter-id"]),
-                event: getMailEventsEnumByString(webhookPayload.eventData.event),
-                receiverEmail: webhookPayload.eventData.recipient,
-                timestamp: new Date(webhookPayload.eventData.timestamp)
-            }
-            await this.mailgunService.saveNewsletterSendEvent(createSendEventDto);
-        }catch (error){
-            console.log(error)
+        console.log(webhookPayload.eventData);
+        const createSendEventDto = {
+            id: webhookPayload.eventData.id,
+            newsletterId: Number(webhookPayload.eventData["user-variables"]["newsletter-id"]),
+            event: getMailEventsEnumByString(webhookPayload.eventData.event),
+            receiverEmail: webhookPayload.eventData.recipient,
+            timestamp: new Date(webhookPayload.eventData.timestamp * 1000)
         }
+        await this.mailgunService.saveNewsletterSendEvent(createSendEventDto);
+
         return createResponseForm("ok");
     }
 }
