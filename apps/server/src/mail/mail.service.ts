@@ -134,6 +134,7 @@ export class MailService {
         'recipient-variables': JSON.stringify(recipientVariables),
         html: mailInfo.html,
         'o:tracking': 'yes',
+        "v:newsletter-id": mailInfo.newsletterId.toString(),
       });
       console.log(messagesSendResult);
       return messagesSendResult;

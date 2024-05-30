@@ -11,7 +11,7 @@ datasource db {
 
 model User {
   id          Int      @id @default(autoincrement())
-  email       String   @unique @db.VarChar(32)
+  email       String   @unique @db.VarChar(64)
   password    String?  @db.VarChar(64)
   nickname    String   @unique @db.VarChar(16)
   createdAt   DateTime
@@ -69,7 +69,7 @@ model Subscribe {
 
 model SubscribeExternal {
   writerId      Int
-  followerEmail String
+  followerEmail String   @db.VarChar(64)
   createdAt     DateTime
 
   writerInfo WriterInfo @relation(fields: [writerId], references: [userId])
@@ -116,19 +116,21 @@ model PostContent {
 }
 
 model Newsletter {
-  id            Int      @id @default(autoincrement())
-  postId        Int
-  postContentId Int      @default(0)
-  title         String   @db.VarChar(128)
-  sentAt        DateTime
-  status        Boolean  @default(true)
+  id              Int      @id @default(autoincrement())
+  postId          Int
+  postContentId   Int      @default(0)
+  mailgunResultId String   @db.VarChar(64)
+  title           String   @db.VarChar(128)
+  sentAt          DateTime
+  status          Boolean  @default(true)
 
-  post             Post               @relation(fields: [postId], references: [id])
-  postContent      PostContent        @relation(fields: [postContentId], references: [id])
-  user             User?              @relation(fields: [userId], references: [id])
-  userId           Int?
-  newsletterInMail NewsletterInMail[]
-  newsletterInWeb  NewsletterInWeb[]
+  post                Post                  @relation(fields: [postId], references: [id])
+  postContent         PostContent           @relation(fields: [postContentId], references: [id])
+  user                User?                 @relation(fields: [userId], references: [id])
+  userId              Int?
+  newsletterInMail    NewsletterInMail[]
+  newsletterInWeb     NewsletterInWeb[]
+  newsletterAnalytics NewsletterAnalytics[]
 
   @@index([postId])
   @@index([userId])
@@ -136,7 +138,7 @@ model Newsletter {
 
 model NewsletterInMail {
   newsletterId  Int
-  receiverEmail String
+  receiverEmail String  @db.VarChar(64)
   isSent        Boolean @default(false)
   isOpened      Boolean @default(false)
 
@@ -156,6 +158,19 @@ model NewsletterInWeb {
 
   @@id([newsletterId, receiverId])
   @@index([newsletterId])
+}
+
+model NewsletterAnalytics {
+  id            String   @id
+  newsletterId  Int
+  event         Int
+  receiverEmail String   @db.VarChar(64)
+  timestamp     DateTime
+
+  newsletter Newsletter @relation(fields: [newsletterId], references: [id])
+
+  @@index([newsletterId])
+  @@index([event])
 }
 
 model Series {
