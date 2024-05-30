@@ -13,7 +13,6 @@ export class MailgunController {
     ) {}
 
     @TypedRoute.Post("webhook/:event")
-    @UseGuards(MailgunWebhookGuard)
     async webhookHandler(@TypedBody() payload:IMailgunWebhookPayload, @TypedParam("event") event:string){
         console.log(event)
         console.log(payload["event-data"]);
@@ -31,7 +30,6 @@ export class MailgunController {
     }
 
     @TypedRoute.Post("webhook/accepted")
-    @UseGuards(MailgunWebhookGuard)
     async webhookAcceptedHandler(@TypedBody() payload:IMailgunWebhookPayload){
         console.log("accepted 2")
         console.log(payload["event-data"]);
