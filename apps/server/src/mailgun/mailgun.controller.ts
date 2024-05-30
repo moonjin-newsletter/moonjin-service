@@ -1,8 +1,7 @@
-import {Controller, UseGuards} from "@nestjs/common";
+import {Controller} from "@nestjs/common";
 import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
 import {createResponseForm} from "../response/responseForm";
 import {IMailgunWebhookPayload} from "./api-types/IMailgunWebhookPayload";
-import {MailgunWebhookGuard} from "./guard/mailgun-webhook-guard.service";
 import {MailgunService} from "./mailgun.service";
 import {getMailEventsEnumByString} from "../mail/enum/sendMailEvents.enum";
 
@@ -13,17 +12,19 @@ export class MailgunController {
     ) {}
 
     @TypedRoute.Post("webhook/failed/:type")
-    @UseGuards(MailgunWebhookGuard)
-    async webhookPermanentFailed(@TypedBody() body:IMailgunWebhookPayload){
-        console.log(body["event-data"])
-        return createResponseForm(body);
+    // @UseGuards(MailgunWebhookGuard)
+    async webhookPermanentFailed(@TypedBody() payload:IMailgunWebhookPayload){
+        console.log(payload["event-data"])
+        console.log(this.mailgunService.verify(payload["signature"]))
+        return createResponseForm(payload);
     }
 
     @TypedRoute.Post("webhook/:event")
-    @UseGuards(MailgunWebhookGuard)
+    // @UseGuards(MailgunWebhookGuard)
     async webhookHandler(@TypedBody() payload:IMailgunWebhookPayload, @TypedParam("event") event:string){
         console.log(event)
         console.log(payload["event-data"]);
+        console.log(this.mailgunService.verify(payload["signature"]))
         const newsletterId = payload["event-data"]["user-variables"]["newsletter-id"] as number;
 
         await this.mailgunService.saveNewsletterSendEvent({
