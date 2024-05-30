@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { OnEvent } from '@nestjs/event-emitter';
-import { newsLetterValidationDto } from './dto/mail.dto';
+import { newsLetterValidationDto } from './dto';
 import {TypedBody} from "@nestia/core";
 
 @Controller('api/mail')

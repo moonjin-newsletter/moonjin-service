@@ -77,14 +77,15 @@ export class NewsletterController {
     @UseGuards(WriterAuthGuard)
     async sendTestNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number, @TypedBody() body:ISendTesNewsletter): Promise<TryCatch<
         ResponseMessage & {sentCount : number}, EMAIL_NOT_EXIST | POST_NOT_FOUND | FORBIDDEN_FOR_POST | NEWSLETTER_CATEGORY_NOT_FOUND | POST_CONTENT_NOT_FOUND | USER_NOT_WRITER>>{
-
         if(body.receiverEmails.length == 0 || body.receiverEmails.length > 5) throw ExceptionList.EMAIL_NOT_EXIST;
         await this.postService.assertWriterOfPost(postId,user.id);
+
         const postWithPostContent = await this.postService.getPostWithContentAndSeries(postId);
         if(postWithPostContent.post.category == null || postWithPostContent.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
         const writer = await this.userService.getWriterInfoByUserId(user.id);
 
         await this.mailService.sendNewsLetterWithHtml({
+            newsletterId: 0,
             emailList : body.receiverEmails,
             senderMailAddress : writer.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
             senderName: user.nickname,
@@ -109,31 +110,5 @@ export class NewsletterController {
     async getNewsletter(@User() user:UserAuthDto, @TypedQuery() seriesOption : IGetNewsletter) : Promise<Try<NewsletterDto[]>>{
         const newsletterList = await this.newsletterService.getNewsletterListByUserId(user.id, seriesOption.seriesOnly?? false);
         return createResponseForm(newsletterList);
-    }
-
-    @TypedRoute.Get('analysis')
-    @UseGuards(UserAuthGuard)
-    async getNewsletterAnalysis(){
-        const result = await this.mailService.getEventsByMessagesSendResult('<20240529130312.d5a50152cd8f29f9@moonjin.site>');
-        console.log(result)
-        return createResponseForm({});
-    }
-
-    @TypedRoute.Post("webhook/delivered")
-    async webhookDelivered(@TypedBody() body:object){
-        console.log(body)
-        return createResponseForm(body);
-    }
-
-    @TypedRoute.Post("webhook/opened")
-    async webhookOpened(@TypedBody() body:object){
-        console.log(body)
-        return createResponseForm(body);
-    }
-
-    @TypedRoute.Post("webhook/clicked")
-    async webhookClicked(@TypedBody() body:object){
-        console.log(body)
-        return createResponseForm(body);
     }
 }

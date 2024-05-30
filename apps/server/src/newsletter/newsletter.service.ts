@@ -1,27 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 import {ExceptionList} from "../response/error/errorInstances";
-import {MailService} from "../mail/mail.service";
-import {PostService} from "../post/post.service";
-import {editorJsToHtml} from "../common";
-import {UtilService} from "../util/util.service";
-import {UserService} from "../user/user.service";
-import {sendNewsLetterWithHtmlDto} from "../mail/dto";
 import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
 import {NewsletterDto} from "./dto";
 import NewsletterDtoMapper from "./newsletterDtoMapper";
-import {SubscribeService} from "../subscribe/subscribe.service";
 
 @Injectable()
 export class NewsletterService {
 
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly mailService:MailService,
-        private readonly postService: PostService,
-        private readonly utilService: UtilService,
-        private readonly userService: UserService,
-        private readonly subscribeService: SubscribeService
+        // private readonly mailService:MailService,
+        // private readonly postService: PostService,
+        // private readonly utilService: UtilService,
+        // private readonly userService: UserService,
+        // private readonly subscribeService: SubscribeService
     ) {}
 
     /**
@@ -76,56 +69,56 @@ export class NewsletterService {
      * @param writerId
      * @param newsletterTitle
      */
-    async sendNewsLetter(postId: number, writerId: number, newsletterTitle: string){
-        const postWithContent = await this.postService.getPostWithContentByPostId(postId);
-        const receiverList = await this.subscribeService.getAllSubscriberByWriterId(writerId);
-        const receiverIdList = receiverList.subscriberList.map(receiver => receiver.user.id);
-        const receiverEmailList = receiverList.externalSubscriberList.map(receiver => receiver.email);
-        receiverList.subscriberList.forEach(follower => {
-            receiverEmailList.push(follower.user.email)
-        })
-
-        try{
-            await this.prismaService.newsletter.create({
-                data : {
-                    postId,
-                    postContentId : postWithContent.postContent.id,
-                    title: newsletterTitle,
-                    sentAt: this.utilService.getCurrentDateInKorea(),
-                    newsletterInWeb : {
-                        createMany : {
-                            data : receiverIdList.map(receiverId => {
-                                return {
-                                    receiverId
-                                }
-                            }),
-                            skipDuplicates : true
-                        }
-                    },
-                    newsletterInMail : {
-                        createMany : {
-                            data : receiverEmailList.map(email => {
-                                return {
-                                    receiverEmail : email
-                                }
-                            }),
-                            skipDuplicates : true
-                        }
-                    }
-                },
-            });
-            const writerInfo = await this.userService.getWriterInfoByUserId(writerId);
-            const newsletterSendInfo : sendNewsLetterWithHtmlDto = {
-                senderName : writerInfo.user.nickname,
-                senderMailAddress : writerInfo.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
-                subject : newsletterTitle,
-                html : editorJsToHtml(postWithContent.postContent.content),
-                emailList : receiverEmailList
-            };
-            return await this.mailService.sendNewsLetterWithHtml(newsletterSendInfo);
-        }catch (error){
-            throw ExceptionList.SEND_NEWSLETTER_ERROR;
-        }
+    async sendNewsLetter(_postId: number, _writerId: number, _newsletterTitle: string){
+        // const postWithContent = await this.postService.getPostWithContentByPostId(postId);
+        // const receiverList = await this.subscribeService.getAllSubscriberByWriterId(writerId);
+        // const receiverIdList = receiverList.subscriberList.map(receiver => receiver.user.id);
+        // const receiverEmailList = receiverList.externalSubscriberList.map(receiver => receiver.email);
+        // receiverList.subscriberList.forEach(follower => {
+        //     receiverEmailList.push(follower.user.email)
+        // })
+        //
+        // try{
+        //     await this.prismaService.newsletter.create({
+        //         data : {
+        //             postId,
+        //             postContentId : postWithContent.postContent.id,
+        //             title: newsletterTitle,
+        //             sentAt: this.utilService.getCurrentDateInKorea(),
+        //             newsletterInWeb : {
+        //                 createMany : {
+        //                     data : receiverIdList.map(receiverId => {
+        //                         return {
+        //                             receiverId
+        //                         }
+        //                     }),
+        //                     skipDuplicates : true
+        //                 }
+        //             },
+        //             newsletterInMail : {
+        //                 createMany : {
+        //                     data : receiverEmailList.map(email => {
+        //                         return {
+        //                             receiverEmail : email
+        //                         }
+        //                     }),
+        //                     skipDuplicates : true
+        //                 }
+        //             }
+        //         },
+        //     });
+        //     const writerInfo = await this.userService.getWriterInfoByUserId(writerId);
+        //     const newsletterSendInfo : sendNewsLetterWithHtmlDto = {
+        //         senderName : writerInfo.user.nickname,
+        //         senderMailAddress : writerInfo.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
+        //         subject : newsletterTitle,
+        //         html : editorJsToHtml(postWithContent.postContent.content),
+        //         emailList : receiverEmailList
+        //     };
+        //     return await this.mailService.sendNewsLetterWithHtml(newsletterSendInfo);
+        // }catch (error){
+        //     throw ExceptionList.SEND_NEWSLETTER_ERROR;
+        // }
 
 
     }

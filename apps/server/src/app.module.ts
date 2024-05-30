@@ -16,6 +16,7 @@ import { FileModule } from './file/file.module';
 import { SubscribeModule } from './subscribe/subscribe.module';
 import { WriterModule } from './writer/writer.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
+import { MailgunModule } from './mailgun/mailgun.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { NewsletterModule } from './newsletter/newsletter.module';
     SubscribeModule,
     WriterModule,
     NewsletterModule,
+    MailgunModule,
   ],
   controllers: [AppController],
   providers: [AppService],
