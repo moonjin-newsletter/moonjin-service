@@ -1,7 +1,6 @@
 import {Controller} from "@nestjs/common";
 import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
 import {createResponseForm} from "../response/responseForm";
-import {IMailgunWebhookPayload} from "./api-types/IMailgunWebhookPayload";
 import {MailgunService} from "./mailgun.service";
 import {getMailEventsEnumByString, SendMailEventsEnum} from "../mail/enum/sendMailEvents.enum";
 
@@ -12,7 +11,7 @@ export class MailgunController {
     ) {}
 
     @TypedRoute.Post("webhook/:event")
-    async webhookHandler(@TypedBody() payload:IMailgunWebhookPayload, @TypedParam("event") event:string){
+    async webhookHandler(@TypedBody() payload:any, @TypedParam("event") event:string){
         console.log(event)
         console.log(payload["event-data"]);
         const newsletterId = payload["event-data"]["user-variables"]["newsletter-id"] as number;
@@ -29,7 +28,7 @@ export class MailgunController {
     }
 
     @TypedRoute.Post("webhook/accepted")
-    async webhookAcceptedHandler(@TypedBody() payload:IMailgunWebhookPayload){
+    async webhookAcceptedHandler(@TypedBody() payload:any){
         console.log("accepted 2")
         console.log(payload["event-data"]);
         const newsletterId = payload["event-data"]["user-variables"]["newsletter-id"] as number;
