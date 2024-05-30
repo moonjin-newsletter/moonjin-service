@@ -16,12 +16,18 @@ export class MailgunWebhookGuard implements CanActivate {
         private readonly mailgunService: MailgunService
     ) {}
     canActivate(context: ExecutionContext): boolean {
-
         const request = context.switchToHttp().getRequest();
         const signature = request.body?.signature;
-        console.log("sig : " +signature);
-        if(!signature) throw ExceptionList.INVALID_TOKEN;
-        console.log(this.mailgunService.verify(signature))
-        return true;
+        const eventData = request.body?.["event-data"];
+
+        if(!signature || !eventData) throw ExceptionList.INVALID_TOKEN;
+        if(this.mailgunService.verify(signature)){
+            request.webhookPayload = {
+                signature,
+                eventData
+            }
+            return true;
+        }
+        return false;
     }
 }

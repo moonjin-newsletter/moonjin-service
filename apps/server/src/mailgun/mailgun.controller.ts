@@ -1,8 +1,11 @@
-import {Controller} from "@nestjs/common";
-import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
+import {Controller, UseGuards} from "@nestjs/common";
+import { TypedRoute} from "@nestia/core";
 import {createResponseForm} from "../response/responseForm";
 import {MailgunService} from "./mailgun.service";
-import {getMailEventsEnumByString, SendMailEventsEnum} from "../mail/enum/sendMailEvents.enum";
+import {getMailEventsEnumByString} from "../mail/enum/sendMailEvents.enum";
+import {IMailgunWebhookPayload} from "./api-types/IMailgunWebhookPayload";
+import {MailgunWebhookGuard} from "./guard/mailgun-webhook-guard.service";
+import {WebhookPayload} from "./decorator/webhook.decorator";
 
 @Controller('mailgun')
 export class MailgunController {
@@ -11,36 +14,20 @@ export class MailgunController {
     ) {}
 
     @TypedRoute.Post("webhook/:event")
-    async webhookHandler(@TypedBody() payload:any, @TypedParam("event") event:string){
-        console.log(event)
-        console.log(payload["event-data"]);
-        const newsletterId = payload["event-data"]["user-variables"]["newsletter-id"] as number;
-        console.log(newsletterId)
-
-        await this.mailgunService.saveNewsletterSendEvent({
-            id: payload["event-data"].id,
-            event : getMailEventsEnumByString(payload["event-data"].event),
-            receiverEmail : payload["event-data"].recipient,
-            newsletterId,
-            timestamp : new Date(payload["event-data"].timestamp)
-        })
-        return createResponseForm("ok");
-    }
-
-    @TypedRoute.Post("webhook/accepted")
-    async webhookAcceptedHandler(@TypedBody() payload:any){
-        console.log("accepted 2")
-        console.log(payload["event-data"]);
-        const newsletterId = payload["event-data"]["user-variables"]["newsletter-id"] as number;
-        console.log(newsletterId)
-
-        await this.mailgunService.saveNewsletterSendEvent({
-            id: payload["event-data"].id,
-            event : SendMailEventsEnum.accepted,
-            receiverEmail : payload["event-data"].recipient,
-            newsletterId,
-            timestamp : new Date(payload["event-data"].timestamp)
-        })
+    @UseGuards(MailgunWebhookGuard)
+    async webhookHandler(@WebhookPayload() webhookPayload : IMailgunWebhookPayload){
+        try{
+            const createSendEventDto = {
+                id: webhookPayload.eventData.id,
+                newsletterId: Number(webhookPayload.eventData["user-variables"]["newsletter-id"]),
+                event: getMailEventsEnumByString(webhookPayload.eventData.event),
+                receiverEmail: webhookPayload.eventData.recipient,
+                timestamp: new Date(webhookPayload.eventData.timestamp)
+            }
+            await this.mailgunService.saveNewsletterSendEvent(createSendEventDto);
+        }catch (error){
+            console.log(error)
+        }
         return createResponseForm("ok");
     }
 }
