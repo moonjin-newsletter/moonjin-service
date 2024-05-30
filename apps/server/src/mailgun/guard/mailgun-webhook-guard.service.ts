@@ -19,6 +19,7 @@ export class MailgunWebhookGuard implements CanActivate {
 
         const request = context.switchToHttp().getRequest();
         const signature = request.body?.signature;
+        console.log("sig : " +signature);
         if(!signature) throw ExceptionList.INVALID_TOKEN;
         return this.mailgunService.verify(signature)
     }
