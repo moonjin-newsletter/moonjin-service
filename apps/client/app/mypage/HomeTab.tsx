@@ -2,13 +2,13 @@
 
 import { Tab } from "@headlessui/react";
 import { Fragment } from "react";
-import { ReaderHome } from "./ReaderHome";
+import { ReaderHome } from "./_components/ReaderHome";
 import {
   NewsletterDto,
   ReleasedPostWithWriterDto,
   SeriesWithWriterDto,
 } from "@moonjin/api-types";
-import WritterHome from "./WritterHome";
+import WritterHome from "./_components/WritterHome";
 
 export default function HomeTab({
   userType,

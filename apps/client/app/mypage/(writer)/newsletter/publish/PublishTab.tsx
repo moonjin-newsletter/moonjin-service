@@ -3,10 +3,10 @@ import { Tab } from "@headlessui/react";
 import { Fragment } from "react";
 import Link from "next/link";
 import { isNonEmptyArray } from "@toss/utils";
-import * as I from "../../../../../../components/icons";
+import * as I from "@components/icons";
 import type { NewsletterDto, SeriesDto } from "@moonjin/api-types";
-import { SeriesCardForWritter } from "../../../../_components/SeriesCard";
-import { PublishedLetterCard } from "../../_components/PublishedLetterCard";
+import { SeriesCardForWritter } from "../../../_components/SeriesCard";
+import { PublishedLetterCard } from "../_components/PublishedLetterCard";
 
 export default function PublishTab({
   newsletterList,

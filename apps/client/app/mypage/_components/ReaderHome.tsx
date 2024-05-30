@@ -39,12 +39,17 @@ function SeriesNewsletter({
         </Link>
       </div>
       <div
-        className="w-full flex overflow-x-scroll gap-x-3 mt-4"
+        className="w-full flex overflow-x-auto scrollbar-none gap-x-4 mt-4"
         style={{ scrollbarColor: "#ffffff" }}
       >
         {isNonEmptyArray(seriesList) ? (
           seriesList.map((value, index) => (
-            <SeriesCardForReader seriesInfo={value} key={index} width={190} />
+            <SeriesCardForReader
+              seriesInfo={value}
+              key={index}
+              width={190}
+              height={230}
+            />
           ))
         ) : (
           <EmptyCard text="구독 중인 시리즈가 없습니다" />
