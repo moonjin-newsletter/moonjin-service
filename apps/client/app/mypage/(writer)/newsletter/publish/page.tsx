@@ -1,4 +1,4 @@
-import PublishTab from "./_components/PublishTab";
+import PublishTab from "./PublishTab";
 import ssr from "../../../../../lib/fetcher/ssr";
 import type {
   NewsletterDto,

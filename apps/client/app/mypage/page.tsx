@@ -1,4 +1,4 @@
-import HomeTab from "./_components/HomeTab";
+import HomeTab from "./HomeTab";
 import ssr from "../../lib/fetcher/ssr";
 import type {
   NewsletterDto,

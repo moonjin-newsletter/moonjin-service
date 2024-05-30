@@ -5,26 +5,32 @@ import type { SeriesDto } from "@moonjin/api-types";
 export function SeriesCardForReader({
   seriesInfo,
   width,
+  height,
 }: {
   seriesInfo: any;
-  width?: number;
+  width: number;
+  height: number;
 }) {
   return (
-    <Link href={""} className="flex flex-col w-full h-fit pb-6">
+    <Link href={""} className="flex group flex-col w-fit h-fit pb-6 ">
       <div
-        className={`group ${
-          width ? `w-[${width}px] min-w-[${width}px]` : "w-full"
-        }  h-fit relative`}
+        className={`w-auto min-w-[190px]  min-h-[${height}px]  relative overflow-hidden rounded-lg`}
       >
         <Image
-          width={190}
-          height={230}
+          width={width ?? 190}
+          height={height ?? 230}
           src={seriesInfo.series.cover ?? ""}
           alt="시리즈 배너"
-          className="w-full h-[230px] object-cover bg-gray-200 rounded-lg"
-        />{" "}
-        <div className="absolute text-white bottom-0 w-full rounded-b-lg items-center bg-black/40 py-5 group-hover:flex hidden flex-col">
-          <div className="font-semibold">시리즈 자세히 보기</div>
+          style={{
+            width: width,
+            height: height,
+          }}
+          className={`  shadow object-cover bg-gray-200  group-hover:scale-105 group-hover:blur-sm   transition duration-800 ease-in-out`}
+        />
+        <div className="absolute  items-center justify-center text-white top-0 w-full h-full  bg-black/10  group-hover:flex hidden flex-col">
+          <div className="font-medium bg-black/40 py-3 px-2.5 text-sm text-white/80 rounded-full">
+            시리즈 목록 보기
+          </div>
         </div>
       </div>
 
@@ -53,16 +59,18 @@ export function SeriesCardForWritter({
       href={`/mypage/newsletter/series/${seriesInfo.id}`}
       className="flex flex-col min-w-[230px] w-[230px] h-fit pb-6"
     >
-      <div className="group w-full h-fit relative">
+      <div className="group w-full h-fit relative overflow-hidden rounded-lg">
         <Image
           width={200}
           height={320}
           src={seriesInfo.cover ?? ""}
           alt="시리즈 배너"
-          className="w-full h-72 object-cover bg-gray-200 rounded-lg"
+          className={`w-full h-72  shadow object-cover bg-gray-200  group-hover:scale-105 group-hover:blur-sm   transition duration-800 ease-in-out`}
         />{" "}
-        <div className="absolute text-white bottom-0 w-full rounded-b-lg items-center bg-black/40 py-5 group-hover:flex hidden flex-col">
-          <div className="font-semibold">시리즈 자세히 보기</div>
+        <div className="absolute  items-center justify-center text-white top-0 w-full h-full  bg-black/10  group-hover:flex hidden flex-col">
+          <div className="font-medium bg-black/40 py-3 px-2.5 text-sm text-white/80 rounded-full">
+            시리즈 목록 보기
+          </div>
         </div>
       </div>
 
