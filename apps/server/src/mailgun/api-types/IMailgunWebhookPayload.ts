@@ -1,7 +1,7 @@
 import {MailgunWebhookSignature} from "../dto";
-import {DomainEvent} from "mailgun.js";
+import {IMailgunEventData} from "./IMailgunEventData";
 
 export interface IMailgunWebhookPayload {
     'signature': MailgunWebhookSignature,
-    'event-data': DomainEvent
+    'event-data': IMailgunEventData
 }
