@@ -1,10 +1,9 @@
-import {Controller, UseGuards} from "@nestjs/common";
+import {Controller} from "@nestjs/common";
 import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
 import {createResponseForm} from "../response/responseForm";
 import {IMailgunWebhookPayload} from "./api-types/IMailgunWebhookPayload";
 import {MailgunService} from "./mailgun.service";
 import {getMailEventsEnumByString, SendMailEventsEnum} from "../mail/enum/sendMailEvents.enum";
-import {MailgunWebhookGuard} from "./guard/mailgun-webhook-guard.service";
 
 @Controller('mailgun')
 export class MailgunController {
