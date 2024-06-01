@@ -11,7 +11,7 @@ type pageProps = {
 export default async function Page({ params }: { params: pageProps }) {
   const seriesId = parseInt(params.id, 10);
   const { data: seriesInfo } = await ssr(`series/writing/${seriesId}`).then(
-    (res) => res.json<ResponseForm<SeriesDto>>()
+    (res) => res.json<ResponseForm<SeriesDto>>(),
   );
 
   return (
@@ -41,7 +41,7 @@ export default async function Page({ params }: { params: pageProps }) {
                 삭제
               </button>
               <Link
-                href=""
+                href={`/mypage/newsletter/series/${seriesId}/edit`}
                 className="py-1 ml-1 px-2.5 bg-primary text-white rounded"
               >
                 수정

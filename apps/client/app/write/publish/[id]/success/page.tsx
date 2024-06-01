@@ -44,7 +44,7 @@ export default function Page({ params }: pageProps) {
             뉴스레터 발송을 완료하였습니다!
           </h1>
         </section>
-        {newsletterInfo && (
+        {newsletterInfo?.data && (
           <>
             <hr className="w-full my-10" />
             <section className="flex gap-x-8  justify-center w-full ">
