@@ -112,7 +112,7 @@ export default function Page() {
             alt="커버이미지"
             width={200}
             height={200}
-            className="w-48 mt-2 cursor-pointer h-56 bg-grayscale-400 rounded"
+            className="w-48 mt-2 cursor-pointer h-56 bg-grayscale-400 rounded border border-grayscale-200"
           />
         ) : (
           <label
