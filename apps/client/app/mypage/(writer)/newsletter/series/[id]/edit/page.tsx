@@ -30,7 +30,6 @@ export default function Page({ params }: pageProps) {
     `series/writing/${seriesId}`,
   );
 
-  console.log(seriesInfo);
   if (error) {
     notFound();
   }

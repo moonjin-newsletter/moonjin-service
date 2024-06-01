@@ -11,14 +11,13 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import csr from "../../../../../../lib/fetcher/csr";
 import { useRouter } from "next/navigation";
-
-const categoryList = ["수필", "에세이", "소설", "시", "자유"];
+import { CategoryList } from "@components/category/CategoryList";
 
 export default function Page() {
   const [coverImage, setCoverImage] = useState<any>(null);
   const { watch, register, setValue, handleSubmit } = useForm<any>({
     defaultValues: {
-      category: categoryList[0],
+      category: CategoryList[0],
     },
   });
   const router = useRouter();
@@ -27,7 +26,6 @@ export default function Page() {
   register("cover", { required: "커버가 필요해요" });
 
   function submitSeries(value: any) {
-    console.log(value);
     csr.post("series", { json: { ...value, status: true } }).then((res) => {
       router.push("/mypage/newsletter/publish");
       return toast.success("새로운 시리즈 생성완료");
@@ -37,7 +35,7 @@ export default function Page() {
   return (
     <div className="overflow-hidden w-full max-w-[748px]">
       <Link
-        href="/mypage/"
+        href="/mypage/newsletter/publish"
         className="flex gap-x-1 items-center text-grayscale-700 text-lg font-medium"
       >
         <Io.IoIosArrowBack />
@@ -90,7 +88,7 @@ export default function Page() {
             {category} <Io.IoIosArrowDown />
           </Listbox.Button>
           <Listbox.Options className=" rounded mt-2 cursor-pointer border max-w-[240px] border-gray-200">
-            {categoryList.map((item, idx) => (
+            {CategoryList.map((item, idx) => (
               <Listbox.Option
                 key={idx}
                 value={item}
