@@ -21,7 +21,7 @@ import {
     STAMP_ALREADY_EXIST
 } from "./post";
 import {SUBSCRIBE_ALREADY_ERROR, SUBSCRIBE_MYSELF_ERROR, SUBSCRIBER_ALREADY_EXIST, SUBSCRIBER_NOT_FOUND} from "./subscribe";
-import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "./series";
+import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_EMPTY, SERIES_NOT_FOUND} from "./series";
 import {EMPTY_LIST_INPUT, EMPTY_VALUE_INPUT} from "./dev";
 import {LETTER_ALREADY_READ, LETTER_NOT_FOUND, FORBIDDEN_FOR_LETTER, SEND_LETTER_ERROR} from "./letter";
 import {FILE_EXTENTION_ERROR, FILE_UPLOAD_ERROR} from "./file";
@@ -69,6 +69,7 @@ export const ExceptionList= {
     CREATE_SERIES_ERROR : new Exception(typia.random<CREATE_SERIES_ERROR>()),
     SERIES_NOT_FOUND : new Exception(typia.random<SERIES_NOT_FOUND>()),
     FORBIDDEN_FOR_SERIES : new Exception(typia.random<FORBIDDEN_FOR_SERIES>()),
+    SERIES_NOT_EMPTY : new Exception(typia.random<SERIES_NOT_EMPTY>()),
 
     // User
     SUBSCRIBE_MYSELF_ERROR : new Exception(typia.random<SUBSCRIBE_MYSELF_ERROR>()),

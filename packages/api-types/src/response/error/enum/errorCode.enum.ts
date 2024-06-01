@@ -46,6 +46,7 @@ export enum ErrorCodeEnum {
     CREATE_SERIES_ERROR = "0201",
     SERIES_NOT_FOUND = "0202",
     FORBIDDEN_FOR_SERIES = "0203",
+    SERIES_NOT_EMPTY = "0204",
 
     // user
     /// subscribe

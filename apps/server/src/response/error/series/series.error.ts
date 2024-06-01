@@ -27,3 +27,12 @@ export interface FORBIDDEN_FOR_SERIES extends ERROR {
         message:"해당 시리즈에 접근할 수 없습니다."
     }
 }
+
+export interface SERIES_NOT_EMPTY extends ERROR {
+    result : false;
+    code: ErrorCodeEnum.SERIES_NOT_EMPTY;
+    httpStatus: 403;
+    data: {
+        message:"시리즈가 비어있지 않습니다."
+    }
+}

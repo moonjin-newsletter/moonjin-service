@@ -233,4 +233,60 @@ export class SeriesService {
         if(!series) throw ExceptionList.SERIES_NOT_FOUND;
         return SeriesDtoMapper.SeriesToSeriesDto(series);
     }
+
+    /**
+     * @summary 시리즈에 권한이 있는지 확인
+     * @param seriesId
+     * @param userId
+     * @throws SERIES_NOT_FOUND
+     * @throws FORBIDDEN_FOR_SERIES
+     */
+    async assertSeriesOwner(seriesId: number, userId: number) {
+        const series = await this.prismaService.series.findUnique({
+            where: {
+                id: seriesId
+            },
+            select: {
+                writerId: true
+            }
+        });
+        if(!series) throw ExceptionList.SERIES_NOT_FOUND;
+        if(series.writerId !== userId) throw ExceptionList.FORBIDDEN_FOR_SERIES;
+    }
+
+    /**
+     * @summary 시리즈가 비어있는 지 확인
+     * @param seriesId
+     * @throws SERIES_NOT_EMPTY
+     */
+    async assertSeriesEmpty(seriesId : number): Promise<void>{
+        const postsWithSeries = await this.prismaService.post.findMany({
+            where:{
+                seriesId,
+                deleted : false
+            },
+        })
+        if(postsWithSeries.length > 0) throw ExceptionList.SERIES_NOT_EMPTY;
+    }
+
+    /**
+     * @summary 시리즈 삭제
+     * @param seriesId
+     * @throws SERIES_NOT_FOUND
+     */
+    async deleteSeries(seriesId: number): Promise<void> {
+        try{
+            await this.prismaService.series.update({
+                where: {
+                    id: seriesId
+                },
+                data: {
+                    deleted: true
+                }
+            })
+        }catch (error){
+            throw ExceptionList.SERIES_NOT_FOUND;
+        }
+
+    }
 }

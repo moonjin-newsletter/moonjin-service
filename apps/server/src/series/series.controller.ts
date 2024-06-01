@@ -4,14 +4,14 @@ import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto";
 import {ICreateSeries} from "./api-types/ICreateSeries";
 import {SeriesService} from "./series.service";
-import {createResponseForm} from "../response/responseForm";
+import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {SeriesWithWriterDto, SeriesDto, SeriesSummaryDto} from "./dto";
 import {Try, TryCatch} from "../response/tryCatch";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
-import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
+import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_EMPTY, SERIES_NOT_FOUND} from "../response/error/series";
 import {UserService} from "../user/user.service";
 import SeriesDtoMapper from "./seriesDtoMapper";
 
@@ -19,7 +19,7 @@ import SeriesDtoMapper from "./seriesDtoMapper";
 export class SeriesController {
     constructor(
         private readonly seriesService: SeriesService,
-        private readonly userService:UserService
+        private readonly userService:UserService,
     ) {}
 
     /**
@@ -123,5 +123,28 @@ export class SeriesController {
         Promise<TryCatch<SeriesDto, SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES>>{
         const series = await this.seriesService.getReleasedSeriesById(seriesId);
         return createResponseForm(series);
+    }
+
+    /**
+     * @summary 시리즈 삭제 API
+     * @param user
+     * @param seriesId
+     * @returns ResponseMessage
+     * @throws SERIES_NOT_FOUND
+     * @throws USER_NOT_WRITER
+     * @throws SERIES_NOT_EMPTY
+     */
+    @TypedRoute.Delete(':seriesId')
+    @UseGuards(WriterAuthGuard)
+    async deleteSeries(
+        @User() user :UserAuthDto,
+        @TypedParam('seriesId') seriesId: number
+    ): Promise<TryCatch<ResponseMessage, SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES | SERIES_NOT_EMPTY>>{
+        await this.seriesService.assertSeriesOwner(seriesId, user.id);
+        await this.seriesService.assertSeriesEmpty(seriesId);
+        await this.seriesService.deleteSeries(seriesId);
+        return createResponseForm({
+            message: "시리즈 삭제 성공"
+        });
     }
 }
