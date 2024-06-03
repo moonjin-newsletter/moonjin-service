@@ -43,16 +43,15 @@ export default function Page({ params }: pageProps) {
       cover: seriesInfo?.data?.cover,
     },
   });
-  const router = useRouter();
   const category = watch("category");
 
   register("cover", { required: "커버가 필요해요" });
 
   function submitSeries(value: any) {
     csr
-      .patch("series", { json: { ...value } })
+      .patch(`series/${seriesId}`, { json: { ...value } })
       .then((res) => {
-        router.push(`/mypage/newsletter/series/${seriesId}`);
+        window.location.href = `/mypage/newsletter/series/${seriesId}`;
         return toast.success("시리즈 정보수정 완료");
       })
       .catch(() => toast.error("시리즈 정보수정 실패"));

@@ -15,7 +15,13 @@ import { CategoryList } from "@components/category/CategoryList";
 
 export default function Page() {
   const [coverImage, setCoverImage] = useState<any>(null);
-  const { watch, register, setValue, handleSubmit } = useForm<any>({
+  const {
+    watch,
+    register,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<any>({
     defaultValues: {
       category: CategoryList[0],
     },
@@ -23,20 +29,27 @@ export default function Page() {
   const router = useRouter();
   const category = watch("category");
 
-  register("cover", { required: "커버가 필요해요" });
+  register("cover", { required: "커버 이미지를 지정해주세요" });
 
   function submitSeries(value: any) {
-    csr.post("series", { json: { ...value, status: true } }).then((res) => {
-      router.push("/mypage/newsletter/publish");
-      return toast.success("새로운 시리즈 생성완료");
-    });
+    if (!coverImage) toast.error("커버이미지를 지정해주세요");
+    else if (errors) toast.error("시리즈 생성 실패");
+
+    console.log(123);
+    csr
+      .post("series", { json: { ...value, status: true } })
+      .then((res) => {
+        router.push("/mypage/newsletter/publish");
+        return toast.success("새로운 시리즈 생성완료");
+      })
+      .catch(() => toast.error("시리즈 생성 실패"));
   }
 
   return (
     <div className="overflow-hidden w-full max-w-[748px]">
       <Link
         href="/mypage/newsletter/publish"
-        className="flex gap-x-1 items-center text-grayscale-700 text-lg font-medium"
+        className="flex gap-x-1 items-center text-grayscale-700 text-lg font-medium w-fit"
       >
         <Io.IoIosArrowBack />
         뒤로가기
@@ -147,6 +160,9 @@ export default function Page() {
           accept="image/*"
           className="hidden"
         />
+        {errors.cover?.message && (
+          <span className="text-xs text-rose-500 mt-1 ">{`${errors.cover?.message}`}</span>
+        )}
         <button
           type="submit"
           className="py-3 mt-8 w-full flex items-center justify-center font-medium text-white bg-primary rounded"
