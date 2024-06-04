@@ -19,7 +19,6 @@ import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
 import {NewsletterDto, NewsletterSummaryDto} from "./dto";
 import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
-import {EMAIL_NOT_EXIST} from "../response/error/mail";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {ExceptionList} from "../response/error/errorInstances";
 import {MailService} from "../mail/mail.service";
@@ -52,6 +51,7 @@ export class NewsletterController {
     async sendNewsletter(@User() user:UserAuthDto, @TypedParam("postId") postId: number, @TypedBody() body:ISendNewsLetter )
     :Promise<TryCatch<any, POST_NOT_FOUND | FORBIDDEN_FOR_POST>> {
         await this.postService.assertWriterOfPost(postId,user.id);
+
         const sentCount = await this.newsletterService.sendNewsLetter(postId,user.id ,body.newsletterTitle);
         await this.userService.synchronizeNewsLetter(user.id, true);
         return createResponseForm({
@@ -76,26 +76,24 @@ export class NewsletterController {
     @TypedRoute.Post(':postId/test')
     @UseGuards(WriterAuthGuard)
     async sendTestNewsletter(@User() user:UserAuthDto, @TypedParam('postId') postId : number, @TypedBody() body:ISendTesNewsletter): Promise<TryCatch<
-        ResponseMessage & {sentCount : number}, EMAIL_NOT_EXIST | POST_NOT_FOUND | FORBIDDEN_FOR_POST | NEWSLETTER_CATEGORY_NOT_FOUND | POST_CONTENT_NOT_FOUND | USER_NOT_WRITER>>{
+        ResponseMessage & {sentCount : number}, POST_NOT_FOUND | POST_CONTENT_NOT_FOUND | FORBIDDEN_FOR_POST | NEWSLETTER_CATEGORY_NOT_FOUND | USER_NOT_WRITER>>{
         if(body.receiverEmails.length == 0 || body.receiverEmails.length > 5) throw ExceptionList.EMAIL_NOT_EXIST;
-        await this.postService.assertWriterOfPost(postId,user.id);
 
-        const postWithPostContent = await this.postService.getPostWithContentAndSeries(postId);
-        if(postWithPostContent.post.category == null || postWithPostContent.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
-        const writer = await this.userService.getWriterInfoByUserId(user.id);
+        const postWithPostContentAndSeriesAndWriter = await this.postService.getPostWithContentAndSeriesAndWriter(postId);
+        await this.newsletterService.assertNewsletterCanBeSent(user.id, postWithPostContentAndSeriesAndWriter);
 
         await this.mailService.sendNewsLetterWithHtml({
             newsletterId: 0,
             emailList : body.receiverEmails,
-            senderMailAddress : writer.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
+            senderMailAddress : postWithPostContentAndSeriesAndWriter.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
             senderName: user.nickname,
-            subject: "[테스트 뉴스레터] "+postWithPostContent.post.title,
-            html: editorJsToHtml(postWithPostContent.postContent)
+            subject: "[테스트 뉴스레터] "+postWithPostContentAndSeriesAndWriter.post.title,
+            html: editorJsToHtml(postWithPostContentAndSeriesAndWriter.postContent)
         })
 
         return createResponseForm({
-            message : 1 + "건의 테스트 뉴스레터를 발송했습니다.",
-            sentCount : 1,
+            message : body.receiverEmails.length + "건의 테스트 뉴스레터를 발송했습니다.",
+            sentCount : body.receiverEmails.length,
         });
     }
 

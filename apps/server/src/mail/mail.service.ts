@@ -1,5 +1,5 @@
 import {  Injectable } from '@nestjs/common';
-import Mailgun, {MessagesSendResult} from 'mailgun.js';
+import Mailgun from 'mailgun.js';
 import { newsLetterDto, sendNewsLetterWithHtmlDto } from './dto';
 import * as process from "process";
 import FormData from "form-data";
@@ -122,12 +122,12 @@ export class MailService {
   /**
    * @summary 해당 emailList에게 html 뉴스레터를 보내는 기능
    * @param mailInfo
-   * @throws EMAIL_NOT_EXIST
+   * @throws SEND_NEWSLETTER_ERROR
    */
-  async sendNewsLetterWithHtml(mailInfo: sendNewsLetterWithHtmlDto): Promise<MessagesSendResult> {
+  async sendNewsLetterWithHtml(mailInfo: sendNewsLetterWithHtmlDto): Promise<void> {
     try {
       const recipientVariables= this.getRecipientVariables(mailInfo.emailList);
-      const messagesSendResult = await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
+      await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
         from: `${mailInfo.senderName} <${mailInfo.senderMailAddress}>`,
         to: mailInfo.emailList,
         subject: mailInfo.subject,
@@ -136,12 +136,9 @@ export class MailService {
         'o:tracking': 'yes',
         "v:newsletter-id": mailInfo.newsletterId.toString(),
       });
-      console.log(messagesSendResult);
-      return messagesSendResult;
-      // return mailInfo.emailList.length;
     } catch (error) {
       console.log(error);
-      throw ExceptionList.EMAIL_NOT_EXIST
+      throw ExceptionList.SEND_NEWSLETTER_ERROR;
     }
   }
 

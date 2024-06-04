@@ -20,6 +20,8 @@ import {PostWithContents} from "./prisma/postWithContents.prisma.type";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {PostWithContentAndSeries} from "./prisma/postWithContentAndSeries.prisma";
 import {NewsletterDto} from "../newsletter/dto";
+import {PostWithContentAndSeriesAndWriterDto} from "./dto/postWithContentAndSeriesAndWriter.dto";
+import UserDtoMapper from "../user/userDtoMapper";
 
 @Injectable()
 export class PostService {
@@ -331,7 +333,7 @@ export class PostService {
     }
 
     /**
-     * @summary 해당 글의 내용 가져오기
+     * @summary 해당 글과 글의 내용 가져오기
      * @param postId
      * @return PostContentDto
      * @throws POST_CONTENT_NOT_FOUND
@@ -370,6 +372,51 @@ export class PostService {
         return {
             post: PostDtoMapper.PostToPostDto(postData),
             postContent: PostDtoMapper.PostContentToPostContentDto(postContent)
+        }
+    }
+
+    /**
+     * @summary 해당 글과 글의 내용, 시리즈와 작성자 및 유저 정보 가져오기
+     * @param postId
+     * @return PostWithContentAndSeriesAndWriterDto
+     * @throws POST_CONTENT_NOT_FOUND
+     * @throws POST_NOT_FOUND
+     */
+    async getPostWithContentAndSeriesAndWriter(postId: number): Promise<PostWithContentAndSeriesAndWriterDto> {
+        const postWithContentAndSeriesAndWriterUser = await this.prismaService.postContent.findFirst({
+            where: {
+                postId,
+            },
+            include:{
+                post: {
+                    include:{
+                        series: true,
+                        writerInfo: {
+                            include: {
+                                user: true
+                            }
+                        }
+                    }
+                }
+            },
+            relationLoadStrategy: 'join',
+            orderBy:{
+                createdAt : 'desc'
+            }
+        })
+
+        if(!postWithContentAndSeriesAndWriterUser) throw ExceptionList.POST_CONTENT_NOT_FOUND;
+        if(!postWithContentAndSeriesAndWriterUser.post) throw ExceptionList.POST_NOT_FOUND;
+
+        const {post, ...postContent} = postWithContentAndSeriesAndWriterUser;
+        const {series, writerInfo, ...postData} = post;
+        const {user, ...writer} = writerInfo;
+        return {
+            post: PostDtoMapper.PostToPostDto(postData),
+            postContent: PostDtoMapper.PostContentToPostContentDto(postContent),
+            series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
+            user : UserDtoMapper.UserToUserDto(user),
+            writerInfo : UserDtoMapper.WriterInfoToWriterInfoDto(writer)
         }
     }
 

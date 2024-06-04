@@ -4,6 +4,7 @@ import {ExceptionList} from "../response/error/errorInstances";
 import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
 import {NewsletterDto, NewsletterSummaryDto} from "./dto";
 import NewsletterDtoMapper from "./newsletterDtoMapper";
+import {PostWithContentAndSeriesAndWriterDto} from "../post/dto";
 
 @Injectable()
 export class NewsletterService {
@@ -174,5 +175,17 @@ export class NewsletterService {
                 cover : newsletter.post.cover
             }
         }
+    }
+
+    /**
+     * @summary 뉴스레터 전송 가능 여부 확인
+     * @param userId
+     * @param postWithContentAndSeriesAndWriter
+     * @throws FORBIDDEN_FOR_POST
+     * @throws NEWSLETTER_CATEGORY_NOT_FOUND
+     */
+    async assertNewsletterCanBeSent(userId: number, postWithContentAndSeriesAndWriter : PostWithContentAndSeriesAndWriterDto){
+        if(userId != postWithContentAndSeriesAndWriter.writerInfo.userId) throw ExceptionList.FORBIDDEN_FOR_POST;
+        if(postWithContentAndSeriesAndWriter.post.category == null || postWithContentAndSeriesAndWriter.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
     }
 }
