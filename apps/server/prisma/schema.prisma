@@ -116,13 +116,12 @@ model PostContent {
 }
 
 model Newsletter {
-  id              Int      @id @default(autoincrement())
-  postId          Int
-  postContentId   Int      @default(0)
-  mailgunResultId String   @db.VarChar(64)
-  title           String   @db.VarChar(128)
-  sentAt          DateTime
-  status          Boolean  @default(true)
+  id            Int      @id @default(autoincrement())
+  postId        Int
+  postContentId Int      @default(0)
+  title         String   @db.VarChar(128)
+  sentAt        DateTime
+  status        Boolean  @default(true)
 
   post                Post                  @relation(fields: [postId], references: [id])
   postContent         PostContent           @relation(fields: [postContentId], references: [id])
@@ -138,9 +137,7 @@ model Newsletter {
 
 model NewsletterInMail {
   newsletterId  Int
-  receiverEmail String  @db.VarChar(64)
-  isSent        Boolean @default(false)
-  isOpened      Boolean @default(false)
+  receiverEmail String @db.VarChar(64)
 
   newsletter Newsletter @relation(fields: [newsletterId], references: [id])
 
@@ -163,8 +160,8 @@ model NewsletterInWeb {
 model NewsletterAnalytics {
   id            String   @id
   newsletterId  Int
-  event         Int
   receiverEmail String   @db.VarChar(64)
+  event         Int
   timestamp     DateTime
 
   newsletter Newsletter @relation(fields: [newsletterId], references: [id])

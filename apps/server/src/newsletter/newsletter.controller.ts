@@ -50,8 +50,6 @@ export class NewsletterController {
     @UseGuards(WriterAuthGuard)
     async sendNewsletter(@User() user:UserAuthDto, @TypedParam("postId") postId: number, @TypedBody() body:ISendNewsLetter )
     :Promise<TryCatch<any, POST_NOT_FOUND | FORBIDDEN_FOR_POST>> {
-        await this.postService.assertWriterOfPost(postId,user.id);
-
         const sentCount = await this.newsletterService.sendNewsLetter(postId,user.id ,body.newsletterTitle);
         await this.userService.synchronizeNewsLetter(user.id, true);
         return createResponseForm({

@@ -133,6 +133,16 @@ export class SubscribeService {
     }
 
     /**
+     * @summary 해당 작가의 모든 팔로워 이메일 목록 가져오기
+     * @param writerId
+     */
+    async getAllSubscriberEmailsByWriterId(writerId: number): Promise<string[]> {
+        const internalSubscriberList = await this.getAllInternalSubscriberByWriterId(writerId);
+        const externalSubscriberList = await this.getAllExternalSubscriberByWriterId(writerId);
+        return internalSubscriberList.map(subscriber => subscriber.user.email).concat(externalSubscriberList.map(subscriber => subscriber.email));
+    }
+
+    /**
      * @summary 해당 작가의 팔로워 목록 가져오기
      * @param writerId
      * @returns UserProfileDto[]

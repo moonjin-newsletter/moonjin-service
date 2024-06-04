@@ -5,17 +5,23 @@ import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithP
 import {NewsletterDto, NewsletterSummaryDto} from "./dto";
 import NewsletterDtoMapper from "./newsletterDtoMapper";
 import {PostWithContentAndSeriesAndWriterDto} from "../post/dto";
+import {PostService} from "../post/post.service";
+import {SubscribeService} from "../subscribe/subscribe.service";
+import {UtilService} from "../util/util.service";
+import {sendNewsLetterWithHtmlDto} from "../mail/dto";
+import {editorJsToHtml} from "../common";
+import {MailService} from "../mail/mail.service";
 
 @Injectable()
 export class NewsletterService {
 
     constructor(
         private readonly prismaService: PrismaService,
-        // private readonly mailService:MailService,
-        // private readonly postService: PostService,
-        // private readonly utilService: UtilService,
+        private readonly mailService:MailService,
+        private readonly postService: PostService,
+        private readonly utilService: UtilService,
         // private readonly userService: UserService,
-        // private readonly subscribeService: SubscribeService
+        private readonly subscribeService: SubscribeService
     ) {}
 
     /**
@@ -67,61 +73,63 @@ export class NewsletterService {
     /**
      * @summary 해당 글을 뉴스레터로 발송
      * @param postId
-     * @param writerId
+     * @param userId
      * @param newsletterTitle
      */
-    async sendNewsLetter(_postId: number, _writerId: number, _newsletterTitle: string){
-        // const postWithContent = await this.postService.getPostWithContentByPostId(postId);
-        // const receiverList = await this.subscribeService.getAllSubscriberByWriterId(writerId);
-        // const receiverIdList = receiverList.subscriberList.map(receiver => receiver.user.id);
-        // const receiverEmailList = receiverList.externalSubscriberList.map(receiver => receiver.email);
-        // receiverList.subscriberList.forEach(follower => {
-        //     receiverEmailList.push(follower.user.email)
-        // })
-        //
-        // try{
-        //     await this.prismaService.newsletter.create({
-        //         data : {
-        //             postId,
-        //             postContentId : postWithContent.postContent.id,
-        //             title: newsletterTitle,
-        //             sentAt: this.utilService.getCurrentDateInKorea(),
-        //             newsletterInWeb : {
-        //                 createMany : {
-        //                     data : receiverIdList.map(receiverId => {
-        //                         return {
-        //                             receiverId
-        //                         }
-        //                     }),
-        //                     skipDuplicates : true
-        //                 }
-        //             },
-        //             newsletterInMail : {
-        //                 createMany : {
-        //                     data : receiverEmailList.map(email => {
-        //                         return {
-        //                             receiverEmail : email
-        //                         }
-        //                     }),
-        //                     skipDuplicates : true
-        //                 }
-        //             }
-        //         },
-        //     });
-        //     const writerInfo = await this.userService.getWriterInfoByUserId(writerId);
-        //     const newsletterSendInfo : sendNewsLetterWithHtmlDto = {
-        //         senderName : writerInfo.user.nickname,
-        //         senderMailAddress : writerInfo.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
-        //         subject : newsletterTitle,
-        //         html : editorJsToHtml(postWithContent.postContent.content),
-        //         emailList : receiverEmailList
-        //     };
-        //     return await this.mailService.sendNewsLetterWithHtml(newsletterSendInfo);
-        // }catch (error){
-        //     throw ExceptionList.SEND_NEWSLETTER_ERROR;
-        // }
+    async sendNewsLetter(postId: number, userId: number, newsletterTitle: string): Promise<number>{
+        const postWithContentAndSeriesAndWriter = await this.postService.getPostWithContentAndSeriesAndWriter(postId);
+        await this.assertNewsletterCanBeSent(userId, postWithContentAndSeriesAndWriter);
+        const receiverList = await this.subscribeService.getAllSubscriberByWriterId(postWithContentAndSeriesAndWriter.writerInfo.userId);
+        const receiverEmailSet = new Set(receiverList.externalSubscriberList.map(subscriber => subscriber.email));
+        receiverList.subscriberList.forEach(follower => {
+            receiverEmailSet.add(follower.user.email)
+        })
+        receiverEmailSet.add(postWithContentAndSeriesAndWriter.user.email); // 본인 이메일 추가제거
+        const receiverEmailList = Array.from(receiverEmailSet);
 
+        try{
+            const newsletter = await this.prismaService.newsletter.create({
+                data : {
+                    postId,
+                    postContentId : postWithContentAndSeriesAndWriter.postContent.id,
+                    title: newsletterTitle,
+                    sentAt: this.utilService.getCurrentDateInKorea(),
+                    newsletterInWeb : {
+                        createMany : {
+                            data : receiverList.subscriberList.map(subscriber => {
+                                return {
+                                    receiverId :subscriber.user.id
+                                }
+                            }),
+                            skipDuplicates : true
+                        }
+                    },
+                    newsletterInMail : {
+                        createMany:{
+                            data : receiverEmailList.map(email => {
+                                return {
+                                    receiverEmail : email
+                                }
+                            }),
+                            skipDuplicates : true
+                        }
+                    }
+                },
+            })
 
+            const newsletterSendInfo : sendNewsLetterWithHtmlDto = {
+                newsletterId : newsletter.id,
+                senderName : postWithContentAndSeriesAndWriter.user.nickname,
+                senderMailAddress : postWithContentAndSeriesAndWriter.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
+                subject : newsletterTitle,
+                html : editorJsToHtml(postWithContentAndSeriesAndWriter.postContent.content),
+                emailList : receiverEmailList
+            };
+            await this.mailService.sendNewsLetterWithHtml(newsletterSendInfo);
+            return receiverEmailList.length;
+        }catch (error){
+            throw ExceptionList.SEND_NEWSLETTER_ERROR;
+        }
     }
 
     /**
