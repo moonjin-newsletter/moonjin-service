@@ -45,7 +45,7 @@ export default function MailSendingSection({
   async function sendTestLetter() {
     if (testAddUser.length > 0) {
       await csr
-        .post(`post/${letterId}/newsletter/test`, {
+        .post(`newsletter/${letterId}/test`, {
           json: { receiverEmails: testAddUser },
         })
         .then((res) => toast.success("메일함을 확인하세요"))
@@ -57,7 +57,7 @@ export default function MailSendingSection({
 
   async function sendDeployLetter() {
     await csr
-      .post(`post/${letterId}/newsletter`, {
+      .post(`newsletter/${letterId}`, {
         json: { newsletterTitle: title },
       })
       .then((res) => {
