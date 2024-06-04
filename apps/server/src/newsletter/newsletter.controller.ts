@@ -8,7 +8,7 @@ import {PostService} from "../post/post.service";
 import {Try, TryCatch} from "../response/tryCatch";
 import {
     FORBIDDEN_FOR_POST,
-    NEWSLETTER_CATEGORY_NOT_FOUND,
+    NEWSLETTER_CATEGORY_NOT_FOUND, NEWSLETTER_NOT_FOUND,
     POST_CONTENT_NOT_FOUND,
     POST_NOT_FOUND
 } from "../response/error/post";
@@ -17,7 +17,7 @@ import {NewsletterService} from "./newsletter.service";
 import {UserService} from "../user/user.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
-import {NewsletterDto} from "./dto";
+import {NewsletterDto, NewsletterSummaryDto} from "./dto";
 import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
 import {EMAIL_NOT_EXIST} from "../response/error/mail";
 import {USER_NOT_WRITER} from "../response/error/auth";
@@ -110,5 +110,18 @@ export class NewsletterController {
     async getNewsletter(@User() user:UserAuthDto, @TypedQuery() seriesOption : IGetNewsletter) : Promise<Try<NewsletterDto[]>>{
         const newsletterList = await this.newsletterService.getNewsletterListByUserId(user.id, seriesOption.seriesOnly?? false);
         return createResponseForm(newsletterList);
+    }
+
+    /**
+     * @summary 해당 뉴스레터의 요약 정보 가져오기
+     * @param newsletterId
+     * @returns NewsletterSummaryDto
+     * @throws NEWSLETTER_NOT_FOUND
+     */
+    @TypedRoute.Get(':newsletterId/summary')
+    async getNewsletterSummaryById(@TypedParam("newsletterId") newsletterId: number) : Promise<TryCatch<NewsletterSummaryDto
+    , NEWSLETTER_NOT_FOUND>>{
+        const newsletterSummary = await this.newsletterService.getNewsletterSummaryById(newsletterId);
+        return createResponseForm(newsletterSummary);
     }
 }

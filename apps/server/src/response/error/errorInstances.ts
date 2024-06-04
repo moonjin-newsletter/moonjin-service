@@ -15,7 +15,7 @@ import {
 } from "./auth";
 import {
     CREATE_POST_ERROR,
-    FORBIDDEN_FOR_POST, NEWSLETTER_CATEGORY_NOT_FOUND,
+    FORBIDDEN_FOR_POST, NEWSLETTER_CATEGORY_NOT_FOUND, NEWSLETTER_NOT_FOUND,
     POST_CONTENT_NOT_FOUND,
     POST_NOT_FOUND, SEND_NEWSLETTER_ERROR,
     STAMP_ALREADY_EXIST
@@ -64,6 +64,7 @@ export const ExceptionList= {
     /// newsletter
     SEND_NEWSLETTER_ERROR : new Exception(typia.random<SEND_NEWSLETTER_ERROR>()),
     NEWSLETTER_CATEGORY_NOT_FOUND : new Exception(typia.random<NEWSLETTER_CATEGORY_NOT_FOUND>()),
+    NEWSLETTER_NOT_FOUND : new Exception(typia.random<NEWSLETTER_NOT_FOUND>()),
 
     // Series
     CREATE_SERIES_ERROR : new Exception(typia.random<CREATE_SERIES_ERROR>()),

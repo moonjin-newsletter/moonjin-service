@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 import {ExceptionList} from "../response/error/errorInstances";
 import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
-import {NewsletterDto} from "./dto";
+import {NewsletterDto, NewsletterSummaryDto} from "./dto";
 import NewsletterDtoMapper from "./newsletterDtoMapper";
 
 @Injectable()
@@ -145,6 +145,34 @@ export class NewsletterService {
         }catch (error){
             console.error(error);
             throw ExceptionList.SEND_NEWSLETTER_ERROR;
+        }
+    }
+
+    /**
+     * @summary 뉴스레터 summary 가져오기
+     * @param newsletterId
+     * @return NewsletterSummaryDto
+     * @throws NEWSLETTER_NOT_FOUND
+     */
+    async getNewsletterSummaryById(newsletterId: number): Promise<NewsletterSummaryDto>{
+        const newsletter = await this.prismaService.newsletter.findUnique({
+            where: {
+                id: newsletterId
+            },
+            include: {
+                post: true
+            }
+        })
+        if(!newsletter) throw ExceptionList.NEWSLETTER_NOT_FOUND; // TODO : post가 없는 경우는 어떻게 해야할까?
+        return {
+            newsletter : {
+                id : newsletter.id,
+                title : newsletter.title,
+                sentAt : newsletter.sentAt
+            },
+            post : {
+                cover : newsletter.post.cover
+            }
         }
     }
 }
