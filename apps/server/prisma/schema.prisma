@@ -20,12 +20,12 @@ model User {
   role        Int      @default(0)
   deleted     Boolean  @default(false)
 
-  oauth      Oauth?
-  writerInfo WriterInfo?
-  follow     Subscribe[]
-  newsletter Newsletter[]
-  letter     Letter[]     @relation(name: "sender")
-  letter2    Letter[]     @relation(name: "receiver")
+  oauth           Oauth?
+  writerInfo      WriterInfo?
+  follow          Subscribe[]
+  letter          Letter[]          @relation(name: "sender")
+  letter2         Letter[]          @relation(name: "receiver")
+  NewsletterInWeb NewsletterInWeb[]
 }
 
 model Oauth {
@@ -120,19 +120,17 @@ model Newsletter {
   postId        Int
   postContentId Int      @default(0)
   title         String   @db.VarChar(128)
+  cover         String   @db.VarChar(128)
   sentAt        DateTime
   status        Boolean  @default(true)
 
   post                Post                  @relation(fields: [postId], references: [id])
   postContent         PostContent           @relation(fields: [postContentId], references: [id])
-  user                User?                 @relation(fields: [userId], references: [id])
-  userId              Int?
   newsletterInMail    NewsletterInMail[]
   newsletterInWeb     NewsletterInWeb[]
   newsletterAnalytics NewsletterAnalytics[]
 
   @@index([postId])
-  @@index([userId])
 }
 
 model NewsletterInMail {
@@ -152,6 +150,7 @@ model NewsletterInWeb {
   hideByReceiver Boolean @default(false)
 
   newsletter Newsletter @relation(fields: [newsletterId], references: [id])
+  user       User       @relation(fields: [receiverId], references: [id])
 
   @@id([newsletterId, receiverId])
   @@index([newsletterId])

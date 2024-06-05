@@ -1,14 +1,7 @@
+import {NewsletterSummaryDto} from "./newsletterSummary.dto";
 
 
-export interface SendNewsletterResultDto {
-    newsletter : {
-        id: number;
-        title: string
-        sentAt: Date;
-        deliveredCount: number;
-        totalSentCount: number;
-    },
-    post :{
-        cover: string;
-    }
+export interface SendNewsletterResultDto extends NewsletterSummaryDto{
+    deliveredCount: number;
+    totalSentCount: number;
 }

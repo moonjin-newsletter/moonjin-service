@@ -95,6 +95,7 @@ export class NewsletterService {
                     postContentId : postWithContentAndSeriesAndWriter.postContent.id,
                     title: newsletterTitle,
                     sentAt: this.utilService.getCurrentDateInKorea(),
+                    cover : postWithContentAndSeriesAndWriter.post.cover,
                     newsletterInWeb : {
                         createMany : {
                             data : receiverList.subscriberList.map(subscriber => {
@@ -169,21 +170,9 @@ export class NewsletterService {
             where: {
                 id: newsletterId
             },
-            include: {
-                post: true
-            }
         })
-        if(!newsletter) throw ExceptionList.NEWSLETTER_NOT_FOUND; // TODO : post가 없는 경우는 어떻게 해야할까?
-        return {
-            newsletter : {
-                id : newsletter.id,
-                title : newsletter.title,
-                sentAt : newsletter.sentAt
-            },
-            post : {
-                cover : newsletter.post.cover
-            }
-        }
+        if(!newsletter) throw ExceptionList.NEWSLETTER_NOT_FOUND;
+        return NewsletterDtoMapper.newsletterToNewsletterSummaryDto(newsletter);
     }
 
     /**
@@ -211,7 +200,6 @@ export class NewsletterService {
                 }
             },
             include: {
-                post : true,
                 _count : {
                     select : {
                         newsletterInMail : true,
@@ -228,19 +216,6 @@ export class NewsletterService {
                 sentAt : 'desc'
             }
         })
-        return sentNewsletterList.map(newsletter => {
-            return {
-                newsletter : {
-                    id : newsletter.id,
-                    title : newsletter.title,
-                    sentAt : newsletter.sentAt,
-                    deliveredCount : newsletter._count.newsletterAnalytics,
-                    totalSentCount : newsletter._count.newsletterInMail
-                },
-                post : {
-                    cover : newsletter.post.cover
-                }
-            }
-        })
+        return sentNewsletterList.map(newsletter=> NewsletterDtoMapper.sentNewsletterWithCountsToSendNewsletterResultDto(newsletter))
     }
 }
