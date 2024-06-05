@@ -1,3 +1,4 @@
 export * from './newsletter.dto';
-export * from './SendNewsletter.dto'
+export * from './sendNewsletter.dto'
 export * from './newsletterSummary.dto';
+export * from './sendNewsletterResult.dto';

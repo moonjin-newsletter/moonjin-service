@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 import {ExceptionList} from "../response/error/errorInstances";
 import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
-import {NewsletterDto, NewsletterSummaryDto} from "./dto";
+import {NewsletterDto, NewsletterSummaryDto, SendNewsletterResultDto} from "./dto";
 import NewsletterDtoMapper from "./newsletterDtoMapper";
 import {PostWithContentAndSeriesAndWriterDto} from "../post/dto";
 import {PostService} from "../post/post.service";
@@ -11,6 +11,7 @@ import {UtilService} from "../util/util.service";
 import {sendNewsLetterWithHtmlDto} from "../mail/dto";
 import {editorJsToHtml} from "../common";
 import {MailService} from "../mail/mail.service";
+import {SendMailEventsEnum} from "../mail/enum/sendMailEvents.enum";
 
 @Injectable()
 export class NewsletterService {
@@ -25,7 +26,7 @@ export class NewsletterService {
     ) {}
 
     /**
-     * @summary 해당 유저의 뉴스레터 목록 가져오기
+     * @summary 해당 유저의 받은 뉴스레터 목록 가져오기
      * @param userId
      * @param seriesOnly
      * @return NewsletterDto[]
@@ -195,5 +196,51 @@ export class NewsletterService {
     async assertNewsletterCanBeSent(userId: number, postWithContentAndSeriesAndWriter : PostWithContentAndSeriesAndWriterDto){
         if(userId != postWithContentAndSeriesAndWriter.writerInfo.userId) throw ExceptionList.FORBIDDEN_FOR_POST;
         if(postWithContentAndSeriesAndWriter.post.category == null || postWithContentAndSeriesAndWriter.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
+    }
+
+    /**
+     * @summary 해당 유저의 발송한 뉴스레터 목록 가져오기
+     * @param writerId
+     * @return SendNewsletterResultDto[]
+     */
+    async getSentNewsletterListByWriterId(writerId: number): Promise<SendNewsletterResultDto[]>{
+        const sentNewsletterList = await this.prismaService.newsletter.findMany({
+            where : {
+                post : {
+                    writerId
+                }
+            },
+            include: {
+                post : true,
+                _count : {
+                    select : {
+                        newsletterInMail : true,
+                        newsletterAnalytics : {
+                            where : {
+                                event : SendMailEventsEnum.delivered
+                            }
+                        }
+                    },
+                }
+            },
+            relationLoadStrategy: 'join',
+            orderBy : {
+                sentAt : 'desc'
+            }
+        })
+        return sentNewsletterList.map(newsletter => {
+            return {
+                newsletter : {
+                    id : newsletter.id,
+                    title : newsletter.title,
+                    sentAt : newsletter.sentAt,
+                    deliveredCount : newsletter._count.newsletterAnalytics,
+                    totalSentCount : newsletter._count.newsletterInMail
+                },
+                post : {
+                    cover : newsletter.post.cover
+                }
+            }
+        })
     }
 }

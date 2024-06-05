@@ -17,7 +17,7 @@ import {NewsletterService} from "./newsletter.service";
 import {UserService} from "../user/user.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
-import {NewsletterDto, NewsletterSummaryDto} from "./dto";
+import {NewsletterDto, NewsletterSummaryDto, SendNewsletterResultDto} from "./dto";
 import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {ExceptionList} from "../response/error/errorInstances";
@@ -120,4 +120,17 @@ export class NewsletterController {
         const newsletterSummary = await this.newsletterService.getNewsletterSummaryById(newsletterId);
         return createResponseForm(newsletterSummary);
     }
+
+    /**
+     * @summary 해당 유저가 보낸 뉴스레터 목록 가져오기
+     * @param user
+     * @returns SendNewsletterResultDto[]
+     */
+    @TypedRoute.Get('send/all')
+    @UseGuards(WriterAuthGuard)
+    async getSentNewsletter(@User() user:UserAuthDto) : Promise<Try<SendNewsletterResultDto[]>>{
+        const newsletterList = await this.newsletterService.getSentNewsletterListByWriterId(user.id);
+        return createResponseForm(newsletterList);
+    }
+
 }

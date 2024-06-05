@@ -16,6 +16,7 @@ class NewsletterDtoMapper {
             writer : UserDtoMapper.UserToUserProfileDto(writerInfo.user),
         };
     }
+
 }
 
 export default NewsletterDtoMapper;
