@@ -39,7 +39,7 @@ export function UnreleasedNewsletterCard({
         alt="뉴스레터 썸네일"
         width={120}
         height={120}
-        className="size-[120px] min-w-[120px]  bg-gray-600 rounded object-cover"
+        className="size-[120px] min-w-[120px]  bg-gray-100 rounded object-cover"
       />
     </Link>
   );
