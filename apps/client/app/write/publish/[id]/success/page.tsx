@@ -116,16 +116,16 @@ export default function Page({ params }: pageProps) {
                     링크복사
                   </button>
                 </div>
+                <div className="w-full flex  mt-12">
+                  <Link
+                    href={"/mypage/newsletter/publish"}
+                    className="text-sm font-semibold px-6 py-3 text-white bg-grayscale-600 rounded"
+                  >
+                    발송 목록으로 이동하기
+                  </Link>
+                </div>
               </div>
             </section>
-            <div className="w-full flex justify-center mt-20">
-              <Link
-                href={"/mypage/newsletter/publish"}
-                className="text-sm font-semibold px-6 py-3 text-white bg-grayscale-600 rounded"
-              >
-                발송 목록으로 이동하기
-              </Link>
-            </div>
           </>
         )}
       </div>
