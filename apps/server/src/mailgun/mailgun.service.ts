@@ -19,6 +19,10 @@ export class MailgunService {
         return (encodedToken === mailgunWebhookSignature.signature)
     }
 
+    /**
+     * @summary 뉴스레터 WebHook 이벤트를 저장하는 함수
+     * @param newsletterSendEventData
+     */
     async saveNewsletterSendEvent(newsletterSendEventData : CreateNewsletterSendEvent): Promise<boolean>{
         try{
             await this.prismaService.newsletterAnalytics.create({
@@ -35,4 +39,5 @@ export class MailgunService {
             return false;
         }
     }
+
 }
