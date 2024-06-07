@@ -1,11 +1,9 @@
-import { PostDto} from "./dto";
 import {Post, PostContent} from "@prisma/client";
-import {ReleasedPostDto, UnreleasedPostWithSeriesDto} from "./dto";
+import { PostDto, PostContentDto,ReleasedPostDto, UnreleasedPostWithSeriesDto} from "./dto";
 import UserDtoMapper from "../user/userDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
-import {PostContentDto} from "./dto/postContent.dto";
 import {NewsletterDto} from "../newsletter/dto";
 
 

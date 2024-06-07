@@ -17,12 +17,15 @@ import {NewsletterService} from "./newsletter.service";
 import {UserService} from "../user/user.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
-import {NewsletterDto, NewsletterSummaryDto, SendNewsletterResultDto} from "./dto";
+import { NewsletterSummaryDto, SendNewsletterResultDto} from "./dto";
 import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {ExceptionList} from "../response/error/errorInstances";
 import {MailService} from "../mail/mail.service";
 import {editorJsToHtml} from "../common";
+import {NewsletterCardDto} from "./dto/newsletterCard.dto";
+import NewsletterDtoMapper from "./newsletterDtoMapper";
+import SeriesDtoMapper from "../series/seriesDtoMapper";
 
 @Controller('newsletter')
 export class NewsletterController {
@@ -96,16 +99,31 @@ export class NewsletterController {
     }
 
     /**
-     * @summary 해당 유저의 뉴스레터 목록 가져오기
+     * @summary 해당 유저의 받은 뉴스레터 목록 가져오기
      * @param user
      * @param seriesOption
      * @returns NewsletterDto[]
      */
-    @TypedRoute.Get()
+    @TypedRoute.Get('all')
     @UseGuards(UserAuthGuard)
-    async getNewsletter(@User() user:UserAuthDto, @TypedQuery() seriesOption : IGetNewsletter) : Promise<Try<NewsletterDto[]>>{
-        const newsletterList = await this.newsletterService.getNewsletterListByUserId(user.id, seriesOption.seriesOnly?? false);
-        return createResponseForm(newsletterList);
+    async getNewsletter(@User() user:UserAuthDto, @TypedQuery() seriesOption : IGetNewsletter) : Promise<Try<NewsletterCardDto[]>>{
+        const newsletterWithPostAndSeriesAndWriterList = await this.newsletterService.getNewsletterListByUserId(user.id, seriesOption.seriesOnly?? false);
+        return createResponseForm(newsletterWithPostAndSeriesAndWriterList.map(newsletterWithPostAndSeriesAndWriter => {
+            const { post, ...newsletterData } = newsletterWithPostAndSeriesAndWriter.newsletter;
+            const { writerInfo,series , ...postData } = post;
+            return {
+                newsletter : NewsletterDtoMapper.newsletterToNewsletterSummaryDto(newsletterData),
+                post : {
+                    id: postData.id,
+                    preview : postData.preview
+                },
+                series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
+                writer : {
+                    userId : writerInfo.userId,
+                    nickname : writerInfo.user.nickname
+                }
+            }
+        }));
     }
 
     /**

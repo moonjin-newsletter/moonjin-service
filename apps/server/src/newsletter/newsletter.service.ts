@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 import {ExceptionList} from "../response/error/errorInstances";
 import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
-import {NewsletterDto, NewsletterSummaryDto, SendNewsletterResultDto} from "./dto";
+import {NewsletterSummaryDto, SendNewsletterResultDto} from "./dto";
 import NewsletterDtoMapper from "./newsletterDtoMapper";
 import {PostWithContentAndSeriesAndWriterDto} from "../post/dto";
 import {PostService} from "../post/post.service";
@@ -31,8 +31,8 @@ export class NewsletterService {
      * @param seriesOnly
      * @return NewsletterDto[]
      */
-    async getNewsletterListByUserId(userId : number, seriesOnly = false) : Promise<NewsletterDto[]>{
-        const newsletterList : NewsletterWithPostAndSeriesAndWriterUser[] = await this.prismaService.newsletterInWeb.findMany({
+    async getNewsletterListByUserId(userId : number, seriesOnly = false) : Promise<NewsletterWithPostAndSeriesAndWriterUser[]>{
+        return this.prismaService.newsletterInWeb.findMany({
             where : {
                 receiverId : userId,
                 newsletter : {
@@ -66,8 +66,6 @@ export class NewsletterService {
                 }
             }
         })
-        if(newsletterList.length === 0) return [];
-        return newsletterList.map(newsletter => NewsletterDtoMapper.newsletterWithPSWUToNewsletterDto(newsletter));
     }
 
 
