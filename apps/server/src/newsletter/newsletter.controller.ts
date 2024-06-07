@@ -120,6 +120,7 @@ export class NewsletterController {
                 series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
                 writer : {
                     userId : writerInfo.userId,
+                    moonjinId : writerInfo.moonjinId,
                     nickname : writerInfo.user.nickname
                 }
             }
