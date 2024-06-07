@@ -106,7 +106,7 @@ export class NewsletterController {
      */
     @TypedRoute.Get('all')
     @UseGuards(UserAuthGuard)
-    async getNewsletter(@User() user:UserAuthDto, @TypedQuery() seriesOption : IGetNewsletter) : Promise<Try<NewsletterCardDto[]>>{
+    async getAllReceivedNewsletter(@User() user:UserAuthDto, @TypedQuery() seriesOption : IGetNewsletter) : Promise<Try<NewsletterCardDto[]>>{
         const newsletterWithPostAndSeriesAndWriterList = await this.newsletterService.getNewsletterListByUserId(user.id, seriesOption.seriesOnly?? false);
         return createResponseForm(newsletterWithPostAndSeriesAndWriterList.map(newsletterWithPostAndSeriesAndWriter => {
             const { post, ...newsletterData } = newsletterWithPostAndSeriesAndWriter.newsletter;
