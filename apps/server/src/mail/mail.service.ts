@@ -156,4 +156,20 @@ export class MailService {
       return {[email]: {"id": idx}}
     }));
   }
+
+  /**
+   * @summary 해당 moonjinId로 이메일을 받는 라우트를 생성하는 기능
+   * @param moonjinId
+   * @param email
+   */
+  async createEmailRouteByMoonjinId(moonjinId: string, email: string) {
+    try {
+      await this.mailgunClient.routes.create({
+        expression: `match_recipient("${moonjinId}@${this.MAILGUN_DOMAIN}")`,
+        action: [`forward("${email}")`],
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 }

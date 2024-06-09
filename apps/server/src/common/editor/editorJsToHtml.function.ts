@@ -1,5 +1,5 @@
 import edjsHTML from "editorjs-html";
-import {PostContentDto} from "../../post/dto/postContent.dto";
+import {PostContentDto} from "../../post/dto";
 
 export function editorJsToHtml(editorJs : PostContentDto): string{
     let htmlFormer = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Title</title></head><body>`

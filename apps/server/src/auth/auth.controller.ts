@@ -99,6 +99,7 @@ export class AuthController {
           ...userSignUpData,
           moonjinId
         })
+        await this.mailService.createEmailRouteByMoonjinId(moonjinId, userSignUpData.email)
       }
       const {accessToken, refreshToken} = this.jwtUtilService.getAccessTokens(createdUser)
       res.cookie('accessToken',accessToken, this.cookieOptions)
@@ -271,6 +272,7 @@ export class AuthController {
     let user:UserAuthDto;
     if(moonjinId){
       user = await this.authService.socialWriterSignup({...userSocialData, ...socialUserSignupData,moonjinId});
+      await this.mailService.createEmailRouteByMoonjinId(moonjinId, user.email)
     }else{
       user = await this.authService.socialUserSignup({...userSocialData, ...socialUserSignupData});
     }
@@ -286,6 +288,10 @@ export class AuthController {
     }));
   }
 
+  /**
+   * @summary 로그아웃
+   * @param res
+   */
   @TypedRoute.Post('logout')
   async logout(@Res() res: Response):Promise<void>{
     res.cookie('accessToken', "", {

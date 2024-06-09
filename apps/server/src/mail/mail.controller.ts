@@ -4,7 +4,6 @@ import {
   Post,
 } from '@nestjs/common';
 import { MailService } from './mail.service';
-import { OnEvent } from '@nestjs/event-emitter';
 import { newsLetterValidationDto } from './dto';
 import {TypedBody} from "@nestia/core";
 
@@ -21,11 +20,5 @@ export class MailController {
   @Get('test')
   async mailTest() {
     return 'ok';
-  }
-
-  @OnEvent('mail-verification')
-  handleMailVerification(payload: { email: string; accessLink: string }) {
-    console.log("send " + payload.accessLink + " To " + payload.email);
-    // this.mailService.sendVerificationMail(payload.email, payload.accessLink);
   }
 }
