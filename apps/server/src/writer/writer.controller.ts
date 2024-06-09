@@ -25,6 +25,7 @@ import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {ICreateWriterInfo} from "./api-types/ICreateWriterInfo";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import {AuthService} from "../auth/auth.service";
+import {MailService} from "../mail/mail.service";
 
 @Controller('writer')
 export class WriterController {
@@ -33,7 +34,8 @@ export class WriterController {
     constructor(
         private readonly writerService: WriterService,
         private readonly jwtUtilService:JwtUtilService,
-        private readonly authService:AuthService
+        private readonly authService:AuthService,
+        private readonly mailService:MailService
     ) {}
 
     /**
@@ -62,6 +64,7 @@ export class WriterController {
     async becomeWriter(@User() user:UserAuthDto, @TypedBody() writerData : ICreateWriterInfo, @Res() res:Response): Promise<TryCatch<ResponseMessage,
         MOONJIN_EMAIL_ALREADY_EXIST | WRITER_SIGNUP_ERROR | NICKNAME_ALREADY_EXIST>> {
         const newWriter = await this.authService.enrollWriter({moonjinId:writerData.moonjinId,description:writerData.description, userId:user.id}, writerData.nickname);
+        await this.mailService.createEmailRouteByMoonjinId(newWriter.writerInfo.moonjinId, newWriter.user.email);
         const {accessToken, refreshToken} = this.jwtUtilService.getAccessTokens({...user,nickname:newWriter.user.nickname,role:UserRoleEnum.WRITER});
         res.cookie('accessToken',accessToken, this.cookieOptions)
         res.cookie('refreshToken', refreshToken,this.cookieOptions)

@@ -7,17 +7,14 @@ import {UserService} from "./user.service";
 import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {
-    MOONJIN_EMAIL_ALREADY_EXIST,
     NICKNAME_ALREADY_EXIST, SOCIAL_USER_ERROR,
     USER_NOT_FOUND,
     USER_NOT_WRITER,
-    WRITER_SIGNUP_ERROR
 } from "../response/error/auth";
 import {
     UserDto,
     UserWithPasswordDto, UserOrWriterDto
 } from "./dto";
-import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {OauthService} from "../auth/oauth.service";
 import {IChangeUserProfile} from "./api-types/IChangeUserProfile";
 import {AuthService} from "../auth/auth.service";
@@ -29,10 +26,7 @@ import {EMAIL_NOT_EXIST} from "../response/error/mail";
 import {IEmailVerification} from "../auth/api-types/IEmailVerification";
 import * as process from "process";
 import {ErrorCodeEnum} from "../response/error/enum/errorCode.enum";
-import {IChangeWriterProfile} from "../writer/api-types/IChangeWriterProfile";
 import {PROFILE_CHANGE_ERROR} from "../response/error/user";
-import {ICreateWriterInfo} from "../writer/api-types/ICreateWriterInfo";
-import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import {JwtUtilService} from "../auth/jwtUtil.service";
 import httpsCookieOption from "../auth/httpsCookieOption";
 
@@ -102,30 +96,6 @@ export class UserController {
     }
 
     /**
-     * @summary 작가 프로필 변경 API
-     * @param user
-     * @param res
-     * @param newProfile
-     * @returns
-     * @throws PROFILE_CHANGE_ERROR
-     * @throws NICKNAME_ALREADY_EXIST
-     * @throws USER_NOT_WRITER
-     * @throws USER_NOT_FOUND
-     * @throws MOONJIN_EMAIL_ALREADY_EXIST
-     */
-    @TypedRoute.Patch('writer/profile')
-    @UseGuards(WriterAuthGuard)
-    async changeWriterProfile(@User() user:UserAuthDto, @Res() res: Response, @TypedBody() newProfile : IChangeWriterProfile): Promise<TryCatch<UserDto,
-        PROFILE_CHANGE_ERROR | NICKNAME_ALREADY_EXIST | USER_NOT_WRITER | USER_NOT_FOUND | MOONJIN_EMAIL_ALREADY_EXIST>> {
-        const newUser = await this.userService.changeWriterProfile(user.id, newProfile);
-        const {accessToken, refreshToken }= this.jwtUtilService.getAccessTokens(UserDtoMapper.UserDtoToUserAuthDto(newUser));
-        res.cookie('accessToken', accessToken,this.cookieOptions)
-        res.cookie('refreshToken', refreshToken,this.cookieOptions)
-        res.send(createResponseForm(newUser));
-        return createResponseForm(newUser);
-    }
-
-    /**
      * @summary 비밀번호 변경 요청 API (메일 전송, 쿠키 설정)
      * @param user
      * @param res
@@ -170,31 +140,5 @@ export class UserController {
             else
                 res.redirect(process.env.CLIENT_URL + "/password/change/fail?error=socialUserError");
         }
-    }
-
-    /**
-     * @summary 작가 시작하기 API
-     * @param user
-     * @param writerData
-     * @param res
-     * @returns
-     * @throws MOONJIN_EMAIL_ALREADY_EXIST
-     * @throws WRITER_SIGNUP_ERROR
-     * @throws NICKNAME_ALREADY_EXIST
-     */
-    @TypedRoute.Post("writer")
-    @UseGuards(UserAuthGuard)
-    async becomeWriter(@User() user:UserAuthDto, @TypedBody() writerData : ICreateWriterInfo, @Res() res:Response): Promise<TryCatch<ResponseMessage,
-        MOONJIN_EMAIL_ALREADY_EXIST | WRITER_SIGNUP_ERROR | NICKNAME_ALREADY_EXIST>> {
-        const newWriter = await this.authService.enrollWriter({moonjinId:writerData.moonjinId,description:writerData.description, userId:user.id}, writerData.nickname);
-        const {accessToken, refreshToken} = this.jwtUtilService.getAccessTokens({...user,nickname:newWriter.user.nickname,role:UserRoleEnum.WRITER});
-        res.cookie('accessToken',accessToken, this.cookieOptions)
-        res.cookie('refreshToken', refreshToken,this.cookieOptions)
-        res.send(createResponseForm({
-            message: "작가로 등록되었습니다."
-        }));
-        return createResponseForm({
-            message: "작가로 등록되었습니다."
-        })
     }
 }
