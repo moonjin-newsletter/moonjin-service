@@ -32,10 +32,6 @@ export default function Page() {
   register("cover", { required: "커버 이미지를 지정해주세요" });
 
   function submitSeries(value: any) {
-    if (!coverImage) toast.error("커버이미지를 지정해주세요");
-    else if (errors) toast.error("시리즈 생성 실패");
-
-    console.log(123);
     csr
       .post("series", { json: { ...value, status: true } })
       .then((res) => {
@@ -125,7 +121,7 @@ export default function Page() {
             alt="커버이미지"
             width={200}
             height={200}
-            className="w-48 mt-2 cursor-pointer h-56 bg-grayscale-400 rounded border border-grayscale-200"
+            className="w-48 object-cover mt-2 cursor-pointer h-56 bg-grayscale-400 rounded border border-grayscale-200"
           />
         ) : (
           <label
