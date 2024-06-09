@@ -6,6 +6,8 @@ import type {
   ResponseForm,
 } from "@moonjin/api-types";
 
+export const revalidate = false;
+
 export default async function Page() {
   const { data: newsletterList } = await ssr("post/me").then((res) =>
     res.json<ResponseForm<NewsletterDto[]>>(),

@@ -30,6 +30,7 @@ import {
 } from "@components/editorjs/customEditorConfig";
 import csr from "@lib/fetcher/csr";
 import { fileUpload } from "@lib/file/fileUpload";
+import { CategoryList } from "@components/category/CategoryList";
 
 export default function NewEditorJS({
   letterId,
@@ -280,7 +281,7 @@ function OverlaySetting({
       <form
         onSubmit={handleSubmit(onClickSave)}
         onClick={(e) => e.stopPropagation()}
-        className="w-fit max-h-[530px] min-w-[519px] overflow-y-auto py-8 px-8 rounded-lg bg-white"
+        className="w-fit max-h-[530px] min-w-[520px] max-w-[520px] overflow-y-auto py-8 px-8 rounded-lg bg-white"
       >
         <h1 className="text-lg font-semibold">뉴스레터 정보</h1>
 
@@ -312,31 +313,31 @@ function OverlaySetting({
           </ul>
         </section>
         {type === "자유글" && (
-          <section className="mt-8">
+          <section className="mt-8 w-full">
             <div className="text-primary">
               *{" "}
               <span className="font-medium text-grayscale-700">
                 작성하신 글의 카테고리를 설정해주세요
               </span>
             </div>
-            <ul className="text-sm text-grayscale-600 mt-2 flex flex-col gap-y-2.5 ">
-              {[
-                { id: 1, category: "시・수필" },
-                { id: 1, category: "에세이" },
-                { id: 1, category: "소설" },
-                { id: 1, category: "평론" },
-                { id: 1, category: "기타" },
-              ].map((value, index) => (
-                <li key={index} className="flex items-center gap-x-2.5">
+            <ul className="text-sm text-grayscale-600 mt-2 flex flex-wrap w-full gap-x-2 gap-y-1.5 ">
+              {CategoryList.map((category, index) => (
+                <label
+                  htmlFor={`category${index}`}
+                  key={index}
+                  className="flex group"
+                >
                   <input
                     {...register("category")}
-                    id="category"
-                    value={value.category}
+                    id={`category${index}`}
+                    value={category}
                     type="radio"
-                    className="focus:ring-0 outline-none text-primary active:bg-primary checked:bg-primary"
+                    className="focus:ring-0 hidden peer outline-none text-primary active:bg-primary checked:bg-primary"
                   />
-                  <span>{value.category}</span>
-                </li>
+                  <div className="peer-checked:text-primary peer-checked:border-primary h-full w-full text-center border rounded-full py-1.5 px-2 border-grayscale-200 ">
+                    {category}
+                  </div>
+                </label>
               ))}
             </ul>
           </section>
@@ -442,7 +443,7 @@ function OverlaySetting({
               />
             </>
           )}
-          <span className="mt-2 text-sm ">
+          <span className="mt-2 text-sm text-grayscale-500">
             * 썸네일이 없을 시, 문진 기본 이미지로 대체됩니다
           </span>
         </section>
