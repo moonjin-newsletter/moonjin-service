@@ -10,7 +10,7 @@ export function UnreleasedNewsletterCard({
 }) {
   return (
     <Link
-      href={`/write/edit/${value.post.id}`}
+      href={`/write/${value.post.id}/edit`}
       className="flex h-fit items-center w-full group gap-x-6  py-5 border-b border-grayscale-200"
     >
       <div className="flex  min-h-[120px] w-full justify-between h-full  flex-col ">

@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import ssr from "../../../../lib/fetcher/ssr";
+import ssr from "@lib/fetcher/ssr";
 import type {
   PostWithContentAndSeriesDto,
   PostWithContentDto,

@@ -1,12 +1,12 @@
 "use client";
-import { LogoIcon, LogoIconGray } from "../../../../components/icons";
+import { LogoIcon, LogoIconGray } from "@components/icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
-import * as I from "components/icons";
-import csr from "../../../../lib/fetcher/csr";
+import * as I from "@components/icons";
+import csr from "@lib/fetcher/csr";
 import { PiUserCircle } from "react-icons/pi";
 import useSWR from "swr";
 import type { ResponseForm, WriterDto } from "@moonjin/api-types";
@@ -62,7 +62,7 @@ export default function MailSendingSection({
       })
       .then((res) => {
         toast.success("메일 전송이 완료됐습니다");
-        return router.push(`/write/publish/${letterId}/success`);
+        return router.push(`/write/${letterId}/publish/success`);
       })
       .catch((err) => toast.error("메일 전송오류"));
   }

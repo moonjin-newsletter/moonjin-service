@@ -7,10 +7,10 @@ import { useOverlay } from "@toss/use-overlay";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PiCaretUpDownBold } from "react-icons/pi";
-import * as I from "components/icons";
+import * as I from "@components/icons";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { CgSpinner } from "react-icons/cg";
-import "components/editorjs/customEditorView.css";
+import "@components/editorjs/customEditorView.css";
 
 import {
   FileTypeEnum,
@@ -27,9 +27,9 @@ import Image from "next/image";
 import {
   EDITOR_JS_I18N,
   EDITOR_JS_TOOLS,
-} from "../../../../../components/editorjs/customEditorConfig";
-import csr from "../../../../../lib/fetcher/csr";
-import { fileUpload } from "../../../../../lib/file/fileUpload";
+} from "@components/editorjs/customEditorConfig";
+import csr from "@lib/fetcher/csr";
+import { fileUpload } from "@lib/file/fileUpload";
 
 export default function NewEditorJS({
   letterId,
@@ -85,7 +85,7 @@ export default function NewEditorJS({
               const { data: nInfo } =
                 await res.json<ResponseForm<PostWithContentDto>>();
               toast.success("글을 저장했습니다");
-              router.push(`/write/edit/${nInfo.post.id}`);
+              router.push(`/write/${nInfo.post.id}/edit`);
             })
             .catch(() => toast.error("글 저장에 실패하였습니다"));
         })
@@ -265,7 +265,7 @@ function OverlaySetting({
         const { data: nInfo } =
           await res.json<ResponseForm<PostWithContentDto>>();
         toast.success("글을 저장했습니다");
-        router.push(`/write/publish/${nInfo.post.id}`);
+        router.push(`/write/${nInfo.post.id}/publish`);
       })
       .catch(() => toast.error("글 저장에 실패하였습니다"));
   }

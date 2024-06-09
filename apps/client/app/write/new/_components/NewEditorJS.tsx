@@ -70,7 +70,7 @@ export default function NewEditorJS() {
               const { data: nInfo } =
                 await res.json<ResponseForm<PostWithContentDto>>();
               toast.success("글을 저장했습니다");
-              router.push(`/write/edit/${nInfo.post.id}`);
+              router.push(`/write/${nInfo.post.id}/edit`);
             })
             .catch(() => toast.error("글 저장에 실패하였습니다"));
         })
@@ -228,7 +228,7 @@ function OverlaySetting({
         const { data: nInfo } =
           await res.json<ResponseForm<PostWithContentDto>>();
         toast.success("글을 저장했습니다");
-        router.push(`/write/publish/${nInfo.post.id}`);
+        router.push(`/write/${nInfo.post.id}/publish`);
       })
       .catch(() => toast.error("글 저장에 실패하였습니다"));
   }

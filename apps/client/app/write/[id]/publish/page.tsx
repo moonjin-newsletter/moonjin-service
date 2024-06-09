@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import MailSendingSection from "./MailSendingSection";
-import ssr from "../../../../lib/fetcher/ssr";
+import ssr from "@lib/fetcher/ssr";
 import type {
   ResponseForm,
   UnreleasedPostWithSeriesDto,
@@ -64,7 +64,7 @@ export default async function Page({ params }: pageProps) {
             ))}
           </ul>
           <Link
-            href={`/write/edit/${letterId}`}
+            href={`/write/${letterId}/edit`}
             className="border text-center mt-8 border-grayscale-700 text-grayscale-700 py-2.5 w-full rounded-lg "
           >
             글 상세정보 수정하기
