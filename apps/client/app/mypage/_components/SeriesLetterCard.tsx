@@ -1,9 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import { NewsletterDto } from "@moonjin/api-types";
+import { type NewsletterCardDto, NewsletterDto } from "@moonjin/api-types";
 
-export default function SeriesLetterCard({ value }: { value: NewsletterDto }) {
+export default function SeriesLetterCard({
+  value,
+}: {
+  value: NewsletterCardDto;
+}) {
   return (
     <Link
       href=""
@@ -15,7 +19,7 @@ export default function SeriesLetterCard({ value }: { value: NewsletterDto }) {
             [{value.series?.title}]
           </strong>
           <strong className="group-hover:underline text-lg text-grayscale-600 font-medium">
-            {value.post.title}
+            {value.newsletter.title}
           </strong>
           <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400">
             {value.post.preview}
@@ -27,12 +31,12 @@ export default function SeriesLetterCard({ value }: { value: NewsletterDto }) {
             {value.writer.nickname}
           </div>
           <div>
-            발행일자.{format(new Date(value.post.releasedAt), "yyyy.MM.dd")}
+            발행일자.{format(new Date(value.newsletter.sentAt), "yyyy.MM.dd")}
           </div>
         </div>
       </div>
       <Image
-        src={value.post.cover ?? ""}
+        src={value.newsletter.cover ?? ""}
         alt="뉴스레터 썸네일"
         width={120}
         height={120}

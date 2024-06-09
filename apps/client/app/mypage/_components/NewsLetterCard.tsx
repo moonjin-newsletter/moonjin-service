@@ -1,13 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import type { ReleasedPostWithWriterDto } from "@moonjin/api-types";
+import type {
+  NewsletterCardDto,
+  ReleasedPostWithWriterDto,
+} from "@moonjin/api-types";
 
 export default function NewsLetterCard({
   value,
 }: {
-  value: ReleasedPostWithWriterDto;
+  value: NewsletterCardDto;
 }) {
+  console.log(value);
+
   return (
     <Link
       href=""
@@ -16,7 +21,7 @@ export default function NewsLetterCard({
       <div className="flex justify-between w-full h-full min-h-[120px] flex-col ">
         <div className="w-full flex flex-col gap-y-2">
           <strong className="group-hover:underline text-lg text-grayscale-600 font-medium">
-            {value.post.title}
+            {value.newsletter.title}
           </strong>
           <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400">
             {value.post.preview}
@@ -28,12 +33,12 @@ export default function NewsLetterCard({
             {value.writer.nickname}
           </div>
           <div>
-            발행일자.{format(new Date(value.post.releasedAt), "yyyy.MM.dd")}
+            발행일자.{format(new Date(value.newsletter.sentAt), "yyyy.MM.dd")}
           </div>
         </div>
       </div>
       <Image
-        src={value.post.cover ?? ""}
+        src={value.newsletter.cover ?? ""}
         alt="뉴스레터 썸네일"
         width={120}
         height={120}

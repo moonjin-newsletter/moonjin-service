@@ -4,6 +4,7 @@ import { Tab } from "@headlessui/react";
 import { Fragment } from "react";
 import { ReaderHome } from "./_components/ReaderHome";
 import {
+  type NewsletterCardDto,
   NewsletterDto,
   ReleasedPostWithWriterDto,
   SeriesWithWriterDto,
@@ -18,7 +19,7 @@ export default function HomeTab({
 }: {
   userType: any;
   seriesList: SeriesWithWriterDto[];
-  newsletterList: NewsletterDto[];
+  newsletterList: NewsletterCardDto[];
   myNewsletterList?: NewsletterDto[];
 }) {
   const tabList =

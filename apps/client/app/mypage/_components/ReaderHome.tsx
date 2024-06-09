@@ -2,7 +2,11 @@ import Link from "next/link";
 import * as Io from "react-icons/io";
 import NewsLetterCard from "./NewsLetterCard";
 
-import type { NewsletterDto, SeriesWithWriterDto } from "@moonjin/api-types";
+import type {
+  NewsletterCardDto,
+  NewsletterDto,
+  SeriesWithWriterDto,
+} from "@moonjin/api-types";
 import { isNonEmptyArray } from "@toss/utils";
 import EmptyCard from "./EmptyCard";
 import { SeriesCardForReader } from "./SeriesCard";
@@ -13,7 +17,7 @@ export function ReaderHome({
   newsletterList,
 }: {
   seriesList: SeriesWithWriterDto[];
-  newsletterList: NewsletterDto[];
+  newsletterList: NewsletterCardDto[];
 }) {
   return (
     <div className="flex flex-col w-full gap-y-12 max-w-[740px]">
@@ -62,7 +66,7 @@ function SeriesNewsletter({
 function NewsletterList({
   newsletterList,
 }: {
-  newsletterList: NewsletterDto[];
+  newsletterList: NewsletterCardDto[];
 }) {
   return (
     <section className="flex flex-col w-full">
