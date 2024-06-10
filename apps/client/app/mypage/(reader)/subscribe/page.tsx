@@ -1,6 +1,7 @@
 import SubscribeTab from "./_components/SubscribeTab";
 import ssr from "../../../../lib/fetcher/ssr";
 import type {
+  NewsletterCardDto,
   NewsletterDto,
   ResponseForm,
   SeriesWithWriterDto,
@@ -11,7 +12,7 @@ export default async function Page() {
     res.json<ResponseForm<SeriesWithWriterDto[]>>(),
   );
   const { data: newsletterList } = await ssr("newsletter").then((res) =>
-    res.json<ResponseForm<NewsletterDto[]>>(),
+    res.json<ResponseForm<NewsletterCardDto[]>>(),
   );
 
   return (

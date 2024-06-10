@@ -4,7 +4,11 @@ import { Tab } from "@headlessui/react";
 import { Fragment, useEffect } from "react";
 import { isNonEmptyArray } from "@toss/utils";
 import NewsLetterCard from "../../../_components/NewsLetterCard";
-import { NewsletterDto, SeriesWithWriterDto } from "@moonjin/api-types";
+import {
+  type NewsletterCardDto,
+  NewsletterDto,
+  SeriesWithWriterDto,
+} from "@moonjin/api-types";
 import SeriesLetterCard from "../../../_components/SeriesLetterCard";
 import EmptyCard from "../../../_components/EmptyCard";
 import { useSearchParams } from "next/navigation";
@@ -15,7 +19,7 @@ export default function SubscribeTab({
   newsletterList,
 }: {
   seriesList: SeriesWithWriterDto[];
-  newsletterList: NewsletterDto[];
+  newsletterList: NewsletterCardDto[];
 }) {
   const params = useSearchParams();
 
