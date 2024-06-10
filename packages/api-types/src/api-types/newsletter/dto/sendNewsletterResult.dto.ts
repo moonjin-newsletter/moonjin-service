@@ -1,7 +1,8 @@
-import {NewsletterSummaryDto} from "./newsletterSummary.dto";
+import {NewsletterCardDto} from "./newsletterCard.dto";
 
-
-export interface SendNewsletterResultDto extends NewsletterSummaryDto{
-    deliveredCount: number;
-    totalSentCount: number;
+export interface SendNewsletterResultDto extends NewsletterCardDto{
+    analytics : {
+        deliveredCount: number;
+        totalSentCount: number;
+    }
 }
