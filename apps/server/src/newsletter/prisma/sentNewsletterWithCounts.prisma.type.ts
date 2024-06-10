@@ -3,6 +3,16 @@ import {SendMailEventsEnum} from "../../mail/enum/sendMailEvents.enum";
 
 const sentNewsletterWithCounts = Prisma.validator<Prisma.NewsletterDefaultArgs>()({
     include: {
+        post : {
+            include : {
+                writerInfo : {
+                    include : {
+                        user : true
+                    }
+                },
+                series : true
+            }
+        },
         _count : {
             select : {
                 newsletterInMail : true,

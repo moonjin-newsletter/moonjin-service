@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 import {ExceptionList} from "../response/error/errorInstances";
 import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
-import {NewsletterSummaryDto, SendNewsletterResultDto} from "./dto";
+import {NewsletterSummaryDto} from "./dto";
 import NewsletterDtoMapper from "./newsletterDtoMapper";
 import {PostWithContentAndSeriesAndWriterDto} from "../post/dto";
 import {PostService} from "../post/post.service";
@@ -12,6 +12,7 @@ import {sendNewsLetterWithHtmlDto} from "../mail/dto";
 import {editorJsToHtml} from "../common";
 import {MailService} from "../mail/mail.service";
 import {SendMailEventsEnum} from "../mail/enum/sendMailEvents.enum";
+import {SentNewsletterWithCounts} from "./prisma/sentNewsletterWithCounts.prisma.type";
 
 @Injectable()
 export class NewsletterService {
@@ -188,16 +189,26 @@ export class NewsletterService {
     /**
      * @summary 해당 유저의 발송한 뉴스레터 목록 가져오기
      * @param writerId
-     * @return SendNewsletterResultDto[]
+     * @return SentNewsletterWithCounts[]
      */
-    async getSentNewsletterListByWriterId(writerId: number): Promise<SendNewsletterResultDto[]>{
-        const sentNewsletterList = await this.prismaService.newsletter.findMany({
+    async getSentNewsletterListByWriterId(writerId: number): Promise<SentNewsletterWithCounts[]>{
+        return this.prismaService.newsletter.findMany({
             where : {
                 post : {
                     writerId
                 }
             },
             include: {
+                post : {
+                    include : {
+                        writerInfo : {
+                            include : {
+                                user : true
+                            }
+                        },
+                        series : true
+                    }
+                },
                 _count : {
                     select : {
                         newsletterInMail : true,
@@ -214,6 +225,5 @@ export class NewsletterService {
                 sentAt : 'desc'
             }
         })
-        return sentNewsletterList.map(newsletter=> NewsletterDtoMapper.sentNewsletterWithCountsToSendNewsletterResultDto(newsletter))
     }
 }

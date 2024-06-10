@@ -17,13 +17,12 @@ import {NewsletterService} from "./newsletter.service";
 import {UserService} from "../user/user.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
-import { NewsletterSummaryDto, SendNewsletterResultDto} from "./dto";
+import { NewsletterSummaryDto, SendNewsletterResultDto, NewsletterCardDto} from "./dto";
 import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {ExceptionList} from "../response/error/errorInstances";
 import {MailService} from "../mail/mail.service";
 import {editorJsToHtml} from "../common";
-import {NewsletterCardDto} from "./dto/newsletterCard.dto";
 import NewsletterDtoMapper from "./newsletterDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 
@@ -149,7 +148,28 @@ export class NewsletterController {
     @UseGuards(WriterAuthGuard)
     async getSentNewsletter(@User() user:UserAuthDto) : Promise<Try<SendNewsletterResultDto[]>>{
         const newsletterList = await this.newsletterService.getSentNewsletterListByWriterId(user.id);
-        return createResponseForm(newsletterList);
+        const newsletterResultList = newsletterList.map(newsletter => {
+            const { _count, post, ...newsletterData} = newsletter;
+            return {
+                newsletter : NewsletterDtoMapper.newsletterToNewsletterSummaryDto(newsletterData),
+                post : {
+                    id : post.id,
+                    preview : post.preview
+                },
+                series : post.series ? SeriesDtoMapper.SeriesToSeriesDto(post.series) : null,
+                writer : {
+                    userId : post.writerInfo.userId,
+                    moonjinId : post.writerInfo.moonjinId,
+                    nickname : post.writerInfo.user.nickname
+                },
+                analytics : {
+                    deliveredCount : _count.newsletterAnalytics,
+                    totalSentCount : _count.newsletterInMail
+                }
+            }
+        })
+
+        return createResponseForm(newsletterResultList);
     }
 
 }
