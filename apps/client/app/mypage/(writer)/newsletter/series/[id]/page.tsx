@@ -9,7 +9,7 @@ type pageProps = {
   id: string;
 };
 
-export const revalidate = false;
+export const revalidate = 0;
 
 export default async function Page({ params }: { params: pageProps }) {
   const seriesId = parseInt(params.id, 10);
