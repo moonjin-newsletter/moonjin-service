@@ -294,7 +294,7 @@ function OverlaySetting({
                     {...register("category")}
                     id={`category${index}`}
                     value={category}
-                    checked={index === 0}
+                    defaultChecked={index === 0}
                     type="radio"
                     className="focus:ring-0 hidden peer outline-none text-primary active:bg-primary checked:bg-primary"
                   />
