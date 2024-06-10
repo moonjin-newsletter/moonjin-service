@@ -1,9 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import { NewsletterDto } from "@moonjin/api-types";
+import {
+  NewsletterDto,
+  type SendNewsletterResultDto,
+} from "@moonjin/api-types";
 
-export function PublishedLetterCard({ letter }: { letter: NewsletterDto }) {
+export function PublishedLetterCard({
+  letter,
+}: {
+  letter: SendNewsletterResultDto;
+}) {
   return (
     <Link
       href=""
@@ -18,7 +25,7 @@ export function PublishedLetterCard({ letter }: { letter: NewsletterDto }) {
           )}
 
           <strong className="group-hover:underline text-lg text-grayscale-600 font-medium">
-            {letter.post.title}
+            {letter.newsletter.title}
           </strong>
           <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400">
             {letter.post.preview}
@@ -26,12 +33,12 @@ export function PublishedLetterCard({ letter }: { letter: NewsletterDto }) {
         </div>
         <div className="mt-4 gap-x-4 flex items-center text-sm text-grayscale-400">
           <div>
-            발행일자.{format(new Date(letter.post.releasedAt), "yyyy.MM.dd")}
+            발행일자.{format(new Date(letter.newsletter.sentAt), "yyyy.MM.dd")}
           </div>
         </div>
       </div>
       <Image
-        src={letter.post.cover ?? ""}
+        src={letter.newsletter.cover ?? ""}
         alt="뉴스레터 썸네일"
         width={120}
         height={120}

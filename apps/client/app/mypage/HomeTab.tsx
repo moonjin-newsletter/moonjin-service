@@ -7,6 +7,7 @@ import {
   type NewsletterCardDto,
   NewsletterDto,
   ReleasedPostWithWriterDto,
+  type SendNewsletterResultDto,
   SeriesWithWriterDto,
 } from "@moonjin/api-types";
 import WritterHome from "./_components/WritterHome";
@@ -20,7 +21,7 @@ export default function HomeTab({
   userType: any;
   seriesList: SeriesWithWriterDto[];
   newsletterList: NewsletterCardDto[];
-  myNewsletterList?: NewsletterDto[];
+  myNewsletterList?: SendNewsletterResultDto[];
 }) {
   const tabList =
     userType === "작가" ? ["발행글", "구독한 뉴스레터"] : ["구독한 뉴스레터"];

@@ -4,7 +4,11 @@ import { Fragment } from "react";
 import Link from "next/link";
 import { isNonEmptyArray } from "@toss/utils";
 import * as I from "@components/icons";
-import type { NewsletterDto, SeriesDto } from "@moonjin/api-types";
+import type {
+  NewsletterDto,
+  SendNewsletterResultDto,
+  SeriesDto,
+} from "@moonjin/api-types";
 import { SeriesCardForWritter } from "../../../_components/SeriesCard";
 import { PublishedLetterCard } from "../_components/PublishedLetterCard";
 
@@ -12,7 +16,7 @@ export default function PublishTab({
   newsletterList,
   seriesList,
 }: {
-  newsletterList: NewsletterDto[];
+  newsletterList: SendNewsletterResultDto[];
   seriesList: SeriesDto[];
 }) {
   return (

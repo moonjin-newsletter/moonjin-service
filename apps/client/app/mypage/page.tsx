@@ -2,8 +2,8 @@ import HomeTab from "./HomeTab";
 import ssr from "../../lib/fetcher/ssr";
 import type {
   NewsletterCardDto,
-  NewsletterDto,
   ResponseForm,
+  SendNewsletterResultDto,
   SeriesWithWriterDto,
   UserDto,
   WriterDto,
@@ -29,8 +29,8 @@ export default async function Page() {
   );
   const myNewsletterList =
     userType === "작가"
-      ? await ssr("post/me").then((res) =>
-          res.json<ResponseForm<NewsletterDto[]>>(),
+      ? await ssr("newsletter/send/all").then((res) =>
+          res.json<ResponseForm<SendNewsletterResultDto[]>>(),
         )
       : null;
 
