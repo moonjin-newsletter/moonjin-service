@@ -5,10 +5,12 @@ import { postData, seriesData, writerData } from "./_data";
 import Link from "next/link";
 import * as I from "components/icons";
 import SeriesCarousel from "./_components/SeriesCarousel";
+import Header from "@components/layout/Header";
 
 export default async function Page() {
   return (
     <main className=" w-full min-h-screen  ">
+      <Header />
       <div className="relative flex flex-col items-center justify-center w-full h-full min-h-screen">
         <section className="flex-1 w-full h-full min-h-screen bg-black">
           <Image

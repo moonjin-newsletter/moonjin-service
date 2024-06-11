@@ -54,7 +54,6 @@ export default function RootLayout({
         className={`flex min-h-screen flex-col text-grayscale-700 w-full h-full `}
       >
         <ClientProvider>
-          <Header />
           {children}
           {/*<Footer />*/}
         </ClientProvider>

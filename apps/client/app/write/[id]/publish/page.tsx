@@ -7,6 +7,7 @@ import type {
   UnreleasedPostWithSeriesDto,
 } from "@moonjin/api-types";
 import { redirect } from "next/navigation";
+import Header from "@components/layout/Header";
 
 type pageProps = {
   params: { id: string };
@@ -20,8 +21,9 @@ export default async function Page({ params }: pageProps) {
     .catch((err) => redirect("/"));
 
   return (
-    <main className="w-full mt-36 min-h-screen flex flex-col items-center ">
-      <div className="max-w-[1006px] w-full flex gap-x-10">
+    <main className="w-full  min-h-screen flex flex-col items-center ">
+      <Header />
+      <div className="max-w-[1006px] mt-36 w-full flex gap-x-10">
         <section className="w-fit flex flex-col h-fit py-5 px-4 bg-grayscale-100 rounded-lg">
           <h2 className="text-lg font-semibold">
             글 상세정보

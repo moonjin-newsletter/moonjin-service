@@ -57,7 +57,7 @@ function AddFollowerOverlay({ overlay }: any) {
     >
       <form
         onSubmit={handleSubmit(submitFollower)}
-        className="flex h-full  flex-col w-full   "
+        className="flex h-full  flex-col w-full"
       >
         <section className="flex h-full overflow-y-auto  flex-col w-full  px-7 py-6">
           <div className="flex w-full  justify-center items-center">
@@ -94,8 +94,11 @@ function AddFollowerOverlay({ overlay }: any) {
               </button>
             </div>
           </div>
+          <div className="text-sm text-grayscale-400 mt-2 px-4">
+            * 사용자 추가 이메일은 외부 이메일로 추가됩니다
+          </div>
           {addedList.length > 0 && (
-            <div className="w-full flex flex-col mt-8">
+            <div className="w-full flex flex-col mt-6">
               {addedList.map((user, index) => (
                 <div
                   key={index}

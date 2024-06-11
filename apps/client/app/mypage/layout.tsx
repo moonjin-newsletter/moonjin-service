@@ -6,6 +6,7 @@ import { Sidebar } from "./_components/Sidebar";
 import Profile from "./_components/Profile";
 import type { ResponseForm, UserOrWriterDto } from "@moonjin/api-types";
 import { checkType } from "@utils/CheckUser";
+import Header from "@components/layout/Header";
 
 export default async function MypageLayout({
   children,
@@ -23,6 +24,7 @@ export default async function MypageLayout({
 
   return (
     <div className="flex   w-full items-center flex-col bg-white p-0 outline-none ">
+      <Header />
       <section className="h-52 w-full bg-grayscale-200" />
       <Profile type={type} userInfo={userInfo.data} />
       <section className="max-w-[1006px] w-full mt-16 flex gap-x-10 pb-12 ">

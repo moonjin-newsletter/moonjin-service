@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import * as process from "process";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import Header from "@components/layout/Header";
 
 type pageProps = {
   params: {
@@ -46,8 +47,9 @@ export default function Page({ params }: pageProps) {
   }
 
   return (
-    <main className="w-full mt-14 pt-20 pb-10 min-h-screen flex flex-col items-center ">
-      <div className="max-w-[1006px] w-full flex flex-col gap-x-10">
+    <main className="w-full  min-h-screen flex flex-col items-center ">
+      <Header />
+      <div className="max-w-[1006px] mt-14 pt-20 pb-10 w-full flex flex-col gap-x-10">
         <section className="w-full flex flex-col items-center">
           <LottieFrame
             lottie={{

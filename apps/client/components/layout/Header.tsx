@@ -14,7 +14,6 @@ import type { ResponseForm, UserDto, WriterDto } from "@moonjin/api-types";
 export default function Header() {
   const { data: userInfo } =
     useSWR<ResponseForm<{ user: UserDto } | WriterDto>>("user");
-  const path = usePathname();
   const router = useRouter();
   const scroll = useScroll();
   const [isLogin, setIsLogin] = useState(false);
@@ -34,17 +33,6 @@ export default function Header() {
   useEffect(() => {
     userInfo ? setIsLogin(true) : setIsLogin(false);
   }, [userInfo]);
-
-  if (
-    path.includes("login") ||
-    path.includes("signup") ||
-    path.includes("auth/social") ||
-    path.includes("auth/apply") ||
-    path.includes("write/") ||
-    path.includes("/form")
-  ) {
-    return null;
-  }
 
   return (
     <header

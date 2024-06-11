@@ -13,6 +13,7 @@ import Link from "next/link";
 import { IoIosArrowForward } from "react-icons/io";
 import { LogoIconGray } from "../../components/icons";
 import { checkType } from "@utils/CheckUser";
+import Header from "@components/layout/Header";
 
 export default async function Page() {
   const userInfo = await ssr("user")
@@ -35,7 +36,7 @@ export default async function Page() {
       : null;
 
   return (
-    <main className="flex flex-col   w-full">
+    <main className="flex flex-col  w-full">
       {userType === "작가" && (
         <Link
           href={`/@${userInfo?.data?.user?.nickname}`}
