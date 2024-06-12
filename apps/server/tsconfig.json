@@ -26,22 +26,22 @@
         /**
          * Validate request body.
          * 
-         *   - "assert": Use typia.assert() function
-         *   - "is": Use typia.is() function
-         *   - "validate": Use typia.validate() function
-         *   - "assertEquals": Use typia.assertEquals() function
-         *   - "equals": Use typia.equals() function
-         *   - "validateEquals": Use typia.validateEquals() function
+         *   - "assert": Use typia.assert() converter
+         *   - "is": Use typia.is() converter
+         *   - "validate": Use typia.validate() converter
+         *   - "assertEquals": Use typia.assertEquals() converter
+         *   - "equals": Use typia.equals() converter
+         *   - "validateEquals": Use typia.validateEquals() converter
          */
         "validate": "assert",
         /**
          * Validate JSON typed response body.
          * 
-         *   - "assert": Use typia.assertStringify() function
-         *   - "is": Use typia.isStringify() function
-         *   - "validate": Use typia.validateStringify() function
-         *   - "stringify": Use typia.stringify() function, but dangerous
-         *   - null: Just use JSON.stringify() function, without boosting
+         *   - "assert": Use typia.assertStringify() converter
+         *   - "is": Use typia.isStringify() converter
+         *   - "validate": Use typia.validateStringify() converter
+         *   - "stringify": Use typia.stringify() converter, but dangerous
+         *   - null: Just use JSON.stringify() converter, without boosting
          */
         "stringify": "assert"
       },

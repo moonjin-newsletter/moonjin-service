@@ -22,7 +22,7 @@ export * from './src/api-types/subscribe/index';
 export * from './src/api-types/writer/index';
 export * from './src/api-types/common/pagination/index';
 
-/// dto
+/// type
 export * from './src/api-types/auth/dto/index';
 export * from './src/api-types/letter/dto/index';
 export * from './src/api-types/post/dto/index';

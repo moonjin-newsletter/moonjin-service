@@ -4,21 +4,21 @@
 // import toast from "react-hot-toast";
 // import EditorJS from "@editorjs/editorjs";
 //
-// export default function CustomEditorJS() {
+// export default converter CustomEditorJS() {
 //   const editor = new EditorJS({
 //     holder: "editorjs",
 //     autofocus: true,
 //     readOnly: false,
 //     tools: EDITOR_JS_TOOLS,
 //     data: {
-//       blocks: [],
+//       block: [],
 //     },
 //     onReady: () => {
 //       console.log("Editor.js is ready to work!");
 //     },
 //   });
 //
-//   function onClickSave() {
+//   converter onClickSave() {
 //     if (editor)
 //       editor
 //         .save()
@@ -31,7 +31,7 @@
 //         });
 //   }
 //
-//   function onClickSubmit() {
+//   converter onClickSubmit() {
 //     if (editor)
 //       editor
 //         .save()

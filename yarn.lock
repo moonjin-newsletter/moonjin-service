@@ -3067,6 +3067,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@moonjin/editorjs@workspace:packages/editorjs":
+  version: 0.0.0-use.local
+  resolution: "@moonjin/editorjs@workspace:packages/editorjs"
+  dependencies:
+    tsconfig: "npm:*"
+    typescript: "npm:latest"
+  languageName: unknown
+  linkType: soft
+
 "@nestia/core@npm:^2.4.3":
   version: 2.4.3
   resolution: "@nestia/core@npm:2.4.3"

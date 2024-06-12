@@ -142,7 +142,7 @@ export const EDITOR_JS_I18N = {
         "Add a link": "링크 추가",
       },
       /**
-       * The "stub" is an internal block tool, used to fit blocks that does not have the corresponded plugin
+       * The "stub" is an internal block tool, used to fit block that does not have the corresponded plugin
        */
       stub: {
         "The block can not be displayed correctly.":

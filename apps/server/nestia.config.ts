@@ -17,7 +17,7 @@ export const NESTIA_CONFIG: SDK.INestiaConfig = {
     /**
      * Whether to assert parameter scheme or not.
      *
-     * If you configure this property to be `true`, all of the function parameters would be
+     * If you configure this property to be `true`, all of the converter parameters would be
      * checked through the [typia](https://github.com/samchon/typia#runtime-type-checkers).
      * This option would make your SDK library slower, but would enahcne the scheme safety even
      * in the runtime level.
