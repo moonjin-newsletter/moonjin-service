@@ -10,15 +10,23 @@ import {WriterService} from "../writer/writer.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto";
-import {SubscribingWriterProfileDto, AllSubscriberDto, ExternalSubscriberDto} from "./dto";
+import {
+    SubscribingWriterProfileDto,
+    AllSubscriberDto,
+    ExternalSubscriberDto,
+    AddExternalSubscriberResultDto
+} from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {ICreateExternalSubscriber} from "./api-types/ICreateExternalSubscriber";
+import {ICreateExternalSubscriberList} from "./api-types/ICreateExternalSubscriberList";
+import {UtilService} from "../util/util.service";
 
 @Controller('subscribe')
 export class SubscribeController {
     constructor(
         private readonly writerService:WriterService,
-        private readonly subscribeService:SubscribeService
+        private readonly subscribeService:SubscribeService,
+        private readonly utilService: UtilService
     ) {}
 
     /**
@@ -113,6 +121,28 @@ export class SubscribeController {
             message: "구독자 추가에 성공했습니다.",
             ...externalFollower,
         })
+    }
+
+    /**
+     * @summary 외부 구독자 목록 추가 API
+     * @param user
+     * @param followerList
+     */
+    @TypedRoute.Post('subscriber/external/list')
+    @UseGuards(WriterAuthGuard)
+    async addExternalFollowerList(@User() user:UserAuthDto, @TypedBody() followerList : ICreateExternalSubscriberList)
+        :Promise<TryCatch<AddExternalSubscriberResultDto, EMAIL_ALREADY_EXIST | SUBSCRIBER_ALREADY_EXIST>>{
+        const validFollowerEmailList = followerList.followerEmail.slice(0, 100);
+        const createdSubscriberList = await this.subscribeService.addExternalSubscriberListByEmail(user.id, validFollowerEmailList);
+        const success = createdSubscriberList.map(createdSubscriber => createdSubscriber.followerEmail);
+        const fail = validFollowerEmailList.filter(email => !success.includes(email));
+
+        return createResponseForm({
+            success,
+            fail,
+            message: success.length +" 명의 구독자 추가에 성공했습니다.",
+            createdAt : this.utilService.getCurrentDateInKorea()
+        });
     }
 
     /**

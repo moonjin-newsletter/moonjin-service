@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
-import {ExternalSubscriberDto, SubscribingWriterProfileDto, AllSubscriberDto, SubscriberDto} from "./dto";
+import {
+    ExternalSubscriberDto,
+    SubscribingWriterProfileDto,
+    AllSubscriberDto,
+    SubscriberDto,
+} from "./dto";
 import {AuthValidationService} from "../auth/auth.validation.service";
 import {UtilService} from "../util/util.service";
 import {ExceptionList} from "../response/error/errorInstances";
 import {SubscribingWriterInfoWithUser} from "./prisma/subscribingWriterInfoWithUser.prisma.type";
 import SubscribeDtoMapper from "./SubscribeDtoMapper";
+import {SubscribeExternal} from "@prisma/client";
 
 @Injectable()
 export class SubscribeService {
@@ -38,6 +44,29 @@ export class SubscribeService {
             console.log(error);
             throw ExceptionList.SUBSCRIBE_ALREADY_ERROR;
         }
+    }
+
+    /**
+     * @summary 외부 구독자 bulk 추가하기
+     * @param writerId
+     * @param followerEmail
+     * @returns ExternalSubscriberDto
+     * @throws EMAIL_ALREADY_EXIST
+     * @throws SUBSCRIBE_ALREADY_ERROR
+     */
+    async addExternalSubscriberListByEmail(writerId: number, followerEmail: string[]): Promise<SubscribeExternal[]> {
+        if(followerEmail.length === 0) return [];
+        const createdAt = this.utilService.getCurrentDateInKorea();
+        return this.prismaService.subscribeExternal.createManyAndReturn({
+            data : followerEmail.map(email => {
+                return {
+                    writerId,
+                    followerEmail: email,
+                    createdAt,
+                }
+            }),
+            skipDuplicates: true
+        })
     }
 
     /**
