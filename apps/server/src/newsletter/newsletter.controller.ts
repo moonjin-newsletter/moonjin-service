@@ -22,9 +22,9 @@ import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {ExceptionList} from "../response/error/errorInstances";
 import {MailService} from "../mail/mail.service";
-import {editorJsToHtml} from "../common";
 import NewsletterDtoMapper from "./newsletterDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
+import {AssertEditorJsonDto, EditorJsToHtml} from "@moonjin/editorjs";
 
 @Controller('newsletter')
 export class NewsletterController {
@@ -80,6 +80,8 @@ export class NewsletterController {
         if(body.receiverEmails.length == 0 || body.receiverEmails.length > 5) throw ExceptionList.EMAIL_NOT_EXIST;
 
         const postWithPostContentAndSeriesAndWriter = await this.postService.getPostWithContentAndSeriesAndWriter(postId);
+        const postContent = postWithPostContentAndSeriesAndWriter.postContent.content;
+        if(AssertEditorJsonDto(postContent) === false) throw ExceptionList.POST_CONTENT_NOT_FOUND; // TODO : 동작하는 지 테스트 필요
         await this.newsletterService.assertNewsletterCanBeSent(user.id, postWithPostContentAndSeriesAndWriter);
 
         await this.mailService.sendNewsLetterWithHtml({
@@ -88,7 +90,7 @@ export class NewsletterController {
             senderMailAddress : postWithPostContentAndSeriesAndWriter.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
             senderName: user.nickname,
             subject: "[테스트 뉴스레터] "+postWithPostContentAndSeriesAndWriter.post.title,
-            html: editorJsToHtml(postWithPostContentAndSeriesAndWriter.postContent)
+            html: EditorJsToHtml(postContent)
         })
 
         return createResponseForm({

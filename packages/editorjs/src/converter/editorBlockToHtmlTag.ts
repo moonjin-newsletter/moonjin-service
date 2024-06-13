@@ -16,11 +16,11 @@ export function EditorBlockToHtmlTag(block : EditorBlockDto){
         case "image":
             return`<img class="img-fluid" src="${block.data.file.url}" title="${block.data.caption}" /><br /><em>${block.data.caption}</em>`;
         case "list":
-            let convertedHtml = (block.data.type === "ordered") ? "<ol>" : "<ul>";
+            let convertedHtml = (block.data.style === "ordered") ? "<ol>" : "<ul>";
             block.data.items.forEach(li => {
                 convertedHtml += `<li>${li}</li>`;
             });
-            convertedHtml += (block.data.type === "ordered") ? "<ol>" : "<ul>";
+            convertedHtml += (block.data.style === "ordered") ? "<ol>" : "<ul>";
             return convertedHtml;
         case "checklist":
         case "linkTool":

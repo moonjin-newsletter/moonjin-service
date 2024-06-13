@@ -23,7 +23,7 @@ import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {IGetPostBySeriesId} from "./api-types/IGetPostBySeriesId";
 import {UserService} from "../user/user.service";
-import {editorJsToHtml, generateNextPaginationUrl} from "../common";
+import {generateNextPaginationUrl} from "../common";
 import {FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
 import {NewsletterListWithPaginationDto} from "./dto";
 import {GetPagination} from "../common/pagination/decorator/GetPagination.decorator";
@@ -32,6 +32,7 @@ import {ICreatePostContent} from "./api-types/ICreatePostContent";
 import {PostContentDto} from "./dto";
 import {ExceptionList} from "../response/error/errorInstances";
 import {NewsletterDto} from "../newsletter/dto";
+import {EditorJsToHtml} from "@moonjin/editorjs";
 
 
 @Controller('post')
@@ -246,7 +247,7 @@ export class PostController {
     {
         const postContent = await this.postService.getPostWithContentAndSeries(postId);
         try{
-            return createResponseForm(editorJsToHtml(postContent.postContent));
+            return createResponseForm(EditorJsToHtml(postContent.postContent.content));
         }catch (error){
             throw ExceptionList.FORBIDDEN_FOR_POST;
         }

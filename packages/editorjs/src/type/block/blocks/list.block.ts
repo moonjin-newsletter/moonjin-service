@@ -8,7 +8,7 @@ export interface ListBlockItem {
 export interface ListBlock extends EditorBaseBlock {
     type : "list";
     data: {
-        type: "ordered" | "unordered";
+        style: "ordered" | "unordered";
         items: ListBlockItem[];
     }
 }

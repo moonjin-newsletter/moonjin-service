@@ -5,6 +5,7 @@ import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {NewsletterDto} from "../newsletter/dto";
+import {ObjectToEditorJsonDto} from "@moonjin/editorjs";
 
 
 class PostDtoMapper {
@@ -55,7 +56,7 @@ class PostDtoMapper {
         return {
             id : postContent.id,
             postId: postContent.postId,
-            content: JSON.parse(postContent.content),
+            content: ObjectToEditorJsonDto(JSON.parse(postContent.content)),
             createdAt: postContent.createdAt
         }
     }

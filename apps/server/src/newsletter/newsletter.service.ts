@@ -9,10 +9,10 @@ import {PostService} from "../post/post.service";
 import {SubscribeService} from "../subscribe/subscribe.service";
 import {UtilService} from "../util/util.service";
 import {sendNewsLetterWithHtmlDto} from "../mail/dto";
-import {editorJsToHtml} from "../common";
 import {MailService} from "../mail/mail.service";
 import {SendMailEventsEnum} from "../mail/enum/sendMailEvents.enum";
 import {SentNewsletterWithCounts} from "./prisma/sentNewsletterWithCounts.prisma.type";
+import {EditorJsToHtml} from "@moonjin/editorjs";
 
 @Injectable()
 export class NewsletterService {
@@ -123,7 +123,7 @@ export class NewsletterService {
                 senderName : postWithContentAndSeriesAndWriter.user.nickname,
                 senderMailAddress : postWithContentAndSeriesAndWriter.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
                 subject : newsletterTitle,
-                html : editorJsToHtml(postWithContentAndSeriesAndWriter.postContent),
+                html : EditorJsToHtml(postWithContentAndSeriesAndWriter.postContent.content),
                 emailList : receiverEmailList
             };
             await this.mailService.sendNewsLetterWithHtml(newsletterSendInfo);

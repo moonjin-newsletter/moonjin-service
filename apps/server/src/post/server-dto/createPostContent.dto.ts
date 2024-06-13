@@ -1,4 +1,4 @@
-import {EditorJsonDto} from "../../common/editor/dto";
+import {EditorJsonDto} from "@moonjin/editorjs";
 
 export interface CreatePostContentDto {
     postId: number;

@@ -3,7 +3,8 @@ import {PostDto, PostWithContentAndSeriesDto,
     PostWithContentDto,
     ReleasedPostDto,
     UnreleasedPostWithSeriesDto,
-    PostContentDto
+    PostContentDto,
+    PostWithContentAndSeriesAndWriterDto
 } from "./dto";
 import {PrismaService} from "../prisma/prisma.service";
 import PostDtoMapper from "./postDtoMapper";
@@ -13,15 +14,14 @@ import {AuthValidationService} from "../auth/auth.validation.service";
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {PaginationOptionsDto} from "../common/pagination/dto";
-import {convertEditorJsonToPostPreview} from "../common";
 import {CreatePostContentDto} from "./server-dto/createPostContent.dto";
 import {CreatePostDto} from "./server-dto/createPost.dto";
 import {PostWithContents} from "./prisma/postWithContents.prisma.type";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {PostWithContentAndSeries} from "./prisma/postWithContentAndSeries.prisma";
 import {NewsletterDto} from "../newsletter/dto";
-import {PostWithContentAndSeriesAndWriterDto} from "./dto/postWithContentAndSeriesAndWriter.dto";
 import UserDtoMapper from "../user/userDtoMapper";
+import {EditorJsToPostPreview} from "@moonjin/editorjs";
 
 @Injectable()
 export class PostService {
@@ -45,7 +45,7 @@ export class PostService {
             const post = await this.prismaService.post.create({
                 data: {
                     ...postMetaData,
-                    preview: convertEditorJsonToPostPreview(content),
+                    preview: EditorJsToPostPreview(content.blocks),
                     writerId,
                     cover,
                     createdAt: this.utilService.getCurrentDateInKorea(),
@@ -88,7 +88,7 @@ export class PostService {
                 },
                 data: {
                     ...postMetaData,
-                    preview: convertEditorJsonToPostPreview(content),
+                    preview: EditorJsToPostPreview(content.blocks),
                     ...cover,
                     lastUpdatedAt: this.utilService.getCurrentDateInKorea(),
                     postContent: {
@@ -324,7 +324,7 @@ export class PostService {
                     createdAt : this.utilService.getCurrentDateInKorea(),
                 },
             });
-            await this.updatePostPreview(postContentData.postId,convertEditorJsonToPostPreview(postContentData.content));
+            await this.updatePostPreview(postContentData.postId,EditorJsToPostPreview(postContentData.content.blocks));
             return PostDtoMapper.PostContentToPostContentDto(postContent);
         }catch (error){
             console.log(error);
