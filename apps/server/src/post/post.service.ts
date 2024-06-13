@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {PostDto, PostWithContentAndSeriesDto,
     PostWithContentDto,
     ReleasedPostDto,
-    UnreleasedPostWithSeriesDto,
+    PostWithSeriesDto,
     PostContentDto,
     PostWithContentAndSeriesAndWriterDto
 } from "./dto";
@@ -12,7 +12,6 @@ import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
 import {AuthValidationService} from "../auth/auth.validation.service";
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
-import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {CreatePostContentDto} from "./server-dto/createPostContent.dto";
 import {CreatePostDto} from "./server-dto/createPost.dto";
@@ -22,6 +21,7 @@ import {PostWithContentAndSeries} from "./prisma/postWithContentAndSeries.prisma
 import {NewsletterDto} from "../newsletter/dto";
 import UserDtoMapper from "../user/userDtoMapper";
 import {EditorJsToPostPreview} from "@moonjin/editorjs";
+import {PostWithSeriesAndNewsletter} from "./prisma/postWithSeriesAndNewsletter.prisma.type";
 
 @Injectable()
 export class PostService {
@@ -123,9 +123,6 @@ export class PostService {
                 where: {
                     deleted: false,
                     status : true,
-                    releasedAt : {
-                        not : null
-                    }
                 },
             }
         );
@@ -182,27 +179,39 @@ export class PostService {
     /**
      * @summary 해당 유저가 작성중인 글 목록 가져오기
      * @param userId
-     * @return UnreleasedPostWithSeriesDto[]
+     * @return PostWithSeriesDto[]
      * @throws USER_NOT_WRITER
      */
-    async getWritingPostList(userId: number): Promise<UnreleasedPostWithSeriesDto[]> {
+    async getWritingPostList(userId: number): Promise<PostWithSeriesDto[]> {
         await this.authValidationService.assertWriter(userId);
         try{
-            const postList: PostWithSeries[] = await this.prismaService.post.findMany({
+            const postList: PostWithSeriesAndNewsletter[] = await this.prismaService.post.findMany({
                 where : {
                     writerId : userId,
-                    releasedAt : null,
-                    deleted : false
+                    deleted : false,
                 },
                 include: {
-                    series : true
+                    series : true,
+                    newsletter: {
+                        orderBy : {
+                            sentAt : 'desc'
+                        }
+                    }
                 },
                 relationLoadStrategy: 'join',
                 orderBy : {
-                    createdAt : 'desc'
+                    createdAt : 'desc',
                 }
             })
-            return postList.map(post => PostDtoMapper.PostWithSeriesToUnreleasedPostDto(post));
+            return postList.filter(post => post.newsletter.length == 0 || post.lastUpdatedAt > post.newsletter[post.newsletter.length-1].sentAt)
+                .map(post => {
+                    const {newsletter,series, ...postData} = post;
+                    return {
+                        post: PostDtoMapper.PostToPostDto(postData),
+                        series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null
+                    }
+                });
+
         }catch (error){
             console.error(error);
             return [];
@@ -245,9 +254,6 @@ export class PostService {
             const postList : PostWithSeriesAndWriterUser[] = await this.prismaService.post.findMany({
                 where : {
                     writerId : userId,
-                    releasedAt : {
-                        not : null
-                    },
                     status,
                     deleted : false
                 },
@@ -260,9 +266,6 @@ export class PostService {
                     }
                 },
                 relationLoadStrategy: 'join',
-                orderBy : {
-                    releasedAt : 'desc'
-                }
             })
             return PostDtoMapper.PostWithSeriesAndWriterUserListToNewsLetterDtoList(postList);
         } catch (error){
@@ -281,9 +284,6 @@ export class PostService {
         const postList : PostWithSeriesAndWriterUser[] = await this.prismaService.post.findMany({
             where : {
                 seriesId : seriesId?? undefined,
-                releasedAt : {
-                    not : null
-                },
                 status : true,
                 deleted : false
             },
@@ -296,9 +296,6 @@ export class PostService {
                 series : true
             },
             relationLoadStrategy: 'join',
-            orderBy : {
-                releasedAt : 'desc'
-            },
             skip: paginationOptions?.skip,
             take: paginationOptions?.take,
             cursor: paginationOptions?.cursor ? {

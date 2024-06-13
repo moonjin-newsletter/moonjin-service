@@ -8,11 +8,10 @@ import {Newsletter} from "@prisma/client";
 
 class NewsletterDtoMapper {
     public static newsletterWithPSWUToNewsletterDto(newsletterWithPostAndSeriesAndWriterUser: NewsletterWithPostAndSeriesAndWriterUser): NewsletterDto {
-        const {post, ...newsletterData} = newsletterWithPostAndSeriesAndWriterUser.newsletter;
-        const {writerInfo, series,...postData } = post;
+        const {writerInfo, series,...postData } = newsletterWithPostAndSeriesAndWriterUser.newsletter.post;
 
         return {
-            post : PostDtoMapper.PostToReleasedPostDto(postData, newsletterData.sentAt),
+            post : PostDtoMapper.PostToReleasedPostDto(postData),
             series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
             writer : UserDtoMapper.UserToUserProfileDto(writerInfo.user),
         };

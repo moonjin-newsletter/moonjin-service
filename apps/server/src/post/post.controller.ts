@@ -3,7 +3,7 @@ import {TypedBody, TypedParam, TypedQuery, TypedRoute} from "@nestia/core";
 import {ICreatePost} from "./api-types/ICreatePost";
 import {PostService} from "./post.service";
 import {
-    UnreleasedPostWithSeriesDto,
+    PostWithSeriesDto,
     PostWithContentDto,
     PostWithContentAndSeriesDto
 } from "./dto";
@@ -104,12 +104,12 @@ export class PostController {
     /**
      * @summary 해당 유저의 작성 중인 글 목록 가져오기
      * @param user
-     * @returns UnreleasedPostWithSeriesDto[]
+     * @returns PostWithSeriesDto[]
      * @throws USER_NOT_WRITER
      */
     @TypedRoute.Get('/writing')
     @UseGuards(WriterAuthGuard)
-    async getWritingPostList(@User() user:UserAuthDto) : Promise<TryCatch<UnreleasedPostWithSeriesDto[], USER_NOT_WRITER>>{
+    async getWritingPostList(@User() user:UserAuthDto) : Promise<TryCatch<PostWithSeriesDto[], USER_NOT_WRITER>>{
         const postList = await this.postService.getWritingPostList(user.id);
         return createResponseForm(postList);
     }
@@ -224,7 +224,7 @@ export class PostController {
      */
     @TypedRoute.Get(":id/metadata")
     @UseGuards(UserAuthGuard)
-    async getPostMetadata(@TypedParam('id') postId : number): Promise<TryCatch<UnreleasedPostWithSeriesDto,
+    async getPostMetadata(@TypedParam('id') postId : number): Promise<TryCatch<PostWithSeriesDto,
         POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
     {
         const postContent = await this.postService.getPostById(postId);

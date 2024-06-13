@@ -79,20 +79,19 @@ model SubscribeExternal {
 }
 
 model Post {
-  id            Int       @id @default(autoincrement())
-  title         String    @db.VarChar(32)
-  subtitle      String    @default("") @db.VarChar(128)
+  id            Int      @id @default(autoincrement())
+  title         String   @db.VarChar(32)
+  subtitle      String   @default("") @db.VarChar(128)
   writerId      Int
-  preview       String    @default("") @db.VarChar(512)
-  category      String    @default("") @db.VarChar(16)
-  cover         String    @db.VarChar(128)
-  clicks        Int       @default(0)
+  preview       String   @default("") @db.VarChar(512)
+  category      String   @default("") @db.VarChar(16)
+  cover         String   @db.VarChar(128)
+  clicks        Int      @default(0)
   createdAt     DateTime
-  lastUpdatedAt DateTime  @default(now())
-  releasedAt    DateTime?
-  seriesId      Int       @default(0)
-  status        Boolean   @default(false)
-  deleted       Boolean   @default(false)
+  lastUpdatedAt DateTime @default(now())
+  seriesId      Int      @default(0)
+  status        Boolean  @default(true)
+  deleted       Boolean  @default(false)
 
   writerInfo  WriterInfo    @relation(fields: [writerId], references: [userId])
   newsletter  Newsletter[]
