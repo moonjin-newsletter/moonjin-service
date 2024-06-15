@@ -1,7 +1,7 @@
 import {EditorBlockDto} from "../type";
 
 /**
- * Convert EditorJs blocks으로 부터 Post Preview를 생성
+ * @summary EditorJson -> Post Preview (서버용)
  * @param editorJsBlocks
  * @constructor
  */
@@ -14,7 +14,7 @@ export function EditorJsToPostPreview (editorJsBlocks : EditorBlockDto[]){
 
         switch (block.type) {
             case "paragraph":
-                preview += (block.data.text + " ").trim();
+                preview += (block.data.text.trim() + " ");
                 break;
             case "list":
                 block.data.items.map(item => {
