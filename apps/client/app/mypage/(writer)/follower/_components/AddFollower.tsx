@@ -5,6 +5,9 @@ import { IoCloseOutline } from "react-icons/io5";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import csr from "@lib/fetcher/csr";
+import { useRouter } from "next/navigation";
+import { AddExternalSubscriberResultDto } from "@moonjin/api-types";
 
 export default function AddFollower() {
   const overlay = useOverlay();
@@ -35,6 +38,7 @@ export default function AddFollower() {
 }
 
 function AddFollowerOverlay({ overlay }: any) {
+  const router = useRouter();
   const [addUser, setAddUser] = useState("");
   const { register, handleSubmit, setValue, watch } = useForm<any>({
     defaultValues: {
@@ -47,7 +51,23 @@ function AddFollowerOverlay({ overlay }: any) {
   console.log(addedList);
 
   function submitFollower() {
-    return;
+    csr
+      .post("subscribe/subscriber/external/list ", {
+        json: { followerEmail: addedList },
+      })
+      .then(async (res) => {
+        const result: { data: AddExternalSubscriberResultDto } =
+          await res.json();
+
+        if (result.data.fail.length > 0) {
+          result.data.fail.map((email: string, index: number) =>
+            toast.error(`${email} 추가실패`),
+          );
+        }
+        overlay.exit();
+        router.refresh();
+      })
+      .catch((err) => {});
   }
 
   return (
@@ -81,6 +101,7 @@ function AddFollowerOverlay({ overlay }: any) {
                 className="w-full placeholder:text-grayscale-500 ring-0 h-6 p-0 active:outline-none focus:ring-0 border-none bg-transparent"
               />
               <button
+                type="button"
                 onClick={() => {
                   if (CheckEamil(addUser)) {
                     setValue("addList", [...addedList, addUser]);
