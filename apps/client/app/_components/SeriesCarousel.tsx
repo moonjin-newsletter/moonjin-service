@@ -11,7 +11,7 @@ export default function SeriesCarousel({
   series: Array<any | object>;
 }) {
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 300,
     slidesToShow: 7,

@@ -65,9 +65,9 @@ export function ExternalCard({
 }) {
   const router = useRouter();
   return (
-    <div className="w-full rounded-lg p-4 bg-grayscale-100 flex items-center">
+    <div className="w-full rounded-lg p-4 border border-grayscale-100 flex items-center">
       <div className="flex flex-col ml-3">
-        <h3 className="font-semibold">{follower.email}</h3>
+        <h3 className="font-medium">{follower.email}</h3>
       </div>
       <div className="ml-auto flex items-center gap-x-2.5">
         <p className="text-grayscale-500 ml-auto text-sm gap-x-2.5">

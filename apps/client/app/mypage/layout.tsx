@@ -23,7 +23,7 @@ export default async function MypageLayout({
   const type = checkType(userRole);
 
   return (
-    <div className="flex   w-full items-center flex-col bg-white p-0 outline-none ">
+    <div className="flex w-full items-center flex-col bg-white p-0 outline-none  ">
       <Header />
       <section className="h-52 w-full bg-grayscale-200" />
       <Profile type={type} userInfo={userInfo.data} />

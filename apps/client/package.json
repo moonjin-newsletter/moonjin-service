@@ -19,7 +19,7 @@
     "@editorjs/quote": "^2.6.0",
     "@editorjs/simple-image": "^1.6.0",
     "@editorjs/underline": "^1.1.0",
-    "@headlessui/react": "^1.7.18",
+    "@headlessui/react": "^2.0.4",
     "@tailwindcss/forms": "^0.5.7",
     "@toss/assert": "^1.1.12",
     "@toss/date": "^1.1.8",

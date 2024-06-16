@@ -36,7 +36,7 @@ export default async function Page() {
       : null;
 
   return (
-    <main className="flex flex-col  w-full">
+    <main className="flex flex-col  w-full ">
       {userType === "작가" && (
         <Link
           href={`/@${userInfo?.data?.user?.nickname}`}

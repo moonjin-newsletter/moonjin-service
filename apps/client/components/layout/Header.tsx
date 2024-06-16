@@ -40,7 +40,7 @@ export default function Header() {
         scroll.y === 0 ? "bg-transparent border-none" : "bg-white/90 border-b"
       }  transition duration-300 fixed z-50 top-0 left-0 w-full flex h-16  items-center justify-center  border-grayscale-200`}
     >
-      <div className="flex  w-[1006px] h-full items-center  font-normal">
+      <div className="flex w-[1006px] h-full items-center  font-normal">
         <Link className="flex  items-center h-full text-white" href="/">
           <I.Logo fill="#7b0000" height="29" viewBox="0 0 149 39" width="139" />
         </Link>
@@ -83,7 +83,7 @@ export default function Header() {
                 </nav>
                 <button className="h-full  py-2.5 relative  text-white ">
                   <I.User
-                    class={`fill-grayscale-600 group-hover:fill-white`}
+                    className={`fill-grayscale-600 group-hover:fill-white`}
                     height="23"
                     viewBox="0 0 24 25"
                     width="22"

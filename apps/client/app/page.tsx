@@ -135,7 +135,7 @@ export default async function Page() {
           <h2 className="font-libre mt-2 text-2xl font-bold text-grayscale-700">
             Moonjin Sereis
           </h2>
-          <div className="w-full h-fit ">
+          <div className="w-full h-fit overflow-x-hidden ">
             <SeriesCarousel series={seriesData} />
           </div>
         </section>

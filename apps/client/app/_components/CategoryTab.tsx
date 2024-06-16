@@ -13,7 +13,7 @@ export default function CategoryTab({
   return (
     <>
       <Tab.Group>
-        <Tab.List>
+        <Tab.List className="w-full flex justify-center">
           {tabList.map((value, index) => (
             <Tab
               className="mx-2.5 py-1 font-semibold aria-selected:border-b-2 border-primary aria-selected:text-primary text-gray-600 outline-none"

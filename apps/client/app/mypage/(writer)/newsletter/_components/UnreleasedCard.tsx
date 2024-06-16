@@ -1,12 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import { UnreleasedPostWithSeriesDto } from "@moonjin/api-types";
+import { PostWithSeriesDto } from "@moonjin/api-types";
 
 export function UnreleasedNewsletterCard({
   value,
 }: {
-  value: UnreleasedPostWithSeriesDto;
+  value: PostWithSeriesDto;
 }) {
   return (
     <Link

@@ -25,9 +25,9 @@ export default async function Page() {
         <div className="py-0.5 h-fit font-semibold px-2 ml-2 text-sm rounded bg-primary  text-white">
           {isNotNil(newList) ? newList.length : 0}
         </div>
-        <section className="ml-auto flex items-center gap-x-2.5">
-          <AddFollower />
-        </section>
+        {/*<section className="ml-auto flex items-center gap-x-2.5">*/}
+        {/*  <AddFollower />*/}
+        {/*</section>*/}
       </div>
       <section className="flex flex-col w-full mt-4">
         {isNonEmptyArray(newList ?? []) ? (
