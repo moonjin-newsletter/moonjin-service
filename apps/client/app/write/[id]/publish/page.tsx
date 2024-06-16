@@ -2,10 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import MailSendingSection from "./MailSendingSection";
 import ssr from "@lib/fetcher/ssr";
-import type {
-  ResponseForm,
-  UnreleasedPostWithSeriesDto,
-} from "@moonjin/api-types";
+import type { PostWithSeriesDto, ResponseForm } from "@moonjin/api-types";
 import { redirect } from "next/navigation";
 import Header from "@components/layout/Header";
 
@@ -17,7 +14,7 @@ export default async function Page({ params }: pageProps) {
   const letterId = parseInt(params.id, 10);
   const { data: newsletterInfo } = await ssr
     .get(`post/${letterId}/metadata`)
-    .then((res) => res.json<ResponseForm<UnreleasedPostWithSeriesDto>>())
+    .then((res) => res.json<ResponseForm<PostWithSeriesDto>>())
     .catch((err) => redirect("/"));
 
   return (
