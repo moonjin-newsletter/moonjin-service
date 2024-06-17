@@ -1,5 +1,5 @@
 import {Post, PostContent} from "@prisma/client";
-import { PostDto, PostContentDto,ReleasedPostDto, PostWithSeriesDto} from "./dto";
+import {PostDto, PostContentDto, ReleasedPostDto, PostWithSeriesDto, PostInNewsletterCardDto} from "./dto";
 import UserDtoMapper from "../user/userDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
@@ -52,5 +52,14 @@ class PostDtoMapper {
         }
     }
 
+    public static PostToPostInNewsletterCardDto(post: Post): PostInNewsletterCardDto {
+        const {deleted, createdAt , status,...postData} = post;
+        return {
+            id: postData.id,
+            title: postData.title,
+            clicks: postData.clicks,
+            preview: postData.preview
+        }
+    }
 }
 export default PostDtoMapper;

@@ -8,7 +8,7 @@ class SeriesDtoMapperClass {
     }
 
     SeriesDtoToSeriesSummaryDto(series : SeriesDto):SeriesSummaryDto{
-        const {cover, status, lastUpdatedAt, clicks, category, description, writerId,...seriesSummaryData} = series;
+        const { status, lastUpdatedAt, clicks, category, description, writerId,...seriesSummaryData} = series;
         return seriesSummaryData;
     }
 

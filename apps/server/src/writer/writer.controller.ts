@@ -77,6 +77,7 @@ export class WriterController {
     }
 
     /**
+     * Deprecated
      * @summary 작가 프로필 변경 API
      * @param user
      * @param res

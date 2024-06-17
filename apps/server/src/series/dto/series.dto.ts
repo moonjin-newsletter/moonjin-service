@@ -5,7 +5,6 @@ export interface SeriesDto extends SeriesSummaryDto {
     category : string;
     clicks : number;
     status : boolean;
-    cover : string;
     description : string | null;
     lastUpdatedAt : Date;
 }

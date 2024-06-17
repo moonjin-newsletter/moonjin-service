@@ -13,6 +13,7 @@ import {MailService} from "../mail/mail.service";
 import {SendMailEventsEnum} from "../mail/enum/sendMailEvents.enum";
 import {SentNewsletterWithCounts} from "./prisma/sentNewsletterWithCounts.prisma.type";
 import {EditorJsToHtml} from "@moonjin/editorjs";
+import {PaginationOptionsDto} from "../common/pagination/dto";
 
 @Injectable()
 export class NewsletterService {
@@ -189,9 +190,10 @@ export class NewsletterService {
     /**
      * @summary 해당 유저의 발송한 뉴스레터 목록 가져오기
      * @param writerId
+     * @param paginationOptions
      * @return SentNewsletterWithCounts[]
      */
-    async getSentNewsletterListByWriterId(writerId: number): Promise<SentNewsletterWithCounts[]>{
+    async getSentNewsletterListByWriterId(writerId: number, paginationOptions?:PaginationOptionsDto): Promise<SentNewsletterWithCounts[]>{
         return this.prismaService.newsletter.findMany({
             where : {
                 post : {
@@ -223,7 +225,12 @@ export class NewsletterService {
             relationLoadStrategy: 'join',
             orderBy : {
                 sentAt : 'desc'
-            }
+            },
+            skip: paginationOptions?.skip,
+            take: paginationOptions?.take,
+            cursor: paginationOptions?.cursor ? {
+                id : paginationOptions.cursor
+            } : undefined
         })
     }
 }

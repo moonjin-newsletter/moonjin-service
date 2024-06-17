@@ -1,1 +1,1 @@
-export * from './pagination.function';
+export * from './generateNextPaginationUrl';

@@ -23,11 +23,7 @@ import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {IGetPostBySeriesId} from "./api-types/IGetPostBySeriesId";
 import {UserService} from "../user/user.service";
-import {generateNextPaginationUrl} from "../common";
 import {FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
-import {NewsletterListWithPaginationDto} from "./dto";
-import {GetPagination} from "../common/pagination/decorator/GetPagination.decorator";
-import {PaginationOptionsDto} from "../common/pagination/dto";
 import {ICreatePostContent} from "./api-types/ICreatePostContent";
 import {PostContentDto} from "./dto";
 import {ExceptionList} from "../response/error/errorInstances";
@@ -150,34 +146,6 @@ export class PostController {
             await this.seriesService.assertUserCanAccessToSeries(series.seriesId, user.id);
         const postList = await this.postService.getReleasedPostListBySeriesId(series.seriesId);
         return createResponseForm(postList);
-    }
-
-    /**
-     * @summary 모든 글 목록 가져오기
-     * @param user
-     * @param paginationOption
-     * @param series
-     * @returns NewsletterDto[]
-     * @throws SERIES_NOT_FOUND
-     * @throws FORBIDDEN_FOR_SERIES
-     */
-    @TypedRoute.Get('page')
-    @UseGuards(UserAuthGuard)
-    async getAllReleasedPosts(@User() user:UserAuthDto, @GetPagination() paginationOption : PaginationOptionsDto, @TypedQuery() series : IGetPostBySeriesId) : Promise<TryCatch<
-        NewsletterListWithPaginationDto ,SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES>>{
-        if(series.seriesId) {
-            await this.seriesService.assertUserCanAccessToSeries(series.seriesId, user.id);
-        }
-        const postList = await this.postService.getReleasedPostListBySeriesId(series.seriesId, paginationOption);
-        const nextUrl = postList.length > 0 ? generateNextPaginationUrl(paginationOption.take, postList[postList.length - 1].post.id) : "";
-        return createResponseForm({
-            newsletters : postList,
-            paginationMetaData :{
-                nextUrl,
-                isLastPage : postList.length < paginationOption.take,
-                totalCount : postList.length
-            }
-        });
     }
 
     /**

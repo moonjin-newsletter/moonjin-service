@@ -11,7 +11,7 @@ import {UtilService} from "../util/util.service";
 import {ExceptionList} from "../response/error/errorInstances";
 import {SubscribingWriterInfoWithUser} from "./prisma/subscribingWriterInfoWithUser.prisma.type";
 import SubscribeDtoMapper from "./SubscribeDtoMapper";
-import {SubscribeExternal} from "@prisma/client";
+import {Subscribe, SubscribeExternal} from "@prisma/client";
 
 @Injectable()
 export class SubscribeService {
@@ -57,7 +57,7 @@ export class SubscribeService {
     async addExternalSubscriberListByEmail(writerId: number, followerEmail: string[]): Promise<SubscribeExternal[]> {
         if(followerEmail.length === 0) return [];
         const createdAt = this.utilService.getCurrentDateInKorea();
-        return this.prismaService.subscribeExternal.createManyAndReturn({
+        const result = await this.prismaService.subscribeExternal.createManyAndReturn({
             data : followerEmail.map(email => {
                 return {
                     writerId,
@@ -67,6 +67,8 @@ export class SubscribeService {
             }),
             skipDuplicates: true
         })
+        await this.synchronizeSubscriber(writerId);
+        return result;
     }
 
     /**
@@ -285,6 +287,25 @@ export class SubscribeService {
         }catch (error){
             throw ExceptionList.SUBSCRIBER_NOT_FOUND;
         }
+    }
+
+    /**
+     * @summary 해당 유저가 작가를 팔로잉 중인지 확인
+     * @param followerId
+     * @param writerId
+     * @returns Subscribe
+     */
+    async assertUserIsSubscribingTheWriter(followerId: number, writerId: number): Promise<Subscribe> {
+        const subscribe = await this.prismaService.subscribe.findUnique({
+            where: {
+                followerId_writerId: {
+                    writerId,
+                    followerId
+                }
+            }
+        })
+        if(!subscribe) throw ExceptionList.SUBSCRIBER_NOT_FOUND;
+        return subscribe;
     }
 
 }

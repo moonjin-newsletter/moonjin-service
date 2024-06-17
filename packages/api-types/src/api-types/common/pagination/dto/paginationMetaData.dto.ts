@@ -1,5 +1,7 @@
+import {PaginationOptionsDto} from "./paginationOptionsDto";
+
 export interface PaginationMetaDataDto {
-    nextUrl: string;
+    next: PaginationOptionsDto
     totalCount: number;
     isLastPage: boolean;
 }
