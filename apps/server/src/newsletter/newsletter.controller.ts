@@ -31,7 +31,7 @@ import {PaginationOptionsDto} from "../common/pagination/dto";
 import PostDtoMapper from "../post/postDtoMapper";
 import {SubscribeService} from "../subscribe/subscribe.service";
 import {SUBSCRIBER_NOT_FOUND} from "../response/error/subscribe";
-import {NewsletterCardListWithPaginationDto} from "./dto/newsletterCardListWithPagination.dto";
+import {NewsletterCardListWithPaginationDto} from "./dto";
 
 @Controller('newsletter')
 export class NewsletterController {

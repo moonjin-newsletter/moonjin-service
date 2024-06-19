@@ -24,18 +24,18 @@ export class SubscribeService {
     /**
      * @summary 외부 구독자 추가하기
      * @param writerId
-     * @param followerEmail
+     * @param externalSubscriber
      * @returns ExternalSubscriberDto
      * @throws EMAIL_ALREADY_EXIST
      * @throws SUBSCRIBE_ALREADY_ERROR
      */
-    async addExternalSubscriberByEmail(writerId: number, followerEmail: string): Promise<ExternalSubscriberDto> {
-        await this.authValidationService.assertEmailUnique(followerEmail);
+    async addExternalSubscriber(writerId: number, externalSubscriber : ExternalSubscriberDto): Promise<ExternalSubscriberDto> {
+        await this.authValidationService.assertEmailUnique(externalSubscriber.subscriberEmail);
         try{
             const externalFollow = await this.prismaService.subscribeExternal.create({
                 data: {
                     writerId,
-                    followerEmail,
+                    ...externalSubscriber,
                     createdAt: this.utilService.getCurrentDateInKorea()
                 }
             })
@@ -49,19 +49,19 @@ export class SubscribeService {
     /**
      * @summary 외부 구독자 bulk 추가하기
      * @param writerId
-     * @param followerEmail
+     * @param externalSubscriberList
      * @returns ExternalSubscriberDto
      * @throws EMAIL_ALREADY_EXIST
      * @throws SUBSCRIBE_ALREADY_ERROR
      */
-    async addExternalSubscriberListByEmail(writerId: number, followerEmail: string[]): Promise<SubscribeExternal[]> {
-        if(followerEmail.length === 0) return [];
+    async addExternalSubscriberListByEmail(writerId: number,  externalSubscriberList : ExternalSubscriberDto[]): Promise<SubscribeExternal[]> {
+        if(externalSubscriberList.length === 0) return [];
         const createdAt = this.utilService.getCurrentDateInKorea();
         const result = await this.prismaService.subscribeExternal.createManyAndReturn({
-            data : followerEmail.map(email => {
+            data : externalSubscriberList.map(externalSubscriber => {
                 return {
                     writerId,
-                    followerEmail: email,
+                    ...externalSubscriber,
                     createdAt,
                 }
             }),
@@ -170,7 +170,7 @@ export class SubscribeService {
     async getAllSubscriberEmailsByWriterId(writerId: number): Promise<string[]> {
         const internalSubscriberList = await this.getAllInternalSubscriberByWriterId(writerId);
         const externalSubscriberList = await this.getAllExternalSubscriberByWriterId(writerId);
-        return internalSubscriberList.map(subscriber => subscriber.user.email).concat(externalSubscriberList.map(subscriber => subscriber.email));
+        return internalSubscriberList.map(subscriber => subscriber.user.email).concat(externalSubscriberList.map(subscriber => subscriber.subscriberEmail));
     }
 
     /**
@@ -221,14 +221,14 @@ export class SubscribeService {
      * @throws USER_NOT_WRITER
      */
     async synchronizeSubscriber(userId :number) {
-        const followerList = await this.getAllInternalSubscriberByWriterId(userId);
+        const followerList = await this.getAllSubscriberByWriterId(userId);
         try{
             await this.prismaService.writerInfo.update({
                 where: {
                     userId
                 },
                 data : {
-                    followerCount :followerList.length
+                    followerCount : followerList.subscriberList.length + followerList.externalSubscriberList.length
                 },
             })
         }catch (error){
@@ -269,21 +269,20 @@ export class SubscribeService {
     /**
      * @summary 외부 팔로워 삭제하기
      * @param writerId
-     * @param followerEmail
+     * @param subscriberEmail
      * @returns ExternalSubscriberDto
      * @throws SUBSCRIBER_NOT_FOUND
      */
-    async deleteExternalSubscriberByEmail(writerId: number, followerEmail: string): Promise<ExternalSubscriberDto> {
+    async deleteExternalSubscriberByEmail(writerId: number, subscriberEmail: string): Promise<SubscribeExternal> {
         try{
-            const externalFollow = await this.prismaService.subscribeExternal.delete({
+            return await this.prismaService.subscribeExternal.delete({
                 where: {
-                    followerEmail_writerId: {
+                    subscriberEmail_writerId: {
                         writerId,
-                        followerEmail
+                        subscriberEmail
                     }
                 }
             })
-            return SubscribeDtoMapper.SubscriberExternalToExternalSubscriberDto(externalFollow)
         }catch (error){
             throw ExceptionList.SUBSCRIBER_NOT_FOUND;
         }

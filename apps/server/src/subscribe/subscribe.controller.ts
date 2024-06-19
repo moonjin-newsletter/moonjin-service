@@ -18,8 +18,11 @@ import {
 } from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {ICreateExternalSubscriber} from "./api-types/ICreateExternalSubscriber";
-import {ICreateExternalSubscriberList} from "./api-types/ICreateExternalSubscriberList";
 import {UtilService} from "../util/util.service";
+import {IDeleteExternalSubscriber} from "./api-types/IDeleteExternalSubscriber";
+import {ICreateExternalSubscriberList} from "./api-types/ICreateExternalSubscriberList";
+import SubscribeDtoMapper from "./SubscribeDtoMapper";
+import {ExternalSubscribeDto} from "./dto/externalSubscribe.dto";
 
 @Controller('subscribe')
 export class SubscribeController {
@@ -39,8 +42,9 @@ export class SubscribeController {
     @TypedRoute.Post('form')
     async addSubscribeFromForm(@TypedBody() body : IAddExternalUserFromForm):Promise<TryCatch<ResponseMessage,
         USER_NOT_WRITER | EMAIL_ALREADY_EXIST | SUBSCRIBER_ALREADY_EXIST>>{
-        const writerPublicCard = await this.writerService.getWriterPublicCardByMoonjinId(body.writerMoonjinId);
-        await this.subscribeService.addExternalSubscriberByEmail(writerPublicCard.user.id, body.email);
+        const { writerMoonjinId, ...externalSubscriber } = body;
+        const writerPublicCard = await this.writerService.getWriterPublicCardByMoonjinId(writerMoonjinId);
+        await this.subscribeService.addExternalSubscriber(writerPublicCard.user.id, externalSubscriber );
         return createResponseForm({message: "구독 신청되었습니다."})
     }
 
@@ -142,16 +146,16 @@ export class SubscribeController {
     /**
      * @summary 외부 구독자 추가 API
      * @param user
-     * @param followerData
+     * @param body
      * @returns ResponseMessage & ExternalFollowerDto
      * @throws EMAIL_ALREADY_EXIST
      * @throws SUBSCRIBER_ALREADY_EXIST
      */
     @TypedRoute.Post('subscriber/external')
     @UseGuards(WriterAuthGuard)
-    async addExternalFollower(@User() user:UserAuthDto, @TypedBody() followerData : ICreateExternalSubscriber)
+    async addExternalFollower(@User() user:UserAuthDto, @TypedBody() body : ICreateExternalSubscriber)
         :Promise<TryCatch<ResponseMessage & ExternalSubscriberDto, EMAIL_ALREADY_EXIST | SUBSCRIBER_ALREADY_EXIST>>{
-        const externalFollower = await this.subscribeService.addExternalSubscriberByEmail(user.id,followerData.followerEmail);
+        const externalFollower = await this.subscribeService.addExternalSubscriber(user.id, body);
         return createResponseForm({
             message: "구독자 추가에 성공했습니다.",
             ...externalFollower,
@@ -161,16 +165,25 @@ export class SubscribeController {
     /**
      * @summary 외부 구독자 목록 추가 API
      * @param user
-     * @param followerList
+     * @param body
      */
     @TypedRoute.Post('subscriber/external/list')
     @UseGuards(WriterAuthGuard)
-    async addExternalFollowerList(@User() user:UserAuthDto, @TypedBody() followerList : ICreateExternalSubscriberList)
+    async addExternalFollowerList(@User() user:UserAuthDto, @TypedBody() body : ICreateExternalSubscriberList)
         :Promise<TryCatch<AddExternalSubscriberResultDto, EMAIL_ALREADY_EXIST | SUBSCRIBER_ALREADY_EXIST>>{
-        const validFollowerEmailList = followerList.followerEmail.slice(0, 100);
-        const createdSubscriberList = await this.subscribeService.addExternalSubscriberListByEmail(user.id, validFollowerEmailList);
-        const success = createdSubscriberList.map(createdSubscriber => createdSubscriber.followerEmail);
-        const fail = validFollowerEmailList.filter(email => !success.includes(email));
+        const validFollowerEmailList = body.subscriberList.slice(0, 100);
+        const createdSubscriberList = await this.subscribeService.addExternalSubscriberListByEmail(user.id, body.subscriberList);
+        const success = createdSubscriberList.map(createdSubscriber => ({
+            subscriberEmail: createdSubscriber.subscriberEmail,
+            subscriberName: createdSubscriber.subscriberName
+        }));
+        const successEmailList = success.map(subscriber => subscriber.subscriberEmail);
+        const fail = validFollowerEmailList
+            .filter(subscriber => !successEmailList.includes(subscriber.subscriberEmail))
+            .map(subscriber => ({
+                subscriberEmail: subscriber.subscriberEmail,
+                subscriberName: subscriber.subscriberName
+        }));
 
         return createResponseForm({
             success,
@@ -183,18 +196,19 @@ export class SubscribeController {
     /**
      * @summary 외부 구독자 제거 API
      * @param user
-     * @param followerData
+     * @param body
      * @returns ResponseMessage & ExternalFollowerDto
      * @throws SUBSCRIBER_NOT_FOUND
      */
     @TypedRoute.Delete('subscriber/external')
     @UseGuards(WriterAuthGuard)
-    async deleteExternalFollower(@User() user:UserAuthDto, @TypedBody() followerData : ICreateExternalSubscriber)
-        :Promise<TryCatch<ResponseMessage & ExternalSubscriberDto, SUBSCRIBER_NOT_FOUND>>{
-        const externalFollower = await this.subscribeService.deleteExternalSubscriberByEmail(user.id,followerData.followerEmail);
+    async deleteExternalFollower(@User() user:UserAuthDto, @TypedBody() body : IDeleteExternalSubscriber)
+        :Promise<TryCatch<ResponseMessage & ExternalSubscribeDto, SUBSCRIBER_NOT_FOUND>>{
+        const result = await this.subscribeService.deleteExternalSubscriberByEmail(user.id,body.subscriberEmail);
+        const response = SubscribeDtoMapper.SubscriberExternalToExternalSubscribeDto(result);
         return createResponseForm({
             message: "구독자 삭제에 성공했습니다.",
-            ...externalFollower,
+            ...response,
         })
     }
 

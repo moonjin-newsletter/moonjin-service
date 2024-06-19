@@ -68,13 +68,14 @@ model Subscribe {
 }
 
 model SubscribeExternal {
-  writerId      Int
-  followerEmail String   @db.VarChar(64)
-  createdAt     DateTime
+  writerId        Int
+  subscriberEmail String   @db.VarChar(64)
+  subscriberName  String   @db.VarChar(32)
+  createdAt       DateTime
 
   writerInfo WriterInfo @relation(fields: [writerId], references: [userId])
 
-  @@id([followerEmail, writerId])
+  @@id([subscriberEmail, writerId])
   @@index([writerId])
 }
 

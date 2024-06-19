@@ -1,5 +1,6 @@
 import { tags } from "typia";
 
 export interface ICreateExternalSubscriber {
-    followerEmail: string & tags.MaxLength<64>;
+    subscriberEmail: string & tags.MaxLength<64>;
+    subscriberName: string & tags.MaxLength<32>;
 }

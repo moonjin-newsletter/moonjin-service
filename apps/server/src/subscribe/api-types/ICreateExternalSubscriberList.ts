@@ -1,5 +1,5 @@
-import {tags} from "typia";
+import {ICreateExternalSubscriber} from "./ICreateExternalSubscriber";
 
 export interface ICreateExternalSubscriberList {
-    followerEmail: Array<string & tags.Format<"email"> & tags.MaxLength<64>>
+    subscriberList : ICreateExternalSubscriber[];
 }

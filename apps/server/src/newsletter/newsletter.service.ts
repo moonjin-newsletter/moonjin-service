@@ -81,7 +81,7 @@ export class NewsletterService {
         const postWithContentAndSeriesAndWriter = await this.postService.getPostWithContentAndSeriesAndWriter(postId);
         await this.assertNewsletterCanBeSent(userId, postWithContentAndSeriesAndWriter);
         const receiverList = await this.subscribeService.getAllSubscriberByWriterId(postWithContentAndSeriesAndWriter.writerInfo.userId);
-        const receiverEmailSet = new Set(receiverList.externalSubscriberList.map(subscriber => subscriber.email));
+        const receiverEmailSet = new Set(receiverList.externalSubscriberList.map(subscriber => subscriber.subscriberEmail));
         receiverList.subscriberList.forEach(follower => {
             receiverEmailSet.add(follower.user.email)
         })
