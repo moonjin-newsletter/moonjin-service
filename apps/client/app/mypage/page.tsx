@@ -25,7 +25,7 @@ export default async function Page() {
   const seriesList = await ssr("series/following").then((res) =>
     res.json<ResponseForm<SeriesWithWriterDto[]>>(),
   );
-  const newsletterList = await ssr("newsletter/all").then((res) =>
+  const newsletterList = await ssr("newsletter/receive/all").then((res) =>
     res.json<ResponseForm<NewsletterCardDto[]>>(),
   );
   const myNewsletterList =
