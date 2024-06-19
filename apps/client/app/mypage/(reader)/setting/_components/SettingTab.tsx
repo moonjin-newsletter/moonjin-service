@@ -125,7 +125,6 @@ function PasswordLayout({
 }
 
 function ProfileLayout({ userInfo }: { userInfo?: any }) {
-  console.log(userInfo);
   const {
     formState: { errors, isValid },
     handleSubmit,
@@ -192,7 +191,7 @@ function WriterProfileLayout({
   } = useForm({
     defaultValues: {
       nickname: userInfo?.data?.user?.nickname,
-      moonjinId: userInfo?.data?.writerInfo?.moonjinId,
+      // moonjinId: userInfo?.data?.writerInfo?.moonjinId,
       description: userInfo?.data?.user?.description,
       image: userInfo?.data?.user?.image,
     },
@@ -219,31 +218,31 @@ function WriterProfileLayout({
         onSubmit={handleSubmit(onClickSubmit)}
         className="w-full flex flex-col"
       >
-        <label className="mt-2 text-sm font-medium" htmlFor="nickname">
-          문진 아이디
-        </label>
-        <input
-          {...register("moonjinId")}
-          placeholder="변경을 원하시는 아이디를 입력해주세요"
-          className="w-full mt-2 h-10 bg-grayscale-100 outline-0 border-0 rounded px-2 focus:ring-0 placeholder:text-sm placeholder:text-grayscale-400"
-        />
-        <div className="flex flex-col mt-2 gap-y-1.5">
-          <span className="text-sm text-grayscale-500">
-            문진 이메일 :{" "}
-            {userData?.moonjinId
-              ? userData?.moonjinId
-              : userInfo?.data?.writerInfo?.moonjinId}
-            @moonjin.site
-          </span>
-          <span className="text-sm text-grayscale-500">
-            작가 URL : https://moonjin.site/@
-            {userData?.moonjinId
-              ? userData?.moonjinId
-              : userInfo?.data?.writerInfo?.moonjinId}
-          </span>
-        </div>
+        {/*<label className="mt-2 text-sm font-medium" htmlFor="nickname">*/}
+        {/*  문진 아이디*/}
+        {/*</label>*/}
+        {/*<input*/}
+        {/*  {...register("moonjinId")}*/}
+        {/*  placeholder="변경을 원하시는 아이디를 입력해주세요"*/}
+        {/*  className="w-full mt-2 h-10 bg-grayscale-100 outline-0 border-0 rounded px-2 focus:ring-0 placeholder:text-sm placeholder:text-grayscale-400"*/}
+        {/*/>*/}
+        {/*<div className="flex flex-col mt-2 gap-y-1.5">*/}
+        {/*  <span className="text-sm text-grayscale-500">*/}
+        {/*    문진 이메일 :{" "}*/}
+        {/*    {userData?.moonjinId*/}
+        {/*      ? userData?.moonjinId*/}
+        {/*      : userInfo?.data?.writerInfo?.moonjinId}*/}
+        {/*    @moonjin.site*/}
+        {/*  </span>*/}
+        {/*  <span className="text-sm text-grayscale-500">*/}
+        {/*    작가 URL : https://moonjin.site/@*/}
+        {/*    {userData?.moonjinId*/}
+        {/*      ? userData?.moonjinId*/}
+        {/*      : userInfo?.data?.writerInfo?.moonjinId}*/}
+        {/*  </span>*/}
+        {/*</div>*/}
 
-        <label className="mt-8 text-sm font-medium" htmlFor="nickname">
+        <label className="mt-2 text-sm font-medium" htmlFor="nickname">
           프로필명
         </label>
         <input
