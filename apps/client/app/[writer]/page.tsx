@@ -17,9 +17,8 @@ export default function Page({ params }: pageProps) {
     <>
       <WriterHeader />
       <main className="w-full flex flex-col items-center  ">
-        <section className="max-w-[800px] w-full flex flex-col mx-auto mt-12">
+        <section className="max-w-[800px] w-full flex flex-col mx-auto mt-24">
           <WriterProfile />
-          <div className="w-full bg-yellow-200 sticky top-0 ">테스트</div>
           <WriterTab />
         </section>
       </main>
