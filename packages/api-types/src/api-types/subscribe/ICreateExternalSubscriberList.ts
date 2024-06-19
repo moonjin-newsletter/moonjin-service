@@ -1,3 +1,5 @@
+import {ICreateExternalSubscriber} from "./ICreateExternalSubscriber";
+
 export interface ICreateExternalSubscriberList {
-    followerEmail: string[]
+    subscriberList : ICreateExternalSubscriber[];
 }

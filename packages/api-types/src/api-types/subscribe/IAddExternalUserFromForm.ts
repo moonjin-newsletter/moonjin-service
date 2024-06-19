@@ -1,5 +1,5 @@
-
 export interface IAddExternalUserFromForm{
-    writerMoonjinId: string;
-    email: string;
+    writerMoonjinId: string
+    subscriberEmail: string
+    subscriberName : string
 }

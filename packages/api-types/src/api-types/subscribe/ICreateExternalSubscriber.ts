@@ -1,4 +1,5 @@
 
 export interface ICreateExternalSubscriber {
-    followerEmail: string
+    subscriberEmail: string
+    subscriberName: string
 }
