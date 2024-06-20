@@ -1,22 +1,17 @@
 import { Module } from '@nestjs/common';
 import { WriterController } from './writer.controller';
 import { WriterService } from './writer.service';
-import {UserModule} from "../user/user.module";
-import {PrismaModule} from "../prisma/prisma.module";
-import {AuthModule} from "../auth/auth.module";
-import {UtilModule} from "../util/util.module";
-import {MailModule} from "../mail/mail.module";
+import {NewsletterModule} from "../newsletter/newsletter.module";
+import {SubscribeModule} from "../subscribe/subscribe.module";
+import {WriterInfoModule} from "../writerInfo/writerInfo.module";
 
 @Module({
   imports: [
-      UtilModule,
-      UserModule,
-      MailModule,
-      PrismaModule,
-      AuthModule
+      NewsletterModule,
+      SubscribeModule,
+      WriterInfoModule
   ],
   controllers: [WriterController],
-  providers: [WriterService],
-  exports : [WriterService]
+  providers: [WriterService]
 })
 export class WriterModule {}

@@ -1,7 +1,8 @@
-import {PaginationOptionsDto} from "./paginationOptionsDto";
-
 export interface PaginationMetaDataDto {
-    next: PaginationOptionsDto
+    next: {
+        pageNo : number;
+        cursor : number;
+    }
     totalCount: number;
     isLastPage: boolean;
 }

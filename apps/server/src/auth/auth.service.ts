@@ -16,7 +16,7 @@ import UserDtoMapper from "../user/userDtoMapper";
 import {OauthService} from "./oauth.service";
 import {UserDto} from "../user/dto";
 import {AuthValidationService} from "./auth.validation.service";
-import {WriterDto} from "../writer/dto";
+import {WriterDto} from "../writerInfo/dto";
 
 @Injectable()
 export class AuthService {

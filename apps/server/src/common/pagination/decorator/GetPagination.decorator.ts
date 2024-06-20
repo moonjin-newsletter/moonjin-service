@@ -7,22 +7,23 @@ export enum PaginationDefault {
 }
 
 export const GetPagination = createParamDecorator(
-    (_date:any,context: ExecutionContext):PaginationOptionsDto=> {
+    (_date:any,context: ExecutionContext) :PaginationOptionsDto=> {
     const request = context.switchToHttp().getRequest();
-    const take = Number(request.query?.take) || PaginationDefault.TAKE_DEFAULT;
-    const skip = Number(request.query?.skip) || PaginationDefault.SKIP_DEFAULT;
+    const pageNo = Number(request.query?.pageNo) || 1;
     const cursor = Number(request.query?.cursor) || undefined;
 
     if(cursor)
         return {
-            take,
+            take : PaginationDefault.TAKE_DEFAULT,
             skip : 1,
+            pageNo,
             cursor
         }
     else{
         return {
-            take,
-            skip
+            take : PaginationDefault.TAKE_DEFAULT,
+            pageNo,
+            skip : (pageNo-1) * PaginationDefault.TAKE_DEFAULT
         }
     }
 });

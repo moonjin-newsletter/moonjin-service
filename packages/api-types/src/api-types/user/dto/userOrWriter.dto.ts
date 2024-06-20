@@ -1,5 +1,5 @@
 import {UserDto} from "./user.dto";
-import {WriterInfoDto} from "../../writer/dto";
+import {WriterInfoDto} from "../../writerInfo/dto";
 
 export interface UserOrWriterDto {
     user : UserDto;

@@ -13,7 +13,7 @@ import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import UserDtoMapper from "./userDtoMapper";
 import {WriterInfoWithUser} from "./prisma/writerInfoWithUser.prisma.type";
 import * as process from "process";
-import {ChangeWriterProfileDto, WriterDto,WriterInfoDto} from "../writer/dto";
+import {ChangeWriterProfileDto, WriterDto,WriterInfoDto} from "../writerInfo/dto";
 
 @Injectable()
 export class UserService {

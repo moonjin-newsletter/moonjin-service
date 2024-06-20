@@ -1,4 +1,4 @@
-import {WriterProfileDto} from "../../writer/dto";
+import {WriterProfileDto} from "../../writerInfo/dto";
 
 export interface SubscribingWriterProfileDto extends WriterProfileDto{
     following : {

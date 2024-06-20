@@ -2,7 +2,7 @@ import { User, WriterInfo} from "@prisma/client";
 import {UserAuthDto} from "../auth/dto";
 import {UserDto, UserProfileDto} from "./dto";
 import { WriterInfoWithUser} from "./prisma/writerInfoWithUser.prisma.type";
-import {WriterDto, WriterInfoDto} from "../writer/dto";
+import {WriterDto, WriterInfoDto} from "../writerInfo/dto";
 
 class UserDtoMapper {
     public static UserToUserAuthDto(user: User): UserAuthDto {

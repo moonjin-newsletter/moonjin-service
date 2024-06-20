@@ -6,7 +6,7 @@ import {Try, TryCatch} from "../response/tryCatch";
 import {EMAIL_ALREADY_EXIST, USER_NOT_WRITER} from "../response/error/auth";
 import {IAddExternalUserFromForm} from "./api-types/IAddExternalUserFromForm";
 import {SUBSCRIBER_ALREADY_EXIST, SUBSCRIBER_NOT_FOUND} from "../response/error/subscribe";
-import {WriterService} from "../writer/writer.service";
+import {WriterInfoService} from "../writerInfo/writerInfo.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto";
@@ -14,7 +14,8 @@ import {
     SubscribingWriterProfileDto,
     AllSubscriberDto,
     ExternalSubscriberDto,
-    AddExternalSubscriberResultDto
+    AddExternalSubscriberResultDto,
+    ExternalSubscribeDto
 } from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {ICreateExternalSubscriber} from "./api-types/ICreateExternalSubscriber";
@@ -22,12 +23,11 @@ import {UtilService} from "../util/util.service";
 import {IDeleteExternalSubscriber} from "./api-types/IDeleteExternalSubscriber";
 import {ICreateExternalSubscriberList} from "./api-types/ICreateExternalSubscriberList";
 import SubscribeDtoMapper from "./SubscribeDtoMapper";
-import {ExternalSubscribeDto} from "./dto/externalSubscribe.dto";
 
 @Controller('subscribe')
 export class SubscribeController {
     constructor(
-        private readonly writerService:WriterService,
+        private readonly writerInfoService:WriterInfoService,
         private readonly subscribeService:SubscribeService,
         private readonly utilService: UtilService
     ) {}
@@ -43,7 +43,7 @@ export class SubscribeController {
     async addSubscribeFromForm(@TypedBody() body : IAddExternalUserFromForm):Promise<TryCatch<ResponseMessage,
         USER_NOT_WRITER | EMAIL_ALREADY_EXIST | SUBSCRIBER_ALREADY_EXIST>>{
         const { writerMoonjinId, ...externalSubscriber } = body;
-        const writerPublicCard = await this.writerService.getWriterPublicCardByMoonjinId(writerMoonjinId);
+        const writerPublicCard = await this.writerInfoService.getWriterPublicCardByMoonjinId(writerMoonjinId);
         await this.subscribeService.addExternalSubscriber(writerPublicCard.user.id, externalSubscriber );
         return createResponseForm({message: "구독 신청되었습니다."})
     }
@@ -53,7 +53,7 @@ export class SubscribeController {
      * @param user
      * @returns SubscribingWriterProfileDto[]
      */
-    @TypedRoute.Get("writer/all")
+    @TypedRoute.Get("writerInfo/all")
     @UseGuards(UserAuthGuard)
     async getFollowingUserList(@User() user : UserAuthDto) : Promise<Try<SubscribingWriterProfileDto[]>> {
         const followingWriterList = await this.subscribeService.getSubscribingWriterListBySubscriberId(user.id);
@@ -104,7 +104,7 @@ export class SubscribeController {
      * @throws FOLLOW_MYSELF_ERROR
      * @throws FOLLOW_ALREADY_ERROR
      */
-    @TypedRoute.Post("writer/:writerId")
+    @TypedRoute.Post("writerInfo/:writerId")
     @UseGuards(UserAuthGuard)
     async followWriterById(@TypedParam("writerId") writerId : number, @User() user : UserAuthDto) {
         await this.subscribeService.subscribeWriter(user.id, writerId);
@@ -121,7 +121,7 @@ export class SubscribeController {
      * @throws USER_NOT_WRITER
      * @throws FOLLOW_MYSELF_ERROR
      */
-    @TypedRoute.Delete("writer/:writerId")
+    @TypedRoute.Delete("writerInfo/:writerId")
     @UseGuards(UserAuthGuard)
     async unfollowWriterById(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
         await this.subscribeService.unsubscribeWriter(user.id, writerId);

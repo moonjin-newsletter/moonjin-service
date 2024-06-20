@@ -23,7 +23,6 @@ export class NewsletterService {
         private readonly mailService:MailService,
         private readonly postService: PostService,
         private readonly utilService: UtilService,
-        // private readonly userService: UserService,
         private readonly subscribeService: SubscribeService
     ) {}
 
@@ -225,6 +224,105 @@ export class NewsletterService {
             relationLoadStrategy: 'join',
             orderBy : {
                 sentAt : 'desc'
+            },
+            skip: paginationOptions?.skip,
+            take: paginationOptions?.take,
+            cursor: paginationOptions?.cursor ? {
+                id : paginationOptions.cursor
+            } : undefined
+        })
+    }
+
+    /**
+     * @summary 해당 유저의 발송한 뉴스레터 목록 가져오기
+     * @param moonjinId
+     * @param paginationOptions
+     * @return SentNewsletterWithCounts[]
+     */
+    async getAllSentNewsletterListByMoonjinId(moonjinId: string, paginationOptions?:PaginationOptionsDto): Promise<SentNewsletterWithCounts[]>{
+        return this.prismaService.newsletter.findMany({
+            where : {
+                post : {
+                    writerInfo:{
+                        moonjinId
+                    }
+                }
+            },
+            include: {
+                post : {
+                    include : {
+                        writerInfo : {
+                            include : {
+                                user : true
+                            }
+                        },
+                        series : true
+                    }
+                },
+                _count : {
+                    select : {
+                        newsletterInMail : true,
+                        newsletterAnalytics : {
+                            where : {
+                                event : SendMailEventsEnum.delivered
+                            }
+                        }
+                    },
+                }
+            },
+            relationLoadStrategy: 'join',
+            orderBy : {
+                id : 'desc'
+            },
+            skip: paginationOptions?.skip,
+            take: paginationOptions?.take,
+            cursor: paginationOptions?.cursor ? {
+                id : paginationOptions.cursor
+            } : undefined
+        })
+    }
+
+    /**
+     * @summary 해당 유저의 발송한 뉴스레터 목록 가져오기
+     * @param moonjinId
+     * @param paginationOptions
+     * @return SentNewsletterWithCounts[]
+     */
+    async getAllSentNormalNewsletterListByMoonjinId(moonjinId: string, paginationOptions?:PaginationOptionsDto): Promise<SentNewsletterWithCounts[]>{
+        return this.prismaService.newsletter.findMany({
+            where : {
+                post : {
+                    writerInfo:{
+                        moonjinId
+                    },
+                    seriesId : 0
+                }
+            },
+            include: {
+                post : {
+                    include : {
+                        writerInfo : {
+                            include : {
+                                user : true
+                            }
+                        },
+                        series : true
+                    }
+                },
+                _count : {
+                    select : {
+                        newsletterInMail : true,
+                        newsletterAnalytics : {
+                            where : {
+                                event : SendMailEventsEnum.delivered
+                            }
+                        }
+                    },
+                }
+            },
+            relationLoadStrategy: 'join',
+            orderBy : {
+                id : 'desc'
             },
             skip: paginationOptions?.skip,
             take: paginationOptions?.take,

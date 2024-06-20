@@ -1,5 +1,5 @@
 import {PostWithContentDto} from "./postWithContent.dto";
-import {WriterDto} from "../../writer/dto";
+import {WriterDto} from "../../writerInfo/dto";
 import {SeriesDto} from "../../series/dto";
 
 

@@ -8,7 +8,7 @@ import WriterCard from "../../_components/WriterCard";
 import EmptyCard from "../../_components/EmptyCard";
 
 export default async function Page() {
-  const writerList = await ssr("subscribe/writer/all").then((res) =>
+  const writerList = await ssr("subscribe/writerInfo/all").then((res) =>
     res.json<ResponseForm<SubscribingWriterProfileDto[]>>(),
   );
 

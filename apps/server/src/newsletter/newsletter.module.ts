@@ -6,7 +6,7 @@ import {AuthModule} from "../auth/auth.module";
 import {PostModule} from "../post/post.module";
 import {PrismaModule} from "../prisma/prisma.module";
 import {UtilModule} from "../util/util.module";
-import {WriterModule} from "../writer/writer.module";
+import {WriterInfoModule} from "../writerInfo/writerInfo.module";
 import {UserModule} from "../user/user.module";
 import {SubscribeModule} from "../subscribe/subscribe.module";
 
@@ -17,11 +17,12 @@ import {SubscribeModule} from "../subscribe/subscribe.module";
       AuthModule,
       MailModule,
       PostModule,
-      WriterModule,
+      WriterInfoModule,
       UserModule,
       SubscribeModule
   ],
   providers: [NewsletterService],
-  controllers: [NewsletterController]
+  controllers: [NewsletterController],
+exports: [NewsletterService]
 })
 export class NewsletterModule {}

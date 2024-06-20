@@ -25,13 +25,7 @@ import {MailService} from "../mail/mail.service";
 import NewsletterDtoMapper from "./newsletterDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {AssertEditorJsonDto, EditorJsToHtml} from "@moonjin/editorjs";
-import {IGetNewsletterAllByWriterId} from "./api-types/IGetNewsletterAllByWriterId";
-import {GetPagination} from "../common/pagination/decorator/GetPagination.decorator";
-import {PaginationOptionsDto} from "../common/pagination/dto";
 import PostDtoMapper from "../post/postDtoMapper";
-import {SubscribeService} from "../subscribe/subscribe.service";
-import {SUBSCRIBER_NOT_FOUND} from "../response/error/subscribe";
-import {NewsletterCardListWithPaginationDto} from "./dto";
 
 @Controller('newsletter')
 export class NewsletterController {
@@ -40,7 +34,6 @@ export class NewsletterController {
         private readonly userService: UserService,
         private readonly newsletterService: NewsletterService,
         private readonly mailService: MailService,
-        private readonly subscribeService: SubscribeService
     ) {}
 
     /**
@@ -176,48 +169,5 @@ export class NewsletterController {
 
         return createResponseForm(newsletterResultList);
     }
-
-    /**
-     * @summary 해당 유저가 보낸 뉴스레터 목록 가져오기
-     * @param user
-     * @param paginationOptions
-     * @param query
-     */
-    @TypedRoute.Get('all')
-    @UseGuards(UserAuthGuard)
-    async getAllNewsletterByWriterId(@User() user:UserAuthDto,@GetPagination() paginationOptions: PaginationOptionsDto,@TypedQuery() query: IGetNewsletterAllByWriterId) : Promise<
-        TryCatch<NewsletterCardListWithPaginationDto,SUBSCRIBER_NOT_FOUND | NEWSLETTER_NOT_FOUND>>{
-
-        await this.subscribeService.assertUserIsSubscribingTheWriter(user.id,query.writerId);
-        const newsletterList = await this.newsletterService.getSentNewsletterListByWriterId(query.writerId,paginationOptions);
-
-        const newsletterCardList= newsletterList.map(newsletterWithPostAndSeriesAndWriter => {
-            const { post, ...newsletterData } = newsletterWithPostAndSeriesAndWriter;
-            const { writerInfo, series , ...postData } = post;
-            return {
-                newsletter : NewsletterDtoMapper.newsletterToNewsletterSummaryDto(newsletterData),
-                post : PostDtoMapper.PostToPostInNewsletterCardDto(postData),
-                series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
-                writer : {
-                    userId : writerInfo.userId,
-                    moonjinId : writerInfo.moonjinId,
-                    nickname : writerInfo.user.nickname
-                },
-            }
-        })
-        return createResponseForm({
-            newsletterCardList,
-            pagination : {
-                next : {
-                    take : paginationOptions.take,
-                    skip : newsletterCardList.length,
-                    cursor : newsletterCardList.length > 0 ? newsletterCardList[newsletterCardList.length - 1].newsletter.id : 0
-                },
-                isLastPage : newsletterCardList.length < paginationOptions.take,
-                totalCount : newsletterCardList.length
-            }
-        });
-    }
-
 
 }

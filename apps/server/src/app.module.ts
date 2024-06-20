@@ -14,9 +14,10 @@ import { LetterModule } from './letter/letter.module';
 import { AwsModule } from './aws/aws.module';
 import { FileModule } from './file/file.module';
 import { SubscribeModule } from './subscribe/subscribe.module';
-import { WriterModule } from './writer/writer.module';
+import { WriterInfoModule } from './writerInfo/writerInfo.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { MailgunModule } from './mailgun/mailgun.module';
+import { WriterModule } from './writer/writer.module';
 
 @Module({
   imports: [
@@ -36,9 +37,10 @@ import { MailgunModule } from './mailgun/mailgun.module';
     AwsModule,
     FileModule,
     SubscribeModule,
-    WriterModule,
+    WriterInfoModule,
     NewsletterModule,
     MailgunModule,
+    WriterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

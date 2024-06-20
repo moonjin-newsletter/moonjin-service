@@ -4,7 +4,7 @@ import { SubscribeService } from './subscribe.service';
 import {PrismaModule} from "../prisma/prisma.module";
 import {UtilModule} from "../util/util.module";
 import {UserModule} from "../user/user.module";
-import {WriterModule} from "../writer/writer.module";
+import {WriterInfoModule} from "../writerInfo/writerInfo.module";
 import {AuthModule} from "../auth/auth.module";
 
 @Module({
@@ -12,7 +12,7 @@ import {AuthModule} from "../auth/auth.module";
       PrismaModule,
       UtilModule,
       UserModule,
-      WriterModule,
+      WriterInfoModule,
       AuthModule
   ],
   controllers: [SubscribeController],
