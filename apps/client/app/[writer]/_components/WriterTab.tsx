@@ -20,19 +20,19 @@ export default function WriterTab() {
   }
 
   return (
-    <section className="w-full ">
+    <section className="w-full mt-28">
       <TabGroup
         selectedIndex={statusForTabs[selectedTab]}
         onChange={handleChangeTabs}
       >
-        <TabList className="w-full flex items-center ">
-          <Tab className="flex-1 py-2 text-sm  data-[selected]:border-grayscale-700 data-[selected]:text-grayscale-700 font-medium border-b border-grayscale-200 text-grayscale-500 focus:ring-0 ring-0 outline-none">
+        <TabList className="w-full flex items-center sticky top-0 bg-white">
+          <Tab className="flex-1 py-3.5 text-sm  data-[selected]:border-grayscale-600/85 data-[selected]:text-grayscale-700 font-medium border-b-2 border-grayscale-200 text-grayscale-500 focus:ring-0 ring-0 outline-none">
             전체 뉴스레터
           </Tab>
-          <Tab className="flex-1 py-2 text-sm data-[selected]:border-grayscale-700 data-[selected]:text-grayscale-700 font-medium border-b border-grayscale-200 text-grayscale-500 focus:ring-0 ring-0 outline-none">
+          <Tab className="flex-1 py-3.5 text-sm data-[selected]:border-grayscale-600/85 data-[selected]:text-grayscale-700 font-medium border-b-2 border-grayscale-200 text-grayscale-500 focus:ring-0 ring-0 outline-none">
             자유 뉴스레터
           </Tab>
-          <Tab className="flex-1 py-2 text-sm data-[selected]:border-grayscale-700 data-[selected]:text-grayscale-700 font-medium border-b border-grayscale-200 text-grayscale-500 focus:ring-0 ring-0 outline-none">
+          <Tab className="flex-1 py-3.5 text-sm data-[selected]:border-grayscale-600/85 data-[selected]:text-grayscale-700 font-medium border-b-2 border-grayscale-200 text-grayscale-500 focus:ring-0 ring-0 outline-none">
             시리즈 뉴스레터
           </Tab>
         </TabList>
