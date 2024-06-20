@@ -2,7 +2,7 @@ import { assert } from "@toss/assert";
 import { notFound } from "next/navigation";
 
 /**
- * TODO: noAuth 분석 및 수정 필요
+ * @deprecated
  */
 
 export default async function noAuth<T>(
@@ -31,3 +31,16 @@ export default async function noAuth<T>(
 
   return result as T;
 }
+
+export const nfetch = async <T>(path: string, init?: RequestInit) => {
+  const url = new URL(path, process.env.NEXT_PUBLIC_SERVER_URL);
+  const res = await fetch(url, init);
+
+  if (!res.ok) {
+    if (res.status === 401 || res.status === 403 || res.status === 404)
+      notFound();
+    throw new Error(`Error ${res.status}: ${res.statusText}`);
+  }
+
+  return (await res.json()) as T;
+};

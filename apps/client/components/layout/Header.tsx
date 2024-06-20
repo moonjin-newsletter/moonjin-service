@@ -13,7 +13,7 @@ import type { ResponseForm, UserDto, WriterDto } from "@moonjin/api-types";
 
 export default function Header() {
   const { data: userInfo } =
-    useSWR<ResponseForm<{ user: UserDto } | WriterDto>>("user");
+    useSWR<ResponseForm<{ user: UserDto } & WriterDto>>("user");
   const router = useRouter();
   const scroll = useScroll();
   const [isLogin, setIsLogin] = useState(false);
@@ -71,7 +71,7 @@ export default function Header() {
                   {checkType(userInfo?.data?.user?.role) === "작가" && (
                     <Link
                       className="py-1.5 "
-                      href={`/@${userInfo?.data?.user?.nickname}`}
+                      href={`/@${userInfo?.data?.writerInfo?.moonjinId}`}
                     >
                       작가의 서재
                     </Link>

@@ -2,9 +2,7 @@ import { isNonEmptyArray, isNotNil } from "@toss/utils";
 import EmptyCard from "../../_components/EmptyCard";
 import ssr from "../../../../lib/fetcher/ssr";
 import { AllSubscriberDto, ResponseForm } from "@moonjin/api-types";
-
 import { ExternalCard, FollowerCard } from "./_components/FollowerCard";
-import AddFollower from "./_components/AddFollower";
 
 export default async function Page() {
   const { data: groupList } = await ssr("subscribe/subscriber/all").then(
