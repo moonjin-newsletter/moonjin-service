@@ -19,7 +19,7 @@ export * from './src/api-types/series/index';
 export * from './src/api-types/user/index';
 export * from './src/api-types/file/index';
 export * from './src/api-types/subscribe/index';
-export * from './src/api-types/writer/index';
+export * from './src/api-types/writerInfo/index';
 export * from './src/api-types/common/pagination/index';
 
 /// type
@@ -30,7 +30,7 @@ export * from './src/api-types/series/dto/index';
 export * from './src/api-types/user/dto/index';
 export * from './src/api-types/file/dto/index';
 export * from './src/api-types/mail/dto/index';
-export * from './src/api-types/writer/dto/index';
+export * from './src/api-types/writerInfo/dto/index';
 export * from './src/api-types/newsletter/dto/index';
 export * from './src/api-types/subscribe/dto/index';
 export * from './src/api-types/common/pagination/dto/index';
