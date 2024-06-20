@@ -3,16 +3,16 @@ import { More } from "@components/icons";
 
 export default function WriterProfile() {
   return (
-    <header className="w-full h-60  flex items-center gap-x-4">
+    <header className="w-full h-[200px]  flex items-center gap-x-10">
       <Image
         src={""}
         alt=""
-        width={240}
-        height={240}
-        className="w-60 min-w-60 h-60 object-cover bg-grayscale-200 rounded-lg  overflow-hidden shadow"
+        width={200}
+        height={200}
+        className="w-[200px] min-w-[200px] h-[200px] object-cover bg-grayscale-200 rounded-lg  overflow-hidden shadow"
       />
       <div className="flex grow flex-col w-full h-full">
-        <h1 className="text-lg font-semibold">테스트작가</h1>
+        <h1 className="text-[28px] font-semibold">테스트작가</h1>
         <strong className="text-primary font-medium">test@moonjin.site</strong>
         <span className="line-clamp-3 flex grow items-center mt-4 text-grayscale-500 text-sm">
           안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요
