@@ -196,7 +196,8 @@ export class NewsletterService {
         return this.prismaService.newsletter.findMany({
             where : {
                 post : {
-                    writerId
+                    writerId,
+                    deleted : false
                 }
             },
             include: {
@@ -208,7 +209,7 @@ export class NewsletterService {
                             }
                         },
                         series : true
-                    }
+                    },
                 },
                 _count : {
                     select : {

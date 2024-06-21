@@ -13,12 +13,15 @@ import PostDtoMapper from "../post/postDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {NewsletterCardListWithPaginationDto} from "../newsletter/dto";
 import {IGetNewsletterByWriter} from "./api-types/IGetNewsletterByWriter";
+import {SeriesService} from "../series/series.service";
+import {SeriesListWithPaginationDto} from "../series/dto";
 
 @Controller('writer')
 export class WriterController {
     constructor(
         private readonly writerInfoService: WriterInfoService,
-        private readonly newsletterService: NewsletterService
+        private readonly newsletterService: NewsletterService,
+        private readonly seriesService: SeriesService,
     ) {}
 
 
@@ -36,7 +39,7 @@ export class WriterController {
      * @summary 작가의 Newsletter 가져오기 (w pagination)
      */
     @TypedRoute.Get(":moonjinId/newsletter")
-    async getNewsletterListByMoonjinId(@TypedParam("moonjinId") moonjinId : string,@TypedQuery() query: IGetNewsletterByWriter, @GetPagination() paginationOptions: PaginationOptionsDto):
+    async getNewsletterListByMoonjinId(@TypedParam("moonjinId") moonjinId : string, @TypedQuery() query: IGetNewsletterByWriter, @GetPagination() paginationOptions: PaginationOptionsDto):
         Promise<Try<NewsletterCardListWithPaginationDto>>{
         let newsletterList;
         if(query.newsletterType === "all"){
@@ -71,5 +74,22 @@ export class WriterController {
         });
     }
 
+    @TypedRoute.Get(":moonjinId/series")
+    async getSeriesListByMoonjinId(@TypedParam("moonjinId") moonjinId : string,  @GetPagination() paginationOptions: PaginationOptionsDto)
+        : Promise<Try<SeriesListWithPaginationDto>>{
+        const seriesList = await this.seriesService.getSeriesByMoonjinId(moonjinId, paginationOptions);
+        const seriesCardList = seriesList.map(series => SeriesDtoMapper.SeriesToSeriesDto(series));
+        return createResponseForm({
+            seriesList : seriesCardList,
+            pagination : {
+                next : {
+                    pageNo : paginationOptions.pageNo + 1,
+                    cursor : seriesCardList.length > 0 ? seriesCardList[seriesCardList.length - 1].id : 0
+                },
+                isLastPage : seriesCardList.length < paginationOptions.take,
+                totalCount : seriesCardList.length
+            }
+        });
+    }
 
 }

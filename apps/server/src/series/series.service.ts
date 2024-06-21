@@ -9,6 +9,8 @@ import { FollowingSeriesWithWriter,
 } from "./prisma/followingSeriesAndWriter.prisma.type";
 import UserDtoMapper from "../user/userDtoMapper";
 import {SubscribeService} from "../subscribe/subscribe.service";
+import {PaginationOptionsDto} from "../common/pagination/dto";
+import {Series} from "@prisma/client";
 
 @Injectable()
 export class SeriesService {
@@ -287,6 +289,32 @@ export class SeriesService {
         }catch (error){
             throw ExceptionList.SERIES_NOT_FOUND;
         }
+
+    }
+
+    /**
+     * @summary 해당 작가의 시리즈 가져오기 (by moonjinId)
+     * @param moonjinId
+     * @param paginationOption
+     */
+    async getSeriesByMoonjinId(moonjinId: string, paginationOption : PaginationOptionsDto):Promise<Series[]>{
+        return this.prismaService.series.findMany({
+            where: {
+                writerInfo: {
+                    moonjinId
+                },
+                status: true,
+                deleted: false
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            skip: paginationOption.skip,
+            take: paginationOption.take,
+            cursor : paginationOption.cursor ? {
+                id : paginationOption.cursor
+            } : undefined
+        });
 
     }
 }
