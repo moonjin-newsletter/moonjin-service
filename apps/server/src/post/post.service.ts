@@ -233,6 +233,7 @@ export class PostService {
                     id : postId
                 },
                 data : {
+                    status : false,
                     deleted : true,
                 }
             }) // TODO : 글 삭제 시 Side Effect 생길 시 고려하기

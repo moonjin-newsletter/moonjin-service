@@ -11,10 +11,10 @@ import {NewsletterService} from "../newsletter/newsletter.service";
 import NewsletterDtoMapper from "../newsletter/newsletterDtoMapper";
 import PostDtoMapper from "../post/postDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
-import {NewsletterCardListWithPaginationDto} from "../newsletter/dto";
+import {NewsletterCardDto} from "../newsletter/dto";
 import {IGetNewsletterByWriter} from "./api-types/IGetNewsletterByWriter";
 import {SeriesService} from "../series/series.service";
-import {SeriesListWithPaginationDto} from "../series/dto";
+import {SeriesDto} from "../series/dto";
 
 @Controller('writer')
 export class WriterController {
@@ -40,7 +40,7 @@ export class WriterController {
      */
     @TypedRoute.Get(":moonjinId/newsletter")
     async getNewsletterListByMoonjinId(@TypedParam("moonjinId") moonjinId : string, @TypedQuery() query: IGetNewsletterByWriter, @GetPagination() paginationOptions: PaginationOptionsDto):
-        Promise<Try<NewsletterCardListWithPaginationDto>>{
+        Promise<Try<NewsletterCardDto[]>>{
         let newsletterList;
         if(query.newsletterType === "all"){
             newsletterList = await this.newsletterService.getAllSentNewsletterListByMoonjinId(moonjinId,paginationOptions);
@@ -61,9 +61,7 @@ export class WriterController {
                 },
             }
         })
-        return createResponseForm({
-            newsletterCardList,
-            pagination : {
+        return createResponseForm(newsletterCardList, {
                 next : {
                     pageNo : paginationOptions.pageNo + 1,
                     cursor : newsletterCardList.length > 0 ? newsletterCardList[newsletterCardList.length - 1].newsletter.id : 0
@@ -71,24 +69,24 @@ export class WriterController {
                 isLastPage : newsletterCardList.length < paginationOptions.take,
                 totalCount : newsletterCardList.length
             }
-        });
+        );
     }
 
+    /**
+     * @summary 작가의 Series 가져오기 (w pagination)
+     */
     @TypedRoute.Get(":moonjinId/series")
     async getSeriesListByMoonjinId(@TypedParam("moonjinId") moonjinId : string,  @GetPagination() paginationOptions: PaginationOptionsDto)
-        : Promise<Try<SeriesListWithPaginationDto>>{
+        : Promise<Try<SeriesDto[]>>{
         const seriesList = await this.seriesService.getSeriesByMoonjinId(moonjinId, paginationOptions);
         const seriesCardList = seriesList.map(series => SeriesDtoMapper.SeriesToSeriesDto(series));
-        return createResponseForm({
-            seriesList : seriesCardList,
-            pagination : {
-                next : {
-                    pageNo : paginationOptions.pageNo + 1,
-                    cursor : seriesCardList.length > 0 ? seriesCardList[seriesCardList.length - 1].id : 0
-                },
-                isLastPage : seriesCardList.length < paginationOptions.take,
-                totalCount : seriesCardList.length
-            }
+        return createResponseForm(seriesCardList,{
+            next : {
+                pageNo : paginationOptions.pageNo + 1,
+                cursor : seriesCardList.length > 0 ? seriesCardList[seriesCardList.length - 1].id : 0
+            },
+            isLastPage : seriesCardList.length < paginationOptions.take,
+            totalCount : seriesCardList.length
         });
     }
 
