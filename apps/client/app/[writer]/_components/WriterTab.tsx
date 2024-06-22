@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { range } from "@toss/utils";
+import 전체뉴스레터 from "./전체뉴스레터";
 
 const statusForTabs: Record<string, number> = {
   전체: 0,
@@ -10,7 +11,7 @@ const statusForTabs: Record<string, number> = {
   시리즈: 2,
 };
 
-export default function WriterTab() {
+export default function WriterTab({ moonjinId }: { moonjinId: string }) {
   const router = useRouter();
   const selectedTab = useSearchParams().get("tab") ?? "전체";
 
@@ -39,9 +40,7 @@ export default function WriterTab() {
         <TabPanels>
           <TabPanel>
             <div className="flex flex-col gap-y-2">
-              {range(0, 12).map((item, i) => (
-                <div key={i} className="w-full bg-grayscale-400 h-28"></div>
-              ))}
+              <전체뉴스레터 moonjinId={moonjinId} />
             </div>
           </TabPanel>
           <TabPanel>Content 2</TabPanel>

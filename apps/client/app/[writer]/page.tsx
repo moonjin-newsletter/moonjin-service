@@ -27,7 +27,7 @@ export default async function Page({ params }: pageProps) {
       <main className="w-full flex flex-col items-center  ">
         <section className="max-w-[760px] w-full flex flex-col mx-auto mt-24">
           <WriterProfile writerInfo={writerInfo.data} />
-          <WriterTab />
+          <WriterTab moonjinId={moonjinId} />
         </section>
       </main>
     </>
