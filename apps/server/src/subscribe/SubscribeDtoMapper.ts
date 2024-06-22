@@ -3,7 +3,6 @@ import {SubscribingWriterInfoWithUser} from "./prisma/subscribingWriterInfoWithU
 import UserDtoMapper from "../user/userDtoMapper";
 import {SubscribeExternal, User} from "@prisma/client";
 import {ExternalSubscriberDto} from "./dto";
-import {ExternalSubscribeDto} from "./dto/externalSubscribe.dto";
 
 
 class SubscribeDtoMapper{
@@ -29,13 +28,6 @@ class SubscribeDtoMapper{
     }
 
     public static SubscriberExternalToExternalSubscriberDto(externalFollow : SubscribeExternal): ExternalSubscriberDto {
-        return {
-            subscriberEmail : externalFollow.subscriberEmail,
-            subscriberName : externalFollow.subscriberName
-        }
-    }
-
-    public static SubscriberExternalToExternalSubscribeDto(externalFollow : SubscribeExternal): ExternalSubscribeDto {
         return {
             subscriberEmail : externalFollow.subscriberEmail,
             subscriberName : externalFollow.subscriberName,

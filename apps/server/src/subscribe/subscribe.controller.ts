@@ -15,7 +15,6 @@ import {
     AllSubscriberDto,
     ExternalSubscriberDto,
     AddExternalSubscriberResultDto,
-    ExternalSubscribeDto
 } from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {ICreateExternalSubscriber} from "./api-types/ICreateExternalSubscriber";
@@ -175,14 +174,14 @@ export class SubscribeController {
         const createdSubscriberList = await this.subscribeService.addExternalSubscriberListByEmail(user.id, body.subscriberList);
         const success = createdSubscriberList.map(createdSubscriber => ({
             subscriberEmail: createdSubscriber.subscriberEmail,
-            subscriberName: createdSubscriber.subscriberName
+            subscriberName: createdSubscriber.subscriberName,
         }));
         const successEmailList = success.map(subscriber => subscriber.subscriberEmail);
         const fail = validFollowerEmailList
             .filter(subscriber => !successEmailList.includes(subscriber.subscriberEmail))
             .map(subscriber => ({
                 subscriberEmail: subscriber.subscriberEmail,
-                subscriberName: subscriber.subscriberName
+                subscriberName: subscriber.subscriberName,
         }));
 
         return createResponseForm({
@@ -203,9 +202,9 @@ export class SubscribeController {
     @TypedRoute.Delete('subscriber/external')
     @UseGuards(WriterAuthGuard)
     async deleteExternalFollower(@User() user:UserAuthDto, @TypedBody() body : IDeleteExternalSubscriber)
-        :Promise<TryCatch<ResponseMessage & ExternalSubscribeDto, SUBSCRIBER_NOT_FOUND>>{
+        :Promise<TryCatch<ResponseMessage & ExternalSubscriberDto, SUBSCRIBER_NOT_FOUND>>{
         const result = await this.subscribeService.deleteExternalSubscriberByEmail(user.id,body.subscriberEmail);
-        const response = SubscribeDtoMapper.SubscriberExternalToExternalSubscribeDto(result);
+        const response = SubscribeDtoMapper.SubscriberExternalToExternalSubscriberDto(result);
         return createResponseForm({
             message: "구독자 삭제에 성공했습니다.",
             ...response,

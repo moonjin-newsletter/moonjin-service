@@ -1,5 +1,5 @@
+import {ExternalSubscriberInfoDto} from "./externalSubscriberInfo.dto";
 
-export interface ExternalSubscriberDto {
-    subscriberEmail : string;
-    subscriberName : string;
+export interface ExternalSubscriberDto extends ExternalSubscriberInfoDto{
+    createdAt : Date;
 }

@@ -1,6 +1,6 @@
 export * from "./addExternalSubscriberResult.dto"
 export * from "./allSubscriber.dto"
-export * from "./externalSubscribe.dto"
 export * from "./externalSubscriber.dto"
 export * from "./subscriber.dto"
+export * from "./externalSubscriberInfo.dto"
 export * from "./subscribingWriterProfile.dto"

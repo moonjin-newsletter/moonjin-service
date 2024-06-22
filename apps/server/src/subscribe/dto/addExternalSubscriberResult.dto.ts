@@ -1,8 +1,8 @@
-import {ExternalSubscriberDto} from "./externalSubscriber.dto";
+import {ExternalSubscriberInfoDto} from "./externalSubscriberInfo.dto";
 
 export interface AddExternalSubscriberResultDto {
-    success: ExternalSubscriberDto[];
-    fail: ExternalSubscriberDto[];
+    success: ExternalSubscriberInfoDto[];
+    fail: ExternalSubscriberInfoDto[];
     message : string;
     createdAt : Date;
 }

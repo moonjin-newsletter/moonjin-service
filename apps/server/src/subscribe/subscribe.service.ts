@@ -4,7 +4,7 @@ import {
     ExternalSubscriberDto,
     SubscribingWriterProfileDto,
     AllSubscriberDto,
-    SubscriberDto,
+    SubscriberDto, ExternalSubscriberInfoDto,
 } from "./dto";
 import {AuthValidationService} from "../auth/auth.validation.service";
 import {UtilService} from "../util/util.service";
@@ -29,7 +29,7 @@ export class SubscribeService {
      * @throws EMAIL_ALREADY_EXIST
      * @throws SUBSCRIBE_ALREADY_ERROR
      */
-    async addExternalSubscriber(writerId: number, externalSubscriber : ExternalSubscriberDto): Promise<ExternalSubscriberDto> {
+    async addExternalSubscriber(writerId: number, externalSubscriber : ExternalSubscriberInfoDto): Promise<ExternalSubscriberDto> {
         await this.authValidationService.assertEmailUnique(externalSubscriber.subscriberEmail);
         try{
             const externalFollow = await this.prismaService.subscribeExternal.create({
@@ -54,7 +54,7 @@ export class SubscribeService {
      * @throws EMAIL_ALREADY_EXIST
      * @throws SUBSCRIBE_ALREADY_ERROR
      */
-    async addExternalSubscriberListByEmail(writerId: number,  externalSubscriberList : ExternalSubscriberDto[]): Promise<SubscribeExternal[]> {
+    async addExternalSubscriberListByEmail(writerId: number,  externalSubscriberList : ExternalSubscriberInfoDto[]): Promise<SubscribeExternal[]> {
         if(externalSubscriberList.length === 0) return [];
         const createdAt = this.utilService.getCurrentDateInKorea();
         const result = await this.prismaService.subscribeExternal.createManyAndReturn({
