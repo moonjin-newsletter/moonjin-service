@@ -121,6 +121,7 @@ model Newsletter {
   postContentId Int      @default(0)
   title         String   @db.VarChar(128)
   cover         String   @db.VarChar(128)
+  sentCount     Int      @default(0)
   sentAt        DateTime
   status        Boolean  @default(true)
 

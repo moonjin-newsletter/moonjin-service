@@ -88,6 +88,7 @@ export class NewsletterService {
         const receiverEmailList = Array.from(receiverEmailSet);
 
         try{
+            const sentCount = await this.getSentCountByPostId(postId);
             const newsletter = await this.prismaService.newsletter.create({
                 data : {
                     postId,
@@ -95,6 +96,7 @@ export class NewsletterService {
                     title: newsletterTitle,
                     sentAt: this.utilService.getCurrentDateInKorea(),
                     cover : postWithContentAndSeriesAndWriter.post.cover,
+                    sentCount,
                     newsletterInWeb : {
                         createMany : {
                             data : receiverList.subscriberList.map(subscriber => {
@@ -129,31 +131,6 @@ export class NewsletterService {
             await this.mailService.sendNewsLetterWithHtml(newsletterSendInfo);
             return receiverEmailList.length;
         }catch (error){
-            throw ExceptionList.SEND_NEWSLETTER_ERROR;
-        }
-    }
-
-    /**
-     * 해당 유저들에게 Web 뉴스레터 전송하기
-     * @param newsletterId
-     * @param receiverIdList
-     * @return 전송된 뉴스레터 수
-     * @throws SEND_NEWSLETTER_ERROR
-     */
-    async sendNewsletterInWeb(newsletterId: number, receiverIdList: number[]): Promise<number>{
-        try{
-            const newsletterSentResult = await this.prismaService.newsletterInWeb.createMany({
-                data : receiverIdList.map(receiverId => {
-                    return {
-                        newsletterId,
-                        receiverId
-                    }
-                }),
-                skipDuplicates : true
-            });
-            return newsletterSentResult.count;
-        }catch (error){
-            console.error(error);
             throw ExceptionList.SEND_NEWSLETTER_ERROR;
         }
     }
@@ -198,7 +175,7 @@ export class NewsletterService {
                 post : {
                     writerId,
                     deleted : false
-                }
+                },
             },
             include: {
                 post : {
@@ -235,7 +212,7 @@ export class NewsletterService {
     }
 
     /**
-     * @summary 해당 유저의 발송한 뉴스레터 목록 가져오기
+     * @summary 해당 유저의 게시글 목록 가져오기
      * @param moonjinId
      * @param paginationOptions
      * @return SentNewsletterWithCounts[]
@@ -246,8 +223,11 @@ export class NewsletterService {
                 post : {
                     writerInfo:{
                         moonjinId
-                    }
-                }
+                    },
+                    status : true,
+                    deleted : false,
+                },
+                sentCount : 0,
             },
             include: {
                 post : {
@@ -284,7 +264,7 @@ export class NewsletterService {
     }
 
     /**
-     * @summary 해당 유저의 발송한 뉴스레터 목록 가져오기
+     * @summary 해당 유저의 일반게시글 목록 가져오기
      * @param moonjinId
      * @param paginationOptions
      * @return SentNewsletterWithCounts[]
@@ -296,8 +276,11 @@ export class NewsletterService {
                     writerInfo:{
                         moonjinId
                     },
-                    seriesId : 0
-                }
+                    seriesId : 0,
+                    status : true,
+                    deleted : false,
+                },
+                sentCount : 0,
             },
             include: {
                 post : {
@@ -331,5 +314,17 @@ export class NewsletterService {
                 id : paginationOptions.cursor
             } : undefined
         })
+    }
+
+    /**
+     * @summary 해당 Post가 이미 몇번 발송되었는지 반환
+     * @param postId
+     */
+    async getSentCountByPostId(postId: number): Promise<number>{
+        return this.prismaService.newsletter.count({
+            where : {
+                postId
+            }
+        });
     }
 }
