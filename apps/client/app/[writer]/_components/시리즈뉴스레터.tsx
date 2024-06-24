@@ -1,17 +1,17 @@
 "use client";
 
 import useSWRInfinite from "swr/infinite";
-import type { NewsletterCardDto, ResponseForm } from "@moonjin/api-types";
+import type { ResponseForm, SeriesDto } from "@moonjin/api-types";
 import SWRInfiniteScroll, {
   getKey,
 } from "@components/infiniteScroll/SWRInfiniteScroll";
 import { isNonEmptyArray, last } from "@toss/utils";
 import { LoadingSkeleton } from "@components/infiniteScroll/LoadingSkeleton";
-import NewsLetterCard from "./NewsLetterCard";
+import SeriesCard from "./SeriesCard";
 
-export default function 전체뉴스레터({ moonjinId }: { moonjinId: string }) {
-  const swr = useSWRInfinite<ResponseForm<NewsletterCardDto[]>>(
-    getKey(`writer/${moonjinId}/newsletter?newsletterType=all`),
+export default function 시리즈뉴스레터({ moonjinId }: { moonjinId: string }) {
+  const swr = useSWRInfinite<ResponseForm<SeriesDto[]>>(
+    getKey(`writer/${moonjinId}/series`),
   );
   const PAGE_SIZE = 10;
 
@@ -27,8 +27,8 @@ export default function 전체뉴스레터({ moonjinId }: { moonjinId: string })
         loader={LoadingSkeleton}
       >
         {(page) =>
-          page.data.map((newsletter, i) => (
-            <NewsLetterCard key={i} newsletterInfo={newsletter} />
+          page.data.map((seires, i) => (
+            <SeriesCard key={i} seriesInfo={seires} />
           ))
         }
       </SWRInfiniteScroll>
