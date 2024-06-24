@@ -9,9 +9,9 @@ import { isNonEmptyArray, last } from "@toss/utils";
 import { LoadingSkeleton } from "@components/infiniteScroll/LoadingSkeleton";
 import NewsLetterCard from "./NewsLetterCard";
 
-export default function 전체뉴스레터({ moonjinId }: { moonjinId: string }) {
+export default function 자유뉴스레터({ moonjinId }: { moonjinId: string }) {
   const swr = useSWRInfinite<ResponseForm<NewsletterCardDto[]>>(
-    getKey(`writer/${moonjinId}/newsletter?newsletterType=all`),
+    getKey(`writer/${moonjinId}/newsletter?newsletterType=normal`),
   );
   const PAGE_SIZE = 10;
 
