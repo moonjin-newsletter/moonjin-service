@@ -51,7 +51,7 @@ export default function WriterTab({ moonjinId }: { moonjinId: string }) {
             </section>
           </TabPanel>
           <TabPanel>
-            <section className="grid grid-cols-3 grid-flow-row gap-x-6 gap-y-11">
+            <section className="grid grid-cols-3 grid-flow-row gap-x-6 gap-y-11 mt-6">
               <시리즈뉴스레터 moonjinId={moonjinId} />
             </section>
           </TabPanel>
