@@ -1,7 +1,5 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import * as I from "components/icons";
 import csr from "../../lib/fetcher/csr";
@@ -12,27 +10,22 @@ import useScroll from "@utils/hooks/useScroll";
 import type { ResponseForm, UserDto, WriterDto } from "@moonjin/api-types";
 
 export default function Header() {
-  const { data: userInfo } =
+  const { data: userInfo, mutate } =
     useSWR<ResponseForm<{ user: UserDto } & WriterDto>>("user");
   const router = useRouter();
   const scroll = useScroll();
-  const [isLogin, setIsLogin] = useState(false);
 
   function onClickLogout() {
     csr
       .post("auth/logout")
       .then((res) => {
-        setIsLogin(false);
-        return router.push("/");
+        router.push("/");
+        return mutate(undefined);
       })
       .catch((err) => {
-        toast.error("로그아웃 실패!");
+        toast.error("로그아웃 실패");
       });
   }
-
-  useEffect(() => {
-    userInfo ? setIsLogin(true) : setIsLogin(false);
-  }, [userInfo]);
 
   return (
     <header
@@ -53,7 +46,7 @@ export default function Header() {
           </Link>
         </div>
         <div className="flex h-full items-center ml-auto">
-          {userInfo && isLogin ? (
+          {userInfo ? (
             <div className="w-fit h-full   items-center flex  relative text-grayscale-600">
               <Link
                 className="border gap-x-2 flex items-center border-grayscale-600 text-sm font-medium py-2 px-3 mx-3 rounded-full"
