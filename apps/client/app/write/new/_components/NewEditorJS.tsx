@@ -180,6 +180,7 @@ export default function NewEditorJS() {
           type="text"
           onChange={(e) => setValue("title", e.target.value)}
           placeholder="제목을 입력해주세요"
+          maxLength={32}
           className="w-full py-2 font-serif text-grayscale-500 text-2xl outline-none focus:ring-0 border-none"
         />
 
