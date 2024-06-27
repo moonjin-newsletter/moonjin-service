@@ -22,6 +22,7 @@ export default function WriterHeader() {
         toast.error("로그아웃 실패");
       });
   }
+
   return (
     <header className="w-full flex justify-center h-16">
       <section className="max-w-[1006px] w-full flex items-center">
