@@ -25,6 +25,7 @@ import NewsletterDtoMapper from "./newsletterDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {AssertEditorJsonDto, EditorJsToHtml} from "@moonjin/editorjs";
 import PostDtoMapper from "../post/postDtoMapper";
+import {FORBIDDEN_FOR_SERIES} from "../response/error/series";
 
 @Controller('newsletter')
 export class NewsletterController {
@@ -111,8 +112,8 @@ export class NewsletterController {
             const { post, ...newsletterData } = newsletterWithPostAndSeriesAndWriter.newsletter;
             const { writerInfo,series , ...postData } = post;
             return {
-                newsletter : NewsletterDtoMapper.newsletterToNewsletterSummaryDto(newsletterData),
-                post : PostDtoMapper.PostToPostInNewsletterCardDto(postData),
+                newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
+                post : PostDtoMapper.PostToPostDto(postData),
                 series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
                 writer : {
                     userId : writerInfo.userId,
@@ -149,8 +150,8 @@ export class NewsletterController {
             const { post, ...newsletterData} = newsletter;
             const {series,writerInfo, ...postData} = post;
             return {
-                newsletter : NewsletterDtoMapper.newsletterToNewsletterSummaryDto(newsletterData),
-                post : PostDtoMapper.PostToPostInNewsletterCardDto(postData),
+                newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
+                post : PostDtoMapper.PostToPostDto(postData),
                 series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
                 writer : {
                     userId : post.writerInfo.userId,
@@ -161,6 +162,33 @@ export class NewsletterController {
         })
 
         return createResponseForm(newsletterResultList);
+    }
+
+    /**
+     * @summary 해당 시리즈의 뉴스레터 목록 가져오기
+     * @param seriesId
+     */
+    @TypedRoute.Get('in/series/:series')
+    async getNewsletterInSeries(@TypedParam('series') seriesId: number): Promise<TryCatch<NewsletterCardDto[] , FORBIDDEN_FOR_SERIES>> {
+        if(seriesId < 1) throw ExceptionList.FORBIDDEN_FOR_SERIES
+
+        const newsletterList = await this.newsletterService.getNewsletterInSeriesBySeriesId(seriesId);
+        const newsletterCardList = newsletterList.map(newsletter => {
+            const { post, ...newsletterData} = newsletter;
+            const {series,writerInfo, ...postData} = post;
+            return {
+                newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
+                post : PostDtoMapper.PostToPostDto(postData),
+                series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
+                writer : {
+                    userId : post.writerInfo.userId,
+                    moonjinId : post.writerInfo.moonjinId,
+                    nickname : post.writerInfo.user.nickname
+                },
+            }
+        })
+
+        return createResponseForm(newsletterCardList);
     }
 
 }

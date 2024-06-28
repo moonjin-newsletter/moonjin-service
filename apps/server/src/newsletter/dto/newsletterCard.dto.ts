@@ -1,11 +1,11 @@
-import {NewsletterSummaryDto} from "./newsletterSummary.dto";
 import {SeriesDto} from "../../series/dto";
 import {WriterProfileInCardDto} from "../../writerInfo/dto";
-import {PostInNewsletterCardDto} from "../../post/dto";
+import {PostDto} from "../../post/dto";
+import {NewsletterDto} from "./newsletter.dto";
 
 export interface NewsletterCardDto {
-    newsletter : NewsletterSummaryDto,
-    post :PostInNewsletterCardDto,
+    newsletter : NewsletterDto,
+    post : PostDto,
     series : SeriesDto | null,
     writer : WriterProfileInCardDto
 }

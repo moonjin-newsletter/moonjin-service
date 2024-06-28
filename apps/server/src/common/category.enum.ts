@@ -1,4 +1,5 @@
 export enum CategoryEnum {
+    " ",
     "고민,사색",
     "여행",
     "취미,여가",

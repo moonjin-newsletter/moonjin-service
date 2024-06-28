@@ -9,14 +9,11 @@ import PostDtoMapper from "./postDtoMapper";
 import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
 import {AuthValidationService} from "../auth/auth.validation.service";
-import {PostWithSeriesAndWriterUser} from "./prisma/postWithSeriesAndWriterUser.prisma.type";
-import {PaginationOptionsDto} from "../common/pagination/dto";
 import {CreatePostContentDto} from "./server-dto/createPostContent.dto";
 import {CreatePostDto} from "./server-dto/createPost.dto";
 import {PostWithContents} from "./prisma/postWithContents.prisma.type";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {PostWithContentAndSeries} from "./prisma/postWithContentAndSeries.prisma";
-import {NewsletterDto} from "../newsletter/dto";
 import UserDtoMapper from "../user/userDtoMapper";
 import {EditorJsToPostPreview} from "@moonjin/editorjs";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
@@ -211,67 +208,6 @@ export class PostService {
         }
     }
 
-    /**
-     * @summary 해당 유저의 발표된 글 목록 가져오기
-     * @param userId
-     * @return ReleasedPostDto[]
-     * @throws USER_NOT_WRITER
-     */
-    async getReleasedPostListByUserId(userId : number): Promise<NewsletterDto[]>{
-        await this.authValidationService.assertWriter(userId);
-        try{
-            const postList : PostWithSeriesAndWriterUser[] = await this.prismaService.post.findMany({
-                where : {
-                    writerId : userId,
-                    deleted : false
-                },
-                include:{
-                    series : true,
-                    writerInfo : {
-                        include : {
-                            user : true
-                        }
-                    }
-                },
-                relationLoadStrategy: 'join',
-            })
-            return PostDtoMapper.PostWithSeriesAndWriterUserListToNewsLetterDtoList(postList);
-        } catch (error){
-            console.error(error);
-            return [];
-        }
-    }
-
-    /**
-     * @summary 해당 시리즈의 발표된 글 목록 가져오기
-     * @param seriesId
-     * @param paginationOptions
-     * @return ReleasedPostDto[]
-     */
-    async getReleasedPostListBySeriesId(seriesId? : number, paginationOptions? : PaginationOptionsDto): Promise<NewsletterDto[]> {
-        const postList : PostWithSeriesAndWriterUser[] = await this.prismaService.post.findMany({
-            where : {
-                seriesId : seriesId?? undefined,
-                deleted : false
-            },
-            include: {
-                writerInfo : {
-                    include : {
-                        user : true
-                    }
-                },
-                series : true
-            },
-            relationLoadStrategy: 'join',
-            skip: paginationOptions?.skip,
-            take: paginationOptions?.take,
-            cursor: paginationOptions?.cursor ? {
-                id : paginationOptions.cursor
-            } : undefined
-        })
-
-        return PostDtoMapper.PostWithSeriesAndWriterUserListToNewsLetterDtoList(postList);
-    }
 
     /**
      * @summary 해당 글의 내용 업로드

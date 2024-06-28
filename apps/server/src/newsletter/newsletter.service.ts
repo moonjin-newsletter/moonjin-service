@@ -79,7 +79,6 @@ export class NewsletterService {
      * @param postId
      * @param writerId
      * @param newsletterTitle
-     * @param extraEmailList
      */
     async sendNewsLetter(postId: number, writerId: number,newsletterTitle: string): Promise<number>{
         // 1. 해당 글이 보낼 수 있는 상태인지 확인
@@ -173,7 +172,7 @@ export class NewsletterService {
     async assertNewsletterCanBeSent(userId: number, postId: number): Promise<PostWithContentAndSeriesAndWriterDto>{
         const postWithContentAndSeriesAndWriter = await this.postService.getPostAndPostContentAndWriterById(postId);
         if(userId != postWithContentAndSeriesAndWriter.post.writerId) throw ExceptionList.FORBIDDEN_FOR_POST;
-        if(postWithContentAndSeriesAndWriter.post.category < 0) throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
+        if(postWithContentAndSeriesAndWriter.post.category != 0) throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
         return postWithContentAndSeriesAndWriter;
     }
 
@@ -297,14 +296,32 @@ export class NewsletterService {
     }
 
     /**
-     * @summary 해당 Post가 이미 몇번 발송되었는지 반환
-     * @param postId
+     * @summary 해당 시리즈의 뉴스레터 목록 가져오기
+     * @param seriesId
      */
-    async getSentCountByPostId(postId: number): Promise<number>{
-        return this.prismaService.newsletter.count({
-            where : {
-                postId
+    async getNewsletterInSeriesBySeriesId(seriesId: number): Promise<NewsletterWithPostWithWriterAndSeries[]>{
+        return this.prismaService.newsletter.findMany({
+            where: {
+                post : {
+                    seriesId
+                }
+            },
+            include: {
+                post : {
+                    include : {
+                        writerInfo : {
+                            include : {
+                                user : true
+                            }
+                        },
+                        series : true
+                    }
+                }
+            },
+            relationLoadStrategy: 'join',
+            orderBy : {
+                sentAt : 'desc'
             }
-        });
+        })
     }
 }

@@ -51,8 +51,8 @@ export class WriterController {
             const { post, ...newsletterData } = newsletterWithPostAndSeriesAndWriter;
             const { writerInfo, series , ...postData } = post;
             return {
-                newsletter : NewsletterDtoMapper.newsletterToNewsletterSummaryDto(newsletterData),
-                post : PostDtoMapper.PostToPostInNewsletterCardDto(postData),
+                newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
+                post : PostDtoMapper.PostToPostDto(postData),
                 series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
                 writer : {
                     userId : writerInfo.userId,

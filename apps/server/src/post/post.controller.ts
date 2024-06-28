@@ -1,5 +1,5 @@
 import {Controller, UseGuards} from '@nestjs/common';
-import {TypedBody, TypedParam, TypedQuery, TypedRoute} from "@nestia/core";
+import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
 import {ICreatePost} from "./api-types/ICreatePost";
 import {PostService} from "./post.service";
 import {
@@ -21,13 +21,11 @@ import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {SeriesService} from "../series/series.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {USER_NOT_WRITER} from "../response/error/auth";
-import {IGetPostBySeriesId} from "./api-types/IGetPostBySeriesId";
 import {UserService} from "../user/user.service";
-import {FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
+import { SERIES_NOT_FOUND} from "../response/error/series";
 import {ICreatePostContent} from "./api-types/ICreatePostContent";
 import {PostContentDto} from "./dto";
 import {ExceptionList} from "../response/error/errorInstances";
-import {NewsletterDto} from "../newsletter/dto";
 import {EditorJsToHtml} from "@moonjin/editorjs";
 import PostDtoMapper from "./postDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
@@ -87,19 +85,6 @@ export class PostController {
     }
 
     /**
-     * @summary 내가 발표한 글 목록 가져오기
-     * @param user
-     * @returns ReleasedPostDto[]
-     * @throws USER_NOT_WRITER
-     */
-    @TypedRoute.Get('me')
-    @UseGuards(WriterAuthGuard)
-    async getMyReleasedPostList(@User() user:UserAuthDto) : Promise<TryCatch<NewsletterDto[], USER_NOT_WRITER>>{
-        const postList = await this.postService.getReleasedPostListByUserId(user.id);
-        return createResponseForm(postList);
-    }
-
-    /**
      * @summary 해당 유저의 작성 중인 글 목록 가져오기
      * @param user
      * @returns PostWithSeriesDto[]
@@ -136,24 +121,6 @@ export class PostController {
         return createResponseForm({
             message : "해당 글을 삭제했습니다."
         })
-    }
-
-    /**
-     * @summary 해당 시리즈의 글 목록 가져오기
-     * @param user
-     * @param series
-     * @returns NewsletterDto[]
-     * @throws SERIES_NOT_FOUND
-     * @throws FORBIDDEN_FOR_SERIES
-     */
-    @TypedRoute.Get()
-    @UseGuards(UserAuthGuard)
-    async getPostListInSeries(@User() user:UserAuthDto, @TypedQuery() series : IGetPostBySeriesId) : Promise<TryCatch<
-        NewsletterDto[], SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES>>{
-        if(series.seriesId)
-            await this.seriesService.assertUserCanAccessToSeries(series.seriesId, user.id);
-        const postList = await this.postService.getReleasedPostListBySeriesId(series.seriesId);
-        return createResponseForm(postList);
     }
 
     /**
