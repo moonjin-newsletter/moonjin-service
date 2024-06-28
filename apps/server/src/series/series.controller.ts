@@ -36,7 +36,7 @@ export class SeriesController {
         @TypedBody() seriesData : ICreateSeries
     ): Promise<TryCatch<SeriesDto, CREATE_SERIES_ERROR >>{
         const series = await this.seriesService.createSeries({writerId: user.id,...seriesData});
-        if(series.status) await this.userService.synchronizeSeries(user.id);
+        await this.userService.synchronizeSeries(user.id);
         return createResponseForm(series)
     }
 

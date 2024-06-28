@@ -28,3 +28,12 @@ export interface NEWSLETTER_NOT_FOUND extends ERROR {
         message : "해당 뉴스레터를 찾을 수 없습니다."
     };
 }
+
+export interface NEWSLETTER_ALREADY_EXIST extends ERROR {
+    result : false;
+    code : ErrorCodeEnum.NEWSLETTER_ALREADY_EXIST;
+    httpStatus: 403;
+    data : {
+        message : "이미 해당 뉴스레터가 존재합니다."
+    };
+}

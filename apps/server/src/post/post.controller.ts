@@ -29,6 +29,8 @@ import {PostContentDto} from "./dto";
 import {ExceptionList} from "../response/error/errorInstances";
 import {NewsletterDto} from "../newsletter/dto";
 import {EditorJsToHtml} from "@moonjin/editorjs";
+import PostDtoMapper from "./postDtoMapper";
+import SeriesDtoMapper from "../series/seriesDtoMapper";
 
 
 @Controller('post')
@@ -106,8 +108,14 @@ export class PostController {
     @TypedRoute.Get('/writing')
     @UseGuards(WriterAuthGuard)
     async getWritingPostList(@User() user:UserAuthDto) : Promise<TryCatch<PostWithSeriesDto[], USER_NOT_WRITER>>{
-        const postList = await this.postService.getWritingPostList(user.id);
-        return createResponseForm(postList);
+        const postWithSeriesList = await this.postService.getWritingPostList(user.id);
+        return createResponseForm(postWithSeriesList.map(postWithSeries => {
+            const {series, ...postData} = postWithSeries;
+            return {
+                post : PostDtoMapper.PostToPostDto(postData),
+                series : series? SeriesDtoMapper.SeriesToSeriesDto(series) : null
+            }
+        }));
     }
 
     /**

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 import {ExceptionList} from "../response/error/errorInstances";
-import {NewsletterWithPostAndSeriesAndWriterUser} from "./prisma/newsletterWithPost.prisma.type";
 import {NewsletterSummaryDto} from "./dto";
 import NewsletterDtoMapper from "./newsletterDtoMapper";
 import {PostWithContentAndSeriesAndWriterDto} from "../post/dto";
@@ -10,10 +9,12 @@ import {SubscribeService} from "../subscribe/subscribe.service";
 import {UtilService} from "../util/util.service";
 import {sendNewsLetterWithHtmlDto} from "../mail/dto";
 import {MailService} from "../mail/mail.service";
-import {SendMailEventsEnum} from "../mail/enum/sendMailEvents.enum";
-import {SentNewsletterWithCounts} from "./prisma/sentNewsletterWithCounts.prisma.type";
+import {
+    NewsletterWithPostWithWriterAndSeries,
+} from "./prisma/NewsletterWithPostWithWriterAndSeries.prisma.type";
 import {EditorJsToHtml} from "@moonjin/editorjs";
 import {PaginationOptionsDto} from "../common/pagination/dto";
+import {WebNewsletterWithNewsletterWithPost} from "./prisma/webNewsletterWithNewsletterWithPost.prisma.type";
 
 @Injectable()
 export class NewsletterService {
@@ -32,21 +33,24 @@ export class NewsletterService {
      * @param seriesOnly
      * @return NewsletterDto[]
      */
-    async getNewsletterListByUserId(userId : number, seriesOnly = false) : Promise<NewsletterWithPostAndSeriesAndWriterUser[]>{
-        return this.prismaService.newsletterInWeb.findMany({
+    async getNewsletterListByUserId(userId : number, seriesOnly = false) : Promise<WebNewsletterWithNewsletterWithPost[]>{
+        return this.prismaService.webNewsletter.findMany({
             where : {
                 receiverId : userId,
                 newsletter : {
                     post : {
-                        seriesId : seriesOnly ? {
-                            gt : 0
+                        series : seriesOnly ? {
+                            id : {
+                                gt : 0
+                            }
                         } : undefined
-                    },
-                }
+                    }
+                },
+
             },
             include:{
-                newsletter :{
-                    include: {
+                newsletter: {
+                    include : {
                         post : {
                             include : {
                                 writerInfo : {
@@ -65,7 +69,7 @@ export class NewsletterService {
                 newsletter : {
                     sentAt : 'desc'
                 }
-            }
+            },
         })
     }
 
@@ -73,51 +77,58 @@ export class NewsletterService {
     /**
      * @summary 해당 글을 뉴스레터로 발송
      * @param postId
-     * @param userId
+     * @param writerId
      * @param newsletterTitle
+     * @param extraEmailList
      */
-    async sendNewsLetter(postId: number, userId: number, newsletterTitle: string): Promise<number>{
-        const postWithContentAndSeriesAndWriter = await this.postService.getPostWithContentAndSeriesAndWriter(postId);
-        await this.assertNewsletterCanBeSent(userId, postWithContentAndSeriesAndWriter);
-        const receiverList = await this.subscribeService.getAllSubscriberByWriterId(postWithContentAndSeriesAndWriter.writerInfo.userId);
+    async sendNewsLetter(postId: number, writerId: number,newsletterTitle: string): Promise<number>{
+        // 1. 해당 글이 보낼 수 있는 상태인지 확인
+        const postWithContentAndSeriesAndWriter = await this.assertNewsletterCanBeSent(writerId, postId);
+
+        // 2. 구독자 목록 가져오기
+        const receiverList = await this.subscribeService.getAllSubscriberByWriterId(writerId);
         const receiverEmailSet = new Set(receiverList.externalSubscriberList.map(subscriber => subscriber.subscriberEmail));
         receiverList.subscriberList.forEach(follower => {
             receiverEmailSet.add(follower.user.email)
         })
-        receiverEmailSet.add(postWithContentAndSeriesAndWriter.user.email); // 본인 이메일 추가제거
+        receiverEmailSet.add(postWithContentAndSeriesAndWriter.user.email);
         const receiverEmailList = Array.from(receiverEmailSet);
+        const receiverIdList = receiverList.subscriberList.map(subscriber => subscriber.user.id);
 
         try{
-            const sentCount = await this.getSentCountByPostId(postId);
+            const sentAt = this.utilService.getCurrentDateInKorea();
             const newsletter = await this.prismaService.newsletter.create({
                 data : {
                     postId,
-                    postContentId : postWithContentAndSeriesAndWriter.postContent.id,
-                    title: newsletterTitle,
-                    sentAt: this.utilService.getCurrentDateInKorea(),
-                    cover : postWithContentAndSeriesAndWriter.post.cover,
-                    sentCount,
-                    newsletterInWeb : {
+                    postContentId: postWithContentAndSeriesAndWriter.postContent.id,
+                    sentAt,
+                    webNewsletter : {
                         createMany : {
-                            data : receiverList.subscriberList.map(subscriber => {
+                            data : receiverIdList.map(receiverId => {
                                 return {
-                                    receiverId :subscriber.user.id
+                                    receiverId
                                 }
                             }),
                             skipDuplicates : true
                         }
                     },
-                    newsletterInMail : {
-                        createMany:{
-                            data : receiverEmailList.map(email => {
-                                return {
-                                    receiverEmail : email
+                    newsletterSend: {
+                        create: {
+                            title: newsletterTitle,
+                            sentAt,
+                            mailNewsletter: {
+                                createMany: {
+                                    data: receiverEmailList.map(email => {
+                                        return {
+                                            receiverEmail: email
+                                        }
+                                    }),
+                                    skipDuplicates: true
                                 }
-                            }),
-                            skipDuplicates : true
+                            }
                         }
                     }
-                },
+                }
             })
 
             const newsletterSendInfo : sendNewsLetterWithHtmlDto = {
@@ -154,22 +165,25 @@ export class NewsletterService {
     /**
      * @summary 뉴스레터 전송 가능 여부 확인
      * @param userId
-     * @param postWithContentAndSeriesAndWriter
+     * @param postId
+     * @throws POST_NOT_FOUND
      * @throws FORBIDDEN_FOR_POST
      * @throws NEWSLETTER_CATEGORY_NOT_FOUND
      */
-    async assertNewsletterCanBeSent(userId: number, postWithContentAndSeriesAndWriter : PostWithContentAndSeriesAndWriterDto){
-        if(userId != postWithContentAndSeriesAndWriter.writerInfo.userId) throw ExceptionList.FORBIDDEN_FOR_POST;
-        if(postWithContentAndSeriesAndWriter.post.category == null || postWithContentAndSeriesAndWriter.post.category == "") throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
+    async assertNewsletterCanBeSent(userId: number, postId: number): Promise<PostWithContentAndSeriesAndWriterDto>{
+        const postWithContentAndSeriesAndWriter = await this.postService.getPostAndPostContentAndWriterById(postId);
+        if(userId != postWithContentAndSeriesAndWriter.post.writerId) throw ExceptionList.FORBIDDEN_FOR_POST;
+        if(postWithContentAndSeriesAndWriter.post.category < 0) throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
+        return postWithContentAndSeriesAndWriter;
     }
 
     /**
-     * @summary 해당 유저의 발송한 뉴스레터 목록 가져오기
+     * @summary 해당 유저의 발행한 뉴스레터 목록 가져오기
      * @param writerId
      * @param paginationOptions
      * @return SentNewsletterWithCounts[]
      */
-    async getSentNewsletterListByWriterId(writerId: number, paginationOptions?:PaginationOptionsDto): Promise<SentNewsletterWithCounts[]>{
+    async getSentNewsletterListByWriterId(writerId: number, paginationOptions?:PaginationOptionsDto): Promise<NewsletterWithPostWithWriterAndSeries[]>{
         return this.prismaService.newsletter.findMany({
             where : {
                 post : {
@@ -188,16 +202,6 @@ export class NewsletterService {
                         series : true
                     },
                 },
-                _count : {
-                    select : {
-                        newsletterInMail : true,
-                        newsletterAnalytics : {
-                            where : {
-                                event : SendMailEventsEnum.delivered
-                            }
-                        }
-                    },
-                }
             },
             relationLoadStrategy: 'join',
             orderBy : {
@@ -217,17 +221,15 @@ export class NewsletterService {
      * @param paginationOptions
      * @return SentNewsletterWithCounts[]
      */
-    async getAllSentNewsletterListByMoonjinId(moonjinId: string, paginationOptions?:PaginationOptionsDto): Promise<SentNewsletterWithCounts[]>{
+    async getAllSentNewsletterListByMoonjinId(moonjinId: string, paginationOptions?:PaginationOptionsDto): Promise<NewsletterWithPostWithWriterAndSeries[]>{
         return this.prismaService.newsletter.findMany({
             where : {
                 post : {
                     writerInfo:{
                         moonjinId
                     },
-                    status : true,
                     deleted : false,
                 },
-                sentCount : 0,
             },
             include: {
                 post : {
@@ -240,16 +242,6 @@ export class NewsletterService {
                         series : true
                     }
                 },
-                _count : {
-                    select : {
-                        newsletterInMail : true,
-                        newsletterAnalytics : {
-                            where : {
-                                event : SendMailEventsEnum.delivered
-                            }
-                        }
-                    },
-                }
             },
             relationLoadStrategy: 'join',
             orderBy : {
@@ -269,7 +261,7 @@ export class NewsletterService {
      * @param paginationOptions
      * @return SentNewsletterWithCounts[]
      */
-    async getAllSentNormalNewsletterListByMoonjinId(moonjinId: string, paginationOptions?:PaginationOptionsDto): Promise<SentNewsletterWithCounts[]>{
+    async getAllSentNormalNewsletterListByMoonjinId(moonjinId: string, paginationOptions?:PaginationOptionsDto): Promise<NewsletterWithPostWithWriterAndSeries[]>{
         return this.prismaService.newsletter.findMany({
             where : {
                 post : {
@@ -277,10 +269,8 @@ export class NewsletterService {
                         moonjinId
                     },
                     seriesId : 0,
-                    status : true,
                     deleted : false,
                 },
-                sentCount : 0,
             },
             include: {
                 post : {
@@ -293,16 +283,6 @@ export class NewsletterService {
                         series : true
                     }
                 },
-                _count : {
-                    select : {
-                        newsletterInMail : true,
-                        newsletterAnalytics : {
-                            where : {
-                                event : SendMailEventsEnum.delivered
-                            }
-                        }
-                    },
-                }
             },
             relationLoadStrategy: 'join',
             orderBy : {

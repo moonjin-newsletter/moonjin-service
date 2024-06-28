@@ -209,11 +209,11 @@ export class SeriesService {
     async getReleasedSeriesById(seriesId: number): Promise<SeriesDto> {
         const series = await this.prismaService.series.findUnique({
             where: {
-                id: seriesId
+                id: seriesId,
+                deleted: false
             }
         });
         if(!series) throw ExceptionList.SERIES_NOT_FOUND;
-        if(!series.status) throw ExceptionList.FORBIDDEN_FOR_SERIES;
         return SeriesDtoMapper.SeriesToSeriesDto(series);
     }
 
@@ -303,7 +303,6 @@ export class SeriesService {
                 writerInfo: {
                     moonjinId
                 },
-                status: true,
                 deleted: false
             },
             orderBy: {

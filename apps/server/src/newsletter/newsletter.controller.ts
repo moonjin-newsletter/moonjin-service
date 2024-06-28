@@ -4,7 +4,6 @@ import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto";
 import {ISendNewsLetter} from "./api-types/ISendNewsLetter";
-import {PostService} from "../post/post.service";
 import {Try, TryCatch} from "../response/tryCatch";
 import {
     FORBIDDEN_FOR_POST,
@@ -17,7 +16,7 @@ import {NewsletterService} from "./newsletter.service";
 import {UserService} from "../user/user.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
-import { NewsletterSummaryDto, SendNewsletterResultDto, NewsletterCardDto} from "./dto";
+import { NewsletterSummaryDto, NewsletterCardDto} from "./dto";
 import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {ExceptionList} from "../response/error/errorInstances";
@@ -30,7 +29,6 @@ import PostDtoMapper from "../post/postDtoMapper";
 @Controller('newsletter')
 export class NewsletterController {
     constructor(
-        private readonly postService: PostService,
         private readonly userService: UserService,
         private readonly newsletterService: NewsletterService,
         private readonly mailService: MailService,
@@ -80,10 +78,9 @@ export class NewsletterController {
         ResponseMessage & {sentCount : number}, POST_NOT_FOUND | POST_CONTENT_NOT_FOUND | FORBIDDEN_FOR_POST | NEWSLETTER_CATEGORY_NOT_FOUND | USER_NOT_WRITER>>{
         if(body.receiverEmails.length == 0 || body.receiverEmails.length > 5) throw ExceptionList.EMAIL_NOT_EXIST;
 
-        const postWithPostContentAndSeriesAndWriter = await this.postService.getPostWithContentAndSeriesAndWriter(postId);
+        const postWithPostContentAndSeriesAndWriter = await this.newsletterService.assertNewsletterCanBeSent(user.id, postId);
         const postContent = postWithPostContentAndSeriesAndWriter.postContent.content;
         if(AssertEditorJsonDto(postContent) === false) throw ExceptionList.POST_CONTENT_NOT_FOUND; // TODO : 동작하는 지 테스트 필요
-        await this.newsletterService.assertNewsletterCanBeSent(user.id, postWithPostContentAndSeriesAndWriter);
 
         await this.mailService.sendNewsLetterWithHtml({
             newsletterId: 0,
@@ -146,10 +143,10 @@ export class NewsletterController {
      */
     @TypedRoute.Get('send/all')
     @UseGuards(WriterAuthGuard)
-    async getSentNewsletter(@User() user:UserAuthDto) : Promise<Try<SendNewsletterResultDto[]>>{
+    async getSentNewsletter(@User() user:UserAuthDto) : Promise<Try<NewsletterCardDto[]>>{
         const newsletterList = await this.newsletterService.getSentNewsletterListByWriterId(user.id);
         const newsletterResultList = newsletterList.map(newsletter => {
-            const { _count, post, ...newsletterData} = newsletter;
+            const { post, ...newsletterData} = newsletter;
             const {series,writerInfo, ...postData} = post;
             return {
                 newsletter : NewsletterDtoMapper.newsletterToNewsletterSummaryDto(newsletterData),
@@ -160,10 +157,6 @@ export class NewsletterController {
                     moonjinId : post.writerInfo.moonjinId,
                     nickname : post.writerInfo.user.nickname
                 },
-                analytics : {
-                    deliveredCount : _count.newsletterAnalytics,
-                    totalSentCount : _count.newsletterInMail
-                }
             }
         })
 

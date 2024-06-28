@@ -1,3 +1,4 @@
+
 export enum ErrorCodeEnum {
     // auth/signup
     EMAIL_ALREADY_EXIST = '0001',
@@ -41,6 +42,7 @@ export enum ErrorCodeEnum {
     SEND_NEWSLETTER_ERROR = "0120",
     NEWSLETTER_CATEGORY_NOT_FOUND = "0121",
     NEWSLETTER_NOT_FOUND = "0122",
+    NEWSLETTER_ALREADY_EXIST = "0123",
 
     // series
     CREATE_SERIES_ERROR = "0201",

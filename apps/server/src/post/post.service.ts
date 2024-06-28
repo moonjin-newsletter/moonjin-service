@@ -1,8 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {PostDto, PostWithContentAndSeriesDto,
     PostWithContentDto,
-    ReleasedPostDto,
-    PostWithSeriesDto,
     PostContentDto,
     PostWithContentAndSeriesAndWriterDto
 } from "./dto";
@@ -21,7 +19,8 @@ import {PostWithContentAndSeries} from "./prisma/postWithContentAndSeries.prisma
 import {NewsletterDto} from "../newsletter/dto";
 import UserDtoMapper from "../user/userDtoMapper";
 import {EditorJsToPostPreview} from "@moonjin/editorjs";
-import {PostWithSeriesAndNewsletter} from "./prisma/postWithSeriesAndNewsletter.prisma.type";
+import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
+import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
 
 @Injectable()
 export class PostService {
@@ -114,22 +113,6 @@ export class PostService {
     }
 
     /**
-     * @summary 공개되어 있는 모든 게시글 가져오기
-     * @return ReleasedPostDto[]
-     */
-    async getPublicPostAll(): Promise<ReleasedPostDto[]> {
-        const postList = await this.prismaService.post.findMany(
-            {
-                where: {
-                    deleted: false,
-                    status : true,
-                },
-            }
-        );
-        return PostDtoMapper.PostListToReleasedPostDtoList(postList);
-    }
-
-    /**
      * @summary 해당 글의 작성자인지 확인
      * @param postId
      * @param writerId
@@ -182,36 +165,23 @@ export class PostService {
      * @return PostWithSeriesDto[]
      * @throws USER_NOT_WRITER
      */
-    async getWritingPostList(userId: number): Promise<PostWithSeriesDto[]> {
+    async getWritingPostList(userId: number): Promise<PostWithSeries[]> {
         await this.authValidationService.assertWriter(userId);
         try{
-            const postList: PostWithSeriesAndNewsletter[] = await this.prismaService.post.findMany({
+            return await this.prismaService.post.findMany({
                 where : {
                     writerId : userId,
                     deleted : false,
+                    newsletter : {}
                 },
                 include: {
                     series : true,
-                    newsletter: {
-                        orderBy : {
-                            sentAt : 'desc'
-                        }
-                    }
                 },
                 relationLoadStrategy: 'join',
                 orderBy : {
                     createdAt : 'desc',
                 }
             })
-            return postList.filter(post => post.newsletter.length == 0 || post.lastUpdatedAt > post.newsletter[post.newsletter.length-1].sentAt)
-                .map(post => {
-                    const {newsletter,series, ...postData} = post;
-                    return {
-                        post: PostDtoMapper.PostToPostDto(postData),
-                        series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null
-                    }
-                });
-
         }catch (error){
             console.error(error);
             return [];
@@ -233,7 +203,6 @@ export class PostService {
                     id : postId
                 },
                 data : {
-                    status : false,
                     deleted : true,
                 }
             }) // TODO : 글 삭제 시 Side Effect 생길 시 고려하기
@@ -245,17 +214,15 @@ export class PostService {
     /**
      * @summary 해당 유저의 발표된 글 목록 가져오기
      * @param userId
-     * @param status (true)
      * @return ReleasedPostDto[]
      * @throws USER_NOT_WRITER
      */
-    async getReleasedPostListByUserId(userId : number, status= true): Promise<NewsletterDto[]>{
+    async getReleasedPostListByUserId(userId : number): Promise<NewsletterDto[]>{
         await this.authValidationService.assertWriter(userId);
         try{
             const postList : PostWithSeriesAndWriterUser[] = await this.prismaService.post.findMany({
                 where : {
                     writerId : userId,
-                    status,
                     deleted : false
                 },
                 include:{
@@ -285,7 +252,6 @@ export class PostService {
         const postList : PostWithSeriesAndWriterUser[] = await this.prismaService.post.findMany({
             where : {
                 seriesId : seriesId?? undefined,
-                status : true,
                 deleted : false
             },
             include: {
@@ -431,6 +397,49 @@ export class PostService {
         })
         if(!post) throw ExceptionList.POST_NOT_FOUND;
         return PostDtoMapper.PostToPostDto(post);
+    }
+
+    /**
+     * @summary 작성중인 글을 id로 가져오기
+     * @param postId
+     * @return PostWithContentAndSeriesAndWriterDto
+     * @throws POST_NOT_FOUND
+     * @throws POST_CONTENT_NOT_FOUND
+     * @throws NEWSLETTER_ALREADY_EXIST
+     */
+    async getPostAndPostContentAndWriterById(postId: number): Promise<PostWithContentAndSeriesAndWriterDto>{
+        const postWithContent = await this.prismaService.post.findUnique({
+            where: {
+                id : postId,
+                deleted : false,
+            },
+            include: {
+                postContent: {
+                    orderBy: {
+                        createdAt : 'desc'
+                    }
+                },
+                writerInfo : {
+                    include: {
+                        user : true
+                    }
+                },
+                newsletter: true,
+                series : true
+            }
+        })
+        if(!postWithContent) throw ExceptionList.POST_NOT_FOUND;
+        if(postWithContent.postContent.length == 0) throw ExceptionList.POST_CONTENT_NOT_FOUND;
+        if(postWithContent.newsletter) throw ExceptionList.NEWSLETTER_ALREADY_EXIST;
+        const {postContent,series,writerInfo,...postData} = postWithContent;
+        const {user,...writerInfoData} = writerInfo;
+        return {
+            post : PostDtoMapper.PostToPostDto(postData),
+            postContent : PostDtoMapper.PostContentToPostContentDto(postContent[0]),
+            user: UserDtoMapper.UserToUserDto(user),
+            writerInfo : WriterInfoDtoMapper.WriterInfoToWriterInfoDto(writerInfoData),
+            series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null
+        }
     }
 
     /**

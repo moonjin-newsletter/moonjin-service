@@ -20,12 +20,12 @@ model User {
   role        Int      @default(0)
   deleted     Boolean  @default(false)
 
-  oauth           Oauth?
-  writerInfo      WriterInfo?
-  follow          Subscribe[]
-  letter          Letter[]          @relation(name: "sender")
-  letter2         Letter[]          @relation(name: "receiver")
-  NewsletterInWeb NewsletterInWeb[]
+  oauth         Oauth?
+  writerInfo    WriterInfo?
+  follow        Subscribe[]
+  letter        Letter[]        @relation(name: "sender")
+  letter2       Letter[]        @relation(name: "receiver")
+  WebNewsletter WebNewsletter[]
 }
 
 model Oauth {
@@ -85,17 +85,15 @@ model Post {
   subtitle      String   @default("") @db.VarChar(128)
   writerId      Int
   preview       String   @default("") @db.VarChar(512)
-  category      String   @default("") @db.VarChar(16)
+  category      Int      @default(-1)
   cover         String   @db.VarChar(128)
-  clicks        Int      @default(0)
   createdAt     DateTime
   lastUpdatedAt DateTime @default(now())
   seriesId      Int      @default(0)
-  status        Boolean  @default(true)
   deleted       Boolean  @default(false)
 
   writerInfo  WriterInfo    @relation(fields: [writerId], references: [userId])
-  newsletter  Newsletter[]
+  newsletter  Newsletter?
   series      Series?       @relation(fields: [seriesId], references: [id])
   postContent PostContent[]
 
@@ -109,42 +107,54 @@ model PostContent {
   content   String   @db.Text
   createdAt DateTime
 
-  post       Post         @relation(fields: [postId], references: [id])
-  Newsletter Newsletter[]
+  post       Post        @relation(fields: [postId], references: [id])
+  newsletter Newsletter?
 
   @@index([postId])
 }
 
 model Newsletter {
   id            Int      @id @default(autoincrement())
-  postId        Int
-  postContentId Int      @default(0)
-  title         String   @db.VarChar(128)
-  cover         String   @db.VarChar(128)
-  sentCount     Int      @default(0)
-  sentAt        DateTime
-  status        Boolean  @default(true)
+  postId        Int      @unique
+  postContentId Int      @unique
+  clicks        Int      @default(0)
+  likes         Int      @default(0)
+  comments      Int      @default(0)
+  sentAt        DateTime @default(now())
 
-  post                Post                  @relation(fields: [postId], references: [id])
-  postContent         PostContent           @relation(fields: [postContentId], references: [id])
-  newsletterInMail    NewsletterInMail[]
-  newsletterInWeb     NewsletterInWeb[]
-  newsletterAnalytics NewsletterAnalytics[]
+  post           Post             @relation(fields: [postId], references: [id])
+  postContent    PostContent      @relation(fields: [postContentId], references: [id])
+  newsletterSend NewsletterSend[]
+  webNewsletter  WebNewsletter[]
 
   @@index([postId])
 }
 
-model NewsletterInMail {
-  newsletterId  Int
-  receiverEmail String @db.VarChar(64)
+model NewsletterSend {
+  id           Int      @id @default(autoincrement())
+  newsletterId Int
+  title        String   @db.VarChar(128)
+  sentAt       DateTime
 
-  newsletter Newsletter @relation(fields: [newsletterId], references: [id])
+  newsletter     Newsletter       @relation(fields: [newsletterId], references: [id])
+  mailNewsletter MailNewsletter[]
 
-  @@id([newsletterId, receiverEmail])
   @@index([newsletterId])
 }
 
-model NewsletterInWeb {
+model MailNewsletter {
+  id               Int    @id @default(autoincrement())
+  newsletterSendId Int
+  receiverEmail    String @db.VarChar(64)
+
+  newsletterSend      NewsletterSend        @relation(fields: [newsletterSendId], references: [id])
+  NewsletterAnalytics NewsletterAnalytics[]
+
+  @@unique([newsletterSendId, receiverEmail])
+  @@index([newsletterSendId])
+}
+
+model WebNewsletter {
   newsletterId   Int
   receiverId     Int
   isRead         Boolean @default(false)
@@ -155,18 +165,19 @@ model NewsletterInWeb {
 
   @@id([newsletterId, receiverId])
   @@index([newsletterId])
+  @@index([receiverId])
 }
 
 model NewsletterAnalytics {
-  id            String   @id
-  newsletterId  Int
-  receiverEmail String   @db.VarChar(64)
-  event         Int
-  timestamp     DateTime
+  id               String
+  mailNewsletterId Int
+  event            Int
+  timestamp        DateTime
 
-  newsletter Newsletter @relation(fields: [newsletterId], references: [id])
+  mailNewsletter MailNewsletter @relation(fields: [mailNewsletterId], references: [id])
 
-  @@index([newsletterId])
+  @@id([event, mailNewsletterId])
+  @@index([mailNewsletterId])
   @@index([event])
 }
 
@@ -174,13 +185,12 @@ model Series {
   id            Int      @id @default(autoincrement())
   title         String   @db.VarChar(32)
   writerId      Int
-  category      String   @db.VarChar(16)
+  category      Int      @default(-1)
   cover         String   @db.VarChar(128)
   clicks        Int      @default(0)
   createdAt     DateTime
   lastUpdatedAt DateTime @default(now())
   description   String   @default("") @db.VarChar(256)
-  status        Boolean  @default(true)
   deleted       Boolean  @default(false)
 
   writerInfo WriterInfo @relation(fields: [writerId], references: [userId])

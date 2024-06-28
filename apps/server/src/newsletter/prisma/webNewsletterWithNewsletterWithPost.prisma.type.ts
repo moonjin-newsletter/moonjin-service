@@ -1,9 +1,10 @@
 import {Prisma} from "@prisma/client";
 
-const newsletterWithPostAndSeriesAndWriterUser = Prisma.validator<Prisma.NewsletterInWebDefaultArgs>()({
+
+const webNewsletterWithNewsletterWithPost = Prisma.validator<Prisma.WebNewsletterDefaultArgs>()({
     include:{
-        newsletter :{
-            include: {
+        newsletter: {
+            include : {
                 post : {
                     include : {
                         writerInfo : {
@@ -18,4 +19,5 @@ const newsletterWithPostAndSeriesAndWriterUser = Prisma.validator<Prisma.Newslet
         }
     },
 })
-export type NewsletterWithPostAndSeriesAndWriterUser = Prisma.NewsletterInWebGetPayload<typeof newsletterWithPostAndSeriesAndWriterUser>;
+
+export type WebNewsletterWithNewsletterWithPost = Prisma.WebNewsletterGetPayload<typeof webNewsletterWithNewsletterWithPost>;

@@ -25,13 +25,18 @@ export class MailgunService {
      */
     async saveNewsletterSendEvent(newsletterSendEventData : CreateNewsletterSendEvent): Promise<boolean>{
         try{
+            const mailNewsletter = await this.prismaService.mailNewsletter.findFirstOrThrow({
+                where : {
+                    newsletterSendId : newsletterSendEventData.newsletterId,
+                    receiverEmail : newsletterSendEventData.receiverEmail
+                }
+            })
             await this.prismaService.newsletterAnalytics.create({
                 data: {
                     id:newsletterSendEventData.id,
                     event:newsletterSendEventData.event,
                     timestamp:newsletterSendEventData.timestamp,
-                    newsletterId : newsletterSendEventData.newsletterId,
-                    receiverEmail : newsletterSendEventData.receiverEmail
+                    mailNewsletterId : mailNewsletter.id,
                 }
             })
             return true;

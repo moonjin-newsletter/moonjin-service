@@ -10,7 +10,7 @@ import {ObjectToEditorJsonDto} from "@moonjin/editorjs";
 
 class PostDtoMapper {
     public static PostToPostDto(post: Post):PostDto {
-        const {deleted, createdAt , status,...postData} = post;
+        const {deleted ,...postData} = post;
         return postData;
     }
     public static PostToReleasedPostDto(post: Post) : ReleasedPostDto {
@@ -53,11 +53,10 @@ class PostDtoMapper {
     }
 
     public static PostToPostInNewsletterCardDto(post: Post): PostInNewsletterCardDto {
-        const {deleted, createdAt , status,...postData} = post;
+        const {deleted ,...postData} = post;
         return {
             id: postData.id,
             title: postData.title,
-            clicks: postData.clicks,
             preview: postData.preview
         }
     }

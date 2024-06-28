@@ -21,6 +21,7 @@ export * from './src/api-types/file/index';
 export * from './src/api-types/subscribe/index';
 export * from './src/api-types/writerInfo/index';
 export * from './src/api-types/common/pagination/index';
+export * from './src/api-types/common/category.enum';
 
 /// type
 export * from './src/api-types/auth/dto/index';
