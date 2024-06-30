@@ -3,11 +3,8 @@
 import { Tab } from "@headlessui/react";
 import { Fragment } from "react";
 import { ReaderHome } from "./_components/ReaderHome";
-import {
-  type NewsletterCardDto,
-  NewsletterDto,
-  ReleasedPostWithWriterDto,
-  type SendNewsletterResultDto,
+import type {
+  NewsletterCardDto,
   SeriesWithWriterDto,
 } from "@moonjin/api-types";
 import WritterHome from "./_components/WritterHome";
@@ -21,7 +18,7 @@ export default function HomeTab({
   userType: any;
   seriesList: SeriesWithWriterDto[];
   newsletterList: NewsletterCardDto[];
-  myNewsletterList?: SendNewsletterResultDto[];
+  myNewsletterList?: NewsletterCardDto[];
 }) {
   const tabList =
     userType === "작가" ? ["발행글", "구독한 뉴스레터"] : ["구독한 뉴스레터"];

@@ -1,4 +1,4 @@
-import { type SendNewsletterResultDto } from "@moonjin/api-types";
+import { type NewsletterCardDto } from "@moonjin/api-types";
 import { isNonEmptyArray } from "@toss/utils";
 import EmptyCard from "./EmptyCard";
 import NewsLetterCard from "./NewsLetterCard";
@@ -7,7 +7,7 @@ import SeriesLetterCard from "./SeriesLetterCard";
 export default function WritterHome({
   myNewsletterList,
 }: {
-  myNewsletterList: SendNewsletterResultDto[];
+  myNewsletterList: NewsletterCardDto[];
 }) {
   return (
     <div className="flex flex-col w-full gap-y-12 mt-2 max-w-[740px]">
