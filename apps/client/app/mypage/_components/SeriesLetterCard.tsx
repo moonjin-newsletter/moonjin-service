@@ -19,7 +19,7 @@ export default function SeriesLetterCard({
             [{value.series?.title}]
           </strong>
           <strong className="group-hover:underline text-lg text-grayscale-600 font-medium">
-            {value.newsletter.title}
+            {value.post.title}
           </strong>
           <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400">
             {value.post.preview}
@@ -36,7 +36,7 @@ export default function SeriesLetterCard({
         </div>
       </div>
       <Image
-        src={value.newsletter.cover ?? ""}
+        src={value.post.cover ?? ""}
         alt="뉴스레터 썸네일"
         width={120}
         height={120}

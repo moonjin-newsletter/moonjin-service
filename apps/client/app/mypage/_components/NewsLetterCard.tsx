@@ -1,10 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import type {
-  NewsletterCardDto,
-  ReleasedPostWithWriterDto,
-} from "@moonjin/api-types";
+import type { NewsletterCardDto } from "@moonjin/api-types";
 
 export default function NewsLetterCard({
   value,
@@ -19,7 +16,7 @@ export default function NewsLetterCard({
       <div className="flex justify-between w-full h-full min-h-[120px] flex-col ">
         <div className="w-full flex flex-col gap-y-2">
           <strong className="group-hover:underline text-lg text-grayscale-600 font-medium">
-            {value.newsletter.title}
+            {value.post.title}
           </strong>
           <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400">
             {value.post.preview}
@@ -36,7 +33,7 @@ export default function NewsLetterCard({
         </div>
       </div>
       <Image
-        src={value.newsletter.cover ?? ""}
+        src={value.post.cover ?? ""}
         alt="뉴스레터 썸네일"
         width={120}
         height={120}

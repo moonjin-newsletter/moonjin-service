@@ -23,7 +23,7 @@ export default function NewsLetterCard({
           </span>
         )}
         <h2 className="group-hover:underline mt-1.5 text-lg text-grayscale-600 font-medium">
-          {newsletterInfo.newsletter.title}
+          {newsletterInfo.post.title}
         </h2>
         <span className="line-clamp-2 mt-0.5 flex grow  text-sm text-grayscale-400">
           {newsletterInfo.post.preview}
@@ -46,7 +46,7 @@ export default function NewsLetterCard({
         </div>
       </div>
       <Image
-        src={newsletterInfo.newsletter.cover}
+        src={newsletterInfo.post.cover}
         alt="뉴스레터 커버이미지"
         width={120}
         height={120}
