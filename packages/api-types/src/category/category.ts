@@ -17,7 +17,7 @@ export class Category {
      * @summary 카테고리 이름으로 카테고리 번호를 가져오기.
      * @param category
      */
-    public static getNumberByCategory(category: string | undefined): number {
+    public static getNumberByCategory(category: string | undefined | null): number {
         if(!category) return -1;
         return this.list.indexOf(category);
     }
