@@ -1,3 +1,4 @@
+
 export interface IGetPost {
     id: number;
     title: string;

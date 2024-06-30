@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 import {
     ExternalSubscriberDto,
-    SubscribingWriterProfileDto,
     AllSubscriberDto,
     SubscriberDto, ExternalSubscriberInfoDto,
 } from "./dto";
@@ -98,7 +97,7 @@ export class SubscribeService {
     }
 
     /**
-     * @summary 작가를 팔로우
+     * @summary 작가를 언팔로우
      * @param followerId
      * @param writerId
      * @returns void
@@ -110,11 +109,12 @@ export class SubscribeService {
         if(followerId === writerId) throw ExceptionList.SUBSCRIBE_MYSELF_ERROR;
         await this.authValidationService.assertWriter(writerId);
         try {
-            await this.prismaService.subscribe.create({
-                data: {
-                    followerId,
-                    writerId,
-                    createdAt : this.utilService.getCurrentDateInKorea()
+            await this.prismaService.subscribe.delete({
+                where: {
+                    followerId_writerId: {
+                        writerId,
+                        followerId
+                    }
                 }
             });
             await this.synchronizeSubscriber(writerId);
@@ -128,8 +128,8 @@ export class SubscribeService {
      * @param followerId
      * @returns FollowingWriterProfileDto[]
      */
-    async getSubscribingWriterListBySubscriberId(followerId : number): Promise<SubscribingWriterProfileDto[]> {
-        const followingList: SubscribingWriterInfoWithUser[] = await this.prismaService.subscribe.findMany({
+    async getSubscribingWriterListBySubscriberId(followerId : number): Promise<SubscribingWriterInfoWithUser[]> {
+        return this.prismaService.subscribe.findMany({
             where: {
                 followerId,
                 writerInfo: {
@@ -147,8 +147,6 @@ export class SubscribeService {
                 createdAt: 'desc'
             }
         })
-        if(followingList.length === 0) return [];
-        return followingList.map(following => SubscribeDtoMapper.SubscribingWriterInfoWithUserToSubscribingWriterDto(following));
     }
 
     /**

@@ -3,11 +3,10 @@ import {PrismaService} from "../prisma/prisma.service";
 import {UtilService} from "../util/util.service";
 import SeriesDtoMapper from "./seriesDtoMapper";
 import {ExceptionList} from "../response/error/errorInstances";
-import {SeriesDto, CreateSeriesDto, SeriesWithWriterDto} from "./dto";
+import {SeriesDto, CreateSeriesDto} from "./dto";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
-import { FollowingSeriesWithWriter,
-} from "./prisma/followingSeriesAndWriter.prisma.type";
-import UserDtoMapper from "../user/userDtoMapper";
+import { SeriesWithWriter,
+} from "./prisma/seriesWithWriter.prisma.type";
 import {SubscribeService} from "../subscribe/subscribe.service";
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {Series} from "@prisma/client";
@@ -51,12 +50,12 @@ export class SeriesService {
      * @summary 해당 유저의 구독 중인 시리즈 가져오기
      * @param followerId
      */
-    async getFollowingSeriesByFollowerId(followerId : number) : Promise<SeriesWithWriterDto[]>{
+    async getFollowingSeriesByFollowerId(followerId : number) : Promise<SeriesWithWriter[]>{
         try{
             const followingWriterList = await this.subscribeService.getSubscribingWriterListBySubscriberId(followerId);
             if(followingWriterList.length === 0) return [];
-            const followingWriterIdList= followingWriterList.map(writer => writer.user.id);
-            const followingSeriesWithWriterList : FollowingSeriesWithWriter[] = await this.prismaService.series.findMany({
+            const followingWriterIdList= followingWriterList.map(writer => writer.writerId);
+            return await this.prismaService.series.findMany({
                 where: {
                     deleted: false,
                     writerId: {
@@ -69,14 +68,6 @@ export class SeriesService {
                             user: true
                         }
                     }
-                }
-            })
-            if(followingSeriesWithWriterList.length === 0) return [];
-            return followingSeriesWithWriterList.map(seriesWithWriter => {
-                const { writerInfo, ...series} = seriesWithWriter
-                return {
-                    series: SeriesDtoMapper.SeriesToSeriesDto(series),
-                    writer: UserDtoMapper.UserToUserProfileDto(writerInfo.user)
                 }
             })
         }catch (error){
@@ -106,18 +97,24 @@ export class SeriesService {
      * @param writerId
      * @returns SeriesDto[]
      */
-    async getReleasedSeriesListByWriterId(writerId: number): Promise<SeriesDto[]> {
+    async getReleasedSeriesListByWriterId(writerId: number): Promise<SeriesWithWriter[]> {
         try {
-            const seriesList = await this.prismaService.series.findMany({
+            return await this.prismaService.series.findMany({
                 where: {
                     deleted: false,
                     writerId: writerId,
+                },
+                include: {
+                    writerInfo: {
+                        include: {
+                            user: true
+                        }
+                    }
                 },
                 orderBy:{
                     createdAt: 'desc'
                 }
             })
-            return seriesList.map(series => SeriesDtoMapper.SeriesToSeriesDto(series));
         }catch(error){
             console.error(error);
             return [];
@@ -318,5 +315,26 @@ export class SeriesService {
             } : undefined
         });
 
+    }
+
+    /**
+     * @summary 시리즈 포스트 수 업데이트
+     * @param seriesId
+     */
+    async updateSeriesPostCount(seriesId: number): Promise<void> {
+        const postCount = await this.prismaService.post.count({
+            where: {
+                seriesId,
+                deleted: false
+            }
+        });
+        await this.prismaService.series.update({
+            where: {
+                id: seriesId
+            },
+            data: {
+                postCount,
+            }
+        });
     }
 }

@@ -30,14 +30,14 @@ export class NewsletterService {
 
     /**
      * @summary 해당 유저의 받은 뉴스레터 목록 가져오기
-     * @param userId
+     * @param receiverId
      * @param seriesOnly
      * @return NewsletterDto[]
      */
-    async getNewsletterListByUserId(userId : number, seriesOnly = false) : Promise<WebNewsletterWithNewsletterWithPost[]>{
+    async getReceivedNewsletterListByUserId(receiverId : number, seriesOnly = false) : Promise<WebNewsletterWithNewsletterWithPost[]>{
         return this.prismaService.webNewsletter.findMany({
             where : {
-                receiverId : userId,
+                receiverId,
                 newsletter : {
                     post : {
                         series : seriesOnly ? {
@@ -81,7 +81,7 @@ export class NewsletterService {
      * @param writerId
      * @param newsletterTitle
      */
-    async sendNewsLetter(postId: number, writerId: number,newsletterTitle: string): Promise<number>{
+    async sendNewsLetter(postId: number, writerId: number,newsletterTitle: string){
         // 1. 해당 글이 보낼 수 있는 상태인지 확인
         const postWithContentAndSeriesAndWriter = await this.assertNewsletterCanBeSent(writerId, postId);
 
@@ -128,6 +128,16 @@ export class NewsletterService {
                             }
                         }
                     }
+                },
+                include : {
+                    newsletterSend : {
+                        include: {
+                            mailNewsletter : true
+                        },
+                        orderBy: {
+                            id: 'desc'
+                        }
+                    }
                 }
             })
 
@@ -140,7 +150,7 @@ export class NewsletterService {
                 emailList : receiverEmailList
             };
             await this.mailService.sendNewsLetterWithHtml(newsletterSendInfo);
-            return receiverEmailList.length;
+            return newsletter;
         }catch (error){
             throw ExceptionList.SEND_NEWSLETTER_ERROR;
         }
@@ -324,5 +334,27 @@ export class NewsletterService {
                 sentAt : 'desc'
             }
         })
+    }
+
+    async getNewsletterCardByNewsletterId(newsletterId: number): Promise<NewsletterWithPostWithWriterAndSeries>{
+        const newsletter : NewsletterWithPostWithWriterAndSeries | null = await this.prismaService.newsletter.findUnique({
+            where: {
+                id: newsletterId
+            },
+            include : {
+                post : {
+                    include : {
+                        writerInfo : {
+                            include : {
+                                user : true
+                            }
+                        },
+                        series : true
+                    }
+                }
+            }
+        })
+        if(!newsletter) throw ExceptionList.NEWSLETTER_NOT_FOUND;
+        return newsletter;
     }
 }

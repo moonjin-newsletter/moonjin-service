@@ -19,6 +19,7 @@ import {EditorJsToPostPreview} from "@moonjin/editorjs";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
 import {Category} from "@moonjin/api-types";
+import {SeriesService} from "../series/series.service";
 
 @Injectable()
 export class PostService {
@@ -26,6 +27,7 @@ export class PostService {
         private readonly prismaService: PrismaService,
         private readonly utilService: UtilService,
         private readonly authValidationService: AuthValidationService,
+        private readonly seriesService: SeriesService,
     ) {}
 
     /**
@@ -172,7 +174,7 @@ export class PostService {
                 where : {
                     writerId : userId,
                     deleted : false,
-                    newsletter : {}
+                    newsletter : null
                 },
                 include: {
                     series : true,
@@ -198,14 +200,17 @@ export class PostService {
     async deletePost(postId: number, userId: number): Promise<void> {
         await this.assertWriterOfPost(postId, userId);
         try{
-            await this.prismaService.post.update({
+            const deletedPost = await this.prismaService.post.update({
                 where : {
                     id : postId
                 },
                 data : {
                     deleted : true,
                 }
-            }) // TODO : 글 삭제 시 Side Effect 생길 시 고려하기
+            })
+            if(deletedPost.seriesId > 0)
+                await this.seriesService.updateSeriesPostCount(deletedPost.seriesId);
+            // TODO : 작가의 newsletter 수도 줄여야하나?
         }catch (error){
             console.error(error);
         }

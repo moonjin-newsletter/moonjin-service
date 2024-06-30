@@ -7,13 +7,14 @@ import {SeriesService} from "./series.service";
 import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
-import {SeriesWithWriterDto, SeriesDto, SeriesSummaryDto} from "./dto";
+import {SeriesWithWriterDto, SeriesDto} from "./dto";
 import {Try, TryCatch} from "../response/tryCatch";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
 import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_EMPTY, SERIES_NOT_FOUND} from "../response/error/series";
 import {UserService} from "../user/user.service";
 import SeriesDtoMapper from "./seriesDtoMapper";
+import UserDtoMapper from "../user/userDtoMapper";
 
 @Controller('series')
 export class SeriesController {
@@ -49,7 +50,13 @@ export class SeriesController {
     @UseGuards(UserAuthGuard)
     async getFollowingSeries(@User() user: UserAuthDto) : Promise<Try<SeriesWithWriterDto[]>>{
         const seriesList = await this.seriesService.getFollowingSeriesByFollowerId(user.id);
-        return createResponseForm(seriesList)
+        return createResponseForm(seriesList.map(series => {
+            const {writerInfo, ...seriesData} = series;
+            return {
+                series: SeriesDtoMapper.SeriesToSeriesDto(seriesData),
+                writer: UserDtoMapper.UserToUserProfileDto(writerInfo.user)
+            }
+        }))
     }
 
     /**
@@ -69,13 +76,16 @@ export class SeriesController {
     /**
      * @summary 내가 발행한 시리즈들 요약 가져오기
      * @param user
-     * @returns SeriesSummaryDto[]
+     * @returns SeriesDto[]
      */
     @TypedRoute.Get('me/summary')
     @UseGuards(WriterAuthGuard)
-    async getAllMySeriesSummary(@User() user: UserAuthDto) : Promise<Try<SeriesSummaryDto[]>>{
+    async getAllMySeriesSummary(@User() user: UserAuthDto) : Promise<Try<SeriesDto[]>>{
         const seriesList = await this.seriesService.getReleasedSeriesListByWriterId(user.id);
-        return createResponseForm(seriesList.map(series => SeriesDtoMapper.SeriesDtoToSeriesSummaryDto(series)))
+        return createResponseForm(seriesList.map(series => {
+            const {writerInfo, ...seriesData} = series;
+            return SeriesDtoMapper.SeriesToSeriesDto(seriesData);
+        }))
     }
 
     /**
@@ -85,9 +95,15 @@ export class SeriesController {
      */
     @TypedRoute.Get('me')
     @UseGuards(WriterAuthGuard)
-    async getReleasedSeriesByWriter(@User() user: UserAuthDto) : Promise<Try<SeriesDto[]>>{
+    async getReleasedSeriesByWriter(@User() user: UserAuthDto) : Promise<Try<SeriesWithWriterDto[]>>{
         const seriesList = await this.seriesService.getReleasedSeriesListByWriterId(user.id);
-        return createResponseForm(seriesList)
+        return createResponseForm(seriesList.map(series => {
+            const {writerInfo, ...seriesData} = series;
+            return {
+                series: SeriesDtoMapper.SeriesToSeriesDto(seriesData),
+                writer: UserDtoMapper.UserToUserProfileDto(writerInfo.user)
+            }
+        }))
     }
 
     /**

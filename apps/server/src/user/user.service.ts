@@ -14,6 +14,7 @@ import UserDtoMapper from "./userDtoMapper";
 import {WriterInfoWithUser} from "./prisma/writerInfoWithUser.prisma.type";
 import * as process from "process";
 import {ChangeWriterProfileDto, WriterDto,WriterInfoDto} from "../writerInfo/dto";
+import {User} from "@prisma/client";
 
 @Injectable()
 export class UserService {
@@ -198,10 +199,10 @@ export class UserService {
      * @throws NICKNAME_ALREADY_EXIST
      * @throws USER_NOT_FOUND
      */
-    async changeUserProfile(userId: number, newUserProfile: ChangeUserProfileDto): Promise<UserDto> {
+    async changeUserProfile(userId: number, newUserProfile: ChangeUserProfileDto): Promise<User> {
         if(this.utilService.isNullObject(newUserProfile)) throw ExceptionList.PROFILE_CHANGE_ERROR;
         try {
-            const user = await this.prismaService.user.update({
+            return await this.prismaService.user.update({
                 where: {
                     id: userId
                 },
@@ -209,7 +210,7 @@ export class UserService {
                     ...newUserProfile,
                 }
             })
-            return UserDtoMapper.UserToUserDto(user);
+
         }catch (error){
             if(error instanceof PrismaClientKnownRequestError){
                 throw ExceptionList.NICKNAME_ALREADY_EXIST;

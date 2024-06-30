@@ -1,9 +1,10 @@
+import {EditorJsonDto} from "@moonjin/editorjs";
+
 export interface ICreatePost {
-    title: string;
-    content: any;
+    title: string
+    content: EditorJsonDto;
     category?: string;
-    status?: boolean;
-    subtitle?: string;
-    cover?: string;
-    seriesId? : number;
+    subtitle?: string
+    cover?: string
+    seriesId? : number
 }

@@ -1,7 +1,8 @@
+
+
 export interface ICreateSeries {
     title: string
-    category : string
-    status : boolean
+    category : string;
     cover? : string
-    description? : string
+    description? : string;
 }

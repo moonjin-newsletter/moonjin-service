@@ -88,11 +88,11 @@ export class UserController {
     async changeUserProfile(@User() user:UserAuthDto, @Res() res: Response, @TypedBody() newProfile : IChangeUserProfile): Promise<TryCatch<UserDto,
         PROFILE_CHANGE_ERROR | NICKNAME_ALREADY_EXIST | USER_NOT_FOUND>> {
         const newUser = await this.userService.changeUserProfile(user.id, newProfile);
-        const {accessToken, refreshToken }= this.jwtUtilService.getAccessTokens(UserDtoMapper.UserDtoToUserAuthDto(newUser));
+        const {accessToken, refreshToken }= this.jwtUtilService.getAccessTokens(UserDtoMapper.UserToUserAuthDto(newUser));
         res.cookie('accessToken', accessToken, this.cookieOptions)
         res.cookie('refreshToken', refreshToken, this.cookieOptions)
-        res.send(createResponseForm(newUser));
-        return createResponseForm(newUser);
+        res.send(createResponseForm(UserDtoMapper.UserToUserDto(newUser)));
+        return createResponseForm(UserDtoMapper.UserToUserDto(newUser));
     }
 
     /**

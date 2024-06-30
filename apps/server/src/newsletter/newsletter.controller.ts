@@ -16,7 +16,7 @@ import {NewsletterService} from "./newsletter.service";
 import {UserService} from "../user/user.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
-import { NewsletterSummaryDto, NewsletterCardDto} from "./dto";
+import { NewsletterCardDto, NewsletterSendResultDto} from "./dto";
 import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {ExceptionList} from "../response/error/errorInstances";
@@ -51,12 +51,15 @@ export class NewsletterController {
     @TypedRoute.Post(":postId")
     @UseGuards(WriterAuthGuard)
     async sendNewsletter(@User() user:UserAuthDto, @TypedParam("postId") postId: number, @TypedBody() body:ISendNewsLetter )
-    :Promise<TryCatch<any, POST_NOT_FOUND | FORBIDDEN_FOR_POST>> {
-        const sentCount = await this.newsletterService.sendNewsLetter(postId,user.id ,body.newsletterTitle);
+    :Promise<TryCatch<NewsletterSendResultDto, POST_NOT_FOUND | FORBIDDEN_FOR_POST>> {
+        const newsletter = await this.newsletterService.sendNewsLetter(postId,user.id ,body.newsletterTitle);
         await this.userService.synchronizeNewsLetter(user.id, true);
+        const sentCount = newsletter.newsletterSend[0] ? newsletter.newsletterSend[0].mailNewsletter.length : 0;
         return createResponseForm({
             message : sentCount + "건의 뉴스레터를 발송했습니다.",
             sentCount,
+            newsletterId : newsletter.id,
+            newsletterSendId : newsletter.newsletterSend[0].id
         });
     }
 
@@ -107,7 +110,7 @@ export class NewsletterController {
     @TypedRoute.Get('receive/all')
     @UseGuards(UserAuthGuard)
     async getAllReceivedNewsletter(@User() user:UserAuthDto, @TypedQuery() seriesOption : IGetNewsletter) : Promise<Try<NewsletterCardDto[]>>{
-        const newsletterWithPostAndSeriesAndWriterList = await this.newsletterService.getNewsletterListByUserId(user.id, seriesOption.seriesOnly?? false);
+        const newsletterWithPostAndSeriesAndWriterList = await this.newsletterService.getReceivedNewsletterListByUserId(user.id, seriesOption.seriesOnly?? false);
         return createResponseForm(newsletterWithPostAndSeriesAndWriterList.map(newsletterWithPostAndSeriesAndWriter => {
             const { post, ...newsletterData } = newsletterWithPostAndSeriesAndWriter.newsletter;
             const { writerInfo,series , ...postData } = post;
@@ -130,11 +133,22 @@ export class NewsletterController {
      * @returns NewsletterSummaryDto
      * @throws NEWSLETTER_NOT_FOUND
      */
-    @TypedRoute.Get(':newsletterId/summary')
-    async getNewsletterSummaryById(@TypedParam("newsletterId") newsletterId: number) : Promise<TryCatch<NewsletterSummaryDto
+    @TypedRoute.Get(':newsletterId')
+    async getNewsletterSummaryById(@TypedParam("newsletterId") newsletterId: number) : Promise<TryCatch<NewsletterCardDto
     , NEWSLETTER_NOT_FOUND>>{
-        const newsletterSummary = await this.newsletterService.getNewsletterSummaryById(newsletterId);
-        return createResponseForm(newsletterSummary);
+        const newsletterCard = await this.newsletterService.getNewsletterCardByNewsletterId(newsletterId);
+        const {post, ...newsletterData} = newsletterCard;
+        const {series, writerInfo, ...postData} = post;
+        return createResponseForm({
+            newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
+            post : PostDtoMapper.PostToPostDto(postData),
+            series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
+            writer : {
+                userId : newsletterCard.post.writerInfo.userId,
+                moonjinId : newsletterCard.post.writerInfo.moonjinId,
+                nickname : newsletterCard.post.writerInfo.user.nickname
+            }
+        });
     }
 
     /**

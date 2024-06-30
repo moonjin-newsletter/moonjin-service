@@ -52,11 +52,11 @@ export class SubscribeController {
      * @param user
      * @returns SubscribingWriterProfileDto[]
      */
-    @TypedRoute.Get("writerInfo/all")
+    @TypedRoute.Get("writer/all")
     @UseGuards(UserAuthGuard)
     async getFollowingUserList(@User() user : UserAuthDto) : Promise<Try<SubscribingWriterProfileDto[]>> {
         const followingWriterList = await this.subscribeService.getSubscribingWriterListBySubscriberId(user.id);
-        return createResponseForm(followingWriterList);
+        return createResponseForm(followingWriterList.map(writer => SubscribeDtoMapper.SubscribingWriterInfoWithUserToSubscribingWriterDto(writer)));
     }
 
     /**
@@ -103,7 +103,7 @@ export class SubscribeController {
      * @throws FOLLOW_MYSELF_ERROR
      * @throws FOLLOW_ALREADY_ERROR
      */
-    @TypedRoute.Post("writerInfo/:writerId")
+    @TypedRoute.Post("writer/:writerId")
     @UseGuards(UserAuthGuard)
     async followWriterById(@TypedParam("writerId") writerId : number, @User() user : UserAuthDto) {
         await this.subscribeService.subscribeWriter(user.id, writerId);
@@ -120,7 +120,7 @@ export class SubscribeController {
      * @throws USER_NOT_WRITER
      * @throws FOLLOW_MYSELF_ERROR
      */
-    @TypedRoute.Delete("writerInfo/:writerId")
+    @TypedRoute.Delete("writer/:writerId")
     @UseGuards(UserAuthGuard)
     async unfollowWriterById(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
         await this.subscribeService.unsubscribeWriter(user.id, writerId);

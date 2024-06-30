@@ -1,6 +1,5 @@
 import { Controller, Res, UseGuards } from '@nestjs/common';
-import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
-import {WriterPublicCardDto} from "./dto";
+import {TypedBody, TypedRoute} from "@nestia/core";
 import {TryCatch} from "../response/tryCatch";
 import {USER_NOT_WRITER} from "@moonjin/api-types";
 import {WriterInfoService} from "./writerInfo.service";
@@ -39,17 +38,6 @@ export class WriterInfoController {
     ) {}
 
     /**
-     * moonjinId로 작가의 Public-Card를 가져오기 API
-     * @param moonjinId
-     */
-    @TypedRoute.Get(':moonjinId/public-card')
-    async getWriterPublicCard(@TypedParam("moonjinId") moonjinId : string): Promise<TryCatch<WriterPublicCardDto,
-    USER_NOT_WRITER>>{
-        const writerPublicCard = await this.writerService.getWriterPublicCardByMoonjinId(moonjinId);
-        return createResponseForm(writerPublicCard)
-    }
-
-    /**
      * @summary 작가 시작하기 API
      * @param user
      * @param writerData
@@ -77,7 +65,6 @@ export class WriterInfoController {
     }
 
     /**
-     * Deprecated
      * @summary 작가 프로필 변경 API
      * @param user
      * @param res
