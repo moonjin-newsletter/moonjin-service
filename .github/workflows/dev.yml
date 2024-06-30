@@ -27,6 +27,8 @@ jobs:
           script: | # 실행할 스크립트
             cd moonjin-service
             git pull origin dev
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
             yarn install
             yarn preinstall
             yarn build:packages
