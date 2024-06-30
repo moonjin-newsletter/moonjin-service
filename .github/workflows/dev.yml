@@ -28,10 +28,10 @@ jobs:
             cd moonjin-service
             git pull origin dev
             yarn install
-            yarn preinstall  
+            yarn preinstall
             yarn build:packages
-            yarn build --filer=server
-            cd apps/server 
+            yarn build --filter=server
+            cd apps/server
             pm2 kill
             yarn pm2:deploy
   
