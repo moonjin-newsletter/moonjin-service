@@ -27,8 +27,7 @@ jobs:
           script: | # 실행할 스크립트
             cd moonjin-service
             git pull origin dev
-            export NVM_DIR=~/.nvm
-            source ~/.nvm/nvm.sh
+            export PATH=`$PATH:/home/ubuntu/.npm-global/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin`
             npm --help
             yarn install
             yarn preinstall
