@@ -25,15 +25,5 @@ jobs:
           key: ${{ secrets.AWS_REMOTE_PRIVATE_KEY }} # ec2 instance pem key
           port: ${{ secrets.AWS_REMOTE_SSH_PORT }} # 접속포트
           script: | # 실행할 스크립트
-            cd moonjin-service
-            git pull origin dev
-            export NVM_DIR=~/.nvm
-            source ~/.nvm/nvm.sh
-            yarn install
-            yarn preinstall
-            yarn build:packages
-            yarn build --filter=server
-            cd apps/server
-            pm2 kill
-            yarn pm2:deploy
+            source ./deploy.sh
   
