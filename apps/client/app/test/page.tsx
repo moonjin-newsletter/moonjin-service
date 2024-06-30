@@ -1,6 +1,7 @@
 export default function Page() {
   // pages/index.js
 
+  console.log(1);
   // Editor.js JSON 데이터 예시
   const editorData = {
     time: 1635603431943,
