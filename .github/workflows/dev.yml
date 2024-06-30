@@ -8,8 +8,8 @@ on:
   pull_request:
     branches: [ "dev" ]
 
-permissions:
-  contents: read
+# permissions:
+#   contents: read
 
 jobs:
   deploy:
