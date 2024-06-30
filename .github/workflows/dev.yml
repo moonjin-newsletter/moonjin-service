@@ -25,9 +25,9 @@ jobs:
           key: ${{ secrets.AWS_REMOTE_PRIVATE_KEY }} # ec2 instance pem key
           port: ${{ secrets.AWS_REMOTE_SSH_PORT }} # 접속포트
           script: | # 실행할 스크립트
+            export PATH=`$PATH:/home/ubuntu/.npm-global/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin`
             cd moonjin-service
             git pull origin dev
-            export PATH=`$PATH:/home/ubuntu/.npm-global/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin`
             npm --help
             yarn install
             yarn preinstall
