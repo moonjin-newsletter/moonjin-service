@@ -11,6 +11,7 @@ import UserDtoMapper from "../user/userDtoMapper";
 import {SubscribeService} from "../subscribe/subscribe.service";
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {Series} from "@prisma/client";
+import {Category} from "@moonjin/api-types";
 
 @Injectable()
 export class SeriesService {
@@ -33,6 +34,7 @@ export class SeriesService {
             const createdSeries = await this.prismaService.series.create({
                 data: {
                     ...createSeriesData,
+                    category : Category.getNumberByCategory(createSeriesData.category),
                     cover,
                     createdAt,
                     lastUpdatedAt :createdAt,
@@ -159,7 +161,8 @@ export class SeriesService {
                     id: seriesId
                 },
                 data: {
-                    ...seriesData
+                    ...seriesData,
+                    category: Category.getNumberByCategory(seriesData.category),
                 }
             })
             return SeriesDtoMapper.SeriesToSeriesDto(updatedSeries);

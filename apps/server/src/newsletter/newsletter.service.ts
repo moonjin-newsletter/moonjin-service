@@ -15,6 +15,7 @@ import {
 import {EditorJsToHtml} from "@moonjin/editorjs";
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {WebNewsletterWithNewsletterWithPost} from "./prisma/webNewsletterWithNewsletterWithPost.prisma.type";
+import {Category} from "@moonjin/api-types";
 
 @Injectable()
 export class NewsletterService {
@@ -172,7 +173,7 @@ export class NewsletterService {
     async assertNewsletterCanBeSent(userId: number, postId: number): Promise<PostWithContentAndSeriesAndWriterDto>{
         const postWithContentAndSeriesAndWriter = await this.postService.getPostAndPostContentAndWriterById(postId);
         if(userId != postWithContentAndSeriesAndWriter.post.writerId) throw ExceptionList.FORBIDDEN_FOR_POST;
-        if(postWithContentAndSeriesAndWriter.post.category != 0) throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
+        if(Category.isValidCategory(postWithContentAndSeriesAndWriter.post.category)) throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
         return postWithContentAndSeriesAndWriter;
     }
 

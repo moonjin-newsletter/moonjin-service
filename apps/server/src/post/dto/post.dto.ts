@@ -1,9 +1,7 @@
-import {CategoryEnum} from "../../common/category.enum";
-
 export interface PostDto {
     id : number;
     title: string;
-    category: CategoryEnum;
+    category: string;
     writerId: number;
     preview: string;
     cover: string;

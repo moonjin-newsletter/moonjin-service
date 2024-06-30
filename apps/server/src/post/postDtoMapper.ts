@@ -3,12 +3,16 @@ import {PostDto, PostContentDto, ReleasedPostDto, PostWithSeriesDto, PostInNewsl
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {ObjectToEditorJsonDto} from "@moonjin/editorjs";
+import {Category} from "@moonjin/api-types";
 
 
 class PostDtoMapper {
     public static PostToPostDto(post: Post):PostDto {
-        const {deleted ,...postData} = post;
-        return postData;
+        const {deleted ,category,...postData} = post;
+        return {
+            ...postData,
+            category: Category.getCategoryByNumber(category),
+        };
     }
     public static PostToReleasedPostDto(post: Post) : ReleasedPostDto {
         return this.PostToPostDto(post);

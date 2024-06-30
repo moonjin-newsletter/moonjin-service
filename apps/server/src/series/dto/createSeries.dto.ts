@@ -1,9 +1,7 @@
-import {CategoryEnum} from "../../common/category.enum";
-
 export interface CreateSeriesDto {
     title: string;
     writerId : number;
-    category : CategoryEnum;
+    category : string;
     cover? : string;
     description? : string;
 }

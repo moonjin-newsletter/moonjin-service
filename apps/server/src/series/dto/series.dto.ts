@@ -1,9 +1,8 @@
 import {SeriesSummaryDto} from "./seriesSummary.dto";
-import {CategoryEnum} from "../../common/category.enum";
 
 export interface SeriesDto extends SeriesSummaryDto {
     writerId : number;
-    category : CategoryEnum;
+    category : string;
     clicks : number;
     description : string | null;
     lastUpdatedAt : Date;

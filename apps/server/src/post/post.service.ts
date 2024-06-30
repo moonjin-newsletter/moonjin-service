@@ -18,6 +18,7 @@ import UserDtoMapper from "../user/userDtoMapper";
 import {EditorJsToPostPreview} from "@moonjin/editorjs";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
+import {Category} from "@moonjin/api-types";
 
 @Injectable()
 export class PostService {
@@ -36,7 +37,7 @@ export class PostService {
      */
     async createPost(createPostData : CreatePostDto, writerId: number) : Promise<PostWithContentDto> {
         const cover = this.utilService.processImageForCover(createPostData.cover);
-        const {content,...postMetaData} = createPostData
+        const {content,category,...postMetaData} = createPostData
         try {
             const post = await this.prismaService.post.create({
                 data: {
@@ -44,6 +45,7 @@ export class PostService {
                     preview: EditorJsToPostPreview(content.blocks),
                     writerId,
                     cover,
+                    category : Category.getNumberByCategory(category),
                     createdAt: this.utilService.getCurrentDateInKorea(),
                     postContent: {
                         create: {
@@ -76,7 +78,7 @@ export class PostService {
      */
     async updatePost(postId: number, updatePostData: CreatePostDto): Promise<PostWithContentDto> {
         const cover = (updatePostData.cover) ? {cover : updatePostData.cover} : {};
-        const {content,...postMetaData} = updatePostData
+        const {content,category,...postMetaData} = updatePostData
         try {
             const post = await this.prismaService.post.update({
                 where :{
@@ -87,6 +89,7 @@ export class PostService {
                     preview: EditorJsToPostPreview(content.blocks),
                     ...cover,
                     lastUpdatedAt: this.utilService.getCurrentDateInKorea(),
+                    category: Category.getNumberByCategory(category),
                     postContent: {
                         create: {
                             content: JSON.stringify(content),
