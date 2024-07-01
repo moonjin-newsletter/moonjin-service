@@ -51,7 +51,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`flex min-h-screen flex-col text-grayscale-700 w-full h-full `}
+        className={`flex min-h-screen flex-col text-grayscale-700 w-full h-full min-w-[1006px]`}
       >
         <ClientProvider>
           {children}
