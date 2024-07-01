@@ -8,7 +8,7 @@ import type { ResponseForm, UserOrWriterDto } from "@moonjin/api-types";
 import { checkType } from "@utils/CheckUser";
 import Header from "@components/layout/Header";
 
-export const revalidate = false;
+export const revalidate = 0;
 
 export default async function MypageLayout({
   children,

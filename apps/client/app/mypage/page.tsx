@@ -12,9 +12,8 @@ import Link from "next/link";
 import { IoIosArrowForward } from "react-icons/io";
 import { LogoIconGray } from "../../components/icons";
 import { checkType } from "@utils/CheckUser";
-import Header from "@components/layout/Header";
 
-export const revalidate = false;
+export const revalidate = 0;
 
 export default async function Page() {
   const userInfo = await ssr("user")
