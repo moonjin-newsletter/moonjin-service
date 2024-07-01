@@ -4,7 +4,7 @@ import React from "react";
 import LottieFrame from "@components/lottie/LottieFrame";
 import SendingAnimation from "./Sending.json";
 import type {
-  NewsletterSummaryDto,
+  NewsletterCardDto,
   ResponseForm,
   UserDto,
   WriterDto,
@@ -25,19 +25,17 @@ type pageProps = {
 
 export default function Page({ params }: pageProps) {
   const letterId = parseInt(params.id, 10);
-  const { data: newsletterInfo } = useSWR<ResponseForm<NewsletterSummaryDto>>(
-    `newsletter/${letterId}/summary`,
+  const { data: newsletterInfo } = useSWR<ResponseForm<NewsletterCardDto>>(
+    `newsletter/${letterId}`,
   );
   const { data: userInfo } =
     useSWR<ResponseForm<{ user: UserDto } | WriterDto>>("user");
-
-  console.log(newsletterInfo);
 
   function onClickCopy() {
     if (window) {
       window.navigator.clipboard
         .writeText(
-          `${process.env.NEXT_PUBLIC_CLIENT_URL}/@${userInfo?.data?.user.nickname}/${newsletterInfo?.data?.id}`,
+          `${process.env.NEXT_PUBLIC_CLIENT_URL}/@${userInfo?.data?.user.nickname}/${newsletterInfo?.data?.post?.id}`,
         )
         .then(() => {
           // 복사가 완료되면 이 부분이 호출된다.
@@ -74,7 +72,7 @@ export default function Page({ params }: pageProps) {
             <section className="flex gap-x-14  justify-center w-full ">
               <div className="w-fit">
                 <Image
-                  src={newsletterInfo?.data?.cover ?? ""}
+                  src={newsletterInfo?.data?.post?.cover ?? ""}
                   alt={"레터 이미지"}
                   width={280}
                   height={280}
@@ -86,14 +84,14 @@ export default function Page({ params }: pageProps) {
                   뉴스레터 제목
                 </span>
                 <div className="font-semibold text-lg mt-2">
-                  {newsletterInfo?.data?.title}
+                  {newsletterInfo?.data?.post?.title}
                 </div>
                 <span className="text-sm mt-8 font-medium text-grayscale-500">
                   뉴스레터 발송일자
                 </span>
                 <div className="font-semibold  mt-2">
                   {format(
-                    new Date(newsletterInfo.data?.sentAt),
+                    new Date(newsletterInfo.data?.newsletter?.sentAt),
                     "yyyy년 MM월 dd일 HH시 mm분 ",
                   )}
                 </div>
@@ -103,12 +101,12 @@ export default function Page({ params }: pageProps) {
                 <div className="flex items-center gap-x-2.5">
                   <Link
                     className="font-medium  text-primary underline mt-2"
-                    href={`${process.env.NEXT_PUBLIC_CLIENT_URL}/@${userInfo?.data?.user.nickname}/${newsletterInfo?.data?.id}`}
+                    href={`${process.env.NEXT_PUBLIC_CLIENT_URL}/@${userInfo?.data?.user.nickname}/${newsletterInfo?.data?.post?.id}`}
                   >
                     {`${process.env.NEXT_PUBLIC_CLIENT_URL}
                       /@
                       ${userInfo?.data?.user.nickname}
-                      /${newsletterInfo?.data?.id}
+                      /${newsletterInfo?.data?.post?.id}
                       `}
                   </Link>
                   <button
