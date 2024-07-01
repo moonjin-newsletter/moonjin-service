@@ -13,8 +13,6 @@ import { IoIosArrowForward } from "react-icons/io";
 import { LogoIconGray } from "../../components/icons";
 import { checkType } from "@utils/CheckUser";
 
-export const revalidate = 0;
-
 export default async function Page() {
   const userInfo = await ssr("user")
     .then((res) => res.json<ResponseForm<{ user: UserDto } | WriterDto>>())
