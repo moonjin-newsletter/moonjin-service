@@ -5,13 +5,13 @@ import * as I from "components/icons";
 import csr from "../../lib/fetcher/csr";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
-import { checkType } from "@utils/CheckUser";
+import { checkType, isWriterResponse } from "@utils/CheckUser";
 import useScroll from "@utils/hooks/useScroll";
 import type { ResponseForm, UserDto, WriterDto } from "@moonjin/api-types";
 
 export default function Header() {
   const { data: userInfo, mutate } =
-    useSWR<ResponseForm<{ user: UserDto } & WriterDto>>("user");
+    useSWR<ResponseForm<{ user: UserDto } | WriterDto>>("user");
   const router = useRouter();
   const scroll = useScroll();
 
@@ -61,14 +61,15 @@ export default function Header() {
               </Link>
               <div className="h-fit gap-x-4 px-4 group  flex  bg-transparent hover:bg-black/80 rounded-full  items-center">
                 <nav className=" items-center  gap-x-4 text-sm font-medium transition duration-300 ease-in-out   overflow-hidden  text-grayscale-100 h-full  w-fit hidden  whitespace-nowrap  hover:flex group-hover:flex ">
-                  {checkType(userInfo?.data?.user?.role) === "작가" && (
-                    <Link
-                      className="py-1.5 "
-                      href={`/@${userInfo?.data?.writerInfo?.moonjinId}`}
-                    >
-                      작가의 서재
-                    </Link>
-                  )}
+                  {checkType(userInfo?.data?.user?.role) === "작가" &&
+                    isWriterResponse(userInfo) && (
+                      <Link
+                        className="py-1.5 "
+                        href={`/@${userInfo?.data?.writerInfo?.moonjinId}`}
+                      >
+                        작가의 서재
+                      </Link>
+                    )}
 
                   <Link className=" py-1.5 " href="/mypage">
                     마이페이지

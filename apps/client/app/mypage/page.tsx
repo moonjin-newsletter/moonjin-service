@@ -11,7 +11,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { IoIosArrowForward } from "react-icons/io";
 import { LogoIconGray } from "../../components/icons";
-import { checkType } from "@utils/CheckUser";
+import { checkType, isWriterResponse } from "@utils/CheckUser";
 
 export default async function Page() {
   const userInfo = await ssr("user")
@@ -35,9 +35,9 @@ export default async function Page() {
 
   return (
     <main className="flex flex-col  w-full ">
-      {userType === "작가" && (
+      {userType === "작가" && isWriterResponse(userInfo) && (
         <Link
-          href={`/@${userInfo?.data?.user?.nickname}`}
+          href={`/@${userInfo?.data?.writerInfo?.moonjinId}`}
           className="flex text-grayscale-600 mb-10 items-center py-3.5 px-3 bg-grayscale-100 rounded-lg"
         >
           <LogoIconGray width="28" height="28" viewBox="0 0 32 32" />
