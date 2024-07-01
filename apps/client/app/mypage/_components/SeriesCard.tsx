@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { SeriesDto } from "@moonjin/api-types";
+import type { SeriesWithWriterDto } from "@moonjin/api-types";
 
 export function SeriesCardForReader({
   seriesInfo,
@@ -52,18 +52,18 @@ export function SeriesCardForReader({
 export function SeriesCardForWritter({
   seriesInfo,
 }: {
-  seriesInfo: SeriesDto;
+  seriesInfo: SeriesWithWriterDto;
 }) {
   return (
     <Link
-      href={`/mypage/newsletter/series/${seriesInfo.id}`}
+      href={`/mypage/newsletter/series/${seriesInfo.series.id}`}
       className="flex flex-col min-w-[230px] w-[230px] h-fit pb-6"
     >
       <div className="group w-full h-fit relative overflow-hidden rounded-lg">
         <Image
           width={200}
           height={320}
-          src={seriesInfo.cover ?? ""}
+          src={seriesInfo.series.cover ?? ""}
           alt="시리즈 배너"
           className={`w-full h-72  shadow object-cover bg-gray-200  group-hover:scale-105 group-hover:blur-sm   transition duration-800 ease-in-out`}
         />{" "}
@@ -76,10 +76,10 @@ export function SeriesCardForWritter({
 
       <div className="flex flex-col mt-2">
         <div className="text-lg line-clamp-1 font-semibold text-grayscale-700">
-          {seriesInfo.title}
+          {seriesInfo.series.title}
         </div>
         <span className="text-grayscale-600 line-clamp-2">
-          {seriesInfo.description}
+          {seriesInfo.series.description}
         </span>
         {/*<span className="text-xs mt-0.5 line-clamp-1 text-grayscale-400">*/}
         {/*  written by.{seriesInfo.subscribe.nickname}*/}

@@ -1,9 +1,9 @@
 import PublishTab from "./PublishTab";
 import ssr from "../../../../../lib/fetcher/ssr";
 import type {
-  SeriesDto,
   ResponseForm,
   NewsletterCardDto,
+  SeriesWithWriterDto,
 } from "@moonjin/api-types";
 
 export const revalidate = 0;
@@ -13,7 +13,7 @@ export default async function Page() {
     (res) => res.json<ResponseForm<NewsletterCardDto[]>>(),
   );
   const { data: seriesList } = await ssr("series/me").then((res) =>
-    res.json<ResponseForm<SeriesDto[]>>(),
+    res.json<ResponseForm<SeriesWithWriterDto[]>>(),
   );
 
   return (
