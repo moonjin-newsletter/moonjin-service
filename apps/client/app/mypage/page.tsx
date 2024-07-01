@@ -14,6 +14,8 @@ import { LogoIconGray } from "../../components/icons";
 import { checkType } from "@utils/CheckUser";
 import Header from "@components/layout/Header";
 
+export const revalidate = false;
+
 export default async function Page() {
   const userInfo = await ssr("user")
     .then((res) => res.json<ResponseForm<{ user: UserDto } | WriterDto>>())
