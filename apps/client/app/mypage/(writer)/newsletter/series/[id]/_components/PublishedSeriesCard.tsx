@@ -1,12 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import { NewsletterDto } from "@moonjin/api-types";
+import { NewsletterCardDto, NewsletterDto } from "@moonjin/api-types";
 
 export default function PublishedSeriesCard({
   letter,
 }: {
-  letter: NewsletterDto;
+  letter: NewsletterCardDto;
 }) {
   return (
     <Link href="" className="flex w-full  py-4 border-b border-grayscale-200">

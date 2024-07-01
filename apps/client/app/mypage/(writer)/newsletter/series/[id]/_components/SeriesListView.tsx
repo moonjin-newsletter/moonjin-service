@@ -1,14 +1,14 @@
 "use client";
 
 import useSWR from "swr";
-import type { NewsletterDto, ResponseForm } from "@moonjin/api-types";
+import type { NewsletterCardDto, ResponseForm } from "@moonjin/api-types";
 import { isNonEmptyArray } from "@toss/utils";
 import * as I from "../../../../../../../components/icons";
 import PublishedSeriesCard from "./PublishedSeriesCard";
 
 export default function SeriesListView({ seriesId }: { seriesId: number }) {
-  const { data: seriesList } = useSWR<ResponseForm<NewsletterDto[]>>(
-    `post?seriesId=${seriesId}`,
+  const { data: seriesList } = useSWR<ResponseForm<NewsletterCardDto[]>>(
+    `newsletter/in/series/${seriesId}`,
   );
 
   return (
