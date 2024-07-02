@@ -105,6 +105,9 @@ export class UserService {
                 where : {
                     userId,
                     deleted : false,
+                    user : {
+                        deleted : false
+                    }
                 },
                 include :{
                     user : true

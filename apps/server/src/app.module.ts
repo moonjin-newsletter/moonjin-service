@@ -23,7 +23,7 @@ import { WriterModule } from './writer/writer.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '../../.env.dev.local',
+      envFilePath: '.env',
     }),
     AuthModule,
     PrismaModule,

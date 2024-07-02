@@ -134,7 +134,6 @@ export class SeriesController {
      * @throws FORBIDDEN_FOR_SERIES
      */
     @TypedRoute.Get(':seriesId')
-    @UseGuards(UserAuthGuard)
     async getReleasedSeriesById(@TypedParam('seriesId') seriesId: number) :
         Promise<TryCatch<SeriesDto, SERIES_NOT_FOUND | FORBIDDEN_FOR_SERIES>>{
         const series = await this.seriesService.getReleasedSeriesById(seriesId);
