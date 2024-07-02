@@ -1,4 +1,6 @@
 import WriterHeader from "../../_components/WriterHeader";
+import { nfetch } from "@lib/fetcher/noAuth";
+import { ResponseForm, SeriesDto } from "@moonjin/api-types";
 
 type pageProps = {
   params: {
@@ -7,7 +9,16 @@ type pageProps = {
   };
 };
 
+export const revalidate = 0;
+
 export default async function Page({ params }: pageProps) {
+  const [, moonjinId] = decodeURI(params.writer).split("%40");
+  const seriesId = parseInt(params.id, 10);
+
+  const seriesInfo = await nfetch<ResponseForm<SeriesDto>>(
+    `series/${seriesId}`,
+  );
+
   return (
     <>
       <WriterHeader />

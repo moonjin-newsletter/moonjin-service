@@ -1,12 +1,19 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 import type { SeriesDto } from "@moonjin/api-types";
 import { BiLike } from "react-icons/bi";
 import { FaBookOpen } from "react-icons/fa6";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function SeriesCard({ seriesInfo }: { seriesInfo: SeriesDto }) {
+  const pathname = usePathname();
+
   return (
-    <Link href={""} className="flex flex-col group">
+    <Link
+      href={`${pathname}/series/${seriesInfo.id}`}
+      className="flex flex-col group"
+    >
       <div className="w-full rounded shadow relative h-0 overflow-hidden pb-[121.73%]">
         <Image
           src={seriesInfo.cover}
