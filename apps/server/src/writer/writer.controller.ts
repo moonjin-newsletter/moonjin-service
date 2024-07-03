@@ -15,6 +15,8 @@ import {NewsletterCardDto} from "../newsletter/dto";
 import {IGetNewsletterByWriter} from "./api-types/IGetNewsletterByWriter";
 import {SeriesService} from "../series/series.service";
 import {SeriesDto} from "../series/dto";
+import {FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
+import {ExceptionList} from "../response/error/errorInstances";
 
 @Controller('writer')
 export class WriterController {
@@ -90,4 +92,54 @@ export class WriterController {
         });
     }
 
+    /**
+     * @summary 작가페이지의 시리즈 데이터 가져오기
+     * @param moonjinId
+     * @param seriesId
+     * @returns SeriesDto
+     * @throws SERIES_NOT_FOUND
+     */
+    @TypedRoute.Get(":moonjinId/series/:seriesId")
+    async getSeriesDataBySeriesId(@TypedParam("moonjinId") moonjinId : string, @TypedParam("seriesId") seriesId : number)
+        : Promise<TryCatch<SeriesDto, SERIES_NOT_FOUND>>{
+        const series = await this.seriesService.getSeriesByMoonjinIdAndSeriesId(moonjinId,seriesId);
+        return createResponseForm(SeriesDtoMapper.SeriesToSeriesDto(series));
+    }
+
+    /**
+     * @summary 작가페이지의 시리즈에 속한 newsletter들 가져오기
+     * @param moonjinId
+     * @param seriesId
+     * @param paginationOptions
+     * @returns NewsletterCardDto[]
+     * @throws FORBIDDEN_FOR_SERIES
+     */
+    @TypedRoute.Get(":moonjinId/series/:seriesId/newsletter")
+    async getSeriesNewsletterListBySeriesId(@TypedParam("moonjinId") moonjinId : string, @TypedParam("seriesId") seriesId : number, @GetPagination() paginationOptions: PaginationOptionsDto)
+        : Promise<TryCatch<NewsletterCardDto[], FORBIDDEN_FOR_SERIES>>{
+        const newsletterWithPostWithWriterAndSeries = await this.newsletterService.getNewsletterInSeriesBySeriesId(seriesId, paginationOptions);
+        if(newsletterWithPostWithWriterAndSeries.length > 0 && newsletterWithPostWithWriterAndSeries[0].post.writerInfo.moonjinId !== moonjinId)
+            throw ExceptionList.FORBIDDEN_FOR_SERIES
+        return createResponseForm(newsletterWithPostWithWriterAndSeries.map(newsletterWithPostAndSeriesAndWriter => {
+            const {post, ...newsletterData} = newsletterWithPostAndSeriesAndWriter;
+            const {writerInfo, series, ...postData} = post;
+            return {
+                newsletter: NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
+                post: PostDtoMapper.PostToPostDto(postData),
+                series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
+                writer: {
+                    userId: writerInfo.userId,
+                    moonjinId: writerInfo.moonjinId,
+                    nickname: writerInfo.user.nickname
+                },
+            }
+        }), {
+            next: {
+                pageNo: paginationOptions.pageNo + 1,
+                cursor: newsletterWithPostWithWriterAndSeries.length > 0 ? newsletterWithPostWithWriterAndSeries[newsletterWithPostWithWriterAndSeries.length - 1].id : 0
+            },
+            isLastPage: newsletterWithPostWithWriterAndSeries.length < paginationOptions.take,
+            totalCount: newsletterWithPostWithWriterAndSeries.length
+        })
+    }
 }

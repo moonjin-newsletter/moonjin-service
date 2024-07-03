@@ -337,4 +337,26 @@ export class SeriesService {
             }
         });
     }
+
+    /**
+     * @summary 해당 작가의 시리즈 id로 가져오기
+     * @param moonjinId
+     * @param seriesId
+     * @throws SERIES_NOT_FOUND
+     */
+    async getSeriesByMoonjinIdAndSeriesId(moonjinId : string,seriesId: number): Promise<Series> {
+        try{
+            return await this.prismaService.series.findUniqueOrThrow({
+                where: {
+                    id: seriesId,
+                    writerInfo: {
+                        moonjinId
+                    },
+                    deleted: false
+                }
+            })
+        }catch (error){
+            throw ExceptionList.SERIES_NOT_FOUND
+        }
+    }
 }

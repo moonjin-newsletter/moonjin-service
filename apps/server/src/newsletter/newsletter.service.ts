@@ -307,15 +307,17 @@ export class NewsletterService {
     }
 
     /**
-     * @summary 해당 시리즈의 뉴스레터 목록 가져오기
+     * @summary 해당 시리즈의 뉴스레터 목록 가져오기 (w pagination)
      * @param seriesId
+     * @param paginationOptions
      */
-    async getNewsletterInSeriesBySeriesId(seriesId: number): Promise<NewsletterWithPostWithWriterAndSeries[]>{
+    async getNewsletterInSeriesBySeriesId(seriesId: number,  paginationOptions?:PaginationOptionsDto): Promise<NewsletterWithPostWithWriterAndSeries[]>{
         return this.prismaService.newsletter.findMany({
             where: {
                 post : {
-                    seriesId
-                }
+                    seriesId,
+                    deleted : false
+                },
             },
             include: {
                 post : {
@@ -332,7 +334,12 @@ export class NewsletterService {
             relationLoadStrategy: 'join',
             orderBy : {
                 sentAt : 'desc'
-            }
+            },
+            skip: paginationOptions?.skip,
+            take: paginationOptions?.take,
+            cursor: paginationOptions?.cursor ? {
+                id : paginationOptions.cursor
+            } : undefined
         })
     }
 
