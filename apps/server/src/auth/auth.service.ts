@@ -17,6 +17,7 @@ import {OauthService} from "./oauth.service";
 import {UserDto} from "../user/dto";
 import {AuthValidationService} from "./auth.validation.service";
 import {WriterDto} from "../writerInfo/dto";
+import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
 
 @Injectable()
 export class AuthService {
@@ -134,7 +135,7 @@ export class AuthService {
             const transactionResult = await this.prismaService.$transaction([createWriterInfo, userUpdate]);
             return {
                 user : UserDtoMapper.UserToUserDto(transactionResult[1]),
-                writerInfo : UserDtoMapper.WriterInfoToWriterInfoDto(transactionResult[0])
+                writerInfo : WriterInfoDtoMapper.WriterInfoToWriterInfoDto(transactionResult[0])
             }
         } catch (error){
             if(error instanceof PrismaClientKnownRequestError){

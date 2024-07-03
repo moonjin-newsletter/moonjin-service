@@ -324,7 +324,7 @@ export class PostService {
             postContent: PostDtoMapper.PostContentToPostContentDto(postContent),
             series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
             user : UserDtoMapper.UserToUserDto(user),
-            writerInfo : UserDtoMapper.WriterInfoToWriterInfoDto(writer)
+            writerInfo : WriterInfoDtoMapper.WriterInfoToWriterInfoDto(writer)
         }
     }
 

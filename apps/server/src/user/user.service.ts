@@ -4,7 +4,6 @@ import {PrismaClientKnownRequestError} from '@prisma/client/runtime/library';
 import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
 import {
-    UserIdentityDto,
     UserDto,
     ChangeUserProfileDto,
     UserOrWriterDto
@@ -13,7 +12,7 @@ import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import UserDtoMapper from "./userDtoMapper";
 import {WriterInfoWithUser} from "./prisma/writerInfoWithUser.prisma.type";
 import * as process from "process";
-import {ChangeWriterProfileDto, WriterDto,WriterInfoDto} from "../writerInfo/dto";
+import {ChangeWriterProfileDto} from "../writerInfo/dto";
 import {User} from "@prisma/client";
 
 @Injectable()
@@ -22,74 +21,6 @@ export class UserService {
        private readonly prismaService: PrismaService,
        private readonly utilService: UtilService,
     ) {}
-
-    /**
-     * @summary 유저 ID로 작가 정보 가져오기
-     * @param userIdList
-     * @returns WriterInfoDto[]
-     * @throws EMPTY_LIST_INPUT
-     */
-    async getWriterInfoListByUserIdList(userIdList : number[]) : Promise<WriterInfoDto[]> {
-        if (userIdList.length === 0) throw ExceptionList.EMPTY_LIST_INPUT;
-        const writerInfoList = await this.prismaService.writerInfo.findMany({
-            where: {
-                userId: {
-                    in: userIdList
-                },
-                deleted: false,
-            }
-        });
-        return writerInfoList.map(writerInfo => UserDtoMapper.WriterInfoToWriterInfoDto(writerInfo));
-    }
-
-    /**
-     * @summary 유저 ID로 작가 정보 가져오기
-     * @param writerId
-     * @returns WriterInfoDto
-     * @throws USER_NOT_WRITER
-     */
-    async getWriterInfoByUserId(writerId: number): Promise<WriterDto> {
-        const writer : WriterInfoWithUser | null = await this.prismaService.writerInfo.findUnique({
-            where : {
-                userId : writerId,
-                deleted : false,
-                user:{
-                    deleted : false
-                }
-            },
-            include :{
-                user : true
-            },
-            relationLoadStrategy: 'join',
-        })
-        if(!writer) throw ExceptionList.USER_NOT_WRITER;
-        return {
-            user : UserDtoMapper.UserToUserDto(writer.user),
-            writerInfo : UserDtoMapper.WriterInfoToWriterInfoDto(writer)
-        }
-    }
-
-    /**
-     * @summary 유저 ID로 유저의 기본 정보 가져오기
-     * @param userIdList
-     * @returns {userId, nickname}[]
-     * @throws EMPTY_LIST_INPUT
-     */
-    async getUserIdentityDataListByUserIdList(userIdList : number[]) : Promise<UserIdentityDto[]> {
-        if (userIdList.length === 0) throw ExceptionList.EMPTY_LIST_INPUT;
-        return this.prismaService.user.findMany({
-            where: {
-                id : {
-                    in : userIdList
-                },
-                deleted : false,
-            },
-            select : {
-                id : true,
-                nickname : true,
-            }
-        })
-    }
 
     /**
      * @summary 유저의 데이터 가져오기 (작가, 일반 유저 구분)
@@ -143,25 +74,6 @@ export class UserService {
             }
         })
         if(!user) throw ExceptionList.USER_NOT_FOUND;
-    }
-
-    /**
-     * @summary 해당 작가가 존재하는 지 확인
-     * @param moonjinId
-     * @returns {userId, moonjinId}
-     * @throws USER_NOT_WRITER
-     */
-    async assertWriterExistByMoonjinId(moonjinId: string): Promise<{userId: number, moonjinId :string}> {
-        const writer = await this.prismaService.writerInfo.findUnique({
-            where: {
-                moonjinId
-            }
-        })
-        if(!writer) throw ExceptionList.USER_NOT_FOUND;
-        return {
-            userId: writer.userId,
-            moonjinId
-        };
     }
 
     /**

@@ -1,8 +1,8 @@
-import { User, WriterInfo} from "@prisma/client";
+import { User} from "@prisma/client";
 import {UserAuthDto} from "../auth/dto";
 import {UserDto, UserProfileDto} from "./dto";
 import { WriterInfoWithUser} from "./prisma/writerInfoWithUser.prisma.type";
-import {WriterDto, WriterInfoDto} from "../writerInfo/dto";
+import {WriterDto} from "../writerInfo/dto";
 import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
 
 class UserDtoMapper {
@@ -14,11 +14,6 @@ class UserDtoMapper {
     public static UserToUserDto(user: User): UserDto {
         const {deleted, password,...userData} = user;
         return userData;
-    }
-
-    public static WriterInfoToWriterInfoDto(writerInfo : WriterInfo): WriterInfoDto{
-        const {deleted, createdAt, status,...writerData} = writerInfo;
-        return writerData
     }
 
     public static UserWithWriterInfoToUserAndWriterInfoDto(writer: WriterInfoWithUser): WriterDto{

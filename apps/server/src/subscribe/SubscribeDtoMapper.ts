@@ -3,6 +3,7 @@ import {SubscribingWriterInfoWithUser} from "./prisma/subscribingWriterInfoWithU
 import UserDtoMapper from "../user/userDtoMapper";
 import {SubscribeExternal, User} from "@prisma/client";
 import {ExternalSubscriberDto} from "./dto";
+import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
 
 
 class SubscribeDtoMapper{
@@ -11,7 +12,7 @@ class SubscribeDtoMapper{
         const {user, ...writerInfoData} = writerInfo;
         return {
             user: UserDtoMapper.UserToUserProfileDto(user),
-            writerInfo: UserDtoMapper.WriterInfoToWriterInfoDto(writerInfoData),
+            writerInfo: WriterInfoDtoMapper.WriterInfoToWriterInfoDto(writerInfoData),
             following: {
                 createdAt
             }

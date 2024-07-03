@@ -8,6 +8,7 @@ import {UserDto} from "../user/dto";
 import {UtilService} from "../util/util.service";
 import {UserService} from "../user/user.service";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
+import {WriterInfoDtoMapper} from "./writerInfoDtoMapper";
 
 @Injectable()
 export class WriterInfoService {
@@ -40,35 +41,8 @@ export class WriterInfoService {
             })
             return {
                 user : UserDtoMapper.UserToUserDto(writer.user),
-                writerInfo : UserDtoMapper.WriterInfoToWriterInfoDto(writer)
+                writerInfo : WriterInfoDtoMapper.WriterInfoToWriterInfoDto(writer)
             }
-        }catch (error){
-            console.error(error)
-            throw ExceptionList.USER_NOT_WRITER;
-        }
-    }
-
-    /**
-     * moonjinId로 작가의 Public-Card를 가져오기.
-     * @param writerId
-     * @return WriterPublicCardDto
-     * @throws USER_NOT_WRITER
-     */
-    async getWriterPublicCardByWriterId(writerId : number): Promise<WriterInfoWithUser>{
-        try{
-            return await this.prismaService.writerInfo.findUniqueOrThrow({
-                where : {
-                    userId : writerId,
-                    deleted : false,
-                    user:{
-                        deleted : false
-                    }
-                },
-                include :{
-                    user : true
-                },
-                relationLoadStrategy: 'join',
-            })
         }catch (error){
             console.error(error)
             throw ExceptionList.USER_NOT_WRITER;

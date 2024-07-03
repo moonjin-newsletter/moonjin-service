@@ -42,7 +42,6 @@ model WriterInfo {
   newsletterCount Int      @default(0)
   seriesCount     Int      @default(0)
   followerCount   Int      @default(0)
-  status          Boolean  @default(true)
   deleted         Boolean  @default(false)
 
   user              User                @relation(fields: [userId], references: [id])

@@ -7,7 +7,7 @@ import {WriterInfo} from "@prisma/client";
 export class WriterInfoDtoMapper {
 
     public static WriterInfoToWriterInfoDto(writerInfo : WriterInfo): WriterInfoDto{
-        const {deleted, createdAt, status,...writerData} = writerInfo;
+        const {deleted, createdAt,...writerData} = writerInfo;
         return writerData
     }
 
