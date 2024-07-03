@@ -2,6 +2,7 @@ import WriterHeader from "../../_components/WriterHeader";
 import { nfetch } from "@lib/fetcher/noAuth";
 import { ResponseForm, SeriesDto } from "@moonjin/api-types";
 import SeriesProfile from "./_components/SeriesProfile";
+import SeriesList from "./_components/SeriesList";
 
 type pageProps = {
   params: {
@@ -26,6 +27,7 @@ export default async function Page({ params }: pageProps) {
       <main className="w-full flex flex-col items-center  ">
         <section className="max-w-[760px] w-full flex flex-col mx-auto mt-20 pb-8">
           <SeriesProfile seriesInfo={seriesInfo} />
+          <SeriesList moonjinId={moonjinId} seriesId={seriesId} />
         </section>
       </main>
     </>
