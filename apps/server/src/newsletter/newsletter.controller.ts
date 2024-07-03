@@ -25,7 +25,6 @@ import NewsletterDtoMapper from "./newsletterDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {AssertEditorJsonDto, EditorJsToHtml} from "@moonjin/editorjs";
 import PostDtoMapper from "../post/postDtoMapper";
-import {FORBIDDEN_FOR_SERIES} from "../response/error/series";
 
 @Controller('newsletter')
 export class NewsletterController {
@@ -110,7 +109,7 @@ export class NewsletterController {
     @TypedRoute.Get('receive/all')
     @UseGuards(UserAuthGuard)
     async getAllReceivedNewsletter(@User() user:UserAuthDto, @TypedQuery() seriesOption : IGetNewsletter) : Promise<Try<NewsletterCardDto[]>>{
-        const newsletterWithPostAndSeriesAndWriterList = await this.newsletterService.getReceivedNewsletterListByUserId(user.id, seriesOption.seriesOnly?? false);
+        const newsletterWithPostAndSeriesAndWriterList = await this.newsletterService.getReceivedNewsletterListByUserId(user.id, seriesOption.seriesOnly ?? false);
         return createResponseForm(newsletterWithPostAndSeriesAndWriterList.map(newsletterWithPostAndSeriesAndWriter => {
             const { post, ...newsletterData } = newsletterWithPostAndSeriesAndWriter.newsletter;
             const { writerInfo,series , ...postData } = post;
@@ -182,10 +181,9 @@ export class NewsletterController {
      * @summary 해당 시리즈의 뉴스레터 목록 가져오기
      * @param seriesId
      */
-    @TypedRoute.Get('in/series/:series')
-    async getNewsletterInSeries(@TypedParam('series') seriesId: number): Promise<TryCatch<NewsletterCardDto[] , FORBIDDEN_FOR_SERIES>> {
-        if(seriesId < 1) throw ExceptionList.FORBIDDEN_FOR_SERIES
-
+    @TypedRoute.Get("in/series/:seriesId")
+    @UseGuards(UserAuthGuard)
+    async getNewsletterList(@TypedParam("seriesId") seriesId: number): Promise<Try<NewsletterCardDto[]>> {
         const newsletterList = await this.newsletterService.getNewsletterInSeriesBySeriesId(seriesId);
         const newsletterCardList = newsletterList.map(newsletter => {
             const { post, ...newsletterData} = newsletter;
@@ -201,7 +199,6 @@ export class NewsletterController {
                 },
             }
         })
-
         return createResponseForm(newsletterCardList);
     }
 
