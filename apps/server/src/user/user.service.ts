@@ -48,7 +48,6 @@ export class UserService {
             if(!writer) throw ExceptionList.USER_NOT_WRITER;
             return UserDtoMapper.UserWithWriterInfoToUserAndWriterInfoDto(writer);
         }
-
         const user = await this.prismaService.user.findUnique({
             where : {
                 id : userId,
