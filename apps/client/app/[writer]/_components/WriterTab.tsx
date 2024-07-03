@@ -23,7 +23,7 @@ export default function WriterTab({ moonjinId }: { moonjinId: string }) {
   }
 
   return (
-    <section className="w-full mt-20">
+    <section className="w-full mt-20 ">
       <TabGroup
         selectedIndex={statusForTabs[selectedTab]}
         onChange={handleChangeTabs}

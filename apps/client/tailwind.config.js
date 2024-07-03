@@ -41,6 +41,17 @@ module.exports = {
           700: "#111111",
         },
       },
+
+      animation: {
+        fade: "fadeIn .5s ease-in-out",
+      },
+
+      keyframes: {
+        fadeIn: {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
+      },
     },
   },
   plugins: [require("@tailwindcss/forms"), require("tailwind-scrollbar")],
