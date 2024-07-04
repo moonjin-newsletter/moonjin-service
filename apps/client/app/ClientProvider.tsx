@@ -19,10 +19,11 @@ export default function ClientProvider({ children }: PropsWithChildren) {
               key,
               config,
               revalidate,
-              { retryCount }
+              { retryCount },
             ) => {
               if (arrayIncludes([401, 404], error.response?.status)) return; // Never retry on specific HTTP status codes.
               if (arrayIncludes(["auth/isLogin", "user"], key)) return; // Never retry for a specific key.
+              if (retryCount > 5) return; // Stop retrying after 10 retries.
               setTimeout(() => revalidate({ retryCount }), 5 * 1000); // Retry after 5 seconds.
             },
             fetcher: (url) => csr.get(url).json(),
