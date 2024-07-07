@@ -1,21 +1,20 @@
 import HomeTab from "./HomeTab";
 import ssr from "../../lib/fetcher/ssr";
-import type {
+import {
   ResponseForm,
   NewsletterCardDto,
   SeriesWithWriterDto,
-  UserDto,
-  WriterDto,
+  UserOrWriterDto,
 } from "@moonjin/api-types";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { IoIosArrowForward } from "react-icons/io";
 import { LogoIconGray } from "../../components/icons";
-import { checkType, isWriterResponse } from "@utils/CheckUser";
+import { checkType } from "@utils/CheckUser";
 
 export default async function Page() {
   const userInfo = await ssr("user")
-    .then((res) => res.json<ResponseForm<{ user: UserDto } | WriterDto>>())
+    .then((res) => res.json<ResponseForm<UserOrWriterDto>>())
     .catch((err) => redirect("/auth/login"));
 
   const userType = checkType(userInfo.data.user.role);
@@ -35,7 +34,7 @@ export default async function Page() {
 
   return (
     <main className="flex flex-col  w-full ">
-      {userType === "작가" && isWriterResponse(userInfo) && (
+      {userType === "작가" && (
         <Link
           href={`/@${userInfo?.data?.writerInfo?.moonjinId}`}
           className="flex text-grayscale-600 mb-10 items-center py-3.5 px-3 bg-grayscale-100 rounded-lg"

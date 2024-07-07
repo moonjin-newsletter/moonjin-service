@@ -10,7 +10,6 @@ export default function NewsLetterCard({
 }: {
   newsletterInfo: NewsletterCardDto;
 }) {
-  console.log(newsletterInfo);
   return (
     <Link
       href={""}

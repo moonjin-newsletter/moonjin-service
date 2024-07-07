@@ -3,14 +3,19 @@
 import * as I from "@components/icons";
 import Link from "next/link";
 import useSWR from "swr";
-import type { ResponseForm, UserDto, WriterDto } from "@moonjin/api-types";
+import type {
+  ResponseForm,
+  UserDto,
+  UserOrWriterDto,
+  WriterDto,
+} from "@moonjin/api-types";
 import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
-import { checkType, isWriterResponse } from "@utils/CheckUser";
+import { checkType } from "@utils/CheckUser";
 
 export default function WriterHeader() {
   const { data: userInfo, mutate } =
-    useSWR<ResponseForm<{ user: UserDto } | WriterDto>>("user");
+    useSWR<ResponseForm<UserOrWriterDto>>("user");
 
   function onClickLogout() {
     csr
@@ -34,15 +39,14 @@ export default function WriterHeader() {
             <div className="w-fit h-full   items-center flex  relative text-grayscale-600">
               <div className="h-fit gap-x-4 px-4 group  flex  bg-transparent hover:bg-black/80 rounded-full  items-center">
                 <nav className=" items-center  gap-x-4 text-sm font-medium transition duration-300 ease-in-out   overflow-hidden  text-grayscale-100 h-full  w-fit hidden  whitespace-nowrap  hover:flex group-hover:flex ">
-                  {checkType(userInfo?.data?.user?.role) === "작가" &&
-                    isWriterResponse(userInfo) && (
-                      <Link
-                        className="py-1.5 "
-                        href={`/@${userInfo?.data?.writerInfo?.moonjinId}`}
-                      >
-                        작가의 서재
-                      </Link>
-                    )}
+                  {checkType(userInfo?.data?.user?.role) === "작가" && (
+                    <Link
+                      className="py-1.5 "
+                      href={`/@${userInfo?.data?.writerInfo?.moonjinId}`}
+                    >
+                      작가의 서재
+                    </Link>
+                  )}
 
                   <Link className=" py-1.5 " href="/mypage">
                     마이페이지
