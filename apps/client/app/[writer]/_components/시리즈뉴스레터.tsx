@@ -8,6 +8,7 @@ import SWRInfiniteScroll, {
 import { isNonEmptyArray, last } from "@toss/utils";
 import { LoadingSkeleton } from "@components/infiniteScroll/LoadingSkeleton";
 import SeriesCard from "./SeriesCard";
+import EmptyCard from "./EmptyCard";
 
 export default function 시리즈뉴스레터({ moonjinId }: { moonjinId: string }) {
   const swr = useSWRInfinite<ResponseForm<SeriesDto[]>>(
@@ -27,9 +28,13 @@ export default function 시리즈뉴스레터({ moonjinId }: { moonjinId: string
         loader={LoadingSkeleton}
       >
         {(page) =>
-          page.data.map((seires, i) => (
-            <SeriesCard key={i} seriesInfo={seires} />
-          ))
+          isNonEmptyArray(page.data) ? (
+            page.data.map((seires, i) => (
+              <SeriesCard key={i} seriesInfo={seires} />
+            ))
+          ) : (
+            <EmptyCard text={"아직 작성된 시리즈가 없습니다."} />
+          )
         }
       </SWRInfiniteScroll>
     </>

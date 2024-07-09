@@ -8,6 +8,7 @@ import SWRInfiniteScroll, {
 import { isNonEmptyArray, last } from "@toss/utils";
 import { LoadingSkeleton } from "@components/infiniteScroll/LoadingSkeleton";
 import NewsLetterCard from "../../../_components/NewsLetterCard";
+import EmptyCard from "../../../_components/EmptyCard";
 
 export default function SeriesList({
   moonjinId,
@@ -23,7 +24,7 @@ export default function SeriesList({
 
   return (
     <>
-      {/*<hr className="mb-4 mt-8" />*/}
+      <hr className="mb-4 mt-8" />
       <SWRInfiniteScroll
         swr={swr}
         isReachingEnd={({ data }) => {
@@ -34,9 +35,13 @@ export default function SeriesList({
         loader={LoadingSkeleton}
       >
         {(page) =>
-          page.data.map((newsletter, i) => (
-            <NewsLetterCard key={i} newsletterInfo={newsletter} />
-          ))
+          isNonEmptyArray(page.data) ? (
+            page.data.map((newsletter, i) => (
+              <NewsLetterCard key={i} newsletterInfo={newsletter} />
+            ))
+          ) : (
+            <EmptyCard text={"아직 작성된 뉴스레터가 없습니다."} />
+          )
         }
       </SWRInfiniteScroll>
     </>

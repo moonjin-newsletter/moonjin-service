@@ -33,7 +33,7 @@ export default function Page() {
 
   function submitSeries(value: any) {
     csr
-      .post("series", { json: { ...value, status: true } })
+      .post("series", { json: { ...value } })
       .then((res) => {
         router.push("/mypage/newsletter/publish");
         return toast.success("새로운 시리즈 생성완료");
@@ -64,6 +64,7 @@ export default function Page() {
         <input
           id="title"
           {...register("title", { required: "시리즈 이름을 입력해주세요" })}
+          maxLength={16}
           type="text"
           placeholder="시리즈 이름을 입력해주세요"
           className="border-none ring-0 focus:ring-0 bg-grayscale-100 rounded mt-2"
@@ -80,6 +81,7 @@ export default function Page() {
             required: "시리즈 설명을 입력해주세요",
           })}
           placeholder="시리즈 설명을 입력해주세요"
+          maxLength={128}
           type="text"
           className="border-none ring-0 focus:ring-0 bg-grayscale-100 rounded mt-2"
         />
