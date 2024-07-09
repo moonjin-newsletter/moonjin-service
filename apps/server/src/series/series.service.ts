@@ -32,8 +32,10 @@ export class SeriesService {
         try {
             const createdSeries = await this.prismaService.series.create({
                 data: {
-                    ...createSeriesData,
-                    category : Category.getNumberByCategory(createSeriesData.category),
+                    title : createSeriesData.title,
+                    writerId : createSeriesData.writerId,
+                    category : createSeriesData.category,
+                    description : createSeriesData.description ?? undefined,
                     cover,
                     createdAt,
                     lastUpdatedAt :createdAt,
@@ -81,15 +83,17 @@ export class SeriesService {
      * @param seriesId
      * @throws SERIES_NOT_FOUND
      */
-    async assertSeriesExist(seriesId : number) : Promise<SeriesDto>{
-        const series = await this.prismaService.series.findUnique({
-            where:{
-                id : seriesId,
-                deleted : false
-            }
-        })
-        if(!series) throw ExceptionList.SERIES_NOT_FOUND;
-        return SeriesDtoMapper.SeriesToSeriesDto(series);
+    async assertSeriesExist(seriesId : number) : Promise<Series>{
+        try{
+            return await this.prismaService.series.findUniqueOrThrow({
+                where:{
+                    id : seriesId,
+                    deleted : false
+                }
+            })
+        }catch (error){
+            throw ExceptionList.SERIES_NOT_FOUND;
+        }
     }
 
     /**

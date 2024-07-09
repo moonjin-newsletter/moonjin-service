@@ -29,6 +29,7 @@ import {ExceptionList} from "../response/error/errorInstances";
 import {EditorJsToHtml} from "@moonjin/editorjs";
 import PostDtoMapper from "./postDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
+import {Category} from "@moonjin/api-types";
 
 
 @Controller('post')
@@ -52,11 +53,12 @@ export class PostController {
     async createPost(@TypedBody() postData : ICreatePost, @User() user:UserAuthDto): Promise<TryCatch<
         PostWithContentDto, SERIES_NOT_FOUND | CREATE_POST_ERROR>>
     {
+        let category = Category.getNumberByCategory(postData.category);
         if(postData.seriesId) {
             const series = await this.seriesService.assertSeriesExist(postData.seriesId);
-            postData.category = series.category;
+            category = series.category;
         }
-        const post = await this.postService.createPost(postData,user.id);
+        const post = await this.postService.createPost({...postData,category},user.id);
         return createResponseForm(post)
     }
 
@@ -77,11 +79,12 @@ export class PostController {
         TryCatch<PostWithContentDto, POST_NOT_FOUND | FORBIDDEN_FOR_POST | SERIES_NOT_FOUND | CREATE_POST_ERROR>>
     {
         await this.postService.assertWriterOfPost(postId,user.id);
+        let category = Category.getNumberByCategory(postUpdateData.category);
         if(postUpdateData.seriesId) {
             const series = await this.seriesService.assertSeriesExist(postUpdateData.seriesId);
-            postUpdateData.category = series.category;
+            category = series.category;
         }
-        return createResponseForm(await this.postService.updatePost(postId,postUpdateData))
+        return createResponseForm(await this.postService.updatePost(postId,{...postUpdateData, category}))
     }
 
     /**

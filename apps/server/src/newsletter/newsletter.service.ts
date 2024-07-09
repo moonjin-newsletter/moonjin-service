@@ -183,7 +183,7 @@ export class NewsletterService {
     async assertNewsletterCanBeSent(userId: number, postId: number): Promise<PostWithContentAndSeriesAndWriterDto>{
         const postWithContentAndSeriesAndWriter = await this.postService.getPostAndPostContentAndWriterById(postId);
         if(userId != postWithContentAndSeriesAndWriter.post.writerId) throw ExceptionList.FORBIDDEN_FOR_POST;
-        if(Category.isValidCategory(postWithContentAndSeriesAndWriter.post.category)) throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
+        if(!Category.isValidCategory(postWithContentAndSeriesAndWriter.post.category)) throw ExceptionList.NEWSLETTER_CATEGORY_NOT_FOUND;
         return postWithContentAndSeriesAndWriter;
     }
 

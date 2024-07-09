@@ -15,6 +15,7 @@ import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_EMPTY, SERIES_NOT_
 import {UserService} from "../user/user.service";
 import SeriesDtoMapper from "./seriesDtoMapper";
 import UserDtoMapper from "../user/userDtoMapper";
+import {Category} from "@moonjin/api-types";
 
 @Controller('series')
 export class SeriesController {
@@ -36,7 +37,8 @@ export class SeriesController {
         @User() user :UserAuthDto,
         @TypedBody() seriesData : ICreateSeries
     ): Promise<TryCatch<SeriesDto, CREATE_SERIES_ERROR >>{
-        const series = await this.seriesService.createSeries({writerId: user.id,...seriesData});
+        const category = Category.getNumberByCategory(seriesData.category);
+        const series = await this.seriesService.createSeries({...seriesData,writerId: user.id, category});
         await this.userService.synchronizeSeries(user.id);
         return createResponseForm(series)
     }

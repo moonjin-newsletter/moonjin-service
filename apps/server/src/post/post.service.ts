@@ -18,7 +18,6 @@ import UserDtoMapper from "../user/userDtoMapper";
 import {EditorJsToPostPreview} from "@moonjin/editorjs";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
-import {Category} from "@moonjin/api-types";
 import {SeriesService} from "../series/series.service";
 
 @Injectable()
@@ -47,7 +46,7 @@ export class PostService {
                     preview: EditorJsToPostPreview(content.blocks),
                     writerId,
                     cover,
-                    category : Category.getNumberByCategory(category),
+                    category,
                     createdAt: this.utilService.getCurrentDateInKorea(),
                     postContent: {
                         create: {
@@ -91,7 +90,7 @@ export class PostService {
                     preview: EditorJsToPostPreview(content.blocks),
                     ...cover,
                     lastUpdatedAt: this.utilService.getCurrentDateInKorea(),
-                    category: Category.getNumberByCategory(category),
+                    category,
                     postContent: {
                         create: {
                             content: JSON.stringify(content),
