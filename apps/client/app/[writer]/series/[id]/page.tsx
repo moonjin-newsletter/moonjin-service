@@ -25,7 +25,7 @@ export default async function Page({ params }: pageProps) {
     `writer/${moonjinId}/info/public`,
   );
   const { data: seriesInfo } = await nfetch<ResponseForm<SeriesDto>>(
-    `series/${seriesId}`,
+    `writer/${moonjinId}/series/${seriesId}`,
   );
 
   return (
