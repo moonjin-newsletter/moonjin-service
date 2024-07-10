@@ -325,11 +325,13 @@ export class SeriesService {
      * @summary 시리즈 포스트 수 업데이트
      * @param seriesId
      */
-    async updateSeriesPostCount(seriesId: number): Promise<void> {
-        const postCount = await this.prismaService.post.count({
+    async updateSeriesNewsletterCount(seriesId: number): Promise<void> {
+        const newsletterCount = await this.prismaService.newsletter.count({
             where: {
-                seriesId,
-                deleted: false
+                post : {
+                    seriesId,
+                    deleted: false
+                },
             }
         });
         await this.prismaService.series.update({
@@ -337,7 +339,7 @@ export class SeriesService {
                 id: seriesId
             },
             data: {
-                postCount,
+                newsletterCount,
             }
         });
     }

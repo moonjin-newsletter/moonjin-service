@@ -59,7 +59,7 @@ export class PostController {
             category = series.category;
         }
         const post = await this.postService.createPost({...postData,category},user.id);
-        if(postData.seriesId) await this.seriesService.updateSeriesPostCount(postData.seriesId);
+        if(postData.seriesId) await this.seriesService.updateSeriesNewsletterCount(postData.seriesId);
         return createResponseForm(post)
     }
 

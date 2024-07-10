@@ -208,7 +208,7 @@ export class PostService {
                 }
             })
             if(deletedPost.seriesId > 0)
-                await this.seriesService.updateSeriesPostCount(deletedPost.seriesId);
+                await this.seriesService.updateSeriesNewsletterCount(deletedPost.seriesId);
             // TODO : 작가의 newsletter 수도 줄여야하나?
         }catch (error){
             console.error(error);

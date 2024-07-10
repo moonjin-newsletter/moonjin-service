@@ -16,6 +16,7 @@ import {EditorJsToHtml} from "@moonjin/editorjs";
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {WebNewsletterWithNewsletterWithPost} from "./prisma/webNewsletterWithNewsletterWithPost.prisma.type";
 import {Category} from "@moonjin/api-types";
+import {SeriesService} from "../series/series.service";
 
 @Injectable()
 export class NewsletterService {
@@ -25,7 +26,8 @@ export class NewsletterService {
         private readonly mailService:MailService,
         private readonly postService: PostService,
         private readonly utilService: UtilService,
-        private readonly subscribeService: SubscribeService
+        private readonly subscribeService: SubscribeService,
+        private readonly seriesService : SeriesService
     ) {}
 
     /**
@@ -150,6 +152,7 @@ export class NewsletterService {
                 emailList : receiverEmailList
             };
             await this.mailService.sendNewsLetterWithHtml(newsletterSendInfo);
+            await this.seriesService.updateSeriesNewsletterCount(postWithContentAndSeriesAndWriter.post.seriesId);
             return newsletter;
         }catch (error){
             throw ExceptionList.SEND_NEWSLETTER_ERROR;

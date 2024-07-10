@@ -9,6 +9,7 @@ import {UtilModule} from "../util/util.module";
 import {WriterInfoModule} from "../writerInfo/writerInfo.module";
 import {UserModule} from "../user/user.module";
 import {SubscribeModule} from "../subscribe/subscribe.module";
+import {SeriesModule} from "../series/series.module";
 
 @Module({
   imports:[
@@ -19,7 +20,8 @@ import {SubscribeModule} from "../subscribe/subscribe.module";
       PostModule,
       WriterInfoModule,
       UserModule,
-      SubscribeModule
+      SubscribeModule,
+      SeriesModule
   ],
   providers: [NewsletterService],
   controllers: [NewsletterController],

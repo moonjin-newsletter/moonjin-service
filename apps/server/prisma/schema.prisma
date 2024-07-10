@@ -181,18 +181,18 @@ model NewsletterAnalytics {
 }
 
 model Series {
-  id            Int      @id @default(autoincrement())
-  title         String   @db.VarChar(32)
-  description   String   @default("") @db.VarChar(256)
-  writerId      Int
-  category      Int      @default(-1)
-  cover         String   @db.VarChar(128)
-  clicks        Int      @default(0)
-  postCount     Int      @default(0)
-  likes         Int      @default(0)
-  createdAt     DateTime
-  lastUpdatedAt DateTime @default(now())
-  deleted       Boolean  @default(false)
+  id              Int      @id @default(autoincrement())
+  title           String   @db.VarChar(32)
+  description     String   @default("") @db.VarChar(256)
+  writerId        Int
+  category        Int      @default(-1)
+  cover           String   @db.VarChar(128)
+  clicks          Int      @default(0)
+  newsletterCount Int      @default(0)
+  likes           Int      @default(0)
+  createdAt       DateTime
+  lastUpdatedAt   DateTime @default(now())
+  deleted         Boolean  @default(false)
 
   writerInfo WriterInfo @relation(fields: [writerId], references: [userId])
   post       Post[]
