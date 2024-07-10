@@ -1,9 +1,12 @@
-import {SeriesSummaryDto} from "./seriesSummary.dto";
+import {SeriesUserInteractionDto} from "./seriesUserInteraction.dto";
 
-export interface SeriesDto extends SeriesSummaryDto {
+export interface SeriesDto extends SeriesUserInteractionDto {
+    id : number;
+    title: string;
     writerId : number;
+    cover : string;
     category : string;
-    clicks : number;
-    description : string | null;
+    description : string;
+    createdAt : Date;
     lastUpdatedAt : Date;
 }

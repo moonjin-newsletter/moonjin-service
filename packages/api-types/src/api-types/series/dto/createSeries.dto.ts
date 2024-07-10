@@ -1,7 +1,7 @@
 export interface CreateSeriesDto {
     title: string;
     writerId : number;
-    category : string;
+    category : number;
     cover? : string;
     description? : string;
 }

@@ -1,10 +1,8 @@
+import {NewsletterUserInteractionDto} from "./newsletterUserInteraction.dto";
 
-export interface NewsletterDto{
+export interface NewsletterDto extends NewsletterUserInteractionDto{
     id: number;
     postId: number;
     postContentId: number;
-    clicks: number;
-    likes: number;
-    comments: number;
     sentAt: Date;
 }
