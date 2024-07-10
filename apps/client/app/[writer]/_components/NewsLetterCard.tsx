@@ -13,9 +13,9 @@ export default function NewsLetterCard({
   return (
     <Link
       href={""}
-      className="flex w-full group justify-between gap-x-5 border-b py-6"
+      className="flex items-center w-full group justify-between gap-x-5 border-b py-6 overflow-hidden"
     >
-      <div className="flex flex-col">
+      <div className="flex flex-col w-full">
         {newsletterInfo?.series && (
           <span className="text-[13px] w-fit text-primary border-primary border-b">
             {newsletterInfo?.series?.title}
@@ -24,10 +24,10 @@ export default function NewsLetterCard({
         <h2 className="group-hover:underline mt-1.5 text-lg text-grayscale-600 font-medium">
           {newsletterInfo.post.title}
         </h2>
-        <span className="line-clamp-2 mt-0.5 flex grow  text-sm text-grayscale-400">
-          {newsletterInfo.post.preview}
-        </span>
-        <div className="flex items-center gap-x-3 text-[#999999] text-sm">
+        <div className=" mt-0.5 w-full flex grow  text-sm text-grayscale-400">
+          <span className="line-clamp-2">{newsletterInfo.post.preview}</span>
+        </div>
+        <div className="mt-3 flex items-center gap-x-3 text-[#999999] text-sm">
           <div className="flex items-center gap-x-1 ">
             <BiLike />
             <span>{11}</span>
@@ -36,7 +36,7 @@ export default function NewsLetterCard({
             <FaRegCommentDots />
             <span>{11}</span>
           </div>
-          <div className="flex items-center gap-x-1">
+          <div className="flex items-center gap-x-1.5">
             <span>발행일자</span>
             <span>
               {format(new Date(newsletterInfo.newsletter.sentAt), "yyyy.MM.dd")}
