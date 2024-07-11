@@ -1,6 +1,6 @@
 import HomeTab from "./HomeTab";
 import ssr from "../../lib/fetcher/ssr";
-import {
+import type {
   ResponseForm,
   NewsletterCardDto,
   SeriesWithWriterDto,

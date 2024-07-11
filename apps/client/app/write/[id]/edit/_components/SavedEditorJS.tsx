@@ -11,14 +11,12 @@ import * as I from "@components/icons";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { CgSpinner } from "react-icons/cg";
 import "@components/editorjs/customEditorView.css";
-
 import {
   FileTypeEnum,
-  type PostWithContentAndSeriesDto,
+  PostWithContentAndSeriesDto,
   PostWithContentDto,
   ResponseForm,
   SeriesDto,
-  SeriesSummaryDto,
 } from "@moonjin/api-types";
 import { Listbox } from "@headlessui/react";
 import Link from "next/link";
@@ -55,7 +53,7 @@ export default function NewEditorJS({
   });
 
   const { data: seriesList } =
-    useSWR<ResponseForm<SeriesSummaryDto[]>>("series/me/summary");
+    useSWR<ResponseForm<SeriesDto[]>>("series/me/summary");
 
   const title = watch("title");
   register("title", { required: "제목을 입력해주세요" });

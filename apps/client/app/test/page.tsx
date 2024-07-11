@@ -1,8 +1,6 @@
-export default function Page() {
-  // pages/index.js
+import EditorRender from "@components/editorjs/EditorRender";
 
-  console.log(1);
-  // Editor.js JSON 데이터 예시
+export default function Page() {
   const editorData = {
     time: 1635603431943,
     blocks: [
@@ -19,37 +17,51 @@ export default function Page() {
           level: 2,
         },
       },
+      {
+        type: "image",
+        data: {
+          file: {
+            url: "https://www.tesla.com/tesla_theme/assets/img/_vehicle_redesign/roadster_and_semi/roadster/hero.jpg",
+          },
+          caption: "Roadster // tesla.com",
+          withBorder: false,
+          withBackground: false,
+          stretched: false,
+        },
+      },
+      {
+        type: "header",
+        data: {
+          level: 2,
+          text: 'Create a directory for your module, enter it and run <u class="cdx-underline">npm init</u> command.',
+        },
+      },
+      {
+        type: "list",
+        data: {
+          style: "ordered",
+          items: [
+            "이거슨 리스트 아이템이예용",
+            "리스트라니까용",
+            "간단하고 파워풀하지용",
+            "비슷한 설정이 반복되는 게 못생겼어요",
+          ],
+        },
+      },
+      {
+        type: "delimiter",
+        data: {},
+      },
       // 추가 블록들...
     ],
     version: "2.22.2",
   };
 
-  function renderEditorData(data: any) {
-    return data.blocks.map((block: any, index: any) => {
-      switch (block.type) {
-        case "paragraph":
-          return (
-            <p
-              key={index}
-              className="custom-paragraph"
-              dangerouslySetInnerHTML={{ __html: block.data.text }}
-            />
-          );
-        case "header":
-          const Tag = `h${block.data.level}`;
-          return <hr />;
-        // 다른 블록 타입 처리 추가
-        default:
-          return null;
-      }
-    });
-  }
-
-  const content = renderEditorData(editorData);
-
   return (
-    <div className="mt-40">
-      <div id="editor-output">{content}</div>
+    <div className="mt-40 w-full flex flex-col items-center">
+      <main className="max-w-[688px]">
+        <EditorRender blocks={editorData.blocks} />
+      </main>
     </div>
   );
 }
