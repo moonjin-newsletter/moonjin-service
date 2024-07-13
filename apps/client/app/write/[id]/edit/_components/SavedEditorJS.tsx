@@ -264,6 +264,7 @@ function OverlaySetting({
         const { data: nInfo } =
           await res.json<ResponseForm<PostWithContentDto>>();
         toast.success("글을 저장했습니다");
+        overlay.unmountAll();
         router.push(`/write/${nInfo.post.id}/publish`);
       })
       .catch(() => toast.error("글 저장에 실패하였습니다"));
