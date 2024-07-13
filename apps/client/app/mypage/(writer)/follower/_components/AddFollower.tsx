@@ -1,6 +1,5 @@
 // "use client";
 //
-// import { useOverlay } from "@toss/use-overlay";
 // import { IoCloseOutline } from "react-icons/io5";
 // import { useState } from "react";
 // import { useForm } from "react-hook-form";
@@ -10,7 +9,6 @@
 // import { AddExternalSubscriberResultDto } from "@moonjin/api-types";
 //
 // export default function AddFollower() {
-//   const overlay = useOverlay();
 //
 //   function AddUser() {
 //     overlay.open(({ isOpen }) => {

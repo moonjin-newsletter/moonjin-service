@@ -8,19 +8,16 @@ import {
 } from "@components/editorjs/customEditorConfig";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
-import { useOverlay } from "@toss/use-overlay";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PiCaretUpDownBold } from "react-icons/pi";
 import "components/editorjs/customEditorView.css";
-
 import csr from "../../../../lib/fetcher/csr";
 import {
   FileTypeEnum,
   PostWithContentDto,
   ResponseForm,
   SeriesDto,
-  SeriesSummaryDto,
 } from "@moonjin/api-types";
 import { Listbox } from "@headlessui/react";
 import Link from "next/link";
@@ -29,11 +26,11 @@ import { fileUpload } from "@lib/file/fileUpload";
 import Image from "next/image";
 import { CgSpinner } from "react-icons/cg";
 import { CategoryList } from "@components/category/CategoryList";
+import { overlay } from "overlay-kit";
 
 export default function NewEditorJS() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const overlay = useOverlay();
   const [editor, setEditor] = useState<null | EditorJS>(null);
   const {
     watch,
@@ -43,13 +40,13 @@ export default function NewEditorJS() {
     formState: { errors, isValid, isSubmitting },
   } = useForm();
 
-  const { data: seriesList } =
-    useSWR<ResponseForm<SeriesSummaryDto[]>>("series/me/summary");
-
   const mySeriesId = searchParams.get("seriesId") ?? null;
   const mySeries = mySeriesId
     ? useSWR<ResponseForm<SeriesDto>>(`series/writing/${mySeriesId}`)
     : null;
+
+  const { data: seriesList } =
+    useSWR<ResponseForm<SeriesDto[]>>("series/me/summary");
 
   const title = watch("title");
   register("title", { required: "제목을 입력해주세요" });
@@ -85,11 +82,11 @@ export default function NewEditorJS() {
       editor
         .save()
         .then((outputData: any) => {
-          overlay.open(({ isOpen }) => {
+          overlay.open(({ isOpen, unmount }) => {
             return (
               <OverlaySetting
+                unmount={unmount}
                 seriesList={seriesList}
-                overlay={overlay}
                 outputData={outputData}
                 title={title}
                 mySeriesInfo={mySeries?.data?.data}
@@ -191,13 +188,13 @@ export default function NewEditorJS() {
 }
 
 function OverlaySetting({
-  overlay,
+  unmount,
   seriesList,
   title,
   outputData,
   mySeriesInfo,
 }: {
-  overlay: any;
+  unmount: () => void;
   seriesList: any | null;
   title: any | null;
   outputData: any;
@@ -238,7 +235,7 @@ function OverlaySetting({
   return (
     <div
       onClick={(e) => {
-        overlay.exit();
+        unmount();
       }}
       className="fixed  top-0 flex items-center justify-center z-50 w-screen h-screen bg-black/40"
     >
@@ -341,7 +338,7 @@ function OverlaySetting({
                 </div>
                 <Link
                   target="_blank"
-                  onClick={() => overlay.exit()}
+                  onClick={() => unmount()}
                   href="/mypage/newsletter/series/new"
                   className="min-w-[40px] mt-2 flex items-center justify-center size-10 border border-grayscale-100 rounded shadow"
                 >
@@ -414,7 +411,7 @@ function OverlaySetting({
         </section>
         <section className="w-full mt-8 justify-center items-center flex gap-x-4">
           <button
-            onClick={() => overlay.exit()}
+            onClick={() => unmount()}
             className="border border-grayscale-500 rounded py-1.5 px-3"
           >
             이전

@@ -1,7 +1,10 @@
+"use client";
 import Image from "next/image";
 import { More } from "@components/icons";
 import type { WriterPublicCardDto } from "@moonjin/api-types";
 import { commaizeNumber } from "@toss/utils";
+import { overlay } from "overlay-kit";
+import WriterInfoModal from "./WriterInfoModal";
 
 export default function WriterProfile({
   writerInfo,
@@ -46,7 +49,20 @@ export default function WriterProfile({
             <button className="py-2 px-4 rounded-full text-sm bg-grayscale-600 text-white">
               구독하기
             </button>
-            <More />
+            <button
+              onClick={() => {
+                overlay.open(({ isOpen, unmount }) => {
+                  return (
+                    <WriterInfoModal
+                      unmount={unmount}
+                      writerInfo={writerInfo}
+                    />
+                  );
+                });
+              }}
+            >
+              <More />
+            </button>
           </div>
         </div>
       </div>

@@ -4687,15 +4687,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@toss/use-overlay@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@toss/use-overlay@npm:1.4.0"
-  peerDependencies:
-    react: ^16.8 || ^17 || ^18
-  checksum: fc317407e7f39f2f7b23a70dc192b02cade13393dc4b65ee06ad5850c1cfa64ec02a3eb2f5932d8dce6ef1c29dcfbc82411c5af8c37639f4b4c618ef61192572
-  languageName: node
-  linkType: hard
-
 "@toss/utils@npm:^1.4.6":
   version: 1.4.6
   resolution: "@toss/utils@npm:1.4.6"
@@ -6881,7 +6872,6 @@ __metadata:
     "@tailwindcss/forms": "npm:^0.5.7"
     "@toss/assert": "npm:^1.1.12"
     "@toss/date": "npm:^1.1.8"
-    "@toss/use-overlay": "npm:^1.4.0"
     "@toss/utils": "npm:^1.4.6"
     "@types/editorjs__header": "npm:^2"
     "@types/node": "npm:^17.0.12"
@@ -6895,6 +6885,7 @@ __metadata:
     ky: "npm:^1.1.3"
     lottie-react: "npm:^2.4.0"
     next: "npm:^14.0.1"
+    overlay-kit: "npm:^1.2.1"
     postcss: "npm:^8.4.35"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
@@ -12149,6 +12140,16 @@ __metadata:
   version: 1.0.2
   resolution: "os-tmpdir@npm:1.0.2"
   checksum: f438450224f8e2687605a8dd318f0db694b6293c5d835ae509a69e97c8de38b6994645337e5577f5001115470414638978cc49da1cdcc25106dad8738dc69990
+  languageName: node
+  linkType: hard
+
+"overlay-kit@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "overlay-kit@npm:1.2.1"
+  peerDependencies:
+    react: ^18
+    react-dom: ^18
+  checksum: 40cb34d22e137d9bae8ffd65f578bd350afd2502ca0078a0f66cc70f2151f30293b735c01061de97bc7aeb8696651ba33e2e9bfac1f567d09990c76e462df8fb
   languageName: node
   linkType: hard
 

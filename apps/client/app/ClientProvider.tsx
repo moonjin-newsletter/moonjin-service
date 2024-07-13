@@ -5,7 +5,7 @@ import { HTTPError } from "ky";
 import { arrayIncludes } from "@toss/utils";
 import csr from "../lib/fetcher/csr";
 import { PropsWithChildren } from "react";
-import { OverlayProvider } from "@toss/use-overlay";
+import { OverlayProvider } from "overlay-kit";
 
 export default function ClientProvider({ children }: PropsWithChildren) {
   return (
