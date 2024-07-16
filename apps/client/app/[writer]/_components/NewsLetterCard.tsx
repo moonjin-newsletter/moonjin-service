@@ -4,15 +4,22 @@ import Image from "next/image";
 import { BiLike } from "react-icons/bi";
 import { FaRegCommentDots } from "react-icons/fa";
 import { format } from "date-fns";
+import { usePathname } from "next/navigation";
 
 export default function NewsLetterCard({
   newsletterInfo,
 }: {
   newsletterInfo: NewsletterCardDto;
 }) {
+  const pathname = usePathname();
+
+  const validateUrl = pathname.includes("series")
+    ? pathname.slice(0, pathname.indexOf("series") - 1)
+    : pathname;
+
   return (
     <Link
-      href={""}
+      href={`${validateUrl}/post/${newsletterInfo.post.id}`}
       className="flex items-center w-full group justify-between gap-x-5 border-b py-6 overflow-hidden"
     >
       <div className="flex flex-col w-full">
@@ -30,11 +37,11 @@ export default function NewsLetterCard({
         <div className="mt-3 flex items-center gap-x-3 text-[#999999] text-sm">
           <div className="flex items-center gap-x-1 ">
             <BiLike />
-            <span>{11}</span>
+            <span>{newsletterInfo.newsletter.likes}</span>
           </div>
           <div className="flex items-center gap-x-1">
             <FaRegCommentDots />
-            <span>{11}</span>
+            <span>{newsletterInfo.newsletter.comments}</span>
           </div>
           <div className="flex items-center gap-x-1.5">
             <span>발행일자</span>

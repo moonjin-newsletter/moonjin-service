@@ -36,11 +36,11 @@ export default function SeriesCard({ seriesInfo }: { seriesInfo: SeriesDto }) {
         <div className="flex items-center gap-x-3.5 mt-4 text-[#999999] text-sm">
           <div className="flex items-center gap-x-1">
             <BiLike />
-            <span>{11}</span>
+            <span>{seriesInfo.likes}</span>
           </div>
           <div className="flex items-center gap-x-1">
             <FaBookOpen />
-            <span>{2}</span>
+            <span>{seriesInfo.newsletterCount}</span>
           </div>
         </div>
       </div>

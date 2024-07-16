@@ -68,7 +68,7 @@ export default async function Page({ params }: pageProps) {
   const seriesId = parseInt(params.id, 10);
 
   return (
-    <div>
+    <div className="w-full flex flex-col items-center">
       <h1>Page</h1>
       <main className="max-w-[688px]">
         <EditorRender blocks={editorData.blocks} />

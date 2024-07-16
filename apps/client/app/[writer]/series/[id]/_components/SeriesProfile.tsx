@@ -63,11 +63,11 @@ export default function SeriesProfile({
         <div className="flex items-center gap-x-4   ">
           <div className="flex items-center gap-x-2 text-primary">
             <BiLike className="text-xl" />
-            <span className="text-base">{11}</span>
+            <span className="text-base">{seriesInfo.likes}</span>
           </div>
           <div className="flex items-center gap-x-2 text-grayscale-400">
             <FaBookOpen className="text-xl" />
-            <span className="text-base">{2}</span>
+            <span className="text-base">{seriesInfo.newsletterCount}</span>
           </div>
         </div>
         <div className="flex items-center gap-x-3">
