@@ -127,13 +127,13 @@ export class NewsletterController {
     }
 
     /**
-     * @summary 해당 뉴스레터의 요약 정보 가져오기
+     * @summary 해당 뉴스레터의 정보 가져오기
      * @param newsletterId
-     * @returns NewsletterSummaryDto
+     * @returns NewsletterCardDto
      * @throws NEWSLETTER_NOT_FOUND
      */
     @TypedRoute.Get(':newsletterId')
-    async getNewsletterSummaryById(@TypedParam("newsletterId") newsletterId: number) : Promise<TryCatch<NewsletterCardDto
+    async getNewsletterById(@TypedParam("newsletterId") newsletterId: number) : Promise<TryCatch<NewsletterCardDto
     , NEWSLETTER_NOT_FOUND>>{
         const newsletterCard = await this.newsletterService.getNewsletterCardByNewsletterId(newsletterId);
         const {post, ...newsletterData} = newsletterCard;

@@ -1,7 +1,7 @@
 import {Controller} from '@nestjs/common';
-import {TypedParam, TypedQuery, TypedRoute} from "@nestia/core";
+import {TypedBody, TypedParam, TypedQuery, TypedRoute} from "@nestia/core";
 import {WriterInfoService} from "../writerInfo/writerInfo.service";
-import {createResponseForm} from "../response/responseForm";
+import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {WriterProfileDto} from "../writerInfo/dto";
 import {USER_NOT_WRITER} from "@moonjin/api-types";
@@ -17,6 +17,10 @@ import {SeriesService} from "../series/series.service";
 import {SeriesDto} from "../series/dto";
 import {FORBIDDEN_FOR_SERIES, SERIES_NOT_FOUND} from "../response/error/series";
 import {ExceptionList} from "../response/error/errorInstances";
+import {ICreateExternalSubscriber} from "../subscribe/api-types/ICreateExternalSubscriber";
+import {SubscribeService} from "../subscribe/subscribe.service";
+import {SUBSCRIBE_ALREADY_ERROR} from "../response/error/subscribe";
+import {EMAIL_ALREADY_EXIST} from "../response/error/auth";
 
 @Controller('writer')
 export class WriterController {
@@ -24,6 +28,7 @@ export class WriterController {
         private readonly writerInfoService: WriterInfoService,
         private readonly newsletterService: NewsletterService,
         private readonly seriesService: SeriesService,
+        private readonly subscribeService: SubscribeService
     ) {}
 
 
@@ -35,6 +40,18 @@ export class WriterController {
         USER_NOT_WRITER >>{
         const writerPublicInfo = await this.writerInfoService.getWriterPublicCardByMoonjinId(moonjinId);
         return createResponseForm(writerPublicInfo)
+    }
+
+    /**
+     * @summary 작가페이지에서 외부 구독자 폼 구독하기
+     * @param moonjinId
+     * @param body
+     */
+    @TypedRoute.Post(":moonjinId/subscribe/external")
+    async getWriterSubscribeForm(@TypedParam("moonjinId") moonjinId : string, @TypedBody() body : ICreateExternalSubscriber):Promise<TryCatch<ResponseMessage,
+        USER_NOT_WRITER | EMAIL_ALREADY_EXIST | SUBSCRIBE_ALREADY_ERROR>> {
+        await this.subscribeService.addExternalSubscriberByMoonjinId(moonjinId, body);
+        return createResponseForm({message: "구독 신청되었습니다."})
     }
 
     /**

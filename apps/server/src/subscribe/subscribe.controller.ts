@@ -43,7 +43,7 @@ export class SubscribeController {
         USER_NOT_WRITER | EMAIL_ALREADY_EXIST | SUBSCRIBER_ALREADY_EXIST>>{
         const { writerMoonjinId, ...externalSubscriber } = body;
         const writerPublicCard = await this.writerInfoService.getWriterPublicCardByMoonjinId(writerMoonjinId);
-        await this.subscribeService.addExternalSubscriber(writerPublicCard.user.id, externalSubscriber );
+        await this.subscribeService.addExternalSubscriberByWriterId(writerPublicCard.user.id, externalSubscriber );
         return createResponseForm({message: "구독 신청되었습니다."})
     }
 
@@ -154,7 +154,7 @@ export class SubscribeController {
     @UseGuards(WriterAuthGuard)
     async addExternalFollower(@User() user:UserAuthDto, @TypedBody() body : ICreateExternalSubscriber)
         :Promise<TryCatch<ResponseMessage & ExternalSubscriberDto, EMAIL_ALREADY_EXIST | SUBSCRIBER_ALREADY_EXIST>>{
-        const externalFollower = await this.subscribeService.addExternalSubscriber(user.id, body);
+        const externalFollower = await this.subscribeService.addExternalSubscriberByWriterId(user.id, body);
         return createResponseForm({
             message: "구독자 추가에 성공했습니다.",
             ...externalFollower,

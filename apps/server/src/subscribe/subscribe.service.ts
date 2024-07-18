@@ -11,6 +11,7 @@ import {ExceptionList} from "../response/error/errorInstances";
 import {SubscribingWriterInfoWithUser} from "./prisma/subscribingWriterInfoWithUser.prisma.type";
 import SubscribeDtoMapper from "./SubscribeDtoMapper";
 import {Subscribe, SubscribeExternal} from "@prisma/client";
+import {WriterInfoService} from "../writerInfo/writerInfo.service";
 
 @Injectable()
 export class SubscribeService {
@@ -18,6 +19,7 @@ export class SubscribeService {
         private readonly prismaService: PrismaService,
         private readonly authValidationService: AuthValidationService,
         private readonly utilService: UtilService,
+        private readonly writerInfoService: WriterInfoService
     ) {}
 
     /**
@@ -28,7 +30,7 @@ export class SubscribeService {
      * @throws EMAIL_ALREADY_EXIST
      * @throws SUBSCRIBE_ALREADY_ERROR
      */
-    async addExternalSubscriber(writerId: number, externalSubscriber : ExternalSubscriberInfoDto): Promise<ExternalSubscriberDto> {
+    async addExternalSubscriberByWriterId(writerId: number, externalSubscriber : ExternalSubscriberInfoDto): Promise<ExternalSubscriberDto> {
         await this.authValidationService.assertEmailUnique(externalSubscriber.subscriberEmail);
         try{
             const externalFollow = await this.prismaService.subscribeExternal.create({
@@ -43,6 +45,19 @@ export class SubscribeService {
             console.log(error);
             throw ExceptionList.SUBSCRIBE_ALREADY_ERROR;
         }
+    }
+
+    /**
+     * @summary 외부 구독자 추가하기
+     * @param moonjinId
+     * @param externalSubscriber
+     * @returns ExternalSubscriberDto
+     * @throws EMAIL_ALREADY_EXIST
+     * @throws SUBSCRIBE_ALREADY_ERROR
+     */
+    async addExternalSubscriberByMoonjinId(moonjinId: string, externalSubscriber : ExternalSubscriberInfoDto): Promise<ExternalSubscriberDto> {
+        const writerCard = await this.writerInfoService.getWriterPublicCardByMoonjinId(moonjinId);
+        return this.addExternalSubscriberByWriterId(writerCard.user.id, externalSubscriber);
     }
 
     /**
