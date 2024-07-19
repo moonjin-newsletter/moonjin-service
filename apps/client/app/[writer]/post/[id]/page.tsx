@@ -1,4 +1,5 @@
 import EditorRender from "@components/editorjs/EditorRender";
+import PostHeader from "../_components/PostHeader";
 
 type pageProps = {
   params: {
@@ -10,6 +11,36 @@ type pageProps = {
 const editorData = {
   time: 1635603431943,
   blocks: [
+    {
+      type: "paragraph",
+      data: {
+        text: '요즘 구글에서 제공하는 <a target="_blank" href="https://trends.google.co.kr/trends/?geo=KR&amp;hl=ko">Google Trends</a>라는 서비스를 활용하여 다양한 Trend를 알 수 있다. 현재 국내에서 가장 관심있는 키워드가 무엇인지, 특정 검색어의 검색 추이가 어떻게 되는지 등의 정보를 제공한다.',
+      },
+    },
+    {
+      type: "paragraph",
+      data: {
+        text: '요즘 구글에서 제공하는 <a target="_blank" href="https://trends.google.co.kr/trends/?geo=KR&amp;hl=ko">Google Trends</a>라는 서비스를 활용하여 다양한 Trend를 알 수 있다. 현재 국내에서 가장 관심있는 키워드가 무엇인지, 특정 검색어의 검색 추이가 어떻게 되는지 등의 정보를 제공한다.',
+      },
+    },
+    {
+      type: "paragraph",
+      data: {
+        text: '요즘 구글에서 제공하는 <a target="_blank" href="https://trends.google.co.kr/trends/?geo=KR&amp;hl=ko">Google Trends</a>라는 서비스를 활용하여 다양한 Trend를 알 수 있다. 현재 국내에서 가장 관심있는 키워드가 무엇인지, 특정 검색어의 검색 추이가 어떻게 되는지 등의 정보를 제공한다.',
+      },
+    },
+    {
+      type: "paragraph",
+      data: {
+        text: '요즘 구글에서 제공하는 <a target="_blank" href="https://trends.google.co.kr/trends/?geo=KR&amp;hl=ko">Google Trends</a>라는 서비스를 활용하여 다양한 Trend를 알 수 있다. 현재 국내에서 가장 관심있는 키워드가 무엇인지, 특정 검색어의 검색 추이가 어떻게 되는지 등의 정보를 제공한다.',
+      },
+    },
+    {
+      type: "paragraph",
+      data: {
+        text: '요즘 구글에서 제공하는 <a target="_blank" href="https://trends.google.co.kr/trends/?geo=KR&amp;hl=ko">Google Trends</a>라는 서비스를 활용하여 다양한 Trend를 알 수 있다. 현재 국내에서 가장 관심있는 키워드가 무엇인지, 특정 검색어의 검색 추이가 어떻게 되는지 등의 정보를 제공한다.',
+      },
+    },
     {
       type: "paragraph",
       data: {
@@ -69,6 +100,7 @@ export default async function Page({ params }: pageProps) {
 
   return (
     <div className="w-full flex flex-col items-center">
+      <PostHeader />
       <h1>Page</h1>
       <main className="max-w-[688px]">
         <EditorRender blocks={editorData.blocks} />

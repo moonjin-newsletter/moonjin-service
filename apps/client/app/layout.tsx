@@ -1,8 +1,6 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Libre_Baskerville, Noto_Serif_KR } from "next/font/google";
-import Header from "../components/layout/Header";
-import Footer from "../components/layout/Footer";
 import ClientProvider from "./ClientProvider";
 
 export const metadata: Metadata = {
@@ -17,12 +15,12 @@ const libre = Libre_Baskerville({
   weight: ["400", "700"],
 });
 
-// const notoSerifKR = Noto_Serif_KR({
-//   subsets: ["latin"],
-//   display: "swap",
-//   variable: "--font-noto-serif",
-//   weight: ["200", "300", "400", "500", "600", "700", "900"],
-// });
+const notoSerifKR = Noto_Serif_KR({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-noto-serif",
+  weight: ["200", "300", "400", "500", "600", "700", "900"],
+});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -37,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <html className={`${libre.variable} `} lang="en">
+    <html className={`${libre.variable} ${notoSerifKR.variable} `} lang="ko">
       <head>
         <link
           rel="stylesheet"

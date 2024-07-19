@@ -5,7 +5,8 @@ import * as I from "@components/icons";
 import { MdOutlineAlternateEmail } from "react-icons/md";
 import { PiUserCircle } from "react-icons/pi";
 import { FiShare2 } from "react-icons/fi";
-import { IoChatbubblesOutline } from "react-icons/io5";
+import { IoChatbubblesOutline, IoClose } from "react-icons/io5";
+import { IoIosClose } from "react-icons/io";
 
 import Link from "next/link";
 import { commaizeNumber } from "@toss/utils";
@@ -31,6 +32,9 @@ export default function WriterInfoModal({
       >
         <div className="w-full flex justify-between">
           <span className="text-2xl font-bold">작가정보</span>
+          <button onClick={unmount}>
+            <IoClose className="text-2xl" />
+          </button>
         </div>
         <div className="w-full flex flex-col mt-6 gap-y-2">
           <p className="text-lg  text-primary font-bold">

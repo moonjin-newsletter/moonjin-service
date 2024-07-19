@@ -5,6 +5,7 @@ import type { WriterPublicCardDto } from "@moonjin/api-types";
 import { commaizeNumber } from "@toss/utils";
 import { overlay } from "overlay-kit";
 import WriterInfoModal from "./WriterInfoModal";
+import * as SubModal from "@components/modal/SubModal";
 
 export default function WriterProfile({
   writerInfo,
@@ -46,7 +47,19 @@ export default function WriterProfile({
             ))}
           </div>
           <div className="flex gap-x-2.5">
-            <button className="py-2 px-4 rounded-full text-sm bg-grayscale-600 text-white">
+            <button
+              onClick={() => {
+                overlay.open(({ isOpen, unmount }) => {
+                  return (
+                    <SubModal.PreLoginSubModal
+                      unmount={unmount}
+                      writerInfo={writerInfo}
+                    />
+                  );
+                });
+              }}
+              className="py-2 px-4 rounded-full text-sm bg-grayscale-600 text-white"
+            >
               구독하기
             </button>
             <button
