@@ -8,8 +8,10 @@ import type { ResponseForm, UserOrWriterDto } from "@moonjin/api-types";
 import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
 import useScroll from "@utils/hooks/useScroll";
+import { useEffect, useState } from "react";
 
 export default function PostHeader() {
+  const [windowObject, setWindowObject] = useState<any>(null);
   const scroll = useScroll();
 
   const { data: userInfo, mutate } =
@@ -25,6 +27,13 @@ export default function PostHeader() {
         toast.error("로그아웃 실패");
       });
   }
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // 클라이언트사이드에서만 실행됨
+      setWindowObject(window);
+    }
+  }, []);
 
   return (
     <header className="w-full flex flex-col items-center  sticky top-0 left-0 bg-white">
@@ -92,7 +101,7 @@ export default function PostHeader() {
       <section className="w-full">
         <div
           className="h-0.5 bg-primary"
-          style={{ width: `${(scroll.y / window.innerHeight) * 100}%` }}
+          style={{ width: `${(scroll.y / windowObject.innerHeight) * 100}%` }}
         />
       </section>
     </header>
