@@ -28,6 +28,10 @@ module.exports = {
 
     return config;
   },
+  experimental: {
+    scrollRestoration: true,
+    mdxRs: true,
+  },
   images: {
     disableStaticImages: false,
     remotePatterns: [

@@ -1,6 +1,5 @@
 import React, { ReactNode } from "react";
 import { notFound, redirect } from "next/navigation";
-
 import ssr from "../../lib/fetcher/ssr";
 import { Sidebar } from "./_components/Sidebar";
 import Profile from "./_components/Profile";
@@ -20,15 +19,15 @@ export default async function MypageLayout({
   if (!userInfo?.data) notFound();
   const userRole = userInfo?.data?.user?.role ?? 0;
 
-  const type = checkType(userRole);
+  const role = checkType(userRole);
 
   return (
     <div className="flex w-full items-center flex-col bg-white p-0 outline-none  ">
       <Header />
       <section className="h-52 w-full bg-grayscale-200" />
-      <Profile type={type} userInfo={userInfo.data} />
+      <Profile role={role} userInfo={userInfo.data} />
       <section className="max-w-[1006px] w-full mt-16 flex gap-x-10 pb-12 ">
-        <Sidebar type={type} />
+        <Sidebar role={role} />
         <div className="w-full flex flex-col ">{children}</div>
       </section>
     </div>

@@ -5,19 +5,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { userType } from "@utils/CheckUser";
 
-export function Sidebar({ type }: { type: userType }) {
+export function Sidebar({ role }: { role: userType }) {
   return (
     <nav className="flex flex-col w-[200px] min-w-[200px]">
       <Link
         className="w-full mb-8 font-medium text-white justify-center flex  py-4 bg-primary  rounded-lg"
-        href={type === "작가" ? "/write/new" : "/auth/apply"}
+        href={role === "작가" ? "/write/new" : "/auth/apply"}
       >
-        {type === "작가" ? "뉴스레터 작성하기" : "작가로 시작하기"}
+        {role === "작가" ? "뉴스레터 작성하기" : "작가로 시작하기"}
       </Link>
 
       <div className="flex flex-col w-full ">
         <MenuLink title="마이페이지 홈" url="/mypage" />
-        {type === "작가" && (
+        {role === "작가" && (
           <div className="flex flex-col w-full ">
             {[
               {
