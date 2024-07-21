@@ -1,5 +1,6 @@
 import EditorRender from "@components/editorjs/EditorRender";
 import PostHeader from "../_components/PostHeader";
+import Image from "next/image";
 
 type pageProps = {
   params: {
@@ -101,8 +102,23 @@ export default async function Page({ params }: pageProps) {
   return (
     <div className="w-full flex flex-col items-center">
       <PostHeader />
-      <h1>Page</h1>
+      <section className="h-60 w-full relative flex items-center justify-center">
+        <Image
+          src={""}
+          alt={"배너 이미지"}
+          className="absolute top-0 left-0 w-full h-full brightness-75 bg-black/80 z-[-1]"
+        />
+        <div className="flex flex-col items-center text-white">
+          <h1 className="font-serif text-2xl font-[300]">
+            오타니 쇼헤이와 스포츠경제학
+          </h1>
+          <div className="border text-[13px] py-1 px-3 border-white/50 text-white/50 rounded-full mt-10">
+            수필
+          </div>
+        </div>
+      </section>
       <main className="max-w-[688px]">
+        <section className=""></section>
         <EditorRender blocks={editorData.blocks} />
       </main>
     </div>

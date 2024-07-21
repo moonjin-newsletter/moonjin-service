@@ -36,7 +36,7 @@ export default function PostHeader() {
   }, []);
 
   return (
-    <header className="w-full flex flex-col items-center  sticky top-0 left-0 bg-white">
+    <header className="w-full flex flex-col items-center  sticky top-0 left-0 bg-white z-[100]">
       <section className="w-full flex items-center justify-center border-b border-grayscale-200 py-2">
         <div className="max-w-[1006px] w-full flex items-center justify-between">
           <Link className="flex  items-center h-full text-white" href="/">
@@ -51,7 +51,7 @@ export default function PostHeader() {
             <span className="font-serif font-medium text-[13px]">
               오타니 쇼헤이와 스포츠경제학
             </span>
-            <p className="font-serif text-sm">
+            <p className="font-serif text-xs">
               <span className="text-grayscale-500">by.</span>
               학회원 최진수
             </p>
@@ -98,12 +98,17 @@ export default function PostHeader() {
           </div>
         </div>
       </section>
-      <section className="w-full">
-        <div
-          className="h-0.5 bg-primary"
-          style={{ width: `${(scroll.y / windowObject.innerHeight) * 100}%` }}
-        />
-      </section>
+      {/*Todo: 스크롤 로직 수정*/}
+      {windowObject && (
+        <section className="w-full">
+          <div
+            className="h-0.5 bg-primary"
+            style={{
+              width: `${(scroll.y / windowObject.innerHeight) * 100}%`,
+            }}
+          />
+        </section>
+      )}
     </header>
   );
 }

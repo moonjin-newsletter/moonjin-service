@@ -15,7 +15,6 @@ export default async function noAuth<T>(
   );
 
   // 헤더에 다른 값을 넣으면 next.revalidate설정이 안 먹는 것 같다
-  // 그래서 캐싱 문제가 발생해서 결제 페이지등에서 결제금액 불일치 오류가 날 수 있다
   const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}${path}`, {
     next: { revalidate: revalidate ? 600 : 0 },
   });
