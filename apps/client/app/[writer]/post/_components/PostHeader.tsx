@@ -104,7 +104,11 @@ export default function PostHeader() {
           <div
             className="h-0.5 bg-primary"
             style={{
-              width: `${(scroll.y / windowObject.innerHeight) * 100}%`,
+              width: `${
+                (scroll.y / windowObject.innerHeight) * 100 > 100
+                  ? 100
+                  : (scroll.y / windowObject.innerHeight) * 100
+              }%`,
             }}
           />
         </section>

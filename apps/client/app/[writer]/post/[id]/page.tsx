@@ -86,10 +86,7 @@ const editorData = {
         ],
       },
     },
-    {
-      type: "delimiter",
-      data: {},
-    },
+
     // 추가 블록들...
   ],
   version: "2.22.2",
@@ -117,9 +114,41 @@ export default async function Page({ params }: pageProps) {
           </div>
         </div>
       </section>
-      <main className="max-w-[688px]">
-        <section className=""></section>
+      <main className="max-w-[688px] py-10">
+        <section className="w-full flex flex-col">
+          <div className="flex items-center w-full">
+            <div className="flex items-center justify-between w-full">
+              <p className="font-serif">
+                <span className="text-grayscale-400">by.</span>
+                <span>학회원 최진수</span>
+                <span className="text-grayscale-400"> ∙ 2024.08.24</span>
+              </p>
+              <button className="py-2 rounded-full px-4 border border-primary text-primary text-sm font-medium">
+                구독하기
+              </button>
+            </div>
+          </div>
+        </section>
+        <hr className="my-10" />
         <EditorRender blocks={editorData.blocks} />
+        <section className="flex flex-col mt-10 w-full">
+          <div className="flex items-center justify-between w-full">
+            <span className="text-sm text-grayscale-400 ">
+              이번 글은 어떠셨나요?
+            </span>
+          </div>
+          <div className="mt-6 bg-grayscale-100 rounded-lg p-4 w-full flex items-center">
+            <Image
+              src={""}
+              alt={"작가 프로필"}
+              className="size-12 aspect-square bg-gray-300 rounded-full"
+            />
+            <div className="flex flex-col ml-3">
+              <p className="font-semibold">종이한장</p>
+              <span className="text-sm text-grayscale-400">asdf@gmail.com</span>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );
