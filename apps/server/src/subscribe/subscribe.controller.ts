@@ -14,7 +14,7 @@ import {
     SubscribingWriterProfileDto,
     AllSubscriberDto,
     ExternalSubscriberDto,
-    AddExternalSubscriberResultDto,
+    AddExternalSubscriberResultDto, SubscribeInfoDto,
 } from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {ICreateExternalSubscriber} from "./api-types/ICreateExternalSubscriber";
@@ -228,5 +228,22 @@ export class SubscribeController {
         return createResponseForm({
             message: "팔로워 삭제에 성공했습니다."
         })
+    }
+
+    /**
+     * @summary 작가 구독 정보 가져오기 API
+     * @param user
+     * @param moonjinId
+     * @returns SubscribeInfoDto
+     * @throws USER_NOT_WRITER
+     * @throws SUBSCRIBER_NOT_FOUND
+     */
+    @TypedRoute.Get('writer/:moonjinId/info')
+    @UseGuards(UserAuthGuard)
+    async getSubscribeOrNotByMoonjinId(@User() user:UserAuthDto, @TypedParam("moonjinId") moonjinId : string): Promise<TryCatch<SubscribeInfoDto,
+        USER_NOT_WRITER | SUBSCRIBER_NOT_FOUND>>{
+        const writerCard = await this.writerInfoService.getWriterPublicCardByMoonjinId(moonjinId);
+        const subscribe = await this.subscribeService.isSubscribingAWriter(user.id, writerCard.user.id);
+        return createResponseForm({createdAt: subscribe.subscribe.createdAt})
     }
 }

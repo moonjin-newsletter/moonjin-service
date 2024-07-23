@@ -320,4 +320,29 @@ export class SubscribeService {
         return subscribe;
     }
 
+    /**
+     * @summary 해당 유저가 작가를 구독중인지 체크, 구독하면 Subscribe 반환
+     * @param followerId
+     * @param writerId
+     * @returns Subscribe
+     * @throws SUBSCRIBER_NOT_FOUND
+     */
+    async isSubscribingAWriter(followerId: number, writerId: number): Promise<SubscriberDto> {
+        try{
+            const subscriber = await this.prismaService.subscribe.findUniqueOrThrow({
+                where: {
+                    followerId_writerId: {
+                        writerId,
+                        followerId
+                    }
+                },
+                include: {
+                    user: true
+                }
+            })
+            return SubscribeDtoMapper.UserToSubscriberDto(subscriber.user, subscriber.createdAt);
+        }catch (error){
+            throw ExceptionList.SUBSCRIBER_NOT_FOUND
+        }
+    }
 }
