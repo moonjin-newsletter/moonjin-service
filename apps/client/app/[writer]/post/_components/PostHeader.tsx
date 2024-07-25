@@ -9,8 +9,10 @@ import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
 import useScroll from "@utils/hooks/useScroll";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function PostHeader() {
+  const pathName = usePathname();
   const [windowObject, setWindowObject] = useState<any>(null);
   const scroll = useScroll();
 
@@ -35,6 +37,7 @@ export default function PostHeader() {
     }
   }, []);
 
+  console.log(pathName);
   return (
     <header className="w-full flex flex-col items-center  sticky top-0 left-0 bg-white z-[100]">
       <section className="w-full flex items-center justify-center border-b border-grayscale-200 py-2">
@@ -90,7 +93,7 @@ export default function PostHeader() {
             ) : (
               <Link
                 className="py-1.5 h-fit px-2.5 text-grayscale-600 text-sm border border-grayscale-500 rounded-full"
-                href="/auth/login"
+                href={`/auth/login?redirect=${pathName}`}
               >
                 시작하기
               </Link>

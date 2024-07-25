@@ -1,6 +1,7 @@
 import EditorRender from "@components/editorjs/EditorRender";
 import PostHeader from "../_components/PostHeader";
 import Image from "next/image";
+import { LogoIconGray, LogoSymbolGray } from "@components/icons";
 
 type pageProps = {
   params: {
@@ -106,11 +107,14 @@ export default async function Page({ params }: pageProps) {
           className="absolute top-0 left-0 w-full h-full brightness-75 bg-black/80 z-[-1]"
         />
         <div className="flex flex-col items-center text-white">
-          <h1 className="font-serif text-2xl font-[300]">
+          <h1 className="font-serif text-2xl font-[300] mt-5">
             오타니 쇼헤이와 스포츠경제학
           </h1>
           <div className="border text-[13px] py-1 px-3 border-white/50 text-white/50 rounded-full mt-10">
             수필
+          </div>
+          <div className="flex items-center gap-x-2.5 text-white/50 text-sm my-4">
+            <LogoSymbolGray width="16" height="16" viewBox="0 0 24 24" /> 242
           </div>
         </div>
       </section>
@@ -118,12 +122,15 @@ export default async function Page({ params }: pageProps) {
         <section className="w-full flex flex-col">
           <div className="flex items-center w-full">
             <div className="flex items-center justify-between w-full">
-              <p className="font-serif">
+              <p className="font-serif text-sm">
                 <span className="text-grayscale-400">by.</span>
                 <span>학회원 최진수</span>
-                <span className="text-grayscale-400"> ∙ 2024.08.24</span>
+                <span className="text-grayscale-400 text-[13px]">
+                  {" "}
+                  ∙ 2024.08.24
+                </span>
               </p>
-              <button className="py-2 rounded-full px-4 border border-primary text-primary text-sm font-medium">
+              <button className="py-2 rounded-full px-4 border border-primary text-primary text-xs font-medium">
                 구독하기
               </button>
             </div>
@@ -134,20 +141,42 @@ export default async function Page({ params }: pageProps) {
         <section className="flex flex-col mt-10 w-full">
           <div className="flex items-center justify-between w-full">
             <span className="text-sm text-grayscale-400 ">
-              이번 글은 어떠셨나요?
+              이번 글은 어떠셨나요? 글이 마음에 드셨다면 문진을 올려주세요
             </span>
+            <button className="text-sm border rounded-full py-1.5 px-4 flex items-center gap-x-2 text-grayscale-500 border-grayscale-300">
+              <LogoSymbolGray width="20" height="20" viewBox="0 0 24 24" />{" "}
+              올려두기
+            </button>
           </div>
-          <div className="mt-6 bg-grayscale-100 rounded-lg p-4 w-full flex items-center">
-            <Image
-              src={""}
-              alt={"작가 프로필"}
-              className="size-12 aspect-square bg-gray-300 rounded-full"
-            />
-            <div className="flex flex-col ml-3">
-              <p className="font-semibold">종이한장</p>
-              <span className="text-sm text-grayscale-400">asdf@gmail.com</span>
+          <div className="mt-5 bg-grayscale-100 rounded-lg p-4 w-full flex items-center ">
+            <div className="flex items-center">
+              <Image
+                src={""}
+                alt={"작가 프로필"}
+                className="size-12 aspect-square bg-gray-300 rounded-full"
+              />
+              <div className="flex flex-col ml-3">
+                <p className="font-semibold">종이한장</p>
+                <span className="text-sm text-grayscale-400">
+                  asdf@gmail.com
+                </span>
+              </div>
+            </div>
+            <div className="ml-auto flex items-center gap-x-3">
+              <span className="text-sm text-grayscale-400">
+                구독자 수 | 8.6만명
+              </span>
+              <button className="py-2 px-4 bg-primary text-white font-medium text-sm rounded-full">
+                구독하기
+              </button>
             </div>
           </div>
+        </section>
+        <hr className="my-10" />
+        <section className="flex flex-col">
+          <span className="text-lg font-bold">
+            방금 읽은 글과 유사한 글을 읽어보세요.
+          </span>
         </section>
       </main>
     </div>
