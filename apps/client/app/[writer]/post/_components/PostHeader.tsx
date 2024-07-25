@@ -101,7 +101,6 @@ export default function PostHeader() {
           </div>
         </div>
       </section>
-      {/*Todo: 스크롤 로직 수정*/}
       {windowObject && (
         <section className="w-full">
           <div
