@@ -1,5 +1,9 @@
-import {NewsletterDto, NewsletterSummaryDto} from "./dto";
+import {NewsletterAllDataDto, NewsletterDto, NewsletterSummaryDto} from "./dto";
 import {Newsletter} from "@prisma/client";
+import {NewsletterWithPostAndContentAndWriter} from "./prisma/newsletterWithPostAndContentAndWriter.prisma.type";
+import PostDtoMapper from "../post/postDtoMapper";
+import SeriesDtoMapper from "../series/seriesDtoMapper";
+import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
 
 
 class NewsletterDtoMapper {
@@ -16,6 +20,17 @@ class NewsletterDtoMapper {
         }
     }
 
+    public static NewsletterWithPostAndContentAndWriterToNewsletterAllDataDto(newsletterWithPostAndContentAndWriter : NewsletterWithPostAndContentAndWriter):NewsletterAllDataDto{
+        const {postContent,post, ...newsletterData} = newsletterWithPostAndContentAndWriter
+        const {series, writerInfo, ...postData} = post
+        return {
+            newsletter: this.newsletterToNewsletterDto(newsletterData),
+            post : PostDtoMapper.PostToPostDto(postData),
+            postContent : PostDtoMapper.PostContentToPostContentDto(postContent),
+            series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
+            writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterInfoInCardDto(writerInfo)
+        }
+    }
 }
 
 export default NewsletterDtoMapper;

@@ -347,4 +347,5 @@ export class SubscribeService {
             throw ExceptionList.SUBSCRIBER_NOT_FOUND
         }
     }
+
 }

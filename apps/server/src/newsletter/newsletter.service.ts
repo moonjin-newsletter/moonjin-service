@@ -17,6 +17,7 @@ import {PaginationOptionsDto} from "../common/pagination/dto";
 import {WebNewsletterWithNewsletterWithPost} from "./prisma/webNewsletterWithNewsletterWithPost.prisma.type";
 import {Category} from "@moonjin/api-types";
 import {SeriesService} from "../series/series.service";
+import {NewsletterWithPostAndContentAndWriter} from "./prisma/newsletterWithPostAndContentAndWriter.prisma.type";
 
 @Injectable()
 export class NewsletterService {
@@ -366,5 +367,37 @@ export class NewsletterService {
         })
         if(!newsletter) throw ExceptionList.NEWSLETTER_NOT_FOUND;
         return newsletter;
+    }
+
+
+    /**
+     * @summary 해당 뉴스레터의 모든 데이터 가져오기
+     * @param newsletterId
+     * @return NewsletterWithPostAndContentAndWriter
+     * @throws NEWSLETTER_NOT_FOUND
+     */
+    async getNewsletterAllDataById(newsletterId: number): Promise<NewsletterWithPostAndContentAndWriter>{
+        try {
+            return await this.prismaService.newsletter.findUniqueOrThrow({
+                where: {
+                    id: newsletterId
+                },
+                include: {
+                    post: {
+                        include: {
+                            writerInfo: {
+                                include: {
+                                    user: true
+                                }
+                            },
+                            series: true
+                        }
+                    },
+                    postContent: true
+                }
+            })
+        }catch (error){
+            throw ExceptionList.NEWSLETTER_NOT_FOUND
+        }
     }
 }
