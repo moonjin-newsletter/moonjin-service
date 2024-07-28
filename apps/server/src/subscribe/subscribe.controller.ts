@@ -5,7 +5,7 @@ import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {EMAIL_ALREADY_EXIST, USER_NOT_WRITER} from "../response/error/auth";
 import {IAddExternalUserFromForm} from "./api-types/IAddExternalUserFromForm";
-import {SUBSCRIBER_ALREADY_EXIST, SUBSCRIBER_NOT_FOUND} from "../response/error/subscribe";
+import {SUBSCRIBE_MYSELF_ERROR, SUBSCRIBER_ALREADY_EXIST, SUBSCRIBER_NOT_FOUND} from "../response/error/subscribe";
 import {WriterInfoService} from "../writerInfo/writerInfo.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {User} from "../auth/decorator/user.decorator";
@@ -237,11 +237,12 @@ export class SubscribeController {
      * @returns SubscribeInfoDto
      * @throws USER_NOT_WRITER
      * @throws SUBSCRIBER_NOT_FOUND
+     * @throws SUBSCRIBE_MYSELF_ERROR
      */
     @TypedRoute.Get('writer/:moonjinId/info')
     @UseGuards(UserAuthGuard)
     async getSubscribeOrNotByMoonjinId(@User() user:UserAuthDto, @TypedParam("moonjinId") moonjinId : string): Promise<TryCatch<SubscribeInfoDto,
-        USER_NOT_WRITER | SUBSCRIBER_NOT_FOUND>>{
+        USER_NOT_WRITER | SUBSCRIBER_NOT_FOUND | SUBSCRIBE_MYSELF_ERROR>>{
         const writerCard = await this.writerInfoService.getWriterPublicCardByMoonjinId(moonjinId);
         const subscribe = await this.subscribeService.isSubscribingAWriter(user.id, writerCard.user.id);
         return createResponseForm({createdAt: subscribe.subscribe.createdAt})

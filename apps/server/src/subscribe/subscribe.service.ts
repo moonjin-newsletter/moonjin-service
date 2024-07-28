@@ -326,8 +326,10 @@ export class SubscribeService {
      * @param writerId
      * @returns Subscribe
      * @throws SUBSCRIBER_NOT_FOUND
+     * @throws SUBSCRIBE_MYSELF_ERROR
      */
     async isSubscribingAWriter(followerId: number, writerId: number): Promise<SubscriberDto> {
+        if(followerId === writerId) throw ExceptionList.SUBSCRIBE_MYSELF_ERROR;
         try{
             const subscriber = await this.prismaService.subscribe.findUniqueOrThrow({
                 where: {
