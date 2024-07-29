@@ -11,7 +11,7 @@ import HomeSection from "./_components/HomeSection";
 export default async function Page() {
   return (
     <main className=" w-full min-h-screen  ">
-      <Header />
+      <Header initialColor="bg-white" />
       <div className="relative flex flex-col items-center justify-center w-full h-full min-h-screen overflow-hidden">
         <HomeSection />
         <section className="flex pt-44 pb-32 flex-col  items-center w-full">
