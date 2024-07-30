@@ -5,7 +5,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 export default function HomeSection() {
   return (
-    <section className="flex justify-end w-full h-screen bg-white max-w-[1006px] ">
+    <section className="flex justify-end w-full h-screen bg-white max-w-[1006px] pt-16">
       <div className=" h-fit my-auto max-w-[318px] mr-20">
         <LogoIcon />
         <h1 className="mt-6 text-3xl font-bold text-grayscale-600 font-serif leading-relaxed">
