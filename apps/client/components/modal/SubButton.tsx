@@ -59,7 +59,7 @@ export default function SubButton({
 
   function onClickUnSub() {
     csr
-      .delete(`subscribe/writer/${moonjinId}`)
+      .delete(`subscribe/writer/${writerInfo.writerInfo.userId}`)
       .then(() => {
         toast.success("구독 취소");
         return mutate();
