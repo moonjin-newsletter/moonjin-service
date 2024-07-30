@@ -9,7 +9,11 @@ import { checkType } from "@utils/CheckUser";
 import useScroll from "@utils/hooks/useScroll";
 import type { ResponseForm, UserOrWriterDto } from "@moonjin/api-types";
 
-export default function Header() {
+export default function Header({
+  initialColor = "bg-transparent",
+}: {
+  initialColor?: string;
+}) {
   const { data: userInfo, mutate } =
     useSWR<ResponseForm<UserOrWriterDto>>("user");
   const router = useRouter();
@@ -30,7 +34,9 @@ export default function Header() {
   return (
     <header
       className={`${
-        scroll.y === 0 ? "bg-transparent border-none" : "bg-white/90 border-b"
+        scroll.y === 0
+          ? initialColor + " " + "border-none"
+          : "bg-white/90 border-b"
       }  transition duration-300 fixed z-50 top-0 left-0 w-full flex h-16  items-center justify-center  border-grayscale-200`}
     >
       <div className="flex w-[1006px] h-full items-center  font-normal">

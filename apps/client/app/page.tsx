@@ -6,19 +6,14 @@ import Link from "next/link";
 import * as I from "components/icons";
 import SeriesCarousel from "./_components/SeriesCarousel";
 import Header from "@components/layout/Header";
+import HomeSection from "./_components/HomeSection";
 
 export default async function Page() {
   return (
     <main className=" w-full min-h-screen  ">
-      <Header />
-      <div className="relative flex flex-col items-center justify-center w-full h-full min-h-screen">
-        <section className="flex-1 w-full h-full min-h-screen bg-black">
-          <Image
-            className="absolute top-0 left-0 z-0 w-screen h-screen object-cover"
-            src={Background}
-            alt="백그라운드 이미지"
-          />
-        </section>
+      <Header initialColor="bg-white" />
+      <div className="relative flex flex-col items-center justify-center w-full h-full min-h-screen overflow-hidden">
+        <HomeSection />
         <section className="flex pt-44 pb-32 flex-col  items-center w-full">
           <h4 className="text-gray-500 text-sm">
             문진만의 다양한 인기있는 뉴스레터들을 만나보세요

@@ -5,7 +5,7 @@ import type { WriterPublicCardDto } from "@moonjin/api-types";
 import { commaizeNumber } from "@toss/utils";
 import { overlay } from "overlay-kit";
 import WriterInfoModal from "./WriterInfoModal";
-import * as SubModal from "@components/modal/SubModal";
+import SubButton from "@components/modal/SubButton";
 
 export default function WriterProfile({
   writerInfo,
@@ -47,21 +47,21 @@ export default function WriterProfile({
             ))}
           </div>
           <div className="flex gap-x-2.5">
-            <button
-              onClick={() => {
-                overlay.open(({ isOpen, unmount }) => {
-                  return (
-                    <SubModal.PreLoginSubModal
-                      unmount={unmount}
-                      writerInfo={writerInfo}
-                    />
-                  );
-                });
-              }}
-              className="py-2 px-4 rounded-full text-sm bg-grayscale-600 text-white"
-            >
-              구독하기
-            </button>
+            <SubButton
+              moonjinId={writerInfo.writerInfo.moonjinId}
+              writerInfo={writerInfo}
+              subChildren={
+                <div className="py-2 px-4 rounded-full text-sm bg-grayscale-600 text-white">
+                  구독하기
+                </div>
+              }
+              unSubChildren={
+                <div className="py-2 px-4 rounded-full text-sm bg-primary text-white">
+                  구독 중
+                </div>
+              }
+            />
+
             <button
               onClick={() => {
                 overlay.open(({ isOpen, unmount }) => {

@@ -18,6 +18,7 @@ import SendOutline from "./send-outline.svg";
 import SignOut from "./sign-out.svg";
 import PencilSimpleLine from "./pencil-simple-line.svg";
 import More from "./more.svg";
+import LogoSymbolGray from "./logo-symbol-gray.svg";
 
 export {
   Kakao,
@@ -40,4 +41,5 @@ export {
   SignOut,
   PencilSimpleLine,
   More,
+  LogoSymbolGray,
 };

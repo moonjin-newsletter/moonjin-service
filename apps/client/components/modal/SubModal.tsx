@@ -4,6 +4,8 @@ import Image from "next/image";
 import type { WriterPublicCardDto } from "@moonjin/api-types";
 import { useForm } from "react-hook-form";
 import * as Tb from "react-icons/tb";
+import csr from "@lib/fetcher/csr";
+import toast from "react-hot-toast";
 
 type ModalType = {
   unmount: () => void;
@@ -21,7 +23,18 @@ export function PreLoginSubModal({
   } = useForm();
 
   function onPreSub(data: any) {
-    // 구독하기 전 로그인을 유도하는 함수
+    csr
+      .post(
+        `writer/${writerInfo.writerInfo.moonjinId}/subscribe/external`,
+        data,
+      )
+      .then(() => {
+        toast.success("구독 완료");
+        unmount();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   return (
@@ -148,7 +161,23 @@ export function LoginSubModal({ unmount }: ModalType) {
   );
 }
 
-export function LoginCancelModal({ unmount }: ModalType) {
+export function CancelModal({ unmount }: ModalType) {
+  return (
+    <div
+      onClick={(e) => {
+        unmount();
+      }}
+      className="fixed  top-0 flex items-center justify-center z-50 w-screen h-screen bg-black/40"
+    >
+      <section
+        onClick={(e) => e.stopPropagation()}
+        className=" h-fit min-w-[520px] w-[540px] overflow-y-auto py-8 px-10 rounded-lg bg-white"
+      ></section>
+    </div>
+  );
+}
+
+export function SuccessModal({ unmount }: ModalType) {
   return (
     <div
       onClick={(e) => {
