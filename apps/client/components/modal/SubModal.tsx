@@ -5,6 +5,7 @@ import type { WriterPublicCardDto } from "@moonjin/api-types";
 import { useForm } from "react-hook-form";
 import * as Tb from "react-icons/tb";
 import csr from "@lib/fetcher/csr";
+import toast from "react-hot-toast";
 
 type ModalType = {
   unmount: () => void;
@@ -22,7 +23,18 @@ export function PreLoginSubModal({
   } = useForm();
 
   function onPreSub(data: any) {
-    csr.post("subscription", data);
+    csr
+      .post(
+        `writer/${writerInfo.writerInfo.moonjinId}/subscribe/external`,
+        data,
+      )
+      .then(() => {
+        toast.success("구독 완료");
+        unmount();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   return (
