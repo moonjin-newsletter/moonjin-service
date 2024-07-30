@@ -25,7 +25,7 @@ export function PreLoginSubModal({
   function onPreSub(data: any) {
     csr
       .post(
-        `writer/${writerInfo.writerInfo.moonjinId}/subscribe/external`,
+        `writer/${writerInfo.writerInfo.userId}/subscribe/external`,
         data,
       )
       .then(() => {

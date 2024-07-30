@@ -38,10 +38,10 @@ export default function SubButton({
   );
 
   function onClickSub() {
-    console.log(error);
-    return error.code === ErrorCodeEnum.USER_NOT_WRITER
+
+    return error.code === ErrorCodeEnum.SUBSCRIBER_NOT_FOUND
       ? csr
-          .post(`subscribe/writer/${moonjinId}`)
+          .post(`subscribe/writer/${writerInfo.writerInfo.userId}`)
           .then(() => {
             toast.success("구독 완료");
             return mutate();
