@@ -1,9 +1,9 @@
 import Image from "next/image";
 import CategoryTab from "./_components/CategoryTab";
-import { postData, seriesData, writerData } from "./_data";
+import { postData, writerData } from "./_data";
 import Link from "next/link";
 import * as I from "components/icons";
-import SeriesCarousel from "./_components/SeriesCarousel";
+
 import Header from "@components/layout/Header";
 import HomeSection from "./_components/HomeSection";
 
@@ -120,17 +120,6 @@ export default async function Page() {
                 </div>
               }
             />
-          </div>
-        </section>
-        <section className="flex pt-44 pb-32 flex-col  items-center w-full bg-[#F8F8F8]">
-          <h4 className="text-gray-500 text-sm">
-            주기적으로 연재되는 뉴스레터 시리즈를 만나보세요
-          </h4>
-          <h2 className="font-libre mt-2 text-2xl font-bold text-grayscale-700">
-            Moonjin Sereis
-          </h2>
-          <div className="w-full h-fit overflow-x-hidden ">
-            <SeriesCarousel series={seriesData} />
           </div>
         </section>
         <section className="flex pt-44  flex-col  items-center w-full ">
