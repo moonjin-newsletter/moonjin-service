@@ -2,12 +2,14 @@
 
 import { LogoIcon } from "@components/icons";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import useCarousel from "@components/carousel/HomeCarousel";
+import useCarousel from "@components/carousel/Carousel";
 import { postData } from "../_data";
+import Image from "next/image";
 
 export default function HomeSection() {
   const { Carousel, prevEvent, nextEvent } = useCarousel({
-    posts: postData,
+    items: postData,
+    width: 192,
   });
 
   return (
@@ -47,7 +49,30 @@ export default function HomeSection() {
         <div
           className={`left-0 top-0 absolute h-full w-[60vw] bg-grayscale-100 rounded-l-xl`}
         >
-          <Carousel />
+          <Carousel>
+            <>
+              {" "}
+              <h2 className="">
+                이<br />
+                주<br />의<br /> 인<br />
+                기<br />글<br />
+              </h2>
+              {postData.map((value, index) => (
+                <li
+                  key={index}
+                  id={`${index}`}
+                  className="w-48 h-72 rounded-lg bg-gray-400 order-3"
+                >
+                  <Image
+                    src={value.thumbnail[0]}
+                    alt={""}
+                    width={192}
+                    height={288}
+                  />
+                </li>
+              ))}
+            </>
+          </Carousel>
         </div>
       </div>
     </section>
