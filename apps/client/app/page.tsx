@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Background from "../public/images/background.png";
 import CategoryTab from "./_components/CategoryTab";
 import { postData, seriesData, writerData } from "./_data";
 import Link from "next/link";

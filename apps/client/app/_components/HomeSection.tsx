@@ -2,8 +2,14 @@
 
 import { LogoIcon } from "@components/icons";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import useCarousel from "@components/carousel/HomeCarousel";
+import { postData } from "../_data";
 
 export default function HomeSection() {
+  const { Carousel, prevEvent, nextEvent } = useCarousel({
+    posts: postData,
+  });
+
   return (
     <section className="flex justify-end w-full h-screen bg-white max-w-[1006px] pt-16">
       <div className=" h-fit my-auto max-w-[318px] mr-20">
@@ -22,11 +28,17 @@ export default function HomeSection() {
         </button>
 
         <div className="mt-20 flex items-center gap-x-1">
-          <button className="h-10 w-10 border  border-grayscale-300 p-auto flex items-center justify-center">
+          <button
+            onClick={prevEvent}
+            className="h-10 w-10 border  border-grayscale-300 p-auto flex items-center justify-center"
+          >
             <IoIosArrowBack className="text-2xl" />
           </button>
 
-          <button className="h-10 w-10 border border-grayscale-300 p-auto flex items-center justify-center ">
+          <button
+            onClick={nextEvent}
+            className="h-10 w-10 border border-grayscale-300 p-auto flex items-center justify-center "
+          >
             <IoIosArrowForward className="text-2xl" />
           </button>
         </div>
@@ -34,7 +46,9 @@ export default function HomeSection() {
       <div className="flex flex-grow h-full w-full relative">
         <div
           className={`left-0 top-0 absolute h-full w-[60vw] bg-grayscale-100 rounded-l-xl`}
-        ></div>
+        >
+          <Carousel />
+        </div>
       </div>
     </section>
   );
