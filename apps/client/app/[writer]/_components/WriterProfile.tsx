@@ -38,7 +38,7 @@ export default function WriterProfile({
               { head: "뉴스레터", body: writerInfo.writerInfo.newsletterCount },
               { head: "시리즈", body: writerInfo.writerInfo.seriesCount },
             ].map((item, index) => (
-              <div className="flex items-center gap-x-1.5">
+              <div key={index} className="flex items-center gap-x-1.5">
                 <span className="text-grayscale-500 font-light">
                   {item.head}
                 </span>

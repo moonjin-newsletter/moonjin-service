@@ -27,6 +27,7 @@ export default function SubButton({
   const {
     data: subInfo,
     error,
+    isLoading,
     mutate,
   } = useSWR<ResponseForm<SubscribeInfoDto>>(
     `subscribe/writer/${moonjinId}/info`,
@@ -38,23 +39,26 @@ export default function SubButton({
   );
 
   function onClickSub() {
-
-    return error.code === ErrorCodeEnum.SUBSCRIBER_NOT_FOUND
-      ? csr
-          .post(`subscribe/writer/${writerInfo.writerInfo.userId}`)
-          .then(() => {
-            toast.success("구독 완료");
-            return mutate();
-          })
-          .catch((error) => {})
-      : overlay.open(({ isOpen, unmount }) => {
-          return (
-            <SubModal.PreLoginSubModal
-              unmount={unmount}
-              writerInfo={writerInfo}
-            />
-          );
-        });
+    if (error.code === ErrorCodeEnum.SUBSCRIBE_MYSELF_ERROR) {
+      toast.error("자신은 구독할 수 없습니다.");
+    } else if (error.code === ErrorCodeEnum.SUBSCRIBER_NOT_FOUND) {
+      csr
+        .post(`subscribe/writer/${writerInfo.writerInfo.moonjinId}`)
+        .then(() => {
+          toast.success("구독 완료");
+          return mutate();
+        })
+        .catch((error) => {});
+    } else {
+      return overlay.open(({ isOpen, unmount }) => {
+        return (
+          <SubModal.PreLoginSubModal
+            unmount={unmount}
+            writerInfo={writerInfo}
+          />
+        );
+      });
+    }
   }
 
   function onClickUnSub() {
@@ -66,6 +70,8 @@ export default function SubButton({
       })
       .catch((error) => {});
   }
+
+  // if (isLoading) return <AiOutlineLoading3Quarters />;
 
   if (subInfo?.data?.createdAt)
     return <button onClick={onClickUnSub}>{unSubChildren}</button>;
