@@ -26,15 +26,21 @@ export default function useCarousel({
 
   const prevEvent = () => {
     setCurrCell((prev) => (prev === 0 ? items.length - 1 : prev - 1));
+    if (carouselRef.current !== null) {
+      carouselRef.current.style.transition = "all 2s ease-in-out";
+    }
   };
 
   const nextEvent = () => {
     setCurrCell((prev) => (prev === items.length - 1 ? 0 : prev + 1));
+    if (carouselRef.current !== null) {
+      carouselRef.current.style.transition = "all 2s ease-in-out";
+    }
   };
 
   useEffect(() => {
     if (carouselRef.current) {
-      carouselRef.current.style.transition = "2s ease-in-out";
+      // carouselRef.current.style.transition = "all 2s ease-in-out";
       carouselRef.current.style.transform = `translateX(-${
         currCell * width
       }px) `;
@@ -43,8 +49,8 @@ export default function useCarousel({
 
   const Carousel = ({ children }: CarouselProps) => {
     return (
-      <div className="flex  w-full overflow-hidden h-full items-center transition ease-in-out duration-100">
-        <ul ref={carouselRef} id="carousel" className="flex w-fit  h-fit px-5">
+      <div className="flex w-full overflow-hidden h-full items-center">
+        <ul ref={carouselRef} className="flex w-fit h-fit px-5">
           {children}
         </ul>
       </div>

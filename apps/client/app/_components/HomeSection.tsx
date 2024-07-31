@@ -2,7 +2,7 @@
 
 import { LogoIcon } from "@components/icons";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import useCarousel from "@components/carousel/Carousel";
+import useCarousel from "@components/carousel/useCarousel";
 import { postData } from "../_data";
 import Image from "next/image";
 
@@ -47,7 +47,7 @@ export default function HomeSection() {
       </div>
       <div className="flex flex-grow h-full w-full relative">
         <div
-          className={`left-0 top-0 absolute h-full w-[60vw] bg-grayscale-100 rounded-l-xl`}
+          className={`left-0 top-0 absolute h-full w-[60vw] bg-grayscale-100 rounded-l-xl transition ease-in-out duration-100`}
         >
           <Carousel>
             <>
