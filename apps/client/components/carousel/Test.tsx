@@ -9,7 +9,6 @@ export default function Test() {
   function prevEvent() {
     const carousel = document.getElementById("carousel");
     if (carousel) {
-      console.log(1, state);
       carousel.style.transform = `translateX(${state + 192}px)`;
     }
     setState((prevState) => prevState + 192);
@@ -21,7 +20,6 @@ export default function Test() {
     if (state > 5) {
     }
     if (carousel) {
-      console.log(2, state);
       carousel.style.transform = `translateX(${state - 192}px)`;
     }
 
