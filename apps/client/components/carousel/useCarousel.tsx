@@ -1,6 +1,6 @@
 "use client";
 
-import { JSX, ReactElement, useEffect, useState } from "react";
+import { JSX, ReactElement, useEffect, useRef, useState } from "react";
 
 type UseCarouselProps = {
   items: any[];
@@ -20,7 +20,10 @@ type UseCarouselReturn = {
 const Carousel = ({ children }: CarouselProps) => {
   return (
     <div className="flex w-full overflow-hidden h-full items-center">
-      <ul id="carousel" className="flex w-fit h-fit px-5">
+      <ul
+        id="carousel"
+        className="flex w-fit h-fit px-5 transition duration-150 ease-in-out"
+      >
         {children}
       </ul>
     </div>
@@ -31,6 +34,7 @@ export default function useCarousel({
   items,
   width,
 }: UseCarouselProps): UseCarouselReturn {
+  const carouselRef = useRef<HTMLElement | null>(null);
   const [currCell, setCurrCell] = useState(0);
 
   const prevEvent = () => {
@@ -42,10 +46,14 @@ export default function useCarousel({
   };
 
   useEffect(() => {
-    const carouselRef = document?.getElementById("carousel");
-    if (carouselRef) {
-      carouselRef.style.transition = "all 0.5s ease-in-out";
-      carouselRef.style.transform = `translateX(-${currCell * width}px) `;
+    if (document) carouselRef.current = document.getElementById("carousel");
+  }, []);
+
+  useEffect(() => {
+    if (carouselRef.current) {
+      carouselRef.current.style.transform = `translateX(-${
+        currCell * width
+      }px) `;
     }
   }, [currCell]);
 
