@@ -37,7 +37,6 @@ export default function PostHeader() {
     }
   }, []);
 
-  console.log(pathName);
   return (
     <header className="w-full flex flex-col items-center  sticky top-0 left-0 bg-white z-[100]">
       <section className="w-full flex items-center justify-center border-b border-grayscale-200 py-2">

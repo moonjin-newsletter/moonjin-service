@@ -1,5 +1,5 @@
 import ky from "ky";
-import { cookies } from "next/headers";
+import {cookies} from "next/headers";
 
 /**
  * TODO: ssr 분석 및 수정 필요
