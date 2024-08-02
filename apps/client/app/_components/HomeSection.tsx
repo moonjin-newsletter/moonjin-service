@@ -9,8 +9,8 @@ import Link from "next/link";
 
 export default function HomeSection() {
   const { Carousel, prevEvent, nextEvent } = useCarousel({
-    items: homeData,
-    width: 192,
+    length: homeData.length - 1,
+    width: 600,
   });
 
   return (
@@ -26,7 +26,7 @@ export default function HomeSection() {
           이곳은 삶의 고민과 사색 그리고 경험을 아카이브 하는 공간입니다.
           뉴스레터 문진에서 다양한 글을 만나보세요.
         </p>
-        <button className="py-2.5 px-6 bg-grayscale-700 text-white rounded-lg mt-8">
+        <button className="py-2.5 w-fit px-6 bg-grayscale-700 text-white rounded-lg mt-8">
           뉴스레터 구독하기
         </button>
 
@@ -53,7 +53,7 @@ export default function HomeSection() {
           <Carousel>
             <>
               {" "}
-              <h2 className="font-serif text-2xl px-3">
+              <h2 className="font-serif text-2xl pl-3 pr-8">
                 이<br />
                 주<br />의<br /> 인<br />
                 기<br />글<br />
@@ -65,7 +65,7 @@ export default function HomeSection() {
                   className="flex flex-col gap-y-10 gap-x-5"
                 >
                   <CarouselCard postInfo={value[0]} />
-                  <div className="pl-[120px]">
+                  <div className="pl-[120px] flex">
                     <CarouselCard postInfo={value[1]} />
                   </div>
                 </li>
@@ -80,7 +80,7 @@ export default function HomeSection() {
 
 function CarouselCard({ postInfo }: { postInfo: any }) {
   return (
-    <Link href={""} className="flex items-center gap-x-6">
+    <Link href={""} className="flex  gap-x-6">
       <Image
         src={postInfo?.thumbnail[0]}
         alt={""}
@@ -88,11 +88,11 @@ function CarouselCard({ postInfo }: { postInfo: any }) {
         height={258}
         className="w-[200px] h-[258px] min-w-[200px] rounded object-cover"
       />
-      <div className="flex flex-col whitespace-nowrap">
-        <div className="py-1 px-1.5 bg-grayscale-700 text-white rounded-full flex items-center justify-center">
+      <div className="flex flex-col whitespace-nowrap h-full">
+        <div className="py-1.5 px-2 text-xs font-medium bg-grayscale-700 text-white rounded-full flex items-center justify-center">
           {postInfo.category[0]}
         </div>
-        <h2 className="font-serif font-medium">{postInfo.title}</h2>
+        <h2 className="font-serif font-semibold mt-3">{postInfo.title}</h2>
         <span className="mt-4 text-sm">{postInfo.subtitle}</span>
         <span className="mt-auto text-sm text-grayscale-500">
           by.{postInfo.writer}

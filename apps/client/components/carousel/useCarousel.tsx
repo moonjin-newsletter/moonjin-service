@@ -3,7 +3,7 @@
 import { JSX, ReactElement, useEffect, useRef, useState } from "react";
 
 type UseCarouselProps = {
-  items: any[];
+  length: number;
   width: number;
 };
 
@@ -31,18 +31,18 @@ const Carousel = ({ children }: CarouselProps) => {
 };
 
 export default function useCarousel({
-  items,
+  length,
   width,
 }: UseCarouselProps): UseCarouselReturn {
   const carouselRef = useRef<HTMLElement | null>(null);
   const [currCell, setCurrCell] = useState(0);
 
   const prevEvent = () => {
-    setCurrCell((prev) => (prev === 0 ? items.length - 1 : prev - 1));
+    setCurrCell((prev) => (prev === 0 ? length - 1 : prev - 1));
   };
 
   const nextEvent = () => {
-    setCurrCell((prev) => (prev === items.length - 1 ? 0 : prev + 1));
+    setCurrCell((prev) => (prev === length - 1 ? 0 : prev + 1));
   };
 
   useEffect(() => {
