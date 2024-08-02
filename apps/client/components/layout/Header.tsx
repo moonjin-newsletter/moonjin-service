@@ -14,8 +14,11 @@ export default function Header({
 }: {
   initialColor?: string;
 }) {
-  const { data: userInfo, mutate } =
-    useSWR<ResponseForm<UserOrWriterDto>>("user");
+  const {
+    data: userInfo,
+    isLoading,
+    mutate,
+  } = useSWR<ResponseForm<UserOrWriterDto>>("user");
   const router = useRouter();
   const scroll = useScroll();
 
@@ -51,6 +54,7 @@ export default function Header({
             전체 뉴스레터
           </Link>
         </div>
+
         <div className="flex h-full items-center ml-auto">
           {userInfo ? (
             <div className="w-fit h-full   items-center flex  relative text-grayscale-600">
@@ -93,6 +97,8 @@ export default function Header({
                 <I.SignOut />
               </button>
             </div>
+          ) : isLoading ? (
+            <LoadingUI />
           ) : (
             <Link
               className="py-2.5 h-fit px-6 text-white text-sm bg-[#7b0000] rounded-lg"
@@ -104,5 +110,15 @@ export default function Header({
         </div>
       </div>
     </header>
+  );
+}
+
+function LoadingUI() {
+  return (
+    <div className="flex animate-pulse items-center gap-x-5 mr-2">
+      <div className="rounded-full bg-grayscale-100 h-8 w-24" />
+      <div className="rounded-full bg-grayscale-100 size-10" />
+      <div className="rounded-full bg-grayscale-100 size-10" />
+    </div>
   );
 }
