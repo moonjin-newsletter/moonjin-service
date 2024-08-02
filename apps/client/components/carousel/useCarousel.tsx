@@ -22,7 +22,7 @@ const Carousel = ({ children }: CarouselProps) => {
     <div className="flex w-full overflow-hidden h-full items-center">
       <ul
         id="carousel"
-        className="flex w-fit h-fit px-5 transition duration-150 ease-in-out"
+        className="flex w-fit h-fit  transition duration-150 ease-in-out"
       >
         {children}
       </ul>
