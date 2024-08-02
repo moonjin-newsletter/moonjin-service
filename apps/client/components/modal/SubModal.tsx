@@ -24,10 +24,7 @@ export function PreLoginSubModal({
 
   function onPreSub(data: any) {
     csr
-      .post(
-        `writer/${writerInfo.writerInfo.userId}/subscribe/external`,
-        data,
-      )
+      .post(`writer/${writerInfo.writerInfo.userId}/subscribe/external`, data)
       .then(() => {
         toast.success("구독 완료");
         unmount();
@@ -161,7 +158,27 @@ export function LoginSubModal({ unmount }: ModalType) {
   );
 }
 
-export function CancelModal({ unmount }: ModalType) {
+export function CancelModal({
+  unmount,
+  mutate,
+  writerInfo,
+}: ModalType & {
+  writerInfo: WriterPublicCardDto;
+  mutate: () => void;
+}) {
+  function onCancel() {
+    csr
+      .delete(`subscribe/writer/${writerInfo.writerInfo.userId}`)
+      .then(() => {
+        toast.success("구독 취소");
+        return mutate();
+      })
+      .catch((error) => {
+        toast.error("다시 시도해주세요");
+      });
+    unmount();
+  }
+
   return (
     <div
       onClick={(e) => {
@@ -171,8 +188,26 @@ export function CancelModal({ unmount }: ModalType) {
     >
       <section
         onClick={(e) => e.stopPropagation()}
-        className=" h-fit min-w-[520px] w-[540px] overflow-y-auto py-8 px-10 rounded-lg bg-white"
-      ></section>
+        className=" h-fit min-w-[420px] w-[420px] overflow-y-auto py-8 px-10 rounded-lg bg-white flex-col flex items-center"
+      >
+        <span className="text-lg font-bold">구독을 취소하시겠습니까?</span>
+        <div className="w-full mt-6 flex flex-col gap-y-2">
+          <button
+            onClick={unmount}
+            type="button"
+            className="py-3 text-sm font-medium  bg-grayscale-700 text-white rounded-lg w-full"
+          >
+            계속 구독하기
+          </button>
+          <button
+            onClick={onCancel}
+            type="button"
+            className="py-3 text-sm font-medium border border-rose-600 text-rose-600  rounded-lg w-full"
+          >
+            구독 취소
+          </button>
+        </div>
+      </section>
     </div>
   );
 }

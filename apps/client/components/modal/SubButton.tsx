@@ -61,20 +61,22 @@ export default function SubButton({
     }
   }
 
-  function onClickUnSub() {
-    csr
-      .delete(`subscribe/writer/${writerInfo.writerInfo.userId}`)
-      .then(() => {
-        toast.success("구독 취소");
-        return mutate();
-      })
-      .catch((error) => {});
+  function onClickCancelSub() {
+    return overlay.open(({ isOpen, unmount }) => {
+      return (
+        <SubModal.CancelModal
+          unmount={unmount}
+          writerInfo={writerInfo}
+          mutate={mutate}
+        />
+      );
+    });
   }
 
   // if (isLoading) return <AiOutlineLoading3Quarters />;
 
   if (subInfo?.data?.createdAt)
-    return <button onClick={onClickUnSub}>{unSubChildren}</button>;
+    return <button onClick={onClickCancelSub}>{unSubChildren}</button>;
 
   return <button onClick={onClickSub}>{subChildren}</button>;
 }
