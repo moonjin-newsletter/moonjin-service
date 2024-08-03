@@ -2,8 +2,6 @@ import EditorRender from "@components/editorjs/EditorRender";
 import PostHeader from "../_components/PostHeader";
 import Image from "next/image";
 import { LogoSymbolGray } from "@components/icons";
-import type { NewsletterAllDataDto, ResponseForm } from "@moonjin/api-types";
-import { nfetch } from "@lib/fetcher/noAuth";
 
 type pageProps = {
   params: {
@@ -101,25 +99,23 @@ export default async function Page({ params }: pageProps) {
   const [, moonjinId] = decodeURI(params.writer).split("%40");
   const postId = parseInt(params.id, 10);
 
-  const { data: nInfo } = await nfetch<ResponseForm<NewsletterAllDataDto>>(
-    `newsletter/${postId}/all`,
-  );
+  // const { data: nInfo } = await nfetch<ResponseForm<NewsletterAllDataDto>>(
+  //   `newsletter/${postId}/all`,
+  // );
 
   return (
     <div className="w-full flex flex-col items-center">
       <PostHeader />
       <section className="h-60 w-full relative flex items-center justify-center">
         <Image
-          src={nInfo.post.cover}
+          src={""}
           alt={"배너 이미지"}
           className="absolute top-0 left-0 w-full h-full brightness-75 bg-black/80 z-[-1]"
         />
         <div className="flex flex-col items-center text-white">
-          <h1 className="font-serif text-2xl font-[300] mt-5">
-            {nInfo.post.title}
-          </h1>
+          <h1 className="font-serif text-2xl font-[300] mt-5">테스트입니다</h1>
           <div className="border text-[13px] py-1 px-3 border-white/50 text-white/50 rounded-full mt-10">
-            {nInfo.post.category}
+            카테고리
           </div>
           <div className="flex items-center gap-x-2.5 text-white/50 text-sm my-4">
             <LogoSymbolGray width="16" height="16" viewBox="0 0 24 24" /> 242

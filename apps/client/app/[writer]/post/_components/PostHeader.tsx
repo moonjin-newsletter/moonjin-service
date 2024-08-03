@@ -7,14 +7,15 @@ import useSWR from "swr";
 import type { ResponseForm, UserOrWriterDto } from "@moonjin/api-types";
 import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
-import useScroll from "@utils/hooks/useScroll";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { getScrollPercent } from "@toss/utils";
+import useScroll from "@utils/hooks/useScroll";
 
 export default function PostHeader() {
   const pathName = usePathname();
-  const [windowObject, setWindowObject] = useState<any>(null);
-  const scroll = useScroll();
+  const { x, y } = useScroll();
+  const [scroll, setScroll] = useState(getScrollPercent());
 
   const { data: userInfo, mutate } =
     useSWR<ResponseForm<UserOrWriterDto>>("user");
@@ -31,11 +32,9 @@ export default function PostHeader() {
   }
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      // 클라이언트사이드에서만 실행됨
-      setWindowObject(window);
-    }
-  }, []);
+    console.log(getScrollPercent());
+    setScroll(getScrollPercent());
+  }, [y]);
 
   return (
     <header className="w-full flex flex-col items-center  sticky top-0 left-0 bg-white z-[100]">
@@ -100,20 +99,15 @@ export default function PostHeader() {
           </div>
         </div>
       </section>
-      {windowObject && (
-        <section className="w-full">
-          <div
-            className="h-0.5 bg-primary"
-            style={{
-              width: `${
-                (scroll.y / windowObject.innerHeight) * 100 > 100
-                  ? 100
-                  : (scroll.y / windowObject.innerHeight) * 100
-              }%`,
-            }}
-          />
-        </section>
-      )}
+
+      <section className="w-full">
+        <div
+          className="h-0.5 bg-primary"
+          style={{
+            width: `${scroll}%`,
+          }}
+        />
+      </section>
     </header>
   );
 }
