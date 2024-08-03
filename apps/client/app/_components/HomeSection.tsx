@@ -48,7 +48,7 @@ export default function HomeSection() {
       </div>
       <div className="flex flex-grow h-[680px] w-full relative ">
         <div
-          className={`left-0 top-0 absolute h-full px-5 w-[60vw] bg-grayscale-100 rounded-l-xl transition ease-in-out duration-100`}
+          className={`left-0 top-0 absolute h-full px-5 w-[60vw] min-w-full bg-grayscale-100 rounded-l-xl transition ease-in-out duration-100`}
         >
           <Carousel>
             <>
