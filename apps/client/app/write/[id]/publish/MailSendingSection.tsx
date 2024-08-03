@@ -1,11 +1,11 @@
 "use client";
+import * as I from "@components/icons";
 import { LogoIcon, LogoIconGray } from "@components/icons";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
-import * as I from "@components/icons";
 import csr from "@lib/fetcher/csr";
 import { PiUserCircle } from "react-icons/pi";
 import useSWR from "swr";
@@ -162,7 +162,7 @@ export default function MailSendingSection({
               </span>
             </div>
             <span className="mt-1 text-sm font-medium text-grayscale-500">
-              뉴스레터는 작가님의 모든 구독자에게 전송됩니다.
+              뉴스레터는 작가님과 모든 구독자에게 전송됩니다.
             </span>
           </div>
           <Link
