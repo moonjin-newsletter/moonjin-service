@@ -10,19 +10,19 @@ import Link from "next/link";
 export default function HomeSection() {
   const { Carousel, prevEvent, nextEvent } = useCarousel({
     length: homeData.length - 1,
-    width: 600,
+    width: 540,
   });
 
   return (
-    <section className="flex justify-end w-full h-fit bg-white max-w-[1006px] pt-16">
-      <div className="flex flex-col h-full my-auto max-w-[318px] mr-20 justify-center py-auto">
+    <section className="flex  w-full h-fit bg-white max-w-[1006px] pt-16 mx-auto">
+      <div className="flex flex-col h-full my-auto w-[232px] min-w-[232px]  mr-20 justify-center">
         <LogoIcon />
         <h1 className="mt-6 text-3xl font-bold text-grayscale-600 font-serif leading-relaxed">
           Moonjin
           <br />
           Newsletter
         </h1>
-        <p className="text-grayscale-600 mt-10">
+        <p className="text-grayscale-600 mt-10 break-keep">
           이곳은 삶의 고민과 사색 그리고 경험을 아카이브 하는 공간입니다.
           뉴스레터 문진에서 다양한 글을 만나보세요.
         </p>
@@ -46,14 +46,11 @@ export default function HomeSection() {
           </button>
         </div>
       </div>
-      <div className="flex flex-grow h-[680px] w-full relative ">
-        <div
-          className={`left-0 top-0 absolute h-full px-5 w-[60vw] min-w-full bg-grayscale-100 rounded-l-xl transition ease-in-out duration-100`}
-        >
+      <div className="flex h-fit w-full relative ">
+        <div className="h-fit px-5 py-14 bg-grayscale-100 rounded-l-xl ">
           <Carousel>
             <>
-              {" "}
-              <h2 className="font-serif text-2xl pl-3 pr-8">
+              <h2 className="font-serif text-2xl pl-3 pr-8 leading-9">
                 이<br />
                 주<br />의<br /> 인<br />
                 기<br />글<br />
