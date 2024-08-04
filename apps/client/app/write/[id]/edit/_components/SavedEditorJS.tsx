@@ -256,8 +256,6 @@ function OverlaySetting({
   const series = watch("series");
   const formCategory = watch("category");
 
-  console.log(formCategory);
-
   function onClickPublish(value: any) {
     csr
       .patch(`post/${letterId}`, {
