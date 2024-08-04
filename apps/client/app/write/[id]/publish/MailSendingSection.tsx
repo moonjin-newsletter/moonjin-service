@@ -145,6 +145,8 @@ export default function MailSendingSection({
           onChange={(e) => {
             setTitle(e.target.value);
           }}
+          minLength={1}
+          maxLength={128}
           className="ring-0 mt-2 w-full h-11 outline-none focus:border-slate-400 focus:ring-0  bg-grayscale-100 border border-grayscale-300 placeholder:text-grayscale-500 rounded"
         />
       </div>
@@ -156,7 +158,7 @@ export default function MailSendingSection({
               내 구독자 수<span className="text-grayscale-200"> | </span>
               <span className="text-grayscale-700">
                 <strong className="text-primary font-medium">
-                  {userInfo?.data?.writerInfo?.followerCount}
+                  {userInfo?.data?.writerInfo?.followerCount ?? 0}
                 </strong>
                 명
               </span>
