@@ -4,95 +4,13 @@ import Image from "next/image";
 import { LogoSymbolGray } from "@components/icons";
 import { nfetch } from "@lib/fetcher/noAuth";
 import { NewsletterAllDataDto, ResponseForm } from "@moonjin/api-types";
+import { format } from "date-fns";
 
 type pageProps = {
   params: {
     writer: string;
     id: string;
   };
-};
-
-const editorData = {
-  time: 1635603431943,
-  blocks: [
-    {
-      type: "paragraph",
-      data: {
-        text: '요즘 구글에서 제공하는 <a target="_blank" href="https://trends.google.co.kr/trends/?geo=KR&amp;hl=ko">Google Trends</a>라는 서비스를 활용하여 다양한 Trend를 알 수 있다. 현재 국내에서 가장 관심있는 키워드가 무엇인지, 특정 검색어의 검색 추이가 어떻게 되는지 등의 정보를 제공한다.',
-      },
-    },
-    {
-      type: "paragraph",
-      data: {
-        text: '요즘 구글에서 제공하는 <a target="_blank" href="https://trends.google.co.kr/trends/?geo=KR&amp;hl=ko">Google Trends</a>라는 서비스를 활용하여 다양한 Trend를 알 수 있다. 현재 국내에서 가장 관심있는 키워드가 무엇인지, 특정 검색어의 검색 추이가 어떻게 되는지 등의 정보를 제공한다.',
-      },
-    },
-    {
-      type: "paragraph",
-      data: {
-        text: '요즘 구글에서 제공하는 <a target="_blank" href="https://trends.google.co.kr/trends/?geo=KR&amp;hl=ko">Google Trends</a>라는 서비스를 활용하여 다양한 Trend를 알 수 있다. 현재 국내에서 가장 관심있는 키워드가 무엇인지, 특정 검색어의 검색 추이가 어떻게 되는지 등의 정보를 제공한다.',
-      },
-    },
-    {
-      type: "paragraph",
-      data: {
-        text: '요즘 구글에서 제공하는 <a target="_blank" href="https://trends.google.co.kr/trends/?geo=KR&amp;hl=ko">Google Trends</a>라는 서비스를 활용하여 다양한 Trend를 알 수 있다. 현재 국내에서 가장 관심있는 키워드가 무엇인지, 특정 검색어의 검색 추이가 어떻게 되는지 등의 정보를 제공한다.',
-      },
-    },
-    {
-      type: "paragraph",
-      data: {
-        text: '요즘 구글에서 제공하는 <a target="_blank" href="https://trends.google.co.kr/trends/?geo=KR&amp;hl=ko">Google Trends</a>라는 서비스를 활용하여 다양한 Trend를 알 수 있다. 현재 국내에서 가장 관심있는 키워드가 무엇인지, 특정 검색어의 검색 추이가 어떻게 되는지 등의 정보를 제공한다.',
-      },
-    },
-    {
-      type: "paragraph",
-      data: {
-        text: '요즘 구글에서 제공하는 <a target="_blank" href="https://trends.google.co.kr/trends/?geo=KR&amp;hl=ko">Google Trends</a>라는 서비스를 활용하여 다양한 Trend를 알 수 있다. 현재 국내에서 가장 관심있는 키워드가 무엇인지, 특정 검색어의 검색 추이가 어떻게 되는지 등의 정보를 제공한다.',
-      },
-    },
-    {
-      type: "header",
-      data: {
-        text: "This is a header",
-        level: 2,
-      },
-    },
-    {
-      type: "image",
-      data: {
-        file: {
-          url: "https://www.tesla.com/tesla_theme/assets/img/_vehicle_redesign/roadster_and_semi/roadster/hero.jpg",
-        },
-        caption: "Roadster // tesla.com",
-        withBorder: false,
-        withBackground: false,
-        stretched: false,
-      },
-    },
-    {
-      type: "header",
-      data: {
-        level: 2,
-        text: 'Create a directory for your module, enter it and run <u class="cdx-underline">npm init</u> command.',
-      },
-    },
-    {
-      type: "list",
-      data: {
-        style: "ordered",
-        items: [
-          "이거슨 리스트 아이템이예용",
-          "리스트라니까용",
-          "간단하고 파워풀하지용",
-          "비슷한 설정이 반복되는 게 못생겼어요",
-        ],
-      },
-    },
-
-    // 추가 블록들...
-  ],
-  version: "2.22.2",
 };
 
 export const revalidate = 0;
@@ -109,28 +27,22 @@ export default async function Page({ params }: pageProps) {
     <div className="w-full flex flex-col items-center">
       <PostHeader />
       <section className={`h-60 w-full relative  overflow-hidden `}>
-        {/*<Image*/}
-        {/*  src={nInfo.post.cover}*/}
-        {/*  alt={"배너 이미지"}*/}
-        {/*  width={1920}*/}
-        {/*  height={1080}*/}
-        {/*  className="absolute top-0 left-0 w-full h-full brightness-50 bg-black/80 z-[-1] object-cover"*/}
-        {/*/>*/}
         <div
           className="w-full h-full bg-cover bg-center flex "
           style={{
             backgroundImage: `url(${nInfo.post.cover})`,
           }}
         >
-          <div className="flex flex-col items-center justify-center text-white bg-black/25 w-full h-full">
+          <div className="flex flex-col items-center justify-center text-white bg-grayscale-700/35 w-full h-full">
             <h1 className="font-serif text-2xl font-[300] mt-5">
-              테스트입니다
+              {nInfo.post.title}
             </h1>
             <div className="border text-[13px] py-1 px-3 border-white/50 text-white/50 rounded-full mt-10">
-              카테고리
+              {nInfo.post.category}
             </div>
             <div className="flex items-center gap-x-2.5 text-white/50 text-sm my-4">
-              <LogoSymbolGray width="16" height="16" viewBox="0 0 24 24" /> 242
+              <LogoSymbolGray width="16" height="16" viewBox="0 0 24 24" />{" "}
+              {nInfo.newsletter.likes}
             </div>
           </div>
         </div>
@@ -141,10 +53,10 @@ export default async function Page({ params }: pageProps) {
             <div className="flex items-center justify-between w-full">
               <p className="font-serif text-sm">
                 <span className="text-grayscale-400">by.</span>
-                <span>학회원 최진수</span>
+                <span>{nInfo.writer.nickname}</span>
                 <span className="text-grayscale-400 text-[13px]">
                   {" "}
-                  ∙ 2024.08.24
+                  ∙ {format(new Date(nInfo.newsletter.sentAt), "yyyy.MM.dd")}
                 </span>
               </p>
               <button className="py-2 rounded-full px-4 border border-primary text-primary text-xs font-medium">
