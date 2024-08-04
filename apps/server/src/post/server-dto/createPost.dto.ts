@@ -4,6 +4,6 @@ export interface CreatePostDto {
     title: string;
     content: EditorJsonDto;
     category: number;
-    cover?: string;
+    cover: string | null;
     seriesId? : number;
 }
