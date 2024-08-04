@@ -11,7 +11,7 @@ import {NewsletterService} from "../newsletter/newsletter.service";
 import NewsletterDtoMapper from "../newsletter/newsletterDtoMapper";
 import PostDtoMapper from "../post/postDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
-import {NewsletterCardDto} from "../newsletter/dto";
+import {NewsletterAllDataDto, NewsletterCardDto} from "../newsletter/dto";
 import {IGetNewsletterByWriter} from "./api-types/IGetNewsletterByWriter";
 import {SeriesService} from "../series/series.service";
 import {SeriesDto} from "../series/dto";
@@ -21,6 +21,7 @@ import {ICreateExternalSubscriber} from "../subscribe/api-types/ICreateExternalS
 import {SubscribeService} from "../subscribe/subscribe.service";
 import {SUBSCRIBE_ALREADY_ERROR} from "../response/error/subscribe";
 import {EMAIL_ALREADY_EXIST} from "../response/error/auth";
+import {NEWSLETTER_NOT_FOUND} from "../response/error/post";
 
 @Controller('writer')
 export class WriterController {
@@ -157,6 +158,28 @@ export class WriterController {
             },
             isLastPage: newsletterWithPostWithWriterAndSeries.length < paginationOptions.take,
             totalCount: newsletterWithPostWithWriterAndSeries.length
+        })
+    }
+
+    @TypedRoute.Get(":moonjinId/newsletter/:newsletterId")
+    async getNewsletterAllDataByNewsletterId(@TypedParam("moonjinId") moonjinId : string, @TypedParam("newsletterId") newsletterId : number)
+    :Promise<TryCatch<NewsletterAllDataDto, NEWSLETTER_NOT_FOUND>>{
+        const newsletterWithPostWithWriterAndSeries = await this.newsletterService.getNewsletterAllDataById(newsletterId);
+        if(newsletterWithPostWithWriterAndSeries.post.writerInfo.moonjinId !== moonjinId)
+            throw ExceptionList.NEWSLETTER_NOT_FOUND
+
+        const {post, postContent,...newsletterData} = newsletterWithPostWithWriterAndSeries;
+        const {writerInfo, series, ...postData} = post;
+        return createResponseForm({
+            newsletter: NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
+            post: PostDtoMapper.PostToPostDto(postData),
+            postContent: PostDtoMapper.PostContentToPostContentDto(postContent),
+            series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
+            writer: {
+                userId: writerInfo.userId,
+                moonjinId: writerInfo.moonjinId,
+                nickname: writerInfo.user.nickname
+            }
         })
     }
 }
