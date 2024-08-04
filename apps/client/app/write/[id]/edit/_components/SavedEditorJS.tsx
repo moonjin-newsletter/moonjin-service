@@ -3,8 +3,8 @@
 import EditorJS from "@editorjs/editorjs";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
-import { useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { PiCaretUpDownBold } from "react-icons/pi";
 import * as I from "@components/icons";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -50,6 +50,8 @@ export default function NewEditorJS({
       title: letterData.post.title,
     },
   });
+
+  console.log(letterData);
 
   const { data: seriesList } =
     useSWR<ResponseForm<SeriesDto[]>>("series/me/summary");
@@ -236,20 +238,27 @@ function OverlaySetting({
   mySeriesInfo?: any;
 }) {
   const router = useRouter();
+
   const { register, handleSubmit, watch, setValue } = useForm<any>({
     defaultValues: {
       type: mySeriesInfo ? "시리즈" : "자유글",
       series: mySeriesInfo ? mySeriesInfo : null,
       cover: savedCover ?? null,
-      category: savedCategory ?? null,
+      category:
+        savedCategory !== null && savedCategory !== ""
+          ? savedCategory
+          : CategoryList[0],
     },
   });
 
   const cover = watch("cover");
   const type = watch("type");
   const series = watch("series");
+  const formCategory = watch("category");
 
-  function onClickSave(value: any) {
+  console.log(formCategory);
+
+  function onClickPublish(value: any) {
     csr
       .patch(`post/${letterId}`, {
         json: {
@@ -257,7 +266,7 @@ function OverlaySetting({
           content: outputData,
           cover: value.cover,
           seriesId: value?.series?.id,
-          category: value.category ?? "",
+          category: value.category,
         },
       })
       .then(async (res) => {
@@ -278,7 +287,7 @@ function OverlaySetting({
       className="fixed  top-0 flex items-center justify-center z-50 w-screen h-screen bg-black/40"
     >
       <form
-        onSubmit={handleSubmit(onClickSave)}
+        onSubmit={handleSubmit(onClickPublish)}
         onClick={(e) => e.stopPropagation()}
         className="w-fit max-h-[530px] min-w-[520px] max-w-[520px] overflow-y-auto py-8 px-8 rounded-lg bg-white"
       >
@@ -327,7 +336,9 @@ function OverlaySetting({
                   className="flex group"
                 >
                   <input
-                    {...register("category")}
+                    {...register("category", {
+                      required: "카테고리를 선택해주세요",
+                    })}
                     id={`category${index}`}
                     value={category}
                     type="radio"
