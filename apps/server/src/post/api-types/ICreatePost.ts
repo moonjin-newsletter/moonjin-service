@@ -6,6 +6,6 @@ export interface ICreatePost {
     content: EditorJsonDto;
     category?: string;
     subtitle?: string & tags.MaxLength<128>;
-    cover?: string & tags.MaxLength<128>;
+    cover: string & tags.MaxLength<128> | null;
     seriesId? : number & tags.Minimum<0>;
 }
