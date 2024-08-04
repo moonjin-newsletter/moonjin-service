@@ -16,7 +16,7 @@ import {NewsletterService} from "./newsletter.service";
 import {UserService} from "../user/user.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
-import {NewsletterAllDataDto, NewsletterCardDto, NewsletterSendResultDto} from "./dto";
+import { NewsletterCardDto, NewsletterSendResultDto} from "./dto";
 import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {ExceptionList} from "../response/error/errorInstances";
@@ -25,16 +25,13 @@ import NewsletterDtoMapper from "./newsletterDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {AssertEditorJsonDto, EditorJsToHtml} from "@moonjin/editorjs";
 import PostDtoMapper from "../post/postDtoMapper";
-import {SubscribeService} from "../subscribe/subscribe.service";
-import {SUBSCRIBER_NOT_FOUND} from "../response/error/subscribe";
 
 @Controller('newsletter')
 export class NewsletterController {
     constructor(
         private readonly userService: UserService,
         private readonly newsletterService: NewsletterService,
-        private readonly mailService: MailService,
-        private readonly subscribeService: SubscribeService
+        private readonly mailService: MailService
     ) {}
 
     /**
@@ -203,24 +200,5 @@ export class NewsletterController {
             }
         })
         return createResponseForm(newsletterCardList);
-    }
-
-    /**
-     * @summary 해당 뉴스레터의 모든 데이터 가져오기
-     * @param user
-     * @param newsletterId
-     * @returns NewsletterAllDataDto
-     * @throws NEWSLETTER_NOT_FOUND
-     * @throws SUBSCRIBER_NOT_FOUND
-     */
-    @TypedRoute.Get(":newsletterId/all")
-    @UseGuards(UserAuthGuard)
-    async getNewsletterAllData(@User() user:UserAuthDto,@TypedParam("newsletterId") newsletterId: number):Promise<TryCatch<NewsletterAllDataDto,
-        NEWSLETTER_NOT_FOUND | SUBSCRIBER_NOT_FOUND >> {
-        const newsletterAllData = await this.newsletterService.getNewsletterAllDataById(newsletterId);
-        if(user.id != newsletterAllData.post.writerId){
-            await this.subscribeService.isSubscribingAWriter(user.id, newsletterAllData.post.writerId);
-        }
-        return createResponseForm(NewsletterDtoMapper.NewsletterWithPostAndContentAndWriterToNewsletterAllDataDto(newsletterAllData));
     }
 }

@@ -129,7 +129,6 @@ export class SubscribeController {
         })
     }
 
-
     /**
      * @summary 작가의 구독자 목록 보기
      * @param user
