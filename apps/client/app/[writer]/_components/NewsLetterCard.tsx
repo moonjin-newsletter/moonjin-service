@@ -19,7 +19,7 @@ export default function NewsLetterCard({
 
   return (
     <Link
-      href={`${validateUrl}/post/${newsletterInfo.post.id}`}
+      href={`${validateUrl}/post/${newsletterInfo.newsletter.id}`}
       className="flex items-center w-full group justify-between gap-x-5 border-b py-6 overflow-hidden"
     >
       <div className="flex flex-col w-full">

@@ -2,6 +2,8 @@ import EditorRender from "@components/editorjs/EditorRender";
 import PostHeader from "../_components/PostHeader";
 import Image from "next/image";
 import { LogoSymbolGray } from "@components/icons";
+import { nfetch } from "@lib/fetcher/noAuth";
+import { NewsletterAllDataDto, ResponseForm } from "@moonjin/api-types";
 
 type pageProps = {
   params: {
@@ -93,36 +95,47 @@ const editorData = {
   version: "2.22.2",
 };
 
-export const revalidate = 60;
+export const revalidate = 0;
 
 export default async function Page({ params }: pageProps) {
   const [, moonjinId] = decodeURI(params.writer).split("%40");
-  const postId = parseInt(params.id, 10);
+  const nId = parseInt(params.id, 10);
 
-  // const { data: nInfo } = await nfetch<ResponseForm<NewsletterAllDataDto>>(
-  //   `newsletter/${postId}/all`,
-  // );
+  const { data: nInfo } = await nfetch<ResponseForm<NewsletterAllDataDto>>(
+    `writer/${moonjinId}/newsletter/${nId}`,
+  );
 
   return (
     <div className="w-full flex flex-col items-center">
       <PostHeader />
-      <section className="h-60 w-full relative flex items-center justify-center">
-        <Image
-          src={""}
-          alt={"배너 이미지"}
-          className="absolute top-0 left-0 w-full h-full brightness-75 bg-black/80 z-[-1]"
-        />
-        <div className="flex flex-col items-center text-white">
-          <h1 className="font-serif text-2xl font-[300] mt-5">테스트입니다</h1>
-          <div className="border text-[13px] py-1 px-3 border-white/50 text-white/50 rounded-full mt-10">
-            카테고리
-          </div>
-          <div className="flex items-center gap-x-2.5 text-white/50 text-sm my-4">
-            <LogoSymbolGray width="16" height="16" viewBox="0 0 24 24" /> 242
+      <section className={`h-60 w-full relative  overflow-hidden `}>
+        {/*<Image*/}
+        {/*  src={nInfo.post.cover}*/}
+        {/*  alt={"배너 이미지"}*/}
+        {/*  width={1920}*/}
+        {/*  height={1080}*/}
+        {/*  className="absolute top-0 left-0 w-full h-full brightness-50 bg-black/80 z-[-1] object-cover"*/}
+        {/*/>*/}
+        <div
+          className="w-full h-full bg-cover bg-center flex "
+          style={{
+            backgroundImage: `url(${nInfo.post.cover})`,
+          }}
+        >
+          <div className="flex flex-col items-center justify-center text-white bg-black/25 w-full h-full">
+            <h1 className="font-serif text-2xl font-[300] mt-5">
+              테스트입니다
+            </h1>
+            <div className="border text-[13px] py-1 px-3 border-white/50 text-white/50 rounded-full mt-10">
+              카테고리
+            </div>
+            <div className="flex items-center gap-x-2.5 text-white/50 text-sm my-4">
+              <LogoSymbolGray width="16" height="16" viewBox="0 0 24 24" /> 242
+            </div>
           </div>
         </div>
       </section>
-      <main className="max-w-[688px] py-10">
+      <main className="max-w-[688px] w-full py-10">
         <section className="w-full flex flex-col">
           <div className="flex items-center w-full">
             <div className="flex items-center justify-between w-full">
@@ -141,7 +154,7 @@ export default async function Page({ params }: pageProps) {
           </div>
         </section>
         <hr className="my-10" />
-        <EditorRender blocks={editorData.blocks} />
+        <EditorRender blocks={nInfo.postContent.content.blocks} />
         <section className="flex flex-col mt-10 w-full">
           <div className="flex items-center justify-between w-full">
             <span className="text-sm text-grayscale-400 ">
