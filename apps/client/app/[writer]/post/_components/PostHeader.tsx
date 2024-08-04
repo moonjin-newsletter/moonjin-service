@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import * as I from "@components/icons";
-import { checkType } from "@utils/CheckUser";
+import { checkType } from "@utils/checkUser";
 import useSWR from "swr";
 import type { ResponseForm, UserOrWriterDto } from "@moonjin/api-types";
 import csr from "@lib/fetcher/csr";

@@ -1,8 +1,8 @@
 import HomeTab from "./HomeTab";
 import ssr from "../../lib/fetcher/ssr";
 import type {
-  ResponseForm,
   NewsletterCardDto,
+  ResponseForm,
   SeriesWithWriterDto,
   UserOrWriterDto,
 } from "@moonjin/api-types";
@@ -10,7 +10,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { IoIosArrowForward } from "react-icons/io";
 import { LogoIconGray } from "../../components/icons";
-import { checkType } from "@utils/CheckUser";
+import { checkType } from "@utils/checkUser";
 
 export default async function Page() {
   const userInfo = await ssr("user")

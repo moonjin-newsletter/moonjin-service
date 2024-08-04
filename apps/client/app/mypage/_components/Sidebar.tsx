@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 import { usePathname } from "next/navigation";
-import { userType } from "@utils/CheckUser";
+import { userType } from "@utils/checkUser";
 
 export function Sidebar({ role }: { role: userType }) {
   return (
