@@ -1,17 +1,18 @@
-"use client";
 import Image from "next/image";
-import { More } from "@components/icons";
 import type { WriterPublicCardDto } from "@moonjin/api-types";
 import { commaizeNumber } from "@toss/utils";
-import { overlay } from "overlay-kit";
-import WriterInfoModal from "./WriterInfoModal";
-import SubButton from "@components/modal/SubButton";
+import SubModalProvider from "@components/modal/SubModalProvider";
+import MoreButton from "./MoreButton";
 
-export default function WriterProfile({
+export default async function WriterProfile({
   writerInfo,
 }: {
   writerInfo: WriterPublicCardDto;
 }) {
+  // const { data: subInfo } = await ssr<ResponseForm<SubscribeInfoDto>>(
+  //   `subscribe/writer/${writerInfo.writerInfo.moonjinId}/info`,
+  // );
+  // console.log(subInfo);
   return (
     <header className="w-full h-[200px]  flex items-center gap-x-10">
       <Image
@@ -47,8 +48,7 @@ export default function WriterProfile({
             ))}
           </div>
           <div className="flex gap-x-2.5">
-            <SubButton
-              moonjinId={writerInfo.writerInfo.moonjinId}
+            <SubModalProvider
               writerInfo={writerInfo}
               subChildren={
                 <div className="py-2 px-4 rounded-full text-sm bg-grayscale-600 text-white">
@@ -61,21 +61,7 @@ export default function WriterProfile({
                 </div>
               }
             />
-
-            <button
-              onClick={() => {
-                overlay.open(({ isOpen, unmount }) => {
-                  return (
-                    <WriterInfoModal
-                      unmount={unmount}
-                      writerInfo={writerInfo}
-                    />
-                  );
-                });
-              }}
-            >
-              <More />
-            </button>
+            <MoreButton writerInfo={writerInfo} />
           </div>
         </div>
       </div>

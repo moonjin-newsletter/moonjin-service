@@ -13,13 +13,11 @@ import * as SubModal from "@components/modal/SubModal";
 import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
 
-export default function SubButton({
-  moonjinId,
+export default function SubModalProvider({
   writerInfo,
   subChildren,
   unSubChildren,
 }: {
-  moonjinId: string;
   writerInfo: WriterPublicCardDto;
   subChildren: ReactElement;
   unSubChildren: ReactElement;
@@ -30,7 +28,7 @@ export default function SubButton({
     isLoading,
     mutate,
   } = useSWR<ResponseForm<SubscribeInfoDto>>(
-    `subscribe/writer/${moonjinId}/info`,
+    `subscribe/writer/${writerInfo.writerInfo.moonjinId}/info`,
     {
       onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
         if (retryCount > 1) return;

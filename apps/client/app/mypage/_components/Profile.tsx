@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { userType } from "@utils/CheckUser";
+import { userType } from "@utils/checkUser";
 import { UserOrWriterDto } from "@moonjin/api-types";
 
 export default function Profile({

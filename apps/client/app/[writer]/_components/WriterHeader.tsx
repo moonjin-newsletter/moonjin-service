@@ -3,15 +3,10 @@
 import * as I from "@components/icons";
 import Link from "next/link";
 import useSWR from "swr";
-import type {
-  ResponseForm,
-  UserDto,
-  UserOrWriterDto,
-  WriterDto,
-} from "@moonjin/api-types";
+import type { ResponseForm, UserOrWriterDto } from "@moonjin/api-types";
 import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
-import { checkType } from "@utils/CheckUser";
+import { checkType } from "@utils/checkUser";
 
 export default function WriterHeader() {
   const { data: userInfo, mutate } =

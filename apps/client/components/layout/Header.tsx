@@ -5,7 +5,7 @@ import * as I from "components/icons";
 import csr from "../../lib/fetcher/csr";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
-import { checkType } from "@utils/CheckUser";
+import { checkType } from "@utils/checkUser";
 import useScroll from "@utils/hooks/useScroll";
 import type { ResponseForm, UserOrWriterDto } from "@moonjin/api-types";
 

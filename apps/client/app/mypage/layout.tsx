@@ -4,7 +4,7 @@ import ssr from "../../lib/fetcher/ssr";
 import { Sidebar } from "./_components/Sidebar";
 import Profile from "./_components/Profile";
 import type { ResponseForm, UserOrWriterDto } from "@moonjin/api-types";
-import { checkType } from "@utils/CheckUser";
+import { checkType } from "@utils/checkUser";
 import Header from "@components/layout/Header";
 
 export default async function MypageLayout({
