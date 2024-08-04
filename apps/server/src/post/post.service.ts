@@ -38,7 +38,7 @@ export class PostService {
      */
     async createPost(createPostData : CreatePostDto, writerId: number) : Promise<PostWithContentDto> {
         const cover = this.utilService.processImageForCover(createPostData.cover);
-        const {content,category,...postMetaData} = createPostData
+        const {content,...postMetaData} = createPostData
         try {
             const post = await this.prismaService.post.create({
                 data: {
@@ -46,7 +46,6 @@ export class PostService {
                     preview: EditorJsToPostPreview(content.blocks),
                     writerId,
                     cover,
-                    category,
                     createdAt: this.utilService.getCurrentDateInKorea(),
                     postContent: {
                         create: {
@@ -78,7 +77,7 @@ export class PostService {
      * @throws CREATE_POST_ERROR
      */
     async updatePost(postId: number, updatePostData: CreatePostDto): Promise<PostWithContentDto> {
-        const cover = (updatePostData.cover) ? {cover : updatePostData.cover} : {};
+        const cover = this.utilService.processImageForCover(updatePostData.cover);
         const {content,category,...postMetaData} = updatePostData
         try {
             const post = await this.prismaService.post.update({
@@ -88,7 +87,7 @@ export class PostService {
                 data: {
                     ...postMetaData,
                     preview: EditorJsToPostPreview(content.blocks),
-                    ...cover,
+                    cover,
                     lastUpdatedAt: this.utilService.getCurrentDateInKorea(),
                     category,
                     postContent: {
@@ -162,16 +161,16 @@ export class PostService {
 
     /**
      * @summary 해당 유저가 작성중인 글 목록 가져오기
-     * @param userId
+     * @param writerId
      * @return PostWithSeriesDto[]
      * @throws USER_NOT_WRITER
      */
-    async getWritingPostList(userId: number): Promise<PostWithSeries[]> {
-        await this.authValidationService.assertWriter(userId);
+    async getWritingPostList(writerId: number): Promise<PostWithSeries[]> {
+        await this.authValidationService.assertWriter(writerId);
         try{
             return await this.prismaService.post.findMany({
                 where : {
-                    writerId : userId,
+                    writerId,
                     deleted : false,
                     newsletter : null
                 },
@@ -350,7 +349,7 @@ export class PostService {
      * @throws POST_CONTENT_NOT_FOUND
      * @throws NEWSLETTER_ALREADY_EXIST
      */
-    async getPostAndPostContentAndWriterById(postId: number): Promise<PostWithContentAndSeriesAndWriterDto>{
+    async getWritingPostAndPostContentAndWriterById(postId: number): Promise<PostWithContentAndSeriesAndWriterDto>{
         const postWithContent = await this.prismaService.post.findUnique({
             where: {
                 id : postId,
