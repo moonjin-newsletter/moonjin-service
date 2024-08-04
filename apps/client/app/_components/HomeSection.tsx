@@ -77,10 +77,10 @@ export default function HomeSection() {
 
 function CarouselCard({ postInfo }: { postInfo: any }) {
   return (
-    <Link href={""} className="flex  gap-x-6">
+    <Link href={"/@andy91052990/post/2"} className="flex  gap-x-6">
       <Image
         src={postInfo?.thumbnail[0]}
-        alt={""}
+        alt={"썸네일 이미지"}
         width={200}
         height={258}
         className="w-[200px] h-[258px] min-w-[200px] rounded object-cover"
