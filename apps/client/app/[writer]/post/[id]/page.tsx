@@ -5,6 +5,8 @@ import { LogoSymbolGray } from "@components/icons";
 import { nfetch } from "@lib/fetcher/noAuth";
 import { NewsletterAllDataDto, ResponseForm } from "@moonjin/api-types";
 import { format } from "date-fns";
+import Link from "next/link";
+import { formatNumberKo } from "@utils/formatNumber";
 
 type pageProps = {
   params: {
@@ -77,7 +79,10 @@ export default async function Page({ params }: pageProps) {
               올려두기
             </button>
           </div>
-          <div className="mt-5 bg-grayscale-100 rounded-lg p-4 w-full flex items-center ">
+          <Link
+            href={`/@${nInfo.writer.moonjinId}`}
+            className="mt-5 bg-grayscale-100 rounded-lg p-4 w-full flex items-center "
+          >
             <div className="flex items-center">
               <Image
                 src={""}
@@ -85,21 +90,21 @@ export default async function Page({ params }: pageProps) {
                 className="size-12 aspect-square bg-gray-300 rounded-full"
               />
               <div className="flex flex-col ml-3">
-                <p className="font-semibold">종이한장</p>
+                <p className="font-semibold">{nInfo.writer.nickname}</p>
                 <span className="text-sm text-grayscale-400">
-                  asdf@gmail.com
+                  {nInfo.writer.moonjinId}@moonjin.site
                 </span>
               </div>
             </div>
             <div className="ml-auto flex items-center gap-x-3">
               <span className="text-sm text-grayscale-400">
-                구독자 수 | 8.6만명
+                구독자 수 | {formatNumberKo(4143)}
               </span>
               <button className="py-2 px-4 bg-primary text-white font-medium text-sm rounded-full">
                 구독하기
               </button>
             </div>
-          </div>
+          </Link>
         </section>
         <hr className="my-10" />
         <section className="flex flex-col">

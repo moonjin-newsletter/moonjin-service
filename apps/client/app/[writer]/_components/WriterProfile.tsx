@@ -3,15 +3,18 @@ import type { WriterPublicCardDto } from "@moonjin/api-types";
 import { commaizeNumber } from "@toss/utils";
 import SubModalProvider from "@components/modal/SubModalProvider";
 import MoreButton from "./MoreButton";
+import { formatNumberKo } from "@utils/formatNumber";
 
 export default async function WriterProfile({
   writerInfo,
 }: {
   writerInfo: WriterPublicCardDto;
 }) {
-  // const { data: subInfo } = await ssr<ResponseForm<SubscribeInfoDto>>(
+  // const isLogin = cookies().get("accessToken");
+  //
+  // const { data: subInfo } = await ssr(
   //   `subscribe/writer/${writerInfo.writerInfo.moonjinId}/info`,
-  // );
+  // ).json<ResponseForm<SubscribeInfoDto>>();
   // console.log(subInfo);
   return (
     <header className="w-full h-[200px]  flex items-center gap-x-10">
@@ -35,7 +38,10 @@ export default async function WriterProfile({
         <div className="flex items-center mt-4 justify-between w-full">
           <div className="flex gap-x-4">
             {[
-              { head: "구독자", body: writerInfo.writerInfo.followerCount },
+              {
+                head: "구독자",
+                body: formatNumberKo(writerInfo.writerInfo.followerCount),
+              },
               { head: "뉴스레터", body: writerInfo.writerInfo.newsletterCount },
               { head: "시리즈", body: writerInfo.writerInfo.seriesCount },
             ].map((item, index) => (
