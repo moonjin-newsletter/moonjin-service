@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import type { EditorBlockDto } from "@moonjin/editorjs";
 
 type ListItem = {
   content: string;
@@ -35,7 +36,7 @@ export default function EditorRender({
   blocks,
   children,
 }: {
-  blocks: BlockType[];
+  blocks: EditorBlockDto[];
   children?: ReactNode;
 }) {
   const content = renderEditorData(blocks);
@@ -50,7 +51,7 @@ export default function EditorRender({
   );
 }
 
-function renderEditorData(blocks: BlockType[]) {
+function renderEditorData(blocks: EditorBlockDto[]) {
   return blocks.map((block: any, index: any) => {
     switch (block.type) {
       case "paragraph":
