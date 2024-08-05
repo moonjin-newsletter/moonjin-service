@@ -4,7 +4,11 @@ import Link from "next/link";
 import * as I from "@components/icons";
 import { checkType } from "@utils/checkUser";
 import useSWR from "swr";
-import type { ResponseForm, UserOrWriterDto } from "@moonjin/api-types";
+import type {
+  NewsletterAllDataDto,
+  ResponseForm,
+  UserOrWriterDto,
+} from "@moonjin/api-types";
 import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
@@ -12,7 +16,7 @@ import { usePathname } from "next/navigation";
 import { getScrollPercent } from "@toss/utils";
 import useScroll from "@utils/hooks/useScroll";
 
-export default function PostHeader() {
+export default function PostHeader({ nInfo }: { nInfo: NewsletterAllDataDto }) {
   const pathName = usePathname();
   const { x, y } = useScroll();
   const [scroll, setScroll] = useState(getScrollPercent());
@@ -50,11 +54,11 @@ export default function PostHeader() {
           </Link>
           <div className="flex items-center gap-x-2 text-grayscale-600">
             <span className="font-serif font-medium text-[13px]">
-              오타니 쇼헤이와 스포츠경제학
+              {nInfo.post.title}
             </span>
             <p className="font-serif text-xs">
               <span className="text-grayscale-500">by.</span>
-              학회원 최진수
+              {nInfo.writer.nickname}
             </p>
           </div>
           <div className="flex h-full items-center ">

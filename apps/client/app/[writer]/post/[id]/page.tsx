@@ -25,7 +25,7 @@ export default async function Page({ params }: pageProps) {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <PostHeader />
+      <PostHeader nInfo={nInfo} />
       <section className={`h-60 w-full relative  overflow-hidden `}>
         <div
           className="w-full h-full bg-cover bg-center flex "
