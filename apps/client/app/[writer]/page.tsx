@@ -22,14 +22,14 @@ export default async function Page({ params }: pageProps) {
   );
 
   return (
-    <>
+    <div className="bg-grayscale-100">
       <WriterHeader />
-      <main className="w-full flex flex-col items-center">
-        <section className="max-w-[760px] w-full flex flex-col mx-auto mt-20 pb-8">
+      <main className="w-full flex flex-col items-center pb-5">
+        <section className="max-w-[800px] w-full flex flex-col mx-auto mt-10 pb-8 bg-white px-12 pt-14 rounded-2xl shadow">
           <WriterProfile writerInfo={writerInfo.data} />
           <WriterTab moonjinId={moonjinId} />
         </section>
       </main>
-    </>
+    </div>
   );
 }
