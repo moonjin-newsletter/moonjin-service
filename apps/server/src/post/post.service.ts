@@ -10,7 +10,6 @@ import {ExceptionList} from "../response/error/errorInstances";
 import {UtilService} from "../util/util.service";
 import {AuthValidationService} from "../auth/auth.validation.service";
 import {CreatePostContentDto} from "./server-dto/createPostContent.dto";
-import {CreatePostDto} from "./server-dto/createPost.dto";
 import {PostWithContents} from "./prisma/postWithContents.prisma.type";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {PostWithContentAndSeries} from "./prisma/postWithContentAndSeries.prisma";
@@ -19,6 +18,7 @@ import {EditorJsToPostPreview} from "@moonjin/editorjs";
 import {PostWithSeries} from "./prisma/postWithSeries.prisma.type";
 import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
 import {SeriesService} from "../series/series.service";
+import {UpdatePostDto} from "./server-dto/updatePost.dto";
 
 @Injectable()
 export class PostService {
@@ -36,7 +36,7 @@ export class PostService {
      * @return PostWithContentDto
      * @throws CREATE_POST_ERROR
      */
-    async createPost(createPostData : CreatePostDto, writerId: number) : Promise<PostWithContentDto> {
+    async createPost(createPostData : UpdatePostDto, writerId: number) : Promise<PostWithContentDto> {
         const cover = this.utilService.processImageForCover(createPostData.cover);
         const {content,...postMetaData} = createPostData
         try {
@@ -76,7 +76,7 @@ export class PostService {
      * @return PostWithContentDto
      * @throws CREATE_POST_ERROR
      */
-    async updatePost(postId: number, updatePostData: CreatePostDto): Promise<PostWithContentDto> {
+    async updatePost(postId: number, updatePostData: UpdatePostDto): Promise<PostWithContentDto> {
         const cover = this.utilService.processImageForCover(updatePostData.cover);
         const {content,category,...postMetaData} = updatePostData
         try {

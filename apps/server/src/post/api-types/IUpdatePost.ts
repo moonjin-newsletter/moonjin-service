@@ -1,7 +1,7 @@
 import {tags} from "typia";
 import {EditorJsonDto} from "@moonjin/editorjs";
 
-export interface ICreatePost {
+export interface IUpdatePost {
     title: string & tags.MaxLength<32>;
     content: EditorJsonDto;
     category?: string;

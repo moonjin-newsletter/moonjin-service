@@ -1,6 +1,5 @@
 import {Controller, UseGuards} from '@nestjs/common';
 import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
-import {ICreatePost} from "./api-types/ICreatePost";
 import {PostService} from "./post.service";
 import {
     PostWithSeriesDto,
@@ -30,6 +29,7 @@ import {EditorJsToHtml} from "@moonjin/editorjs";
 import PostDtoMapper from "./postDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {Category} from "@moonjin/api-types";
+import {IUpdatePost} from "./api-types/IUpdatePost";
 
 
 @Controller('post')
@@ -50,7 +50,7 @@ export class PostController {
      */
     @TypedRoute.Post()
     @UseGuards(WriterAuthGuard)
-    async createPost(@TypedBody() postData : ICreatePost, @User() user:UserAuthDto): Promise<TryCatch<
+    async createPost(@TypedBody() postData : IUpdatePost, @User() user:UserAuthDto): Promise<TryCatch<
         PostWithContentDto, SERIES_NOT_FOUND | CREATE_POST_ERROR>>
     {
         let category = Category.getNumberByCategory(postData.category);
@@ -76,7 +76,7 @@ export class PostController {
      */
     @TypedRoute.Patch(':id')
     @UseGuards(WriterAuthGuard)
-    async updatePost(@TypedParam('id') postId : number, @TypedBody() postUpdateData : ICreatePost, @User() user:UserAuthDto) : Promise<
+    async updatePost(@TypedParam('id') postId : number, @TypedBody() postUpdateData : IUpdatePost, @User() user:UserAuthDto) : Promise<
         TryCatch<PostWithContentDto, POST_NOT_FOUND | FORBIDDEN_FOR_POST | SERIES_NOT_FOUND | CREATE_POST_ERROR>>
     {
         await this.postService.assertWriterOfPost(postId,user.id);
@@ -189,7 +189,6 @@ export class PostController {
     }
 
     @TypedRoute.Get(':id/html')
-    @UseGuards(UserAuthGuard)
     async getPostHtml(@TypedParam('id') postId : number): Promise<TryCatch<string, POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
     {
         const postContent = await this.postService.getPostWithContentAndSeries(postId);

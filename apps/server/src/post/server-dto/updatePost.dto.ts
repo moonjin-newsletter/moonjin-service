@@ -1,6 +1,6 @@
 import {EditorJsonDto} from "@moonjin/editorjs";
 
-export interface CreatePostDto {
+export interface UpdatePostDto {
     title: string;
     content: EditorJsonDto;
     category: number;
