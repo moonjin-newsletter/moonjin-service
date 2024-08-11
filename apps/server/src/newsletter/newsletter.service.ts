@@ -19,6 +19,7 @@ import {Category} from "@moonjin/api-types";
 import {SeriesService} from "../series/series.service";
 import {NewsletterWithPostAndContentAndWriter} from "./prisma/newsletterWithPostAndContentAndWriter.prisma.type";
 
+
 @Injectable()
 export class NewsletterService {
 
@@ -406,5 +407,58 @@ export class NewsletterService {
         }catch (error){
             throw ExceptionList.NEWSLETTER_NOT_FOUND
         }
+    }
+
+    /**
+     * @summary 해당 뉴스레터에 좋아요 누르기
+     * @param newsletterId
+     * @param userId
+     * @throws NEWSLETTER_NOT_FOUND
+     */
+    async likeNewsletter(newsletterId: number, userId: number): Promise<void>{
+        await this.assertNewsletterExist(newsletterId);
+        try{
+            await this.prismaService.newsletterLike.create({
+                data : {
+                    newsletterId,
+                    userId,
+                    createdAt: this.utilService.getCurrentDateInKorea()
+                }
+            })
+        }catch (error){}
+    }
+
+    /**
+     * @summary 해당 뉴스레터에 좋아요 제거
+     * @param newsletterId
+     * @param userId
+     */
+    async unlikeNewsletter(newsletterId: number, userId: number): Promise<void>{
+        try{
+            await this.prismaService.newsletterLike.deleteMany({
+                where : {
+                    newsletterId,
+                    userId
+                }
+            })
+        }catch (error){}
+    }
+
+    /**
+     * @summary 해당 뉴스레터가 존재하는 지 확인
+     * @param newsletterId
+     * @throws NEWSLETTER_NOT_FOUND
+     */
+    async assertNewsletterExist(newsletterId: number): Promise<void>{
+        const newsletter = await this.prismaService.newsletter.findUnique({
+            where:{
+                id : newsletterId,
+                post: {
+                    deleted : false
+                }
+            },
+            relationLoadStrategy: 'join'
+        })
+        if(newsletter == null) throw ExceptionList.NEWSLETTER_NOT_FOUND;
     }
 }

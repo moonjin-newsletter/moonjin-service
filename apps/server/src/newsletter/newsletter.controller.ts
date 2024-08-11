@@ -201,4 +201,33 @@ export class NewsletterController {
         })
         return createResponseForm(newsletterCardList);
     }
+
+    /**
+     * @summary 해당 뉴스레터 좋아요
+     * @param user
+     * @param newsletterId
+     * @returns {message: string}
+     * @throws NEWSLETTER_NOT_FOUND
+     */
+    @TypedRoute.Post(':newsletterId/like')
+    @UseGuards(UserAuthGuard)
+    async likeNewsletter(@User() user:UserAuthDto, @TypedParam('newsletterId') newsletterId: number)
+    :Promise<TryCatch<ResponseMessage, NEWSLETTER_NOT_FOUND>>{
+        await this.newsletterService.likeNewsletter(user.id, newsletterId);
+        return createResponseForm({message : "좋아요가 되었습니다."});
+    }
+
+    /**
+     * @summary 해당 뉴스레터 좋아요 해제
+     * @param user
+     * @param newsletterId
+     */
+    @TypedRoute.Delete(':newsletterId/like')
+    @UseGuards(UserAuthGuard)
+    async unlikeNewsletter(@User() user:UserAuthDto, @TypedParam('newsletterId') newsletterId: number)
+    :Promise<Try<ResponseMessage>>{
+        await this.newsletterService.unlikeNewsletter(user.id, newsletterId);
+        return createResponseForm({message : "좋아요가 해제 되었습니다."});
+    }
+
 }

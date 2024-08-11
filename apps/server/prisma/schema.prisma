@@ -20,12 +20,13 @@ model User {
   role        Int      @default(0)
   deleted     Boolean  @default(false)
 
-  oauth         Oauth?
-  writerInfo    WriterInfo?
-  follow        Subscribe[]
-  letter        Letter[]        @relation(name: "sender")
-  letter2       Letter[]        @relation(name: "receiver")
-  WebNewsletter WebNewsletter[]
+  oauth          Oauth?
+  writerInfo     WriterInfo?
+  follow         Subscribe[]
+  letter         Letter[]         @relation(name: "sender")
+  letter2        Letter[]         @relation(name: "receiver")
+  WebNewsletter  WebNewsletter[]
+  NewsletterLike NewsletterLike[]
 }
 
 model Oauth {
@@ -125,6 +126,7 @@ model Newsletter {
   postContent    PostContent      @relation(fields: [postContentId], references: [id])
   newsletterSend NewsletterSend[]
   webNewsletter  WebNewsletter[]
+  NewsletterLike NewsletterLike[]
 
   @@index([postId])
 }
@@ -178,6 +180,19 @@ model NewsletterAnalytics {
   @@id([event, mailNewsletterId])
   @@index([mailNewsletterId])
   @@index([event])
+}
+
+model NewsletterLike {
+  newsletterId Int
+  userId       Int
+  createdAt    DateTime
+
+  newsletter Newsletter @relation(fields: [newsletterId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+
+  @@id([newsletterId, userId])
+  @@index([newsletterId])
+  @@index([userId])
 }
 
 model Series {
