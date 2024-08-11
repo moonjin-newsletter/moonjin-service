@@ -87,6 +87,7 @@ export class NewsletterService {
     async sendNewsLetter(postId: number, writerId: number,newsletterTitle: string){
         // 1. 해당 글이 보낼 수 있는 상태인지 확인
         const postWithContentAndSeriesAndWriter = await this.assertNewsletterCanBeSent(writerId, postId);
+        console.log("sendable")
 
         // 2. 구독자 목록 가져오기
         const receiverList = await this.subscribeService.getAllSubscriberByWriterId(writerId);
@@ -98,10 +99,14 @@ export class NewsletterService {
         const receiverEmailList = Array.from(receiverEmailSet);
         const receiverIdList = receiverList.subscriberList.map(subscriber => subscriber.user.id);
 
+        console.log(receiverEmailList);
+
         try{
             const sentAt = this.utilService.getCurrentDateInKorea();
+            console.log(sentAt)
             const newsletter = await this.prismaService.newsletter.create({
                 data : {
+                    id : postId,
                     postId,
                     postContentId: postWithContentAndSeriesAndWriter.postContent.id,
                     sentAt,
@@ -144,6 +149,7 @@ export class NewsletterService {
                 }
             })
 
+            console.log("done")
             const newsletterSendInfo : sendNewsLetterWithHtmlDto = {
                 newsletterId : newsletter.id,
                 senderName : postWithContentAndSeriesAndWriter.user.nickname,
@@ -153,7 +159,8 @@ export class NewsletterService {
                 emailList : receiverEmailList
             };
             await this.mailService.sendNewsLetterWithHtml(newsletterSendInfo);
-            await this.seriesService.updateSeriesNewsletterCount(postWithContentAndSeriesAndWriter.post.seriesId);
+            if(postWithContentAndSeriesAndWriter.post.seriesId > 0)
+                await this.seriesService.updateSeriesNewsletterCount(postWithContentAndSeriesAndWriter.post.seriesId);
             return newsletter;
         }catch (error){
             throw ExceptionList.SEND_NEWSLETTER_ERROR;
