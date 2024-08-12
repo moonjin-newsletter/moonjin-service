@@ -61,6 +61,7 @@ export default function NewEditorJS() {
               json: {
                 ...value,
                 content: outputData,
+                cover: null,
                 seriesId: mySeries?.data?.data?.id,
               },
             })

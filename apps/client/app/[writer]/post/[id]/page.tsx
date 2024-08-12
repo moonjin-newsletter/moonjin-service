@@ -35,14 +35,25 @@ export default async function Page({ params }: pageProps) {
             backgroundImage: `url(${nInfo.post.cover})`,
           }}
         >
-          <div className="flex flex-col items-center justify-center text-white bg-grayscale-700/35 w-full h-full">
+          <div className="flex flex-col items-center justify-center text-white bg-grayscale-700/40 w-full h-full">
+            <div className="flex items-center mt-10 gap-x-3">
+              <div className="border text-[13px] py-1 px-3 border-grayscale-200 text-grayscale-200 rounded-full ">
+                {nInfo.post.category}
+              </div>
+              <p className="font-serif text-grayscale-200 text-sm whitespace-nowrap">
+                <span className="">by.</span>
+                <strong>{nInfo.writer.nickname}</strong>
+                <span className="text-[13px]">
+                  {" "}
+                  ∙ {format(new Date(nInfo.newsletter.sentAt), "yyyy.MM.dd")}
+                </span>
+              </p>
+            </div>
             <h1 className="font-serif text-2xl font-[300] mt-5">
               {nInfo.post.title}
             </h1>
-            <div className="border text-[13px] py-1 px-3 border-white/50 text-white/50 rounded-full mt-10">
-              {nInfo.post.category}
-            </div>
-            <div className="flex items-center gap-x-2.5 text-white/50 text-sm my-4">
+
+            <div className="flex border border-grayscale-200 items-center gap-x-2.5 text-grayscale-200 text-sm my-4">
               <LogoSymbolGray width="16" height="16" viewBox="0 0 24 24" />{" "}
               {nInfo.newsletter.likes}
             </div>
@@ -53,14 +64,6 @@ export default async function Page({ params }: pageProps) {
         <section className="w-full flex flex-col">
           <div className="flex items-center w-full">
             <div className="flex items-center justify-between w-full">
-              <p className="font-serif text-sm">
-                <span className="text-grayscale-400">by.</span>
-                <span>{nInfo.writer.nickname}</span>
-                <span className="text-grayscale-400 text-[13px]">
-                  {" "}
-                  ∙ {format(new Date(nInfo.newsletter.sentAt), "yyyy.MM.dd")}
-                </span>
-              </p>
               <button className="py-2 rounded-full px-4 border border-primary text-primary text-xs font-medium">
                 구독하기
               </button>

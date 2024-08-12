@@ -1,50 +1,34 @@
 "use client";
 
 import { ReactElement } from "react";
-import useSWR from "swr";
-import {
-  ErrorCodeEnum,
-  ResponseForm,
-  SubscribeInfoDto,
-  WriterPublicCardDto,
-} from "@moonjin/api-types";
+import { WriterPublicCardDto } from "@moonjin/api-types";
 import { overlay } from "overlay-kit";
 import * as SubModal from "@components/modal/SubModal";
 import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { isNotNil } from "@toss/utils";
 
 export default function SubModalProvider({
+  subInfo,
   writerInfo,
   subChildren,
   unSubChildren,
 }: {
+  subInfo: any;
   writerInfo: WriterPublicCardDto;
   subChildren: ReactElement;
   unSubChildren: ReactElement;
 }) {
-  const {
-    data: subInfo,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR<ResponseForm<SubscribeInfoDto>>(
-    `subscribe/writer/${writerInfo.writerInfo.moonjinId}/info`,
-    {
-      onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-        if (retryCount > 1) return;
-      },
-    },
-  );
+  const router = useRouter();
 
   function onClickSub() {
-    if (error.code === ErrorCodeEnum.SUBSCRIBE_MYSELF_ERROR) {
-      toast.error("자신은 구독할 수 없습니다.");
-    } else if (error.code === ErrorCodeEnum.SUBSCRIBER_NOT_FOUND) {
+    if (!isNotNil(subInfo)) {
       csr
         .post(`subscribe/writer/${writerInfo.writerInfo.moonjinId}`)
         .then(() => {
           toast.success("구독 완료");
-          return mutate();
+          return router.refresh();
         })
         .catch((error) => {});
     } else {
@@ -61,13 +45,7 @@ export default function SubModalProvider({
 
   function onClickCancelSub() {
     return overlay.open(({ isOpen, unmount }) => {
-      return (
-        <SubModal.CancelModal
-          unmount={unmount}
-          writerInfo={writerInfo}
-          mutate={mutate}
-        />
-      );
+      return <SubModal.CancelModal unmount={unmount} writerInfo={writerInfo} />;
     });
   }
 

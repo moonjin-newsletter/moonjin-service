@@ -51,8 +51,6 @@ export default function NewEditorJS({
     },
   });
 
-  console.log(letterData);
-
   const { data: seriesList } =
     useSWR<ResponseForm<SeriesDto[]>>("series/me/summary");
 
@@ -63,7 +61,10 @@ export default function NewEditorJS({
     if (window.confirm("작성 중인 글을 삭제하시겠습니까?")) {
       csr
         .delete(`post/${letterId}`)
-        .then((res) => router.push("/mypage/newsletter/prepare"))
+        .then((res) => {
+          router.push("/mypage/newsletter/prepare");
+          router.refresh();
+        })
         .catch((err) => toast.error("잠시 후 다시 시도해주세요"));
     }
   }
@@ -78,6 +79,7 @@ export default function NewEditorJS({
               json: {
                 ...value,
                 content: outputData,
+                cover: letterData?.post?.cover,
                 // seriesId: mySeries?.data?.data?.id,
               },
             })

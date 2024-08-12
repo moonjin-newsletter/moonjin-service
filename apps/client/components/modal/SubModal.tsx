@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import * as Tb from "react-icons/tb";
 import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 type ModalType = {
   unmount: () => void;
@@ -160,18 +161,19 @@ export function LoginSubModal({ unmount }: ModalType) {
 
 export function CancelModal({
   unmount,
-  mutate,
   writerInfo,
 }: ModalType & {
   writerInfo: WriterPublicCardDto;
   mutate: () => void;
 }) {
+  const router = useRouter();
+
   function onCancel() {
     csr
       .delete(`subscribe/writer/${writerInfo.writerInfo.userId}`)
       .then(() => {
         toast.success("구독 취소");
-        return mutate();
+        return router.refresh();
       })
       .catch((error) => {
         toast.error("다시 시도해주세요");

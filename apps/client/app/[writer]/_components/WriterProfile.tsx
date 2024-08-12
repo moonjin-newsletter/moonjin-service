@@ -4,18 +4,22 @@ import { commaizeNumber } from "@toss/utils";
 import SubModalProvider from "@components/modal/SubModalProvider";
 import MoreButton from "./MoreButton";
 import { formatNumberKo } from "@utils/formatNumber";
+import { cookies } from "next/headers";
 
 export default async function WriterProfile({
   writerInfo,
 }: {
   writerInfo: WriterPublicCardDto;
 }) {
-  // const isLogin = cookies().get("accessToken");
-  //
-  // const { data: subInfo } = await ssr(
-  //   `subscribe/writer/${writerInfo.writerInfo.moonjinId}/info`,
-  // ).json<ResponseForm<SubscribeInfoDto>>();
-  // console.log(subInfo);
+  const isLogin = cookies().get("accessToken");
+  const subInfo = null;
+
+  // const { data: subInfo } = isLogin
+  //   ? await ssr(`subscribe/writer/${writerInfo.writerInfo.moonjinId}/info`)
+  //       .json<ResponseForm<SubscribeInfoDto>>()
+  //       .catch(() => redirect("/auth/login"))
+  //   : { data: null };
+
   return (
     <header className="w-full h-[200px]  flex items-center gap-x-10">
       <Image
@@ -55,6 +59,7 @@ export default async function WriterProfile({
           </div>
           <div className="flex gap-x-2.5">
             <SubModalProvider
+              subInfo={subInfo}
               writerInfo={writerInfo}
               subChildren={
                 <div className="py-2 px-4 rounded-full text-sm bg-grayscale-600 text-white">
