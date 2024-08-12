@@ -7,6 +7,7 @@ import { NewsletterAllDataDto, ResponseForm } from "@moonjin/api-types";
 import { format } from "date-fns";
 import Link from "next/link";
 import { formatNumberKo } from "@utils/formatNumber";
+import { range } from "@toss/utils";
 
 type pageProps = {
   params: {
@@ -36,25 +37,22 @@ export default async function Page({ params }: pageProps) {
           }}
         >
           <div className="flex flex-col items-center justify-center text-white bg-grayscale-700/40 w-full h-full">
-            <div className="flex items-center mt-10 gap-x-3">
-              <div className="border text-[13px] py-1 px-3 border-grayscale-200 text-grayscale-200 rounded-full ">
+            <div className="flex items-center mt-5 gap-x-3">
+              <div className="border text-[13px] py-1 px-3 border-grayscale-100 text-grayscale-100 rounded-full ">
                 {nInfo.post.category}
               </div>
-              <p className="font-serif text-grayscale-200 text-sm whitespace-nowrap">
-                <span className="">by.</span>
-                <strong>{nInfo.writer.nickname}</strong>
-                <span className="text-[13px]">
-                  {" "}
-                  ∙ {format(new Date(nInfo.newsletter.sentAt), "yyyy.MM.dd")}
-                </span>
-              </p>
             </div>
-            <h1 className="font-serif text-2xl font-[300] mt-5">
+            <h1 className="font-serif text-2xl font-[300] text-grayscale-100 mt-5">
               {nInfo.post.title}
             </h1>
 
-            <div className="flex border border-grayscale-200 items-center gap-x-2.5 text-grayscale-200 text-sm my-4">
-              <LogoSymbolGray width="16" height="16" viewBox="0 0 24 24" />{" "}
+            <div className="flex items-center gap-x-2 font-light text-grayscale-100 text-[15px] mt-5">
+              <LogoSymbolGray
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                className="text-gray-100"
+              />{" "}
               {nInfo.newsletter.likes}
             </div>
           </div>
@@ -64,16 +62,57 @@ export default async function Page({ params }: pageProps) {
         <section className="w-full flex flex-col">
           <div className="flex items-center w-full">
             <div className="flex items-center justify-between w-full">
+              <p className="font-serif text-sm">
+                <span className="text-grayscale-400">by.</span>
+                <span>{nInfo.writer.nickname}</span>
+                <span className="text-grayscale-400 text-[13px]">
+                  {" "}
+                  ∙ {format(new Date(nInfo.newsletter.sentAt), "yyyy.MM.dd")}
+                </span>
+              </p>
               <button className="py-2 rounded-full px-4 border border-primary text-primary text-xs font-medium">
                 구독하기
               </button>
             </div>
           </div>
+          {nInfo?.series && (
+            <Link
+              className="flex mt-5 items-center justify-between w-full gap-x-[200px] bg-grayscale-100 rounded-lg py-4 px-6"
+              href={`/@${nInfo.writer.moonjinId}/series/${nInfo.series.id}`}
+            >
+              <div className="flex flex-col gap-y-1.5">
+                <h2 className="text-lg underline font-semibold  cursor-pointer">
+                  {nInfo.series.title}
+                </h2>
+                <span className="line-clamp-1 text-grayscale-400 text-[13px]">
+                  {nInfo.series.description}
+                </span>
+              </div>
+              <div className="flex gap-x-4">
+                <div className="flex gap-x-1">
+                  {range(0, 5).map((index) => (
+                    <div
+                      key={index}
+                      className="size-5 rounded border border-primary aspect-square bg-white/90 "
+                    />
+                  ))}
+                </div>
+                <Image
+                  src={nInfo.series.cover}
+                  alt={"시리즈 커버"}
+                  width={68}
+                  height={68}
+                  className="w-[68px] aspect-square min-w-[68px]"
+                />
+              </div>
+            </Link>
+          )}
         </section>
         <hr className="my-10" />
+        {/*뉴스레터 영역*/}
         <EditorRender blocks={nInfo.postContent.content.blocks} />
         <section className="flex flex-col mt-10 w-full">
-          <div className="flex items-center justify-between w-full">
+          <div className="flex items-center justify-between w-full ">
             <span className="text-sm text-grayscale-400 ">
               이번 글은 어떠셨나요? 글이 마음에 드셨다면 문진을 올려주세요
             </span>
