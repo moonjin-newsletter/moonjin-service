@@ -10,7 +10,7 @@ import Link from "next/link";
 export default function HomeSection() {
   const { Carousel, prevEvent, nextEvent } = useCarousel({
     length: homeData.length - 1,
-    width: 540,
+    width: 740,
   });
 
   return (
@@ -50,7 +50,7 @@ export default function HomeSection() {
         <div className="h-fit px-5 py-14 bg-grayscale-100 rounded-l-xl ">
           <Carousel>
             <>
-              <h2 className="font-serif text-2xl pl-3 pr-8 leading-9">
+              <h2 className="font-serif text-2xl pl-5 pr-14 leading-9">
                 이<br />
                 주<br />의<br /> 인<br />
                 기<br />글<br />
@@ -77,7 +77,10 @@ export default function HomeSection() {
 
 function CarouselCard({ postInfo }: { postInfo: any }) {
   return (
-    <Link href={"/@andy91052990/post/2"} className="flex  gap-x-6">
+    <Link
+      href={"/@andy91052990/post/2"}
+      className="flex max-w-[440px] w-[440px] overflow-hidden  gap-x-6"
+    >
       <Image
         src={postInfo?.thumbnail[0]}
         alt={"썸네일 이미지"}
@@ -85,14 +88,18 @@ function CarouselCard({ postInfo }: { postInfo: any }) {
         height={258}
         className="w-[200px] h-[258px] min-w-[200px] rounded object-cover"
       />
-      <div className="flex flex-col whitespace-nowrap h-full">
-        <div className="py-1.5 px-2 text-xs font-medium bg-grayscale-700 text-white rounded-full flex items-center justify-center">
+      <div className="flex w-full flex-col  h-full">
+        <div className="w-fit py-1.5 px-2 text-xs font-medium bg-grayscale-700 text-white rounded-full flex items-center justify-center">
           {postInfo.category[0]}
         </div>
-        <h2 className="font-serif font-semibold mt-3">{postInfo.title}</h2>
-        <span className="mt-4 text-sm">{postInfo.subtitle}</span>
-        <span className="mt-auto text-sm text-grayscale-500">
-          by.{postInfo.writer}
+        <h2 className="font-serif text-lg font-semibold mt-3 ">
+          {postInfo.title}
+        </h2>
+        <span className=" mt-4 text-sm text-grayscale-600">
+          {postInfo.subtitle}
+        </span>
+        <span className="font-libre mt-10 text-sm text-grayscale-500">
+          Written by.{postInfo.writer}
         </span>
       </div>
     </Link>
