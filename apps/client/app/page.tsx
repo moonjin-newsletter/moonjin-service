@@ -13,7 +13,7 @@ export default async function Page() {
       <Header initialColor="bg-white" />
       <div className="relative flex flex-col items-center justify-center w-full h-full min-h-screen overflow-hidden">
         <HomeSection />
-        <section className="flex pt-44 pb-32 flex-col  items-center w-full">
+        <section className="flex pt-40 pb-10 flex-col  items-center w-full">
           <h4 className="text-gray-500 text-sm">
             문진만의 다양한 인기있는 뉴스레터들을 만나보세요
           </h4>
@@ -122,7 +122,7 @@ export default async function Page() {
             />
           </div>
         </section>
-        <section className="flex pt-44  flex-col  items-center w-full ">
+        <section className="flex pt-40  flex-col  items-center w-full ">
           <h4 className="text-gray-500 text-sm">
             문진의 인기있는 작가를 만나보세요
           </h4>
@@ -240,18 +240,18 @@ function PostCard({ post }: { post: any }) {
     <Link href="" className="w-[232px] flex flex-col  px-2 gap-y-4">
       <div className="relative ">
         <Image
-          src={post.thumbnail}
+          src={post.thumbnail[0]}
           width={232}
           height={232}
           alt="작가이미지"
-          className="bg-grayscale-200  w-[232px] h-[232px]    object-cover"
+          className="bg-grayscale-200  w-[232px] h-[232px]  rounded  object-cover"
         />
       </div>
 
-      <div className="flex flex-col gap-y-1.5">
+      <div className="flex flex-col gap-y-2">
         <span className="text-left font-bold text-lg">{post.title}</span>
 
-        <div className=" font-medium text-grayscale-500">
+        <div className="  text-grayscale-500 ">
           비상계엄하의 군사재판은 군인·군무원의 범죄나 군사에 관한 간첩죄의
           경우와 초병·초소·유독음식물공급·포로에
         </div>
@@ -263,9 +263,7 @@ function PostCard({ post }: { post: any }) {
           alt="작가이미지"
           className="w-7 h-7 rounded-full object-cover bg-gray-400"
         />
-        <span className="text-sm font-medium text-grayscale-500">
-          By.작가이름
-        </span>
+        <span className="text-sm  text-grayscale-500">By.작가이름</span>
         <span className="text-sm font-light text-grayscale-500 ml-auto">
           2023.01.02
         </span>

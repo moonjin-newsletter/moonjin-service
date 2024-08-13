@@ -240,7 +240,15 @@ export const writerData = [
   },
   {
     id: 0,
-    thumbnail: "/dummy/9.jpeg",
+    thumbnail: "/dummy/8.jpeg",
+    name: "김땡식",
+    category: ["자유글", "여행기", "이야기"],
+    shortText:
+      "비상계엄하의 군사재판은 군인·군무원의 범죄나 군사에 관한 간첩죄의 경우와 초병·초소·유독음식물공급·포로에",
+  },
+  {
+    id: 0,
+    thumbnail: "/dummy/6.jpeg",
     name: "김땡식",
     category: ["자유글", "여행기", "이야기"],
     shortText:
@@ -256,7 +264,7 @@ export const writerData = [
   },
   {
     id: 0,
-    thumbnail: "/dummy/9.jpeg",
+    thumbnail: "/dummy/5.jpeg",
     name: "김땡식",
     category: ["자유글", "여행기", "이야기"],
     shortText:
@@ -264,7 +272,15 @@ export const writerData = [
   },
   {
     id: 0,
-    thumbnail: "/dummy/9.jpeg",
+    thumbnail: "/dummy/4.jpeg",
+    name: "김땡식",
+    category: ["자유글", "여행기", "이야기"],
+    shortText:
+      "비상계엄하의 군사재판은 군인·군무원의 범죄나 군사에 관한 간첩죄의 경우와 초병·초소·유독음식물공급·포로에",
+  },
+  {
+    id: 0,
+    thumbnail: "/dummy/2.jpeg",
     name: "김땡식",
     category: ["자유글", "여행기", "이야기"],
     shortText:
@@ -316,6 +332,33 @@ export const postData = [
     category: ["시", "에시이"],
     writer: "김작가",
     thumbnail: ["/dummy/5.jpeg"],
+    createdAt: "2023.12.30",
+  },
+  {
+    id: 4,
+    title: "일상의 즐거움",
+    subtitle: "무엇을 고민해볼까",
+    category: ["시", "에시이"],
+    writer: "김작가",
+    thumbnail: ["/dummy/8.jpeg"],
+    createdAt: "2023.12.30",
+  },
+  {
+    id: 4,
+    title: "일상의 즐거움",
+    subtitle: "무엇을 고민해볼까",
+    category: ["시", "에시이"],
+    writer: "김작가",
+    thumbnail: ["/dummy/1.jpeg"],
+    createdAt: "2023.12.30",
+  },
+  {
+    id: 4,
+    title: "일상의 즐거움",
+    subtitle: "무엇을 고민해볼까",
+    category: ["시", "에시이"],
+    writer: "김작가",
+    thumbnail: ["/dummy/7.jpeg"],
     createdAt: "2023.12.30",
   },
 ];
@@ -391,7 +434,7 @@ export const homeData = [
       subtitle: "무엇을 고민해볼까",
       category: ["수필,고민"],
       writer: "김작가",
-      thumbnail: ["/dummy/3.jpeg"],
+      thumbnail: ["/dummy/4.jpeg"],
       createdAt: "2023.12.30",
     },
     {
@@ -400,7 +443,7 @@ export const homeData = [
       subtitle: "'베테랑 신입'을 시작했다\n",
       category: ["수필,고민"],
       writer: "김작가",
-      thumbnail: ["/dummy/4.jpeg"],
+      thumbnail: ["/dummy/7.jpeg"],
       createdAt: "2023.12.30",
     },
   ],

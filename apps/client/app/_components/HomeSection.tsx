@@ -47,7 +47,7 @@ export default function HomeSection() {
         </div>
       </div>
       <div className="flex h-fit w-full relative ">
-        <div className="h-fit px-5 py-14 bg-grayscale-100 rounded-l-xl ">
+        <div className="h-fit px-5 py-14 bg-grayscale-100 rounded-l-xl animate-fade">
           <Carousel>
             <>
               <h2 className="font-serif text-2xl pl-5 pr-14 leading-9">
