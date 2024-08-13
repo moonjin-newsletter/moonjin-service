@@ -164,7 +164,7 @@ export function CancelModal({
   writerInfo,
 }: ModalType & {
   writerInfo: WriterPublicCardDto;
-  mutate: () => void;
+  unmount: () => void;
 }) {
   const router = useRouter();
 

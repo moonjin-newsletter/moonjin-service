@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { userType } from "@utils/checkUser";
 import { UserOrWriterDto } from "@moonjin/api-types";
+import { commaizeNumber } from "@toss/utils";
 
 export default function Profile({
   userInfo,
@@ -56,7 +57,7 @@ export default function Profile({
             >
               <div className="w-fit whitespace-nowrap">{value.title}</div>
               <span className="text-xl font-semibold text-grayscale-700">
-                {value.body}
+                {value.body && commaizeNumber(value.body)}
               </span>
             </div>
           ))}
