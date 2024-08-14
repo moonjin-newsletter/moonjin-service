@@ -3,8 +3,9 @@ import Link from "next/link";
 import Image from "next/image";
 import type { SeriesDto } from "@moonjin/api-types";
 import { BiLike } from "react-icons/bi";
-import { FaBookOpen } from "react-icons/fa6";
-import { usePathname, useRouter } from "next/navigation";
+
+import { usePathname } from "next/navigation";
+import { MdOutlineLibraryBooks } from "react-icons/md";
 
 export default function SeriesCard({ seriesInfo }: { seriesInfo: SeriesDto }) {
   const pathname = usePathname();
@@ -39,7 +40,7 @@ export default function SeriesCard({ seriesInfo }: { seriesInfo: SeriesDto }) {
             <span>{seriesInfo.likes}</span>
           </div>
           <div className="flex items-center gap-x-1">
-            <FaBookOpen />
+            <MdOutlineLibraryBooks />
             <span>{seriesInfo.newsletterCount}</span>
           </div>
         </div>
