@@ -5,7 +5,7 @@ import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {Try, TryCatch} from "../response/tryCatch";
 import {EMAIL_ALREADY_EXIST, USER_NOT_WRITER} from "../response/error/auth";
 import {IAddExternalUserFromForm} from "./api-types/IAddExternalUserFromForm";
-import {SUBSCRIBE_MYSELF_ERROR, SUBSCRIBER_ALREADY_EXIST, SUBSCRIBER_NOT_FOUND} from "../response/error/subscribe";
+import { SUBSCRIBER_ALREADY_EXIST, SUBSCRIBER_NOT_FOUND} from "../response/error/subscribe";
 import {WriterInfoService} from "../writerInfo/writerInfo.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {User} from "../auth/decorator/user.decorator";
@@ -14,7 +14,7 @@ import {
     SubscribingWriterProfileDto,
     AllSubscriberDto,
     ExternalSubscriberDto,
-    AddExternalSubscriberResultDto, SubscribeInfoDto,
+    AddExternalSubscriberResultDto, SubscribingResponseDto,
 } from "./dto";
 import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {ICreateExternalSubscriber} from "./api-types/ICreateExternalSubscriber";
@@ -22,6 +22,7 @@ import {UtilService} from "../util/util.service";
 import {IDeleteExternalSubscriber} from "./api-types/IDeleteExternalSubscriber";
 import {ICreateExternalSubscriberList} from "./api-types/ICreateExternalSubscriberList";
 import SubscribeDtoMapper from "./SubscribeDtoMapper";
+import {ErrorCodeEnum} from "../response/error/enum/errorCode.enum";
 
 @Controller('subscribe')
 export class SubscribeController {
@@ -233,17 +234,19 @@ export class SubscribeController {
      * @summary 작가 구독 정보 가져오기 API
      * @param user
      * @param moonjinId
-     * @returns SubscribeInfoDto
-     * @throws USER_NOT_WRITER
-     * @throws SUBSCRIBER_NOT_FOUND
-     * @throws SUBSCRIBE_MYSELF_ERROR
+     * @returns SubscribingResponseDto
      */
-    @TypedRoute.Get('writer/:moonjinId/info')
+    @TypedRoute.Get('moonjinId/:moonjinId')
     @UseGuards(UserAuthGuard)
-    async getSubscribeOrNotByMoonjinId(@User() user:UserAuthDto, @TypedParam("moonjinId") moonjinId : string): Promise<TryCatch<SubscribeInfoDto,
-        USER_NOT_WRITER | SUBSCRIBER_NOT_FOUND | SUBSCRIBE_MYSELF_ERROR>>{
-        const writerCard = await this.writerInfoService.getWriterPublicCardByMoonjinId(moonjinId);
-        const subscribe = await this.subscribeService.isSubscribingAWriter(user.id, writerCard.user.id);
-        return createResponseForm({createdAt: subscribe.subscribe.createdAt})
+    async getSubscribeOrNotByMoonjinId(@User() user:UserAuthDto, @TypedParam("moonjinId") moonjinId : string):
+        Promise<Try<SubscribingResponseDto>>{
+        try{
+            const writerCard = await this.writerInfoService.getWriterPublicCardByMoonjinId(moonjinId);
+            const subscribe = await this.subscribeService.isSubscribingAWriter(user.id, writerCard.user.id);
+            return createResponseForm({isSubscribing : true, createdAt: subscribe.subscribe.createdAt})
+        }catch (error){
+            if(error.response.code === ErrorCodeEnum.SUBSCRIBE_MYSELF_ERROR) return createResponseForm({isSubscribing : false,isMe: true})
+            return createResponseForm({isSubscribing : false,isMe: false})
+        }
     }
 }

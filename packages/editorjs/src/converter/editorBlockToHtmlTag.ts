@@ -18,9 +18,10 @@ export function EditorBlockToHtmlTag(block : EditorBlockDto){
         case "list":
             let convertedHtml = (block.data.style === "ordered") ? "<ol>" : "<ul>";
             block.data.items.forEach(li => {
-                convertedHtml += `<li>${li}</li>`;
+                convertedHtml += `<li>${li.content}</li>`;
             });
             convertedHtml += (block.data.style === "ordered") ? "<ol>" : "<ul>";
+            console.log(convertedHtml);
             return convertedHtml;
         case "checklist":
         case "linkTool":
