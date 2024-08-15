@@ -1,5 +1,5 @@
 import {WriterInfoWithUser} from "../user/prisma/writerInfoWithUser.prisma.type";
-import {WriterInfoDto, WriterProfileDto, WriterProfileInCardDto} from "./dto";
+import { WriterInfoDto, WriterProfileDto, WriterProfileInCardDto} from "./dto";
 import UserDtoMapper from "../user/userDtoMapper";
 import {WriterInfo} from "@prisma/client";
 
@@ -26,4 +26,5 @@ export class WriterInfoDtoMapper {
             nickname : writerInfoWithUser.user.nickname
         }
     }
+
 }

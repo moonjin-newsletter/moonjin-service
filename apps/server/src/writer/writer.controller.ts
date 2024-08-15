@@ -22,6 +22,7 @@ import {SubscribeService} from "../subscribe/subscribe.service";
 import {SUBSCRIBE_ALREADY_ERROR} from "../response/error/subscribe";
 import {EMAIL_ALREADY_EXIST} from "../response/error/auth";
 import {NEWSLETTER_NOT_FOUND} from "../response/error/post";
+import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
 
 @Controller('writer')
 export class WriterController {
@@ -175,11 +176,7 @@ export class WriterController {
             post: PostDtoMapper.PostToPostDto(postData),
             postContent: PostDtoMapper.PostContentToPostContentDto(postContent),
             series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
-            writer: {
-                userId: writerInfo.userId,
-                moonjinId: writerInfo.moonjinId,
-                nickname: writerInfo.user.nickname
-            }
+            writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterProfileDto(writerInfo)
         })
     }
 }
