@@ -65,6 +65,9 @@ export enum ErrorCodeEnum {
     LETTER_NOT_FOUND = "0502",
     LETTER_ALREADY_READ = "0503",
 
+    // like
+    LIKE_NOT_FOUND = "0600",
+    LIKE_ALREADY_EXIST = "0601",
 
 
     //File

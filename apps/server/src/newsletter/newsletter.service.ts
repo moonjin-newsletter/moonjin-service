@@ -18,6 +18,7 @@ import {WebNewsletterWithNewsletterWithPost} from "./prisma/webNewsletterWithNew
 import {Category} from "@moonjin/api-types";
 import {SeriesService} from "../series/series.service";
 import {NewsletterWithPostAndContentAndWriter} from "./prisma/newsletterWithPostAndContentAndWriter.prisma.type";
+import {NewsletterLike} from "@prisma/client";
 
 
 @Injectable()
@@ -460,5 +461,27 @@ export class NewsletterService {
             relationLoadStrategy: 'join'
         })
         if(newsletter == null) throw ExceptionList.NEWSLETTER_NOT_FOUND;
+    }
+
+    /**
+     * @summary 해당 뉴스레터에 해당 유저가 좋아요를 눌렀는지 가져오기
+     * @param userId
+     * @param newsletterId
+     * @return NewsletterLike
+     * @throws LIKE_NOT_FOUND
+     */
+    async getNewsletterLike(userId: number, newsletterId: number): Promise<NewsletterLike>{
+        try{
+            return this.prismaService.newsletterLike.findUniqueOrThrow({
+                where : {
+                    newsletterId_userId : {
+                        userId,
+                        newsletterId
+                    }
+                }
+            })
+        }catch (error){
+            throw ExceptionList.LIKE_NOT_FOUND;
+        }
     }
 }

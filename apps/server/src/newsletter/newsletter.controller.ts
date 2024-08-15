@@ -16,7 +16,7 @@ import {NewsletterService} from "./newsletter.service";
 import {UserService} from "../user/user.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
-import { NewsletterCardDto, NewsletterSendResultDto} from "./dto";
+import {NewsletterCardDto, NewsletterLikeResponseDto, NewsletterSendResultDto} from "./dto";
 import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {ExceptionList} from "../response/error/errorInstances";
@@ -213,7 +213,7 @@ export class NewsletterController {
     @UseGuards(UserAuthGuard)
     async likeNewsletter(@User() user:UserAuthDto, @TypedParam('newsletterId') newsletterId: number)
     :Promise<TryCatch<ResponseMessage, NEWSLETTER_NOT_FOUND>>{
-        await this.newsletterService.likeNewsletter(user.id, newsletterId);
+        await this.newsletterService.likeNewsletter(newsletterId,user.id);
         return createResponseForm({message : "좋아요가 되었습니다."});
     }
 
@@ -226,8 +226,25 @@ export class NewsletterController {
     @UseGuards(UserAuthGuard)
     async unlikeNewsletter(@User() user:UserAuthDto, @TypedParam('newsletterId') newsletterId: number)
     :Promise<Try<ResponseMessage>>{
-        await this.newsletterService.unlikeNewsletter(user.id, newsletterId);
+        await this.newsletterService.unlikeNewsletter( newsletterId, user.id);
         return createResponseForm({message : "좋아요가 해제 되었습니다."});
+    }
+
+    /**
+     * @summary 해당 뉴스레터 좋아요 여부 확인
+     * @param user
+     * @param newsletterId
+     */
+    @TypedRoute.Get(':newsletterId/like')
+    @UseGuards(UserAuthGuard)
+    async getNewsletterLikeOrNot(@User() user:UserAuthDto, @TypedParam('newsletterId') newsletterId: number)
+    :Promise<Try<NewsletterLikeResponseDto>> {
+        try{
+            const newsletterLike = await this.newsletterService.getNewsletterLike(user.id, newsletterId);
+            return createResponseForm({like : true, createdAt:  newsletterLike.createdAt});
+        }catch (error){
+            return createResponseForm({like : false});
+        }
     }
 
 }

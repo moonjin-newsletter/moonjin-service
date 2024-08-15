@@ -9,6 +9,7 @@ export * from "./src/response/error/post/index";
 export * from "./src/response/error/user/index";
 export * from "./src/response/error/series/index";
 export * from "./src/response/error/file/index";
+export * from "./src/response/error/like/index";
 export * from "./src/response/error/subscribe/index";
 
 //api-types

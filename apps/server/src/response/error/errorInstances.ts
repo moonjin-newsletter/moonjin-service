@@ -26,6 +26,7 @@ import {EMPTY_LIST_INPUT, EMPTY_VALUE_INPUT} from "./dev";
 import {LETTER_ALREADY_READ, LETTER_NOT_FOUND, FORBIDDEN_FOR_LETTER, SEND_LETTER_ERROR} from "./letter";
 import {FILE_EXTENTION_ERROR, FILE_UPLOAD_ERROR} from "./file";
 import {PROFILE_CHANGE_ERROR} from "./user";
+import {LIKE_ALREADY_EXIST, LIKE_NOT_FOUND} from "./like";
 
 export const ExceptionList= {
     EMAIL_ALREADY_EXIST: new Exception(typia.random<EMAIL_ALREADY_EXIST>()),
@@ -85,6 +86,11 @@ export const ExceptionList= {
     FORBIDDEN_FOR_LETTER : new Exception(typia.random<FORBIDDEN_FOR_LETTER>()),
     LETTER_NOT_FOUND : new Exception(typia.random<LETTER_NOT_FOUND>()),
     LETTER_ALREADY_READ : new Exception(typia.random<LETTER_ALREADY_READ>()),
+
+    // Like
+    LIKE_NOT_FOUND : new Exception(typia.random<LIKE_NOT_FOUND>()),
+    LIKE_ALREADY_EXIST : new Exception(typia.random<LIKE_ALREADY_EXIST>()),
+
     //file
     FILE_EXTENTION_ERROR: new Exception(typia.random<FILE_EXTENTION_ERROR>()),
     FILE_UPLOAD_ERROR: new Exception(typia.random<FILE_UPLOAD_ERROR>()),
