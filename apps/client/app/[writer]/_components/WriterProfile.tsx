@@ -1,10 +1,16 @@
 import Image from "next/image";
-import type { WriterPublicCardDto } from "@moonjin/api-types";
+import type {
+  ResponseForm,
+  SubscribingResponseDto,
+  WriterPublicCardDto,
+} from "@moonjin/api-types";
 import { commaizeNumber } from "@toss/utils";
 import SubModalProvider from "@components/modal/SubModalProvider";
 import MoreButton from "./MoreButton";
 import { formatNumberKo } from "@utils/formatNumber";
 import { cookies } from "next/headers";
+import ssr from "@lib/fetcher/ssr";
+import { redirect } from "next/navigation";
 
 export default async function WriterProfile({
   writerInfo,
@@ -12,13 +18,13 @@ export default async function WriterProfile({
   writerInfo: WriterPublicCardDto;
 }) {
   const isLogin = cookies().get("accessToken");
-  const subInfo = null;
+  // const subInfo = null;
 
-  // const { data: subInfo } = isLogin
-  //   ? await ssr(`subscribe/writer/${writerInfo.writerInfo.moonjinId}/info`)
-  //       .json<ResponseForm<SubscribeInfoDto>>()
-  //       .catch(() => redirect("/auth/login"))
-  //   : { data: null };
+  const { data: subInfo } = isLogin
+    ? await ssr(`subscribe/moonjinId/${writerInfo.writerInfo.moonjinId}`)
+        .json<ResponseForm<SubscribingResponseDto>>()
+        .catch(() => redirect("/auth/login"))
+    : { data: null };
 
   return (
     <header className="w-full h-[200px]  flex items-center gap-x-10">

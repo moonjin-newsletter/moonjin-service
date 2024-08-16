@@ -1,12 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import type { WriterPublicCardDto } from "@moonjin/api-types";
+import { ErrorCodeEnum, WriterPublicCardDto } from "@moonjin/api-types";
 import { useForm } from "react-hook-form";
 import * as Tb from "react-icons/tb";
 import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { getDateDistance } from "@toss/date";
 
 type ModalType = {
   unmount: () => void;
@@ -25,13 +26,23 @@ export function PreLoginSubModal({
 
   function onPreSub(data: any) {
     csr
-      .post(`writer/${writerInfo.writerInfo.userId}/subscribe/external`, data)
+      .post(`writer/${writerInfo.writerInfo.userId}/subscribe/external`, {
+        json: {
+          subscriberName: data.subscriberName,
+          subscriberEmail: data.subscriberEmail,
+        },
+      })
       .then(() => {
         toast.success("구독 완료");
         unmount();
       })
       .catch((error) => {
         console.log(error);
+        if (error.code === ErrorCodeEnum.EMAIL_ALREADY_EXIST) {
+          return toast.error("이미 존재하는 메일입니다");
+        }
+
+        return toast.error("잠시 후에 시도해주세요");
       });
   }
 
@@ -72,32 +83,36 @@ export function PreLoginSubModal({
             <span className="text-primary">*</span> 구독자 이름
           </label>
           <input
-            {...register("name", { required: "구독자 이름을 입력해주세요" })}
+            {...register("subscriberName", {
+              required: "구독자 이름을 입력해주세요",
+            })}
             placeholder={"이름을 입력해주세요(24자 이내)"}
             maxLength={24}
             type="text"
             className="w-full mt-1 px-3 py-2 border-none  rounded placeholder:text-sm bg-grayscale-100 focus:ring-0  outline-none"
           />
-          {errors.name?.message && (
+          {errors.subscriberName?.message && (
             <div className="flex mt-1 items-center  text-rose-500 gap-x-1">
               <Tb.TbAlertCircle />
-              <span className="text-xs text-rose-500 ">{`${errors.name?.message}`}</span>
+              <span className="text-xs text-rose-500 ">{`${errors.subscriberName?.message}`}</span>
             </div>
           )}
           <label htmlFor="email" className="font-semibold text-[13px] mt-4">
             <span className="text-primary ">*</span> 구독자 이메일
           </label>
           <input
-            {...register("email", { required: "구독자 이메일을 입력해주세요" })}
+            {...register("subscriberEmail", {
+              required: "구독자 이메일을 입력해주세요",
+            })}
             placeholder={"이메일을 입력해주세요"}
             maxLength={24}
-            type="email"
+            type="subscriberEmail"
             className="w-full mt-1 px-3 py-2 border-none rounded placeholder:text-sm bg-grayscale-100 focus:ring-0  outline-none"
           />
-          {errors.email?.message && (
+          {errors.subscriberEmail?.message && (
             <div className="flex mt-1 items-center  text-rose-500 gap-x-1">
               <Tb.TbAlertCircle />
-              <span className="text-xs text-rose-500 ">{`${errors.email?.message}`}</span>
+              <span className="text-xs text-rose-500 ">{`${errors.subscriberEmail?.message}`}</span>
             </div>
           )}
           <div className="flex items-center mt-3">
@@ -162,8 +177,10 @@ export function LoginSubModal({ unmount }: ModalType) {
 export function CancelModal({
   unmount,
   writerInfo,
+  subInfo,
 }: ModalType & {
   writerInfo: WriterPublicCardDto;
+  subInfo: any;
   unmount: () => void;
 }) {
   const router = useRouter();
@@ -193,18 +210,32 @@ export function CancelModal({
         className=" h-fit min-w-[420px] w-[420px] overflow-y-auto py-8 px-10 rounded-lg bg-white flex-col flex items-center"
       >
         <span className="text-lg font-bold">구독을 취소하시겠습니까?</span>
+        <section className="flex flex-col items-center mt-4 gap-y-2">
+          <span>
+            {writerInfo.user.nickname}작가님의 글을{" "}
+            <strong className="text-primary text-sm">
+              {getDateDistance(new Date(subInfo.createdAt), new Date()).days}일
+            </strong>
+            동안 읽으셨어요!
+          </span>
+          <span className="text-sm text-grayscale-400">
+            작가의 뉴스레터를 더이상 받아보실 수 없고,
+            <br />
+            새로운 글의 알림도 받아보실 수 없습니다.
+          </span>
+        </section>
         <div className="w-full mt-6 flex flex-col gap-y-2">
           <button
             onClick={unmount}
             type="button"
-            className="py-3 text-sm font-medium  bg-grayscale-700 text-white rounded-lg w-full"
+            className="py-3 text-sm font-medium  bg-grayscale-600 text-white rounded-lg w-full"
           >
             계속 구독하기
           </button>
           <button
             onClick={onCancel}
             type="button"
-            className="py-3 text-sm font-medium border border-rose-600 text-rose-600  rounded-lg w-full"
+            className="py-3 text-sm font-medium border border-primary text-primary  rounded-lg w-full"
           >
             구독 취소
           </button>

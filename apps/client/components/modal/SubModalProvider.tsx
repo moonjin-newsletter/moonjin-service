@@ -1,13 +1,15 @@
 "use client";
 
 import { ReactElement } from "react";
-import { WriterPublicCardDto } from "@moonjin/api-types";
+import type {
+  SubscribingResponseDto,
+  WriterPublicCardDto,
+} from "@moonjin/api-types";
 import { overlay } from "overlay-kit";
 import * as SubModal from "@components/modal/SubModal";
 import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { isNotNil } from "@toss/utils";
 
 export default function SubModalProvider({
   subInfo,
@@ -15,15 +17,17 @@ export default function SubModalProvider({
   subChildren,
   unSubChildren,
 }: {
-  subInfo: any;
+  subInfo: SubscribingResponseDto | null;
   writerInfo: WriterPublicCardDto;
   subChildren: ReactElement;
   unSubChildren: ReactElement;
 }) {
   const router = useRouter();
 
+  console.log(subInfo);
+
   function onClickSub() {
-    if (!isNotNil(subInfo)) {
+    if (subInfo) {
       csr
         .post(`subscribe/writer/${writerInfo.writerInfo.moonjinId}`)
         .then(() => {
@@ -45,13 +49,22 @@ export default function SubModalProvider({
 
   function onClickCancelSub() {
     return overlay.open(({ isOpen, unmount }) => {
-      return <SubModal.CancelModal unmount={unmount} writerInfo={writerInfo} />;
+      return (
+        <SubModal.CancelModal
+          unmount={unmount}
+          writerInfo={writerInfo}
+          subInfo={subInfo}
+        />
+      );
     });
   }
 
   // if (isLoading) return <AiOutlineLoading3Quarters />;
 
-  if (subInfo?.data?.createdAt)
+  // if (subInfo?.isSubscribing === false && subInfo?.isMe)
+  //   return toast.error("자신은 구독할 수 없습니다.");
+
+  if (subInfo?.isSubscribing)
     return <button onClick={onClickCancelSub}>{unSubChildren}</button>;
 
   return <button onClick={onClickSub}>{subChildren}</button>;
