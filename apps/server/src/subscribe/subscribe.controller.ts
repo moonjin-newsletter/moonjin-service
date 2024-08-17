@@ -69,41 +69,6 @@ export class SubscribeController {
      * @throws FOLLOW_MYSELF_ERROR
      * @throws FOLLOW_ALREADY_ERROR
      */
-    @TypedRoute.Post(":writerId")
-    @UseGuards(UserAuthGuard)
-    async follow(@TypedParam("writerId") writerId : number, @User() user : UserAuthDto) {
-        await this.subscribeService.subscribeWriter(user.id, writerId);
-        return createResponseForm({
-            message: "팔로우 성공"
-        })
-    }
-
-    /**
-     * @summary 팔로우 취소 기능
-     * @param writerId
-     * @param user
-     * @returns
-     * @throws USER_NOT_WRITER
-     * @throws FOLLOW_MYSELF_ERROR
-     */
-    @TypedRoute.Delete(":writerId")
-    @UseGuards(UserAuthGuard)
-    async unfollow(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
-        await this.subscribeService.unsubscribeWriter(user.id, writerId);
-        return createResponseForm({
-            message: "팔로우 취소 성공"
-        })
-    }
-
-    /**
-     * @summary 팔로우 기능
-     * @param writerId
-     * @param user
-     * @returns
-     * @throws USER_NOT_WRITER
-     * @throws FOLLOW_MYSELF_ERROR
-     * @throws FOLLOW_ALREADY_ERROR
-     */
     @TypedRoute.Post("writer/:writerId")
     @UseGuards(UserAuthGuard)
     async followWriterById(@TypedParam("writerId") writerId : number, @User() user : UserAuthDto) {
@@ -123,7 +88,7 @@ export class SubscribeController {
      */
     @TypedRoute.Delete("writer/:writerId")
     @UseGuards(UserAuthGuard)
-    async unfollowWriterById(@TypedParam("id") writerId : number, @User() user : UserAuthDto) {
+    async unfollowWriterById(@TypedParam("writerId") writerId : number, @User() user : UserAuthDto) {
         await this.subscribeService.unsubscribeWriter(user.id, writerId);
         return createResponseForm({
             message: "팔로우 취소 성공"
