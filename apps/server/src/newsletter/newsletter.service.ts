@@ -19,6 +19,7 @@ import {Category} from "@moonjin/api-types";
 import {SeriesService} from "../series/series.service";
 import {NewsletterWithPostAndContentAndWriter} from "./prisma/newsletterWithPostAndContentAndWriter.prisma.type";
 import {NewsletterLike} from "@prisma/client";
+import {CategoryEnum} from "../post/enum/category.enum";
 
 
 @Injectable()
@@ -356,6 +357,12 @@ export class NewsletterService {
         })
     }
 
+    /**
+     * @summary 해당 뉴스레터의 Card 데이터 가져오기
+     * @param newsletterId
+     * @return NewsletterWithPostWithWriterAndSeries
+     * @throws NEWSLETTER_NOT_FOUND
+     */
     async getNewsletterCardByNewsletterId(newsletterId: number): Promise<NewsletterWithPostWithWriterAndSeries>{
         const newsletter : NewsletterWithPostWithWriterAndSeries | null = await this.prismaService.newsletter.findUnique({
             where: {
@@ -483,5 +490,44 @@ export class NewsletterService {
         }catch (error){
             throw ExceptionList.LIKE_NOT_FOUND;
         }
+    }
+
+    /**
+     * @summary 해당 카테고리의 최신순 글 무직위 가져오기
+     * @param category
+     * @param paginationOptions
+     * @return NewsletterWithPostWithWriterAndSeries[]
+     */
+    async getRecommendNewsletterListByCategory(category? : CategoryEnum, paginationOptions?:PaginationOptionsDto): Promise<NewsletterWithPostWithWriterAndSeries[]>{
+        return this.prismaService.newsletter.findMany({
+            where : {
+                post : {
+                    category,
+                    deleted : false
+                }
+            },
+            include: {
+                post : {
+                    include : {
+                        writerInfo : {
+                            include : {
+                                user : true
+                            }
+                        },
+                        series : true
+                    }
+                }
+            },
+            relationLoadStrategy: 'join',
+            orderBy : {
+                sentAt : 'desc'
+            },
+            skip: paginationOptions?.skip,
+            take: paginationOptions?.take,
+            cursor: paginationOptions?.cursor ? {
+                id : paginationOptions.cursor
+            } : undefined
+        })
+
     }
 }

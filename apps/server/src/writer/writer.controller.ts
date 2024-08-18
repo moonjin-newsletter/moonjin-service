@@ -162,6 +162,13 @@ export class WriterController {
         })
     }
 
+    /**
+     * @summary 작가페이지의 newsletter 의 모든 데이터 가져오기
+     * @param moonjinId
+     * @param newsletterId
+     * @returns NewsletterAllDataDto
+     * @throws NEWSLETTER_NOT_FOUND
+     */
     @TypedRoute.Get(":moonjinId/newsletter/:newsletterId")
     async getNewsletterAllDataByNewsletterId(@TypedParam("moonjinId") moonjinId : string, @TypedParam("newsletterId") newsletterId : number)
     :Promise<TryCatch<NewsletterAllDataDto, NEWSLETTER_NOT_FOUND>>{

@@ -25,6 +25,8 @@ import NewsletterDtoMapper from "./newsletterDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {AssertEditorJsonDto, EditorJsToHtml} from "@moonjin/editorjs";
 import PostDtoMapper from "../post/postDtoMapper";
+import {GetPagination} from "../common/pagination/decorator/GetPagination.decorator";
+import {PaginationOptionsDto} from "../common/pagination/dto";
 
 @Controller('newsletter')
 export class NewsletterController {
@@ -245,6 +247,41 @@ export class NewsletterController {
         }catch (error){
             return createResponseForm({like : false});
         }
+    }
+
+    /**
+     * @summary 해당 뉴스레터와의 추천 연관글 가져오기
+     * @param newsletterId
+     * @param paginationOptions
+     * @returns NewsletterCardDto[]
+     * @throws NEWSLETTER_NOT_FOUND
+     */
+    @TypedRoute.Get(':newsletterId/recommend/all')
+    async getRecommendNewsletterById(@TypedParam('newsletterId') newsletterId: number,  @GetPagination() paginationOptions: PaginationOptionsDto)
+    :Promise<TryCatch<NewsletterCardDto[], NEWSLETTER_NOT_FOUND>>{
+        const newsletter = await this.newsletterService.getNewsletterCardByNewsletterId(newsletterId);
+        const recommendNewsletterList = await this.newsletterService.getRecommendNewsletterListByCategory(newsletter.post.category, paginationOptions);
+        const recommendNewsletterCardList = recommendNewsletterList.map(newsletter => {
+            const { post, ...newsletterData} = newsletter;
+            const {series,writerInfo, ...postData} = post;
+            return {
+                newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
+                post : PostDtoMapper.PostToPostDto(postData),
+                series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
+                writer : {
+                    userId : post.writerInfo.userId,
+                    moonjinId : post.writerInfo.moonjinId,
+                    nickname : post.writerInfo.user.nickname
+                },
+            }});
+        return createResponseForm(recommendNewsletterCardList, {
+            next : {
+                pageNo : paginationOptions.pageNo + 1,
+                    cursor : recommendNewsletterCardList.length > 0 ? recommendNewsletterCardList[recommendNewsletterCardList.length - 1].newsletter.id : 0
+            },
+            isLastPage : recommendNewsletterCardList.length < paginationOptions.take,
+                totalCount : recommendNewsletterCardList.length
+        });
     }
 
 }

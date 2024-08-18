@@ -11,17 +11,18 @@ export const GetPagination = createParamDecorator(
     const request = context.switchToHttp().getRequest();
     const pageNo = Number(request.query?.pageNo) || 1;
     const cursor = Number(request.query?.cursor) || undefined;
+    const take = Number(request.query?.take) || undefined;
 
     if(cursor)
         return {
-            take : PaginationDefault.TAKE_DEFAULT,
+            take : take ? take : PaginationDefault.TAKE_DEFAULT,
             skip : 1,
             pageNo,
             cursor
         }
     else{
         return {
-            take : PaginationDefault.TAKE_DEFAULT,
+            take : take ? take : PaginationDefault.TAKE_DEFAULT,
             pageNo,
             skip : (pageNo-1) * PaginationDefault.TAKE_DEFAULT
         }
