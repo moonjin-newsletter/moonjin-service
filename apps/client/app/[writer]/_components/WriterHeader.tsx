@@ -7,8 +7,10 @@ import type { ResponseForm, UserOrWriterDto } from "@moonjin/api-types";
 import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
 import { checkType } from "@utils/checkUser";
+import { useRouter } from "next/navigation";
 
 export default function WriterHeader() {
+  const router = useRouter();
   const { data: userInfo, mutate } =
     useSWR<ResponseForm<UserOrWriterDto>>("user");
 
@@ -16,6 +18,7 @@ export default function WriterHeader() {
     csr
       .post("auth/logout")
       .then((res) => {
+        router.refresh();
         return mutate(undefined);
       })
       .catch((err) => {

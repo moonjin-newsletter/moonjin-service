@@ -1,8 +1,9 @@
 "use client";
 
 import { ReactElement } from "react";
-import type {
+import {
   SubscribingResponseDto,
+  SubscribingStatusResponseDto,
   WriterPublicCardDto,
 } from "@moonjin/api-types";
 import { overlay } from "overlay-kit";
@@ -23,8 +24,6 @@ export default function SubModalProvider({
   unSubChildren: ReactElement;
 }) {
   const router = useRouter();
-
-  console.log(subInfo);
 
   function onClickSub() {
     if (subInfo) {
@@ -53,7 +52,7 @@ export default function SubModalProvider({
         <SubModal.CancelModal
           unmount={unmount}
           writerInfo={writerInfo}
-          subInfo={subInfo}
+          subInfo={subInfo as SubscribingStatusResponseDto}
         />
       );
     });

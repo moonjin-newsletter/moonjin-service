@@ -1,7 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { ErrorCodeEnum, WriterPublicCardDto } from "@moonjin/api-types";
+import {
+  ErrorCodeEnum,
+  SubscribingStatusResponseDto,
+  WriterPublicCardDto,
+} from "@moonjin/api-types";
 import { useForm } from "react-hook-form";
 import * as Tb from "react-icons/tb";
 import csr from "@lib/fetcher/csr";
@@ -26,7 +30,7 @@ export function PreLoginSubModal({
 
   function onPreSub(data: any) {
     csr
-      .post(`writer/${writerInfo.writerInfo.userId}/subscribe/external`, {
+      .post(`writer/${writerInfo.writerInfo.moonjinId}/subscribe/external`, {
         json: {
           subscriberName: data.subscriberName,
           subscriberEmail: data.subscriberEmail,
@@ -180,7 +184,7 @@ export function CancelModal({
   subInfo,
 }: ModalType & {
   writerInfo: WriterPublicCardDto;
-  subInfo: any;
+  subInfo: SubscribingStatusResponseDto;
   unmount: () => void;
 }) {
   const router = useRouter();
