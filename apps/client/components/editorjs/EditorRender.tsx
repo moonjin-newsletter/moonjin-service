@@ -39,8 +39,6 @@ export default function EditorRender({
   blocks: EditorBlockDto[];
   children?: ReactNode;
 }) {
-  console.log(blocks);
-
   const content = renderEditorData(blocks);
 
   return (
@@ -84,18 +82,7 @@ function renderEditorData(blocks: EditorBlockDto[]) {
           </figure>
         );
       case "list":
-        return (
-          <ul
-            key={index}
-            className={`${
-              block.data.style === "ordered" ? "list-disc" : "list-decimal"
-            } pl-4`}
-          >
-            {block.data.items.map((item: any, index: any) => (
-              <li key={index}>{item}</li>
-            ))}
-          </ul>
-        );
+        return ListRender(block.data.items, block.data.style);
 
       default:
         return null;
@@ -103,6 +90,17 @@ function renderEditorData(blocks: EditorBlockDto[]) {
   });
 }
 
-// function ListRender(block: BlockType) {
-//   block.items.length > 0 && console.log(1);
-// }
+function ListRender(items: any, style: "ordered" | "unordered" | undefined) {
+  return (
+    <ul
+      className={`${style === "ordered" ? "list-decimal" : "list-disc"} pl-4`}
+    >
+      {items.map((item: any, index: any) => (
+        <>
+          <li key={index}>{item.content}</li>
+          {item.items && item.items.length > 0 && ListRender(item.items, style)}
+        </>
+      ))}
+    </ul>
+  );
+}

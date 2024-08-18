@@ -25,7 +25,6 @@ export default async function Page({ params }: pageProps) {
   const { data: nInfo } = await nfetch<ResponseForm<NewsletterAllDataDto>>(
     `writer/${moonjinId}/newsletter/${nId}`,
   );
-  console.log(nInfo);
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -65,7 +64,12 @@ export default async function Page({ params }: pageProps) {
             <div className="flex items-center justify-between w-full">
               <p className="font-serif text-sm">
                 <span className="text-grayscale-400">by.</span>
-                <span>{nInfo.writer.user.nickname}</span>
+                <Link
+                  className="hover:underline"
+                  href={`/@${nInfo.writer.writerInfo.moonjinId}`}
+                >
+                  {nInfo.writer.user.nickname}
+                </Link>
                 <span className="text-grayscale-400 text-[13px]">
                   {" "}
                   ∙ {format(new Date(nInfo.newsletter.sentAt), "yyyy.MM.dd")}
