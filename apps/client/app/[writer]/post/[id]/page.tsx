@@ -145,7 +145,7 @@ export default async function Page({ params }: pageProps) {
                 width={48}
                 height={48}
                 alt={"작가 프로필"}
-                className="size-12 aspect-square bg-gray-300 rounded-full"
+                className="size-12 aspect-square  rounded-full bg-white"
               />
               <div className="flex flex-col ml-3">
                 <p className="font-semibold">{nInfo.writer.user.nickname}</p>
