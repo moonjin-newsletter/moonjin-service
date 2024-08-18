@@ -3,7 +3,11 @@ import PostHeader from "../_components/PostHeader";
 import Image from "next/image";
 import { LogoSymbolGray } from "@components/icons";
 import { nfetch } from "@lib/fetcher/noAuth";
-import { NewsletterAllDataDto, ResponseForm } from "@moonjin/api-types";
+import {
+  NewsletterAllDataDto,
+  NewsletterCardDto,
+  ResponseForm,
+} from "@moonjin/api-types";
 import { format } from "date-fns";
 import Link from "next/link";
 import { formatNumberKo } from "@utils/formatNumber";
@@ -25,6 +29,11 @@ export default async function Page({ params }: pageProps) {
   const { data: nInfo } = await nfetch<ResponseForm<NewsletterAllDataDto>>(
     `writer/${moonjinId}/newsletter/${nId}`,
   );
+  const { data: relatedPosts } = await nfetch<
+    ResponseForm<NewsletterCardDto[]>
+  >(`newsletter/${nId}/recommend/all?take=9`);
+
+  console.log(relatedPosts);
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -107,7 +116,7 @@ export default async function Page({ params }: pageProps) {
                   alt={"시리즈 커버"}
                   width={68}
                   height={68}
-                  className="w-[68px] aspect-square min-w-[68px]"
+                  className="w-[68px] aspect-square min-w-[68px] rounded"
                 />
               </div>
             </Link>
@@ -161,8 +170,47 @@ export default async function Page({ params }: pageProps) {
           <span className="text-lg font-bold">
             방금 읽은 글과 유사한 글을 읽어보세요.
           </span>
+          <div className="grid grid-cols-3 gap-x-4 gap-y-6 mt-5">
+            {relatedPosts.map((relatedPost) => (
+              <RelatedPostCard key={relatedPost.post.id} pInfo={relatedPost} />
+            ))}
+          </div>
         </section>
       </main>
     </div>
+  );
+}
+
+function RelatedPostCard({ pInfo }: { pInfo: NewsletterCardDto }) {
+  return (
+    <Link href={`/@${pInfo.writer.moonjinId}/newsletter/${pInfo.post.id}`}>
+      <div className="flex flex-col gap-y-2">
+        <div className="size-fit max-w-[212px] max-h-[212px] bg-gray-300 rounded-lg border overflow-hidden">
+          <Image
+            src={pInfo.post.cover}
+            alt="커버 이미지"
+            className="rounded-lg aspect-square object-cover"
+            width={212}
+            height={212}
+          />
+        </div>
+        <h3 className=" font-semibold line-clamp-1">{pInfo.post.title}</h3>
+        <p className="line-clamp-1 text-grayscale-500 text-sm">
+          {pInfo.post.preview}
+        </p>
+        <div className="flex items-center">
+          {/*<Image*/}
+          {/*  src={pInfo.writer.image}*/}
+          {/*  alt={"작가 이미지"}*/}
+          {/*  width={24}*/}
+          {/*  height={24}*/}
+          {/*  className="rounded-full"*/}
+          {/*/>*/}
+          <span className="text-sm text-grayscale-500 ">
+            By.{pInfo.writer.nickname}
+          </span>
+        </div>
+      </div>
+    </Link>
   );
 }
