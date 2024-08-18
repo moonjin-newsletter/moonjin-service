@@ -2,6 +2,7 @@
 
 import { ReactElement } from "react";
 import {
+  ErrorCodeEnum,
   SubscribingResponseDto,
   SubscribingStatusResponseDto,
   WriterPublicCardDto,
@@ -28,12 +29,16 @@ export default function SubModalProvider({
   function onClickSub() {
     if (subInfo) {
       csr
-        .post(`subscribe/writer/${writerInfo.writerInfo.moonjinId}`)
+        .post(`subscribe/writer/${writerInfo.writerInfo.userId}`)
         .then(() => {
           toast.success("구독 완료");
           return router.refresh();
         })
-        .catch((error) => {});
+        .catch((error) => {
+          if ((error.code = ErrorCodeEnum.SUBSCRIBE_MYSELF_ERROR)) {
+            return toast.error("자신은 구독할 수 없습니다.");
+          }
+        });
     } else {
       return overlay.open(({ isOpen, unmount }) => {
         return (
