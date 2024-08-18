@@ -100,4 +100,58 @@ export class WriterInfoService {
             throw ExceptionList.USER_NOT_WRITER;
         }
     }
+
+    /**
+     * @summary 해당 유저의 뉴스레터 수와 동기화
+     * @param writerId
+     * @throws USER_NOT_WRITER
+     */
+    async synchronizeNewsLetter(writerId: number){
+        try{
+            const newsletterCount = await this.prismaService.newsletter.count({
+                where: {
+                    post : {
+                        writerId,
+                        deleted : false
+                    }
+                }
+            })
+            await this.prismaService.writerInfo.update({
+                where: {
+                    userId: writerId
+                },
+                data: {
+                    newsletterCount
+                }
+            })
+        }catch (error){
+            throw ExceptionList.USER_NOT_WRITER
+        }
+    }
+
+    /**
+     * @summary 작가 시리즈 수 동기화
+     * @param userId
+     * @returns void
+     * @throws USER_NOT_WRITER
+     */
+    async synchronizeSeries(userId :number) {
+        try{
+            const seriesCount = await this.prismaService.series.count({
+                where: {
+                    writerId: userId
+                }
+            })
+            await this.prismaService.writerInfo.update({
+                where: {
+                    userId
+                },
+                data: {
+                    seriesCount
+                }
+            })
+        }catch (error){
+            throw ExceptionList.USER_NOT_WRITER
+        }
+    }
 }

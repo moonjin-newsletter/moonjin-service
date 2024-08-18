@@ -12,16 +12,16 @@ import {Try, TryCatch} from "../response/tryCatch";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
 import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_EMPTY, SERIES_NOT_FOUND} from "../response/error/series";
-import {UserService} from "../user/user.service";
 import SeriesDtoMapper from "./seriesDtoMapper";
 import UserDtoMapper from "../user/userDtoMapper";
 import {Category} from "@moonjin/api-types";
+import {WriterInfoService} from "../writerInfo/writerInfo.service";
 
 @Controller('series')
 export class SeriesController {
     constructor(
         private readonly seriesService: SeriesService,
-        private readonly userService:UserService,
+        private readonly writerInfoService:WriterInfoService,
     ) {}
 
     /**
@@ -39,7 +39,7 @@ export class SeriesController {
     ): Promise<TryCatch<SeriesDto, CREATE_SERIES_ERROR >>{
         const category = Category.getNumberByCategory(seriesData.category);
         const series = await this.seriesService.createSeries({...seriesData,writerId: user.id, category});
-        await this.userService.synchronizeSeries(user.id);
+        await this.writerInfoService.synchronizeSeries(user.id);
         return createResponseForm(series)
     }
 

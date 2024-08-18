@@ -186,59 +186,6 @@ export class UserService {
     }
 
     /**
-     * @summary 작가 뉴스레터 수 증가
-     * @param userId
-     * @param isIncrement
-     * @returns void
-     * @throws USER_NOT_WRITER
-     */
-    async synchronizeNewsLetter(userId : number, isIncrement: boolean): Promise<void> {
-        try{
-            const newsletterCount = isIncrement ? {
-                increment: 1
-            } : {
-                decrement: 1
-            };
-            await this.prismaService.writerInfo.update({
-                where: {
-                    userId
-                },
-                data: {
-                    newsletterCount
-                }
-            })
-        }catch (error){
-            throw ExceptionList.USER_NOT_WRITER
-        }
-    }
-
-    /**
-     * @summary 작가 시리즈 수 증가
-     * @param userId
-     * @returns void
-     * @throws USER_NOT_WRITER
-     */
-    async synchronizeSeries(userId :number) {
-        try{
-            const seriesCount = await this.prismaService.series.count({
-                where: {
-                    writerId: userId
-                }
-            })
-            await this.prismaService.writerInfo.update({
-                where: {
-                    userId
-                },
-                data: {
-                    seriesCount
-                }
-            })
-        }catch (error){
-            throw ExceptionList.USER_NOT_WRITER
-        }
-    }
-
-    /**
      * @summary 작가 정보 삭제하기
      * @param writerId
      * @returns void

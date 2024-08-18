@@ -20,6 +20,7 @@ import {SeriesService} from "../series/series.service";
 import {NewsletterWithPostAndContentAndWriter} from "./prisma/newsletterWithPostAndContentAndWriter.prisma.type";
 import {NewsletterLike} from "@prisma/client";
 import {CategoryEnum} from "../post/enum/category.enum";
+import {WriterInfoService} from "../writerInfo/writerInfo.service";
 
 
 @Injectable()
@@ -31,7 +32,8 @@ export class NewsletterService {
         private readonly postService: PostService,
         private readonly utilService: UtilService,
         private readonly subscribeService: SubscribeService,
-        private readonly seriesService : SeriesService
+        private readonly seriesService : SeriesService,
+        private readonly writerInfoService : WriterInfoService
     ) {}
 
     /**
@@ -164,6 +166,7 @@ export class NewsletterService {
             await this.mailService.sendNewsLetterWithHtml(newsletterSendInfo);
             if(postWithContentAndSeriesAndWriter.post.seriesId > 0)
                 await this.seriesService.updateSeriesNewsletterCount(postWithContentAndSeriesAndWriter.post.seriesId);
+            await this.writerInfoService.synchronizeNewsLetter(writerId);
             return newsletter;
         }catch (error){
             throw ExceptionList.SEND_NEWSLETTER_ERROR;
@@ -528,6 +531,5 @@ export class NewsletterService {
                 id : paginationOptions.cursor
             } : undefined
         })
-
     }
 }

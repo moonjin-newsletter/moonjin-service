@@ -13,7 +13,6 @@ import {
 } from "../response/error/post";
 import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {NewsletterService} from "./newsletter.service";
-import {UserService} from "../user/user.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
 import {NewsletterCardDto, NewsletterLikeResponseDto, NewsletterSendResultDto} from "./dto";
@@ -31,7 +30,6 @@ import {PaginationOptionsDto} from "../common/pagination/dto";
 @Controller('newsletter')
 export class NewsletterController {
     constructor(
-        private readonly userService: UserService,
         private readonly newsletterService: NewsletterService,
         private readonly mailService: MailService
     ) {}
@@ -54,7 +52,6 @@ export class NewsletterController {
     async sendNewsletter(@User() user:UserAuthDto, @TypedParam("postId") postId: number, @TypedBody() body:ISendNewsLetter )
     :Promise<TryCatch<NewsletterSendResultDto, POST_NOT_FOUND | FORBIDDEN_FOR_POST>> {
         const newsletter = await this.newsletterService.sendNewsLetter(postId,user.id ,body.newsletterTitle);
-        await this.userService.synchronizeNewsLetter(user.id, true);
         const sentCount = newsletter.newsletterSend[0] ? newsletter.newsletterSend[0].mailNewsletter.length : 0;
         return createResponseForm({
             message : sentCount + "건의 뉴스레터를 발송했습니다.",
