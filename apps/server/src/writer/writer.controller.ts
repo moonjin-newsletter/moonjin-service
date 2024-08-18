@@ -30,7 +30,7 @@ export class WriterController {
         private readonly writerInfoService: WriterInfoService,
         private readonly newsletterService: NewsletterService,
         private readonly seriesService: SeriesService,
-        private readonly subscribeService: SubscribeService
+        private readonly subscribeService: SubscribeService,
     ) {}
 
 
@@ -185,5 +185,16 @@ export class WriterController {
             series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
             writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterProfileDto(writerInfo)
         })
+    }
+
+    /**
+     * @summary 작가페이지의 newsletter,series 동기화
+     * @param writerId
+     */
+    @TypedRoute.Get(":writerId/sync/profile")
+    async getWriterProfile(@TypedParam("writerId") writerId : number): Promise<TryCatch<ResponseMessage, USER_NOT_WRITER>> {
+        await this.writerInfoService.synchronizeNewsLetter(writerId);
+        await this.writerInfoService.synchronizeSeries(writerId);
+        return createResponseForm({message: "동기화 완료"})
     }
 }

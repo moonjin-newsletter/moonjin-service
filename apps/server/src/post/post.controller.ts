@@ -20,7 +20,6 @@ import {WriterAuthGuard} from "../auth/guard/writerAuth.guard";
 import {SeriesService} from "../series/series.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {USER_NOT_WRITER} from "../response/error/auth";
-import {UserService} from "../user/user.service";
 import { SERIES_NOT_FOUND} from "../response/error/series";
 import {ICreatePostContent} from "./api-types/ICreatePostContent";
 import {PostContentDto} from "./dto";
@@ -30,6 +29,7 @@ import PostDtoMapper from "./postDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {Category} from "@moonjin/api-types";
 import {IUpdatePost} from "./api-types/IUpdatePost";
+import {WriterInfoService} from "../writerInfo/writerInfo.service";
 
 
 @Controller('post')
@@ -37,7 +37,7 @@ export class PostController {
     constructor(
         private readonly postService: PostService,
         private readonly seriesService: SeriesService,
-        private readonly userService:UserService,
+        private readonly writerInfoService:WriterInfoService,
     ) {}
 
     /**
@@ -121,7 +121,7 @@ export class PostController {
         POST_NOT_FOUND | FORBIDDEN_FOR_POST>>
     {
         await this.postService.deletePost(postId,user.id);
-        await this.userService.synchronizeNewsLetter(user.id, false);
+        await this.writerInfoService.synchronizeNewsLetter(user.id);
         return createResponseForm({
             message : "해당 글을 삭제했습니다."
         })
