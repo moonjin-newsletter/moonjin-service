@@ -25,6 +25,7 @@ export default async function Page({ params }: pageProps) {
   const { data: nInfo } = await nfetch<ResponseForm<NewsletterAllDataDto>>(
     `writer/${moonjinId}/newsletter/${nId}`,
   );
+  console.log(nInfo);
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -64,7 +65,7 @@ export default async function Page({ params }: pageProps) {
             <div className="flex items-center justify-between w-full">
               <p className="font-serif text-sm">
                 <span className="text-grayscale-400">by.</span>
-                <span>{nInfo.writer.nickname}</span>
+                <span>{nInfo.writer.user.nickname}</span>
                 <span className="text-grayscale-400 text-[13px]">
                   {" "}
                   ∙ {format(new Date(nInfo.newsletter.sentAt), "yyyy.MM.dd")}
@@ -78,7 +79,7 @@ export default async function Page({ params }: pageProps) {
           {nInfo?.series && (
             <Link
               className="flex mt-5 items-center justify-between w-full gap-x-[200px] bg-grayscale-100 rounded-lg py-4 px-6"
-              href={`/@${nInfo.writer.moonjinId}/series/${nInfo.series.id}`}
+              href={`/@${nInfo.writer.writerInfo.moonjinId}/series/${nInfo.series.id}`}
             >
               <div className="flex flex-col gap-y-1.5">
                 <h2 className="text-lg underline font-semibold  cursor-pointer">
@@ -122,25 +123,28 @@ export default async function Page({ params }: pageProps) {
             </button>
           </div>
           <Link
-            href={`/@${nInfo.writer.moonjinId}`}
+            href={`/@${nInfo.writer.writerInfo.moonjinId}`}
             className="mt-5 bg-grayscale-100 rounded-lg p-4 w-full flex items-center "
           >
             <div className="flex items-center">
               <Image
-                src={""}
+                src={nInfo.writer.user.image}
+                width={48}
+                height={48}
                 alt={"작가 프로필"}
                 className="size-12 aspect-square bg-gray-300 rounded-full"
               />
               <div className="flex flex-col ml-3">
-                <p className="font-semibold">{nInfo.writer.nickname}</p>
+                <p className="font-semibold">{nInfo.writer.user.nickname}</p>
                 <span className="text-sm text-grayscale-400">
-                  {nInfo.writer.moonjinId}@moonjin.site
+                  {nInfo.writer.writerInfo.moonjinId}@moonjin.site
                 </span>
               </div>
             </div>
             <div className="ml-auto flex items-center gap-x-3">
               <span className="text-sm text-grayscale-400">
-                구독자 수 | {formatNumberKo(4143)}
+                구독자 수 |{" "}
+                {formatNumberKo(nInfo.writer.writerInfo.followerCount)}
               </span>
               <button className="py-2 px-4 bg-primary text-white font-medium text-sm rounded-full">
                 구독하기

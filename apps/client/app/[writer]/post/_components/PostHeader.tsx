@@ -36,7 +36,6 @@ export default function PostHeader({ nInfo }: { nInfo: NewsletterAllDataDto }) {
   }
 
   useEffect(() => {
-    console.log(getScrollPercent());
     setScroll(getScrollPercent());
   }, [y]);
 
@@ -58,7 +57,7 @@ export default function PostHeader({ nInfo }: { nInfo: NewsletterAllDataDto }) {
             </span>
             <p className="font-serif text-xs">
               <span className="text-grayscale-500">by.</span>
-              {nInfo.writer.nickname}
+              {nInfo.writer.user.nickname}
             </p>
           </div>
           <div className="flex h-full items-center ">

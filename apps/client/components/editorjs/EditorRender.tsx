@@ -39,6 +39,8 @@ export default function EditorRender({
   blocks: EditorBlockDto[];
   children?: ReactNode;
 }) {
+  console.log(blocks);
+
   const content = renderEditorData(blocks);
 
   return (
@@ -100,3 +102,7 @@ function renderEditorData(blocks: EditorBlockDto[]) {
     }
   });
 }
+
+// function ListRender(block: BlockType) {
+//   block.items.length > 0 && console.log(1);
+// }
