@@ -139,7 +139,8 @@ export class WriterInfoService {
         try{
             const seriesCount = await this.prismaService.series.count({
                 where: {
-                    writerId: userId
+                    writerId: userId,
+                    deleted: false
                 }
             })
             await this.prismaService.writerInfo.update({
