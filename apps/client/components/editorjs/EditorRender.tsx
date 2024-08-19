@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import type { EditorBlockDto } from "@moonjin/editorjs";
-import {ListBlockItem} from "@moonjin/editorjs/dist/src/type/block/blocks/list.block";
 
 type ListItem = {
   content: string;
@@ -91,7 +90,7 @@ function renderEditorData(blocks: EditorBlockDto[]) {
   });
 }
 
-function ListRender(items: ListBlockItem[], style: "ordered" | "unordered" | undefined) {
+function ListRender(items: any[], style: "ordered" | "unordered" | undefined) {
   return (
     <ul
       className={`${style === "ordered" ? "list-decimal" : "list-disc"} pl-4`}

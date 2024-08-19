@@ -33,8 +33,6 @@ export default async function Page({ params }: pageProps) {
     ResponseForm<NewsletterCardDto[]>
   >(`newsletter/${nId}/recommend/all?take=9`);
 
-  console.log(relatedPosts);
-
   return (
     <div className="w-full flex flex-col items-center">
       <PostHeader nInfo={nInfo} />
