@@ -12,6 +12,7 @@ import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { getDateDistance } from "@toss/date";
+import WebShareButton from "@components/share/WebShareButton";
 
 type ModalType = {
   unmount: () => void;
@@ -59,7 +60,7 @@ export function PreLoginSubModal({
     >
       <section
         onClick={(e) => e.stopPropagation()}
-        className=" h-fit min-w-[480px] w-[480px] overflow-y-auto py-8 px-10 rounded-lg bg-white flex flex-col items-center"
+        className="animate-fade h-fit min-w-[480px] w-[480px] overflow-y-auto py-8 px-10 rounded-lg bg-white flex flex-col items-center"
       >
         <div className="flex flex-col items-center">
           <Image
@@ -193,7 +194,7 @@ export function CancelModal({
     csr
       .delete(`subscribe/writer/${writerInfo.writerInfo.userId}`)
       .then(() => {
-        toast.success("구독 취소");
+        toast.success("구독 취소 완료");
         return router.refresh();
       })
       .catch((error) => {
@@ -211,7 +212,7 @@ export function CancelModal({
     >
       <section
         onClick={(e) => e.stopPropagation()}
-        className=" h-fit min-w-[420px] w-[420px] overflow-y-auto py-8 px-10 rounded-lg bg-white flex-col flex items-center"
+        className=" h-fit animate-fade min-w-[420px] w-[420px] overflow-y-auto py-8 px-10 rounded-lg bg-white flex-col flex items-center"
       >
         <span className="text-lg font-bold">구독을 취소하시겠습니까?</span>
         <section className="flex flex-col items-center mt-4 gap-y-2">
@@ -249,7 +250,10 @@ export function CancelModal({
   );
 }
 
-export function SuccessModal({ unmount }: ModalType) {
+export function SuccessModal({
+  unmount,
+  writerInfo,
+}: ModalType & { writerInfo: WriterPublicCardDto }) {
   return (
     <div
       onClick={(e) => {
@@ -259,8 +263,47 @@ export function SuccessModal({ unmount }: ModalType) {
     >
       <section
         onClick={(e) => e.stopPropagation()}
-        className=" h-fit min-w-[520px] w-[540px] overflow-y-auto py-8 px-10 rounded-lg bg-white"
-      ></section>
+        className="animate-fade h-fit min-w-[420px] w-[420px] overflow-y-auto py-8 px-10 rounded-lg bg-white flex-col flex items-center"
+      >
+        <Image
+          src={writerInfo.user.image}
+          alt={"작가 프로필 이미지"}
+          width={60}
+          height={60}
+          className="rounded-lg"
+        />
+        <span className="text-[13px] mt-1 font-semibold text-primary">
+          {writerInfo.writerInfo.moonjinId}@moonjin.site
+        </span>
+        <span className="text-lg font-bold mt-4">구독이 완료되었습니다</span>
+        <section className="flex flex-col items-center mt-4 gap-y-2">
+          <span className="text-sm text-grayscale-400">
+            좋아하는 작가님의 뉴스레터를 주위에 알려보세요
+          </span>
+        </section>
+        <div className="w-full mt-6 flex flex-col gap-y-2">
+          <WebShareButton
+            title={writerInfo.user.nickname + "작가님의 뉴스레터"}
+            subtitle={"뉴스레터 공유하기"}
+            url={null}
+          >
+            <button
+              onClick={unmount}
+              type="button"
+              className="py-3 text-sm font-medium  bg-grayscale-600 text-white rounded-lg w-full"
+            >
+              공유하기
+            </button>
+          </WebShareButton>
+          <button
+            onClick={unmount}
+            type="button"
+            className="py-1 text-sm  underline text-grayscale-500   "
+          >
+            나중에하기
+          </button>
+        </div>
+      </section>
     </div>
   );
 }

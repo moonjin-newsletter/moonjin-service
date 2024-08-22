@@ -32,6 +32,15 @@ export default function SubModalProvider({
         .post(`subscribe/writer/${writerInfo.writerInfo.userId}`)
         .then(() => {
           toast.success("구독 완료");
+          overlay.open(({ isOpen, unmount }) => {
+            return (
+              <SubModal.SuccessModal
+                unmount={unmount}
+                writerInfo={writerInfo}
+              />
+            );
+          });
+
           return router.refresh();
         })
         .catch((error) => {
