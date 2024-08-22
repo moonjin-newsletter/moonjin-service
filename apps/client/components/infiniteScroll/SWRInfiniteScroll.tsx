@@ -1,14 +1,15 @@
 import { isNonEmptyArray } from "@toss/utils";
 import { SWRInfiniteResponse } from "swr/infinite";
 import { ReactElement, ReactNode, Ref, useEffect, useState } from "react";
+import { ResponseForm } from "@moonjin/api-types";
 
 export const getKey =
   (path: string) =>
   <PageData extends Array<unknown>>(
     pageNo: number,
-    prevPageData?: PageData,
+    prevPageData?: ResponseForm<PageData>,
   ) => {
-    if (prevPageData && !isNonEmptyArray(prevPageData)) return null; // 끝에 도달
+    if (prevPageData && !isNonEmptyArray(prevPageData.data)) return null; // 끝에 도달
     const separator = /\?/.test(path) ? "&" : "?";
     return `${path}${separator}pageNo=${pageNo}`;
   };

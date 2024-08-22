@@ -16,6 +16,10 @@ export default function 자유뉴스레터({ moonjinId }: { moonjinId: string })
   );
   const PAGE_SIZE = 10;
 
+  if (swr.size === 0) {
+    return <EmptyCard text={"아직 작성된 뉴스레터가 없습니다."} />;
+  }
+
   return (
     <>
       <SWRInfiniteScroll
@@ -28,13 +32,9 @@ export default function 자유뉴스레터({ moonjinId }: { moonjinId: string })
         loader={LoadingSkeleton}
       >
         {(page) =>
-          isNonEmptyArray(page.data) ? (
-            page.data.map((newsletter, i) => (
-              <NewsLetterCard key={i} newsletterInfo={newsletter} />
-            ))
-          ) : (
-            <EmptyCard text={"아직 작성된 뉴스레터가 없습니다."} />
-          )
+          page.data.map((newsletter, i) => (
+            <NewsLetterCard key={i} newsletterInfo={newsletter} />
+          ))
         }
       </SWRInfiniteScroll>
     </>
