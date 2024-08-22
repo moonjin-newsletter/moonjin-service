@@ -36,38 +36,19 @@ export default async function Page({ params }: pageProps) {
   return (
     <div className="w-full flex flex-col items-center">
       <PostHeader nInfo={nInfo} />
-      <section className={`h-60 w-full relative  overflow-hidden `}>
-        <div
-          className="w-full h-full bg-cover bg-center flex "
-          style={{
-            backgroundImage: `url(${nInfo.post.cover})`,
-          }}
-        >
-          <div className="flex flex-col items-center justify-center text-white bg-grayscale-700/40 w-full h-full">
-            <div className="flex items-center mt-5 gap-x-3">
-              <div className="border text-[13px] py-1 px-3 border-grayscale-100 text-grayscale-100 rounded-full ">
-                {nInfo.post.category}
-              </div>
-            </div>
-            <h1 className="font-serif text-2xl font-[300] text-grayscale-100 mt-5">
-              {nInfo.post.title}
-            </h1>
 
-            <div className="flex items-center gap-x-2 font-light text-grayscale-100 text-[15px] mt-5">
-              <LogoSymbolGray
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                className="text-gray-100"
-              />{" "}
-              {nInfo.newsletter.likes}
+      <main className="max-w-[688px] w-full pt-20 pb-10">
+        <section className="flex w-full flex-col">
+          <div className="w-full">
+            <div className="py-1 px-3 rounded-full bg-primary/5 text-primary w-fit text-sm">
+              {nInfo.post.category}
             </div>
           </div>
-        </div>
-      </section>
-      <main className="max-w-[688px] w-full py-10">
-        <section className="w-full flex flex-col">
-          <div className="flex items-center w-full">
+          <h1 className="text-2xl font-medium mt-6 font-serif ">
+            {nInfo.post.title}
+          </h1>
+
+          <div className="flex items-center w-full mt-5">
             <div className="flex items-center justify-between w-full">
               <p className="font-serif text-sm">
                 <span className="text-grayscale-400">by.</span>
@@ -82,9 +63,15 @@ export default async function Page({ params }: pageProps) {
                   ∙ {format(new Date(nInfo.newsletter.sentAt), "yyyy.MM.dd")}
                 </span>
               </p>
-              <button className="py-2 rounded-full px-4 border border-primary text-primary text-xs font-medium">
-                구독하기
-              </button>
+              <div className="flex items-center gap-x-2">
+                <button className="text-xs border rounded-full py-1.5 px-4 flex items-center gap-x-2 text-grayscale-500 border-grayscale-300">
+                  <LogoSymbolGray width="20" height="20" viewBox="0 0 24 24" />{" "}
+                  {nInfo.newsletter.likes}
+                </button>
+                <button className="py-2 rounded-full px-4 border border-primary text-primary text-xs font-medium">
+                  구독하기
+                </button>
+              </div>
             </div>
           </div>
           {nInfo?.series && (
@@ -120,7 +107,7 @@ export default async function Page({ params }: pageProps) {
             </Link>
           )}
         </section>
-        <hr className="my-10" />
+        <hr className="my-8" />
         {/*뉴스레터 영역*/}
         <EditorRender blocks={nInfo.postContent.content.blocks} />
         <section className="flex flex-col mt-10 w-full">
