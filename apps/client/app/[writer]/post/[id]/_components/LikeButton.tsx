@@ -50,7 +50,7 @@ export default function LikeButton({ nId }: LikeButtonProps) {
         likeInfo?.data?.like
           ? " text-primary border-primary"
           : "text-grayscale-500 border-grayscale-300"
-      } text-sm border rounded-full py-1.5 px-4 flex items-center gap-x-2 text-grayscale-500 border-grayscale-300`}
+      } text-xs border rounded-full py-2 px-4 flex items-center gap-x-2 text-grayscale-500 border-grayscale-300`}
     >
       <LogoSymbolGray width="20" height="20" viewBox="0 0 24 24" /> 올려두기
     </button>
