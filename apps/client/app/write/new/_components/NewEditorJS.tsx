@@ -52,6 +52,7 @@ export default function NewEditorJS() {
   register("title", { required: "제목을 입력해주세요" });
 
   function onClickSave(value: any) {
+    const toastSave = toast.loading("저장 중");
     if (editor)
       editor
         .save()
@@ -76,9 +77,11 @@ export default function NewEditorJS() {
         .catch((error) => {
           console.log("Saving failed: ", error);
         });
+    return toast.dismiss(toastSave);
   }
 
   function onClickSubmit(value: any) {
+    const toastSave = toast.loading("저장 중");
     if (editor)
       editor
         .save()
@@ -98,6 +101,7 @@ export default function NewEditorJS() {
         .catch((error) => {
           console.log("Saving failed: ", error);
         });
+    return toast.dismiss(toastSave);
   }
 
   const preventClose = (e: BeforeUnloadEvent) => {

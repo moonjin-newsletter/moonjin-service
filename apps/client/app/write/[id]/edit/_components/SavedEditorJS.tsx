@@ -258,8 +258,9 @@ function OverlaySetting({
   const series = watch("series");
   const formCategory = watch("category");
 
-  function onClickPublish(value: any) {
-    csr
+  async function onClickPublish(value: any) {
+    const toastSave = toast.loading("저장 중");
+    await csr
       .patch(`post/${letterId}`, {
         json: {
           title: title,
@@ -272,11 +273,13 @@ function OverlaySetting({
       .then(async (res) => {
         const { data: nInfo } =
           await res.json<ResponseForm<PostWithContentDto>>();
+
         toast.success("글을 저장했습니다");
         overlay.unmountAll();
         router.push(`/write/${nInfo.post.id}/publish`);
       })
       .catch(() => toast.error("글 저장에 실패하였습니다"));
+    return toast.dismiss(toastSave);
   }
 
   return (
