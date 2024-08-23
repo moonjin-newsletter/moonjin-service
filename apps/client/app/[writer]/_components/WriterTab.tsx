@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
-import { range } from "@toss/utils";
 import 전체뉴스레터 from "./전체뉴스레터";
 import 자유뉴스레터 from "./자유뉴스레터";
 import 시리즈뉴스레터 from "./시리즈뉴스레터";
@@ -51,7 +50,7 @@ export default function WriterTab({ moonjinId }: { moonjinId: string }) {
             </section>
           </TabPanel>
           <TabPanel>
-            <section className="grid grid-cols-3 grid-flow-row gap-x-6 gap-y-11 mt-6">
+            <section className="flex flex-col">
               <시리즈뉴스레터 moonjinId={moonjinId} />
             </section>
           </TabPanel>

@@ -16,12 +16,12 @@ export default function 시리즈뉴스레터({ moonjinId }: { moonjinId: string
   );
   const PAGE_SIZE = 10;
 
-  if (swr.size === 0) {
+  if (last(swr?.data ?? [])?.data.length === 0) {
     return <EmptyCard text={"아직 작성된 시리즈가 없습니다."} />;
   }
 
   return (
-    <>
+    <div className="grid grid-cols-3 grid-flow-row gap-x-6 gap-y-11 mt-6">
       <SWRInfiniteScroll
         swr={swr}
         isReachingEnd={({ data }) => {
@@ -37,6 +37,6 @@ export default function 시리즈뉴스레터({ moonjinId }: { moonjinId: string
           ))
         }
       </SWRInfiniteScroll>
-    </>
+    </div>
   );
 }

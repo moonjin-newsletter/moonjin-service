@@ -16,7 +16,7 @@ export default function 전체뉴스레터({ moonjinId }: { moonjinId: string })
   );
   const PAGE_SIZE = 10;
 
-  if (swr.size === 0) {
+  if (last(swr?.data ?? [])?.data.length === 0) {
     return <EmptyCard text={"아직 작성된 뉴스레터가 없습니다."} />;
   }
 
