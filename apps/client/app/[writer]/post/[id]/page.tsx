@@ -7,11 +7,17 @@ import {
   NewsletterAllDataDto,
   NewsletterCardDto,
   ResponseForm,
+  type SubscribingResponseDto,
 } from "@moonjin/api-types";
 import { format } from "date-fns";
 import Link from "next/link";
 import { formatNumberKo } from "@utils/formatNumber";
 import { range } from "@toss/utils";
+import ssr from "@lib/fetcher/ssr";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import SubModalProvider from "@components/modal/SubModalProvider";
+import LikeButton from "./_components/LikeButton";
 
 type pageProps = {
   params: {
@@ -32,6 +38,13 @@ export default async function Page({ params }: pageProps) {
   const { data: relatedPosts } = await nfetch<
     ResponseForm<NewsletterCardDto[]>
   >(`newsletter/${nId}/recommend/all?take=9`);
+
+  const isLogin = cookies().get("accessToken");
+  const { data: subInfo } = isLogin
+    ? await ssr(`subscribe/moonjinId/${moonjinId}`)
+        .json<ResponseForm<SubscribingResponseDto>>()
+        .catch(() => redirect("/auth/login"))
+    : { data: null };
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -64,13 +77,24 @@ export default async function Page({ params }: pageProps) {
                 </span>
               </p>
               <div className="flex items-center gap-x-2">
-                <button className="text-xs border rounded-full py-1.5 px-4 flex items-center gap-x-2 text-grayscale-500 border-grayscale-300">
+                <div className="text-xs  rounded-full py-1.5 px-4 flex items-center gap-x-2 text-grayscale-500 border-grayscale-300">
                   <LogoSymbolGray width="20" height="20" viewBox="0 0 24 24" />{" "}
                   {nInfo.newsletter.likes}
-                </button>
-                <button className="py-2 rounded-full px-4 border border-primary text-primary text-xs font-medium">
-                  구독하기
-                </button>
+                </div>
+                <SubModalProvider
+                  subInfo={subInfo}
+                  writerInfo={nInfo.writer}
+                  subChildren={
+                    <div className="py-2 rounded-full px-4 border border-primary text-primary text-xs font-medium">
+                      구독하기
+                    </div>
+                  }
+                  unSubChildren={
+                    <div className="py-2 rounded-full px-4 border border-primary text-primary text-xs font-medium">
+                      구독중
+                    </div>
+                  }
+                />
               </div>
             </div>
           </div>
@@ -115,10 +139,7 @@ export default async function Page({ params }: pageProps) {
             <span className="text-sm text-grayscale-400 ">
               이번 글은 어떠셨나요? 글이 마음에 드셨다면 문진을 올려주세요
             </span>
-            <button className="text-sm border rounded-full py-1.5 px-4 flex items-center gap-x-2 text-grayscale-500 border-grayscale-300">
-              <LogoSymbolGray width="20" height="20" viewBox="0 0 24 24" />{" "}
-              올려두기
-            </button>
+            <LikeButton nId={nId} />
           </div>
           <Link
             href={`/@${nInfo.writer.writerInfo.moonjinId}`}
@@ -144,9 +165,20 @@ export default async function Page({ params }: pageProps) {
                 구독자 수 |{" "}
                 {formatNumberKo(nInfo.writer.writerInfo.followerCount)}
               </span>
-              <button className="py-2 px-4 bg-primary text-white font-medium text-sm rounded-full">
-                구독하기
-              </button>
+              <SubModalProvider
+                subInfo={subInfo}
+                writerInfo={nInfo.writer}
+                subChildren={
+                  <div className="py-2 px-4 bg-primary text-white font-medium text-sm rounded-full">
+                    구독하기
+                  </div>
+                }
+                unSubChildren={
+                  <div className="py-2 px-4 bg-primary text-white font-medium text-sm rounded-full">
+                    구독중
+                  </div>
+                }
+              />
             </div>
           </Link>
         </section>

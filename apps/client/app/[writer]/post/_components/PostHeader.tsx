@@ -12,11 +12,12 @@ import type {
 import csr from "@lib/fetcher/csr";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { getScrollPercent } from "@toss/utils";
 import useScroll from "@utils/hooks/useScroll";
 
 export default function PostHeader({ nInfo }: { nInfo: NewsletterAllDataDto }) {
+  const router = useRouter();
   const pathName = usePathname();
   const { x, y } = useScroll();
   const [scroll, setScroll] = useState(getScrollPercent());
@@ -28,7 +29,8 @@ export default function PostHeader({ nInfo }: { nInfo: NewsletterAllDataDto }) {
     csr
       .post("auth/logout")
       .then((res) => {
-        return mutate(undefined);
+        mutate(undefined);
+        return window?.location.reload();
       })
       .catch((err) => {
         toast.error("로그아웃 실패");
