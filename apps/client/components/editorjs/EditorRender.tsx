@@ -44,7 +44,7 @@ export default function EditorRender({
   return (
     <article
       id="editor-output"
-      className="text-grayscale-600 font-light leading-normal"
+      className="text-grayscale-600 font-light leading-7 tracking-wide"
     >
       {content}
     </article>
