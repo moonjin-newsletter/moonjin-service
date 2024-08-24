@@ -4,7 +4,7 @@ import useSWR from "swr";
 import type { NewsletterCardDto, ResponseForm } from "@moonjin/api-types";
 import { isNonEmptyArray } from "@toss/utils";
 import * as I from "../../../../../../../components/icons";
-import PublishedSeriesCard from "./PublishedSeriesCard";
+import { PublishedLetterCard } from "../../../_components/PublishedLetterCard";
 
 export default function SeriesListView({ seriesId }: { seriesId: number }) {
   const { data: seriesList } = useSWR<ResponseForm<NewsletterCardDto[]>>(
@@ -21,7 +21,7 @@ export default function SeriesListView({ seriesId }: { seriesId: number }) {
 
       {isNonEmptyArray(seriesList?.data ?? []) ? (
         seriesList?.data?.map((letter, index) => (
-          <PublishedSeriesCard key={index} letter={letter} />
+          <PublishedLetterCard key={index} letter={letter} />
         ))
       ) : (
         <div className="w-full flex flex-col gap-y-4 items-center justify-center py-12">

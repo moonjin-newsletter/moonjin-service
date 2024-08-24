@@ -20,24 +20,26 @@ export function PublishedLetterCard({ letter }: { letter: NewsletterCardDto }) {
         <h2 className="group-hover:underline mt-1.5 text-lg text-grayscale-600 font-medium">
           {letter.post.title}
         </h2>
-        <div className="mt-0.5 w-full flex  text-sm text-grayscale-400">
-          <span className="line-clamp-2">{letter.post.preview}</span>
-        </div>
+        <div className="mt-0.5 w-full h-full grow flex flex-col gap-y-2">
+          <div className=" w-full flex  text-sm text-grayscale-400">
+            <span className="line-clamp-2">{letter.post.preview}</span>
+          </div>
 
-        <div className="mt-auto flex items-center gap-x-3 text-[#999999] text-sm">
-          <div className=" flex items-center gap-x-1 ">
-            <BiLike />
-            <span>{letter.newsletter.likes}</span>
-          </div>
-          <div className="flex items-center gap-x-1">
-            <FaRegCommentDots />
-            <span>{letter.newsletter.comments}</span>
-          </div>
-          <div className="flex items-center gap-x-1.5">
-            <span>발행일자</span>
-            <span>
-              {format(new Date(letter.newsletter.sentAt), "yyyy.MM.dd")}
-            </span>
+          <div className="mt-auto flex items-center gap-x-3 text-[#999999] text-sm">
+            <div className=" flex items-center gap-x-1 ">
+              <BiLike />
+              <span>{letter.newsletter.likes}</span>
+            </div>
+            <div className="flex items-center gap-x-1">
+              <FaRegCommentDots />
+              <span>{letter.newsletter.comments}</span>
+            </div>
+            <div className="flex items-center gap-x-1.5">
+              <span>발행일자</span>
+              <span>
+                {format(new Date(letter.newsletter.sentAt), "yyyy.MM.dd")}
+              </span>
+            </div>
           </div>
         </div>
       </div>
