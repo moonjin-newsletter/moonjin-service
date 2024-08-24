@@ -1,15 +1,13 @@
 "use client";
 
 import { Tab } from "@headlessui/react";
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import { isNonEmptyArray } from "@toss/utils";
 import NewsLetterCard from "../../../_components/NewsLetterCard";
 import {
   type NewsletterCardDto,
-  NewsletterDto,
   SeriesWithWriterDto,
 } from "@moonjin/api-types";
-import SeriesLetterCard from "../../../_components/SeriesLetterCard";
 import EmptyCard from "../../../_components/EmptyCard";
 import { useSearchParams } from "next/navigation";
 import { SeriesCardForReader } from "../../../_components/SeriesCard";
@@ -41,17 +39,13 @@ export default function SubscribeTab({
           </Tab>
         ))}
       </Tab.List>
-      <Tab.Panels className="w-full mt-4">
+      <Tab.Panels className="w-full ">
         <Tab.Panel>
           <section className="flex flex-col w-full">
             {isNonEmptyArray(newsletterList) ? (
               newsletterList.map((value, index) => (
                 <>
-                  {value.series ? (
-                    <SeriesLetterCard value={value} />
-                  ) : (
-                    <NewsLetterCard key={index} value={value} />
-                  )}
+                  <NewsLetterCard key={index} newsletterInfo={value} />
                 </>
               ))
             ) : (

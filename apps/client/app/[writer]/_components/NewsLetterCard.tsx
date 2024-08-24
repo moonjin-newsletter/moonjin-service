@@ -4,25 +4,18 @@ import Image from "next/image";
 import { BiLike } from "react-icons/bi";
 import { FaRegCommentDots } from "react-icons/fa";
 import { format } from "date-fns";
-import { usePathname } from "next/navigation";
 
 export default function NewsLetterCard({
   newsletterInfo,
 }: {
   newsletterInfo: NewsletterCardDto;
 }) {
-  const pathname = usePathname();
-
-  const validateUrl = pathname.includes("series")
-    ? pathname.slice(0, pathname.indexOf("series") - 1)
-    : pathname;
-
   return (
     <Link
-      href={`${validateUrl}/post/${newsletterInfo.newsletter.id}`}
-      className="flex items-center w-full group justify-between gap-x-5 border-b py-6 overflow-hidden"
+      href={`/@${newsletterInfo.writer.moonjinId}/post/${newsletterInfo.newsletter.id}`}
+      className="flex items-center w-full group justify-between gap-x-5 border-b py-6 h-fit overflow-hidden"
     >
-      <div className="flex flex-col w-full">
+      <div className=" flex flex-col w-full h-full grow">
         {newsletterInfo?.series && (
           <span className="text-[13px] w-fit text-primary border-primary border-b">
             {newsletterInfo?.series?.title}
@@ -31,7 +24,7 @@ export default function NewsLetterCard({
         <h2 className="group-hover:underline mt-1.5 text-lg text-grayscale-600 font-medium">
           {newsletterInfo.post.title}
         </h2>
-        <div className=" mt-0.5 w-full flex grow  text-sm text-grayscale-400">
+        <div className="mt-0.5 w-full flex  text-sm text-grayscale-400">
           <span className="line-clamp-2">{newsletterInfo.post.preview}</span>
         </div>
         <div className="mt-3 flex items-center gap-x-3 text-[#999999] text-sm">

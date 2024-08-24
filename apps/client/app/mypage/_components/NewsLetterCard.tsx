@@ -2,42 +2,54 @@ import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
 import type { NewsletterCardDto } from "@moonjin/api-types";
+import { BiLike } from "react-icons/bi";
+import { FaRegCommentDots } from "react-icons/fa";
 
 export default function NewsLetterCard({
-  value,
+  newsletterInfo,
 }: {
-  value: NewsletterCardDto;
+  newsletterInfo: NewsletterCardDto;
 }) {
   return (
     <Link
-      href=""
-      className="flex h-fit items-center group w-full gap-x-6  py-5 border-b border-grayscale-200"
+      href={`/@${newsletterInfo.writer.moonjinId}/post/${newsletterInfo.newsletter.id}`}
+      className="flex items-center w-full group justify-between gap-x-5 border-b py-6 h-fit overflow-hidden"
     >
-      <div className="flex justify-between w-full h-full min-h-[120px] flex-col ">
-        <div className="w-full flex flex-col gap-y-2">
-          <strong className="group-hover:underline text-lg text-grayscale-600 font-medium">
-            {value.post.title}
-          </strong>
-          <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400">
-            {value.post.preview}
+      <div className="min-h-[120px] flex flex-col w-full h-full grow">
+        {newsletterInfo?.series && (
+          <span className="text-[13px] w-fit text-primary border-primary border-b">
+            {newsletterInfo?.series?.title}
           </span>
+        )}
+        <h2 className="group-hover:underline mt-1.5 text-lg text-grayscale-600 font-medium">
+          {newsletterInfo.post.title}
+        </h2>
+        <div className="mt-0.5 w-full flex  text-sm text-grayscale-400">
+          <span className="line-clamp-2">{newsletterInfo.post.preview}</span>
         </div>
-        <div className="mt-4  gap-x-4 flex items-center text-sm text-grayscale-400">
-          <div>
-            <span className="italic">by.</span>
-            {value.writer.nickname}
+        <div className="mt-auto flex items-center gap-x-3 text-[#999999] text-sm">
+          <div className="flex items-center gap-x-1 ">
+            <BiLike />
+            <span>{newsletterInfo.newsletter.likes}</span>
           </div>
-          <div>
-            발행일자.{format(new Date(value.newsletter.sentAt), "yyyy.MM.dd")}
+          <div className="flex items-center gap-x-1">
+            <FaRegCommentDots />
+            <span>{newsletterInfo.newsletter.comments}</span>
+          </div>
+          <div className="flex items-center gap-x-1.5">
+            <span>발행일자</span>
+            <span>
+              {format(new Date(newsletterInfo.newsletter.sentAt), "yyyy.MM.dd")}
+            </span>
           </div>
         </div>
       </div>
       <Image
-        src={value.post.cover ?? ""}
-        alt="뉴스레터 썸네일"
+        src={newsletterInfo.post.cover}
+        alt="뉴스레터 커버이미지"
         width={120}
         height={120}
-        className="size-[120px] min-w-[120px]  bg-gray-100 rounded object-cover"
+        className="w-[120px] h-[120px] min-w-[120px] rounded"
       />
     </Link>
   );

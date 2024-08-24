@@ -4,13 +4,11 @@ import NewsLetterCard from "./NewsLetterCard";
 
 import type {
   NewsletterCardDto,
-  NewsletterDto,
   SeriesWithWriterDto,
 } from "@moonjin/api-types";
 import { isNonEmptyArray } from "@toss/utils";
 import EmptyCard from "./EmptyCard";
 import { SeriesCardForReader } from "./SeriesCard";
-import SeriesLetterCard from "./SeriesLetterCard";
 
 export function ReaderHome({
   seriesList,
@@ -85,15 +83,11 @@ function NewsletterList({
           뉴스레터 전체보기 <Io.IoIosArrowForward />
         </Link>
       </div>
-      <div className="flex flex-col w-full mt-4">
+      <div className="flex flex-col w-full ">
         {isNonEmptyArray(newsletterList ?? []) ? (
           newsletterList.map((value, index) => (
             <>
-              {value.series ? (
-                <SeriesLetterCard value={value} />
-              ) : (
-                <NewsLetterCard key={index} value={value} />
-              )}
+              <NewsLetterCard key={index} newsletterInfo={value} />
             </>
           ))
         ) : (

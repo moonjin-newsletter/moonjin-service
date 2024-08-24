@@ -15,10 +15,10 @@ export function UnreleasedNewsletterCard({
     >
       <div className="flex  min-h-[120px] w-full justify-between h-full  flex-col ">
         <div className="flex flex-col h-fit gap-y-2  ">
-          {value.series && (
-            <strong className="  text-primary  text-sm font-semibold">
-              [{value.series?.title}]
-            </strong>
+          {value?.series && (
+            <span className="text-[13px] w-fit text-primary border-primary border-b">
+              {value?.series?.title}
+            </span>
           )}
 
           <strong className="group-hover:underline text-lg text-grayscale-600 font-medium">
@@ -28,10 +28,11 @@ export function UnreleasedNewsletterCard({
             {value.post.preview}
           </span>
         </div>
-        <div className="mt-4 gap-x-4 flex items-center text-sm text-grayscale-400">
-          <div>
-            수정일.{format(new Date(value.post.lastUpdatedAt), "yyyy.MM.dd")}
-          </div>
+        <div className="text-[#999999] text-sm mt-3 flex items-center gap-x-1.5">
+          <span>수정일</span>
+          <span>
+            {format(new Date(value.post.lastUpdatedAt), "yyyy.MM.dd")}
+          </span>
         </div>
       </div>
       <Image

@@ -21,31 +21,35 @@ export default function WriterCard({
   }
 
   return (
-    <Link
-      href={``}
-      className="group w-full flex p-4 border-b border-grayscale-200"
-    >
-      <Image
-        src={writerInfo.user.image}
-        alt="작가 프로필 이미지"
-        width={48}
-        height={48}
-        className="w-12 h-12 rounded-full bg-grayscale-400 object-contain"
-      />
-      <div className="flex flex-col ml-3">
-        <h3 className="font-semibold">{writerInfo.user.nickname}</h3>
-        <span>{writerInfo.user.description}</span>
-      </div>
-      <div className="flex whitespace-nowrap flex-col ml-auto pl-4 gap-y-1">
-        <div className="flex text-sm text-grayscale-500">
-          {format(new Date(writerInfo.following.createdAt), "yyyy-MM-dd")}부터
-          구독
+    <div className="group w-full flex flex-col p-4 border-b border-grayscale-200">
+      <Link
+        className="w-full flex items-center"
+        href={`/@${writerInfo.writerInfo.moonjinId}`}
+      >
+        <Image
+          src={writerInfo.user.image}
+          alt="작가 프로필 이미지"
+          width={48}
+          height={48}
+          className="w-12 h-12 rounded-full bg-grayscale-400 object-contain"
+        />
+        <div className="flex flex-col ml-3">
+          <p className="font-semibold">{writerInfo.user.nickname}</p>
+          <p className="line-clamp-1">{writerInfo.user.description}</p>
         </div>
-        <div className="flex  gap-x-1 items-center text-sm text-grayscale-500">
-          <p>총 게시물 : {writerInfo.writerInfo.newsletterCount}</p>
-          <div className="w-[1px] h-3 bg-grayscale-400" />
-          <p>총 시리즈 : {writerInfo.writerInfo.newsletterCount}</p>
+        <div className="flex whitespace-nowrap flex-col ml-auto pl-4 gap-y-1">
+          <div className="flex text-sm text-grayscale-500">
+            {format(new Date(writerInfo.following.createdAt), "yyyy-MM-dd")}부터
+            구독
+          </div>
+          <div className="flex gap-x-1 items-center text-sm text-grayscale-500">
+            <p>총 게시물 : {writerInfo.writerInfo.newsletterCount}</p>
+            <div className="w-[1px] h-3 bg-grayscale-400" />
+            <p>총 시리즈 : {writerInfo.writerInfo.newsletterCount}</p>
+          </div>
         </div>
+      </Link>
+      <div className="w-full">
         <button
           onClick={async () => {
             await deleteSubscribe(writerInfo.user.id);
@@ -56,6 +60,6 @@ export default function WriterCard({
           구독취소
         </button>
       </div>
-    </Link>
+    </div>
   );
 }
