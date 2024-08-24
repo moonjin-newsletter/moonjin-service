@@ -1,18 +1,36 @@
-import {EditorJsonDto} from "../type";
-import {EditorBlockToHtmlTag} from "./editorBlockToHtmlTag";
+import { EditorJsonDto } from "../type";
+import { EditorBlockToHtmlTag } from "./editorBlockToHtmlTag";
+import { EmailTemp } from "../template";
 
 /**
  * Convert EditorJs Json 데이터를 Html 문서로 변환
  * @param editorJsonData
  * @constructor
  */
-export function EditorJsToHtml(editorJsonData : EditorJsonDto){
-    let htmlFormer = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Title</title></head><body>`
-    const htmlLetter = `</body></html>`
+export function EditorJsToHtml(editorJsonData: EditorJsonDto) {
+  let htmlFormer: string = `<tr>
+      <td>
+        <table
+          role="presentation"
+          border="0"
+          cellpadding="0"
+          cellspacing="0"
+          width="100%"
+        >
+          <tbody>
+            <tr>
+              <td align="left">`;
 
-    editorJsonData.blocks.forEach(block => {
-        htmlFormer += EditorBlockToHtmlTag(block);
-    })
+  const htmlLetter: string = ` </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>`;
 
-    return htmlFormer + htmlLetter;
+  editorJsonData.blocks.forEach((block) => {
+    htmlFormer += EditorBlockToHtmlTag(block);
+  });
+
+  return EmailTemp.Header() + htmlFormer + htmlLetter + EmailTemp.Footer();
 }
