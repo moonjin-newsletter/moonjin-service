@@ -300,6 +300,17 @@ export class NewsletterController {
         return createResponseForm({message : "뉴스레터가 수정되었습니다."});
     }
 
-
-
+    /**
+     * @summary 뉴스레터 삭제
+     * @param user
+     * @param newsletterId
+     */
+    @TypedRoute.Delete(':newsletterId')
+    @UseGuards(WriterAuthGuard)
+    async deleteNewsletter(@User() user:UserAuthDto, @TypedParam('newsletterId') newsletterId: number)
+    :Promise<TryCatch<ResponseMessage, NEWSLETTER_NOT_FOUND | FORBIDDEN_FOR_POST>>{
+        await this.newsletterService.assertNewslettersWriter(newsletterId, user.id);
+        await this.newsletterService.deleteNewsletter(newsletterId);
+        return createResponseForm({message : "뉴스레터가 삭제되었습니다."});
+    }
 }

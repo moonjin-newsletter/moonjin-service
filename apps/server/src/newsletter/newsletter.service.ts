@@ -585,6 +585,33 @@ export class NewsletterService {
         }catch (error){
             throw ExceptionList.NEWSLETTER_NOT_FOUND;
         }
+    }
 
+    /**
+     * @summary 뉴스레터 삭제하기
+     * @param newsletterId
+     */
+    async deleteNewsletter(newsletterId: number){
+        try{
+            const newsletter = await this.prismaService.newsletter.update({
+                where : {
+                    id : newsletterId
+                },
+                include:{
+                    post : true
+                },
+                data : {
+                    post : {
+                        update : {
+                            deleted : true
+                        }
+                    }
+                },
+                relationLoadStrategy: 'join'
+            })
+            await this.writerInfoService.synchronizeNewsLetter(newsletter.post.writerId)
+        }catch (error) {
+            throw ExceptionList.NEWSLETTER_NOT_FOUND;
+        }
     }
 }
