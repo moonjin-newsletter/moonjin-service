@@ -21,6 +21,7 @@ import {NewsletterWithPostAndContentAndWriter} from "./prisma/newsletterWithPost
 import {NewsletterLike} from "@prisma/client";
 import {CategoryEnum} from "../post/enum/category.enum";
 import {WriterInfoService} from "../writerInfo/writerInfo.service";
+import {IUpdateNewsletter} from "./api-types/IUpdateNewsletter";
 
 
 @Injectable()
@@ -474,6 +475,30 @@ export class NewsletterService {
     }
 
     /**
+     * @summary 해당 뉴스레터에 해당 유저가 작성자인지 확인
+     * @param newsletterId
+     * @param writerId
+     * @throws NEWSLETTER_NOT_FOUND
+     * @throws FORBIDDEN_FOR_POST
+     */
+    async assertNewslettersWriter(newsletterId: number, writerId: number): Promise<void>{
+        const newsletter = await this.prismaService.newsletter.findUnique({
+            where:{
+                id : newsletterId,
+                post: {
+                    deleted : false
+                }
+            },
+            include: {
+                post : true
+            },
+            relationLoadStrategy: 'join'
+        })
+        if(newsletter == null) throw ExceptionList.NEWSLETTER_NOT_FOUND;
+        if(newsletter.post.writerId != writerId) throw ExceptionList.FORBIDDEN_FOR_POST
+    }
+
+    /**
      * @summary 해당 뉴스레터에 해당 유저가 좋아요를 눌렀는지 가져오기
      * @param userId
      * @param newsletterId
@@ -531,5 +556,35 @@ export class NewsletterService {
                 id : paginationOptions.cursor
             } : undefined
         })
+    }
+
+    /**
+     * @summary 뉴스레터 수정하기
+     * @param newsletterId
+     * @param body
+     */
+    async updateNewsletter(newsletterId : number, body: IUpdateNewsletter){
+        const postContent = await this.postService.uploadPostContent({postId: newsletterId, content: body.content});
+        try{
+            await this.prismaService.newsletter.update({
+                where : {
+                    id : newsletterId,
+                },
+                data : {
+                    postContentId: postContent.id,
+                }
+            })
+            await this.prismaService.post.update({
+                where : {
+                    id : newsletterId
+                },
+                data : {
+                    title: body.title,
+                }
+            })
+        }catch (error){
+            throw ExceptionList.NEWSLETTER_NOT_FOUND;
+        }
+
     }
 }

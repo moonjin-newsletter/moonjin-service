@@ -26,6 +26,7 @@ import {AssertEditorJsonDto, EditorJsToHtml} from "@moonjin/editorjs";
 import PostDtoMapper from "../post/postDtoMapper";
 import {GetPagination} from "../common/pagination/decorator/GetPagination.decorator";
 import {PaginationOptionsDto} from "../common/pagination/dto";
+import {IUpdateNewsletter} from "./api-types/IUpdateNewsletter";
 
 @Controller('newsletter')
 export class NewsletterController {
@@ -280,5 +281,25 @@ export class NewsletterController {
                 totalCount : recommendNewsletterCardList.length
         });
     }
+
+    /**
+     * @summary 뉴스레터 수정
+     * @param user
+     * @param newsletterId
+     * @param body
+     * @returns {message: string}
+     * @throws NEWSLETTER_NOT_FOUND
+     * @throws FORBIDDEN_FOR_POST
+     */
+    @TypedRoute.Patch(':newsletterId')
+    @UseGuards(WriterAuthGuard)
+    async updateNewsletter(@User() user:UserAuthDto, @TypedParam('newsletterId') newsletterId: number, @TypedBody() body:IUpdateNewsletter)
+    :Promise<TryCatch<ResponseMessage,NEWSLETTER_NOT_FOUND | FORBIDDEN_FOR_POST>>{
+        await this.newsletterService.assertNewslettersWriter(newsletterId, user.id);
+        await this.newsletterService.updateNewsletter(newsletterId, body);
+        return createResponseForm({message : "뉴스레터가 수정되었습니다."});
+    }
+
+
 
 }
