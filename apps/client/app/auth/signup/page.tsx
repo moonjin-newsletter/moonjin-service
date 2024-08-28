@@ -91,12 +91,12 @@ export default function Page() {
               </div>
               <form
                 onSubmit={handleSubmit(onClickSignup)}
-                className="min-w-[400px] px-10 w-full h-fit max-h-[512px] overflow-y-auto flex flex-col items-start gap-y-3"
+                className="min-w-[400px] px-10 w-full h-fit max-h-[512px] overflow-y-auto flex flex-col items-start "
               >
                 <div className="w-full flex mt-4 flex-col  ">
-                  <p>
+                  <p className="text-sm font-medium">
                     회원구분
-                    <span className="text-sm ml-2 text-grayscale-500">
+                    <span className="text-sm font-normal ml-2 text-grayscale-500">
                       (독자님도 작가로 변경 가능해요)
                     </span>
                   </p>
@@ -134,7 +134,7 @@ export default function Page() {
                   </div>
                 </div>
                 <div className="flex flex-col w-full">
-                  <label htmlFor="nickname">
+                  <label htmlFor="nickname" className="text-sm mt-4">
                     닉네임 <span className="text-red-700">*</span>
                   </label>
                   <input
@@ -149,7 +149,7 @@ export default function Page() {
                   {errors.nickname?.message && (
                     <span className="text-xs text-rose-500 ">{`${errors.nickname?.message}`}</span>
                   )}
-                  <label className="mt-4" htmlFor="email">
+                  <label className="mt-4 text-sm" htmlFor="email">
                     이메일 <span className="text-red-700">*</span>
                   </label>
                   <input
@@ -164,7 +164,7 @@ export default function Page() {
                   {errors.email?.message && (
                     <span className="text-xs text-rose-500 ">{`${errors.email?.message}`}</span>
                   )}
-                  <label className="mt-4" htmlFor="password">
+                  <label className="mt-4 text-sm" htmlFor="password">
                     비밀번호 <span className="text-red-700">*</span>
                   </label>
                   <input
@@ -179,7 +179,7 @@ export default function Page() {
                   {errors.password?.message && (
                     <span className="text-xs text-rose-500 ">{`${errors.password?.message}`}</span>
                   )}
-                  <label className="mt-4" htmlFor="passwordCheck">
+                  <label className="mt-4 text-sm" htmlFor="passwordCheck">
                     비밀번호 확인 <span className="text-red-700">*</span>
                   </label>
                   <input
@@ -196,7 +196,7 @@ export default function Page() {
                   )}
                   {role === "1" ? (
                     <div className="w-full mt-4">
-                      <label htmlFor="moonjinId">
+                      <label htmlFor="moonjinId" className="text-sm">
                         문진 이메일 <span className="text-red-700">*</span>
                       </label>
                       <div className="mt-2 flex items-center text-gray-800">
@@ -221,7 +221,7 @@ export default function Page() {
                 </div>
                 <button
                   type="submit"
-                  className="mt-2 py-3 disabled:bg-gray-900 w-full rounded-3xl bg-[#7b0000] text-white"
+                  className="mt-4 py-3 disabled:bg-gray-900 w-full rounded-3xl bg-[#7b0000] text-white"
                 >
                   회원가입
                 </button>
