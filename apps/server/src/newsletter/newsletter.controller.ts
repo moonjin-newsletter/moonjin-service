@@ -15,7 +15,7 @@ import {createResponseForm, ResponseMessage} from "../response/responseForm";
 import {NewsletterService} from "./newsletter.service";
 import {UserAuthGuard} from "../auth/guard/userAuth.guard";
 import {IGetNewsletter} from "./api-types/IGetNewsletter";
-import {NewsletterCardDto, NewsletterLikeResponseDto, NewsletterSendResultDto} from "./dto";
+import {NewsletterAllDataDto, NewsletterCardDto, NewsletterLikeResponseDto, NewsletterSendResultDto} from "./dto";
 import {ISendTesNewsletter} from "./api-types/ISendTestNewsletter";
 import {USER_NOT_WRITER} from "../response/error/auth";
 import {ExceptionList} from "../response/error/errorInstances";
@@ -27,6 +27,7 @@ import PostDtoMapper from "../post/postDtoMapper";
 import {GetPagination} from "../common/pagination/decorator/GetPagination.decorator";
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {IUpdateNewsletter} from "./api-types/IUpdateNewsletter";
+import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
 
 @Controller('newsletter')
 export class NewsletterController {
@@ -304,6 +305,9 @@ export class NewsletterController {
      * @summary 뉴스레터 삭제
      * @param user
      * @param newsletterId
+     * @returns {message: string}
+     * @throws NEWSLETTER_NOT_FOUND
+     * @throws FORBIDDEN_FOR_POST
      */
     @TypedRoute.Delete(':newsletterId')
     @UseGuards(WriterAuthGuard)
@@ -312,5 +316,32 @@ export class NewsletterController {
         await this.newsletterService.assertNewslettersWriter(newsletterId, user.id);
         await this.newsletterService.deleteNewsletter(newsletterId);
         return createResponseForm({message : "뉴스레터가 삭제되었습니다."});
+    }
+
+    /**
+     * @summary 해당 뉴스레터의 전체 정보 가져오기 (작성자 전용)
+     * @param user
+     * @param newsletterId
+     * @returns NewsletterAllDataDto
+     * @throws NEWSLETTER_NOT_FOUND
+     * @throws FORBIDDEN_FOR_POST
+     */
+    @TypedRoute.Get(":newsletterId/all")
+    @UseGuards(WriterAuthGuard)
+    async getNewsletterAll(@User() user:UserAuthDto, @TypedParam('newsletterId') newsletterId: number)
+    :Promise<TryCatch<NewsletterAllDataDto, NEWSLETTER_NOT_FOUND | FORBIDDEN_FOR_POST>>{
+        const newsletter = await this.newsletterService.getNewsletterAllDataById(newsletterId);
+        if(newsletter.post.writerInfo.userId !== user.id) throw ExceptionList.FORBIDDEN_FOR_POST;
+
+        const { post, postContent,...newsletterData} = newsletter;
+        const {series,writerInfo, ...postData} = post;
+        return createResponseForm({
+            newsletter: NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
+            post: PostDtoMapper.PostToPostDto(postData),
+            postContent: PostDtoMapper.PostContentToPostContentDto(postContent),
+            series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
+            writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterProfileDto(writerInfo)
+        })
+
     }
 }
