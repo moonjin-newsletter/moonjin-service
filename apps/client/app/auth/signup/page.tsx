@@ -106,21 +106,6 @@ export default function Page() {
                         {...register("role", {
                           required: "이메일을 입력해주세요",
                         })}
-                        id="1"
-                        type="radio"
-                        name="role"
-                        value={1}
-                        className="w-4 h-4 text-[#7b0000]  border-4 border-gray-400 focus:ring-[#7b0000] dark:focus:ring-[#7b0000] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                      />
-                      <label htmlFor="1" className="text-sm text-grayscale-600">
-                        작가 회원
-                      </label>
-                    </div>
-                    <div className="flex items-center gap-x-2">
-                      <input
-                        {...register("role", {
-                          required: "이메일을 입력해주세요",
-                        })}
                         id="0"
                         type="radio"
                         name="role"
@@ -129,6 +114,21 @@ export default function Page() {
                       />
                       <label htmlFor="0" className="text-sm text-grayscale-600">
                         독자 회원
+                      </label>
+                    </div>
+                    <div className="flex items-center gap-x-2">
+                      <input
+                        {...register("role", {
+                          required: "이메일을 입력해주세요",
+                        })}
+                        id="1"
+                        type="radio"
+                        name="role"
+                        value={1}
+                        className="w-4 h-4 text-[#7b0000]  border-4 border-gray-400 focus:ring-[#7b0000] dark:focus:ring-[#7b0000] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      />
+                      <label htmlFor="1" className="text-sm text-grayscale-600">
+                        작가 회원
                       </label>
                     </div>
                   </div>
@@ -221,7 +221,7 @@ export default function Page() {
                 </div>
                 <button
                   type="submit"
-                  className="mt-4 py-3 disabled:bg-gray-900 w-full rounded-3xl bg-[#7b0000] text-white"
+                  className="mt-4 py-3 disabled:bg-gray-900 w-full rounded-full bg-[#7b0000] text-white"
                 >
                   회원가입
                 </button>
