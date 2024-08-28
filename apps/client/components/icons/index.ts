@@ -19,6 +19,7 @@ import SignOut from "./sign-out.svg";
 import PencilSimpleLine from "./pencil-simple-line.svg";
 import More from "./more.svg";
 import LogoSymbolGray from "./logo-symbol-gray.svg";
+import LogoStrokeBlack from "./logo-stroke-black.svg";
 
 export {
   Kakao,
@@ -42,4 +43,5 @@ export {
   PencilSimpleLine,
   More,
   LogoSymbolGray,
+  LogoStrokeBlack,
 };
