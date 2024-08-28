@@ -57,11 +57,11 @@ export default async function Page({ params }: pageProps) {
               {nInfo.post.category}
             </div>
           </div>
-          <h1 className="text-2xl font-medium mt-6 font-serif ">
+          <h1 className="text-2xl font-medium mt-4 font-serif ">
             {nInfo.post.title}
           </h1>
 
-          <div className="flex items-center w-full mt-5">
+          <div className="flex items-center w-full mt-8">
             <div className="flex items-center justify-between w-full">
               <p className="font-serif text-sm">
                 <span className="text-grayscale-400">by.</span>
@@ -131,7 +131,7 @@ export default async function Page({ params }: pageProps) {
             </Link>
           )}
         </section>
-        <hr className="my-8" />
+        <hr className="mt-4 mb-10" />
         {/*뉴스레터 영역*/}
         <EditorRender blocks={nInfo.postContent.content.blocks} />
         <section className="flex flex-col mt-10 w-full">
@@ -141,11 +141,11 @@ export default async function Page({ params }: pageProps) {
             </span>
             <LikeButton nId={nId} />
           </div>
-          <Link
-            href={`/@${nInfo.writer.writerInfo.moonjinId}`}
-            className="mt-5 bg-grayscale-100 rounded-lg p-4 w-full flex items-center "
-          >
-            <div className="flex items-center">
+          <div className="mt-5 bg-grayscale-100 rounded-lg p-4 w-full flex items-center ">
+            <Link
+              href={`/@${nInfo.writer.writerInfo.moonjinId}`}
+              className="flex items-center"
+            >
               <Image
                 src={nInfo.writer.user.image}
                 width={48}
@@ -159,7 +159,7 @@ export default async function Page({ params }: pageProps) {
                   {nInfo.writer.writerInfo.moonjinId}@moonjin.site
                 </span>
               </div>
-            </div>
+            </Link>
             <div className="ml-auto flex items-center gap-x-3">
               <span className="text-sm text-grayscale-400">
                 구독자 수 |{" "}
@@ -180,7 +180,7 @@ export default async function Page({ params }: pageProps) {
                 }
               />
             </div>
-          </Link>
+          </div>
         </section>
         <hr className="my-10" />
         <section className="flex flex-col">
