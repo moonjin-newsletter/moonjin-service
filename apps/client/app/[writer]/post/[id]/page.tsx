@@ -57,7 +57,7 @@ export default async function Page({ params }: pageProps) {
               {nInfo.post.category}
             </div>
           </div>
-          <h1 className="text-2xl font-medium mt-4 font-serif ">
+          <h1 className="text-[26px] font-medium mt-4 font-serif ">
             {nInfo.post.title}
           </h1>
 
