@@ -200,7 +200,7 @@ export default async function Page({ params }: pageProps) {
 
 function RelatedPostCard({ pInfo }: { pInfo: NewsletterCardDto }) {
   return (
-    <Link href={`/@${pInfo.writer.moonjinId}/newsletter/${pInfo.post.id}`}>
+    <Link href={`/@${pInfo.writer.moonjinId}/post/${pInfo.post.id}`}>
       <div className="flex flex-col gap-y-2">
         <div className="size-fit max-w-[212px] max-h-[212px] bg-gray-300 rounded-lg border overflow-hidden">
           <Image
