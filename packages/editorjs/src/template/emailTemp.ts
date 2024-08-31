@@ -5,7 +5,9 @@ export function Header() {
   cellpadding="0"
   cellspacing="0"
   width="100%"
-  style="max-width: 600px; margin: 0 auto"
+  style="max-width: 600px; margin: 0 auto; font-family: 'Noto Sans KR', sans-serif, system-ui, -apple-system,
+      BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+      'Open Sans', 'Helvetica Neue';"
 >
   <tbody>
     <tr>
