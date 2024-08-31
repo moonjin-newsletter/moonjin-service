@@ -1,4 +1,4 @@
-import {EditorBlockDto, EditorJsonDto} from "../type";
+import { EditorJsonDto} from "../type";
 
 
 /**

@@ -1,4 +1,14 @@
-export function EmailNewsletterHeader() {
+/**
+ * 기본 Newsletter Header
+ * @param user_cover
+ * @param user_nickname
+ * @param user_email
+ * @param title
+ * @param series_title
+ * @param date
+ * @constructor
+ */
+export function EmailNewsletterHeader(user_cover: string, user_nickname: string, user_email: string, title: string, series_title : string | null, date:string, link: string) {
     return `<table
   role="presentation"
   border="0"
@@ -28,7 +38,7 @@ export function EmailNewsletterHeader() {
               <td align="center" style="width: 100%; padding: 32px 0 8px 0">
                 <a href="https://dev.moonjin.site">
                   <img
-                    src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
+                    src="${user_cover}"
                     alt="Google"
                     width="60"
                     height="60"
@@ -52,7 +62,7 @@ export function EmailNewsletterHeader() {
                     color: #333333;
                   "
                 >
-                  성의 뉴스레터
+                  ${user_nickname}
                 </a>
               </td>
             </tr>
@@ -61,7 +71,7 @@ export function EmailNewsletterHeader() {
                 <span
                   style="color: #333333; font-size: 14px; margin: 0; padding: 0"
                 >
-                  kimrotti@moonjin.site
+                  ${user_email}
                 </span>
               </td>
             </tr>
@@ -70,7 +80,7 @@ export function EmailNewsletterHeader() {
             </tr>
             <tr>
               <td align="center" style="color: #7b0000; font-size: 14px">
-                시리즈 제목
+                ${series_title}
               </td>
             </tr>
 
@@ -85,7 +95,7 @@ export function EmailNewsletterHeader() {
                     padding: 4px 0 0 0;
                   "
                 >
-                  안녕하세요 이것은 테스트 이메일입니다.
+                  ${title}
                 </h1>
               </td>
             </tr>
@@ -102,7 +112,7 @@ export function EmailNewsletterHeader() {
                 "
                 align="center"
               >
-                by.이것은 김윤하의 뉴스레터
+                by. ${user_nickname}
               </td>
             </tr>
             <tr>
@@ -115,7 +125,7 @@ export function EmailNewsletterHeader() {
                 "
                 align="center"
               >
-                2024.05.04
+                ${date}
               </td>
             </tr>
 
@@ -144,7 +154,7 @@ export function EmailNewsletterHeader() {
                 \`
               >
                 <a
-                  href=""
+                  href="${link}"
                   style="
                     display: inline-flex;
                     align-items: center;

@@ -1,5 +1,12 @@
-
-export function EmailNewsletterFooter() {
+/**
+ * 이메일 뉴스레터 푸터 템플릿
+ * @param link
+ * @param user_nickname
+ * @param user_description
+ * @param user_moonjinId
+ * @constructor
+ */
+export function EmailNewsletterFooter(link: string,user_nickname: string, user_description : string, user_moonjinId: string) {
     return `<tr>
       <td height="50"></td>
     </tr>
@@ -43,7 +50,7 @@ export function EmailNewsletterFooter() {
                 \`
               >
                 <a
-                  href=""
+                  href="${link}"
                   style="
                     display: inline-flex;
                     align-items: center;
@@ -92,7 +99,7 @@ export function EmailNewsletterFooter() {
                   font-size: 14px;
                 "
               >
-                © 2024 디자인 나침반 레터
+                © ${user_nickname}
               </td>
             </tr>
             <tr>
@@ -104,8 +111,7 @@ export function EmailNewsletterFooter() {
                   color: #7a7a7a;
                 "
               >
-                디자인을 탐구하는 디자인 나침반의 소식과 다양한 디자인 뉴스를
-                공유합니다.
+                ${user_description}
               </td>
             </tr>
             <tr>
@@ -118,17 +124,17 @@ export function EmailNewsletterFooter() {
                 "
               >
                 <a
-                  href="https://dev.moonjin.site"
+                  href="https://dev.moonjin.site/@${user_moonjinId}"
                   style="
                     color: #7a7a7a;
                     text-decoration: none;
                     text-decoration: underline;
                   "
-                  >디자인 나침반레터</a
+                  >${user_nickname}</a
                 >
                 |
                 <a
-                  href="https://dev.moonjin.site"
+                  href="${link}"
                   style="
                     color: #7a7a7a;
                     text-decoration: none;
@@ -168,7 +174,7 @@ export function EmailNewsletterFooter() {
                 "
               >
                 문진에서 뉴스레터 시작하기
-                <a style="text-decoration: underline">바로가기</a>
+                <a style="text-decoration: underline" href="https://dev.moonjin.site">바로가기</a>
               </td>
             </tr>
           </tbody>
