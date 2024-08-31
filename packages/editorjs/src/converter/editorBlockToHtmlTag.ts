@@ -23,10 +23,11 @@ export function EditorBlockToHtmlTag(block : EditorBlockDto){
             convertedHtml += (block.data.style === "ordered") ? "<ol>" : "<ul>";
             console.log(convertedHtml);
             return convertedHtml;
+        case "delimiter":
+            return "<hr />";
         case "checklist":
         case "linkTool":
         case "quote":
-        // case "delimiter":
         default:
             console.log("Unknown block type", block.type);
             return ""
