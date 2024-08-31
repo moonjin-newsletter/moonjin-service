@@ -1,5 +1,5 @@
 export function EmailNewsletterHeader() {
-    return `<table
+  return `<table
   role="presentation"
   border="0"
   cellpadding="0"
@@ -160,7 +160,7 @@ export function EmailNewsletterHeader() {
                   "
                 >
                   <img
-                    src="https://d1ppxineti4knh.cloudfront.net/static/email/logo_icon_primary.svg"
+                    src="https://d1ppxineti4knh.cloudfront.net/static/email/logo_Image_primary.png"
                     alt="Google"
                     width="18"
                     height="18"
