@@ -160,7 +160,7 @@ export function Header() {
                   "
                 >
                   <img
-                    src="https://d1ppxineti4knh.cloudfront.net/static/email/logo_icon_primary.svg"
+                    src="https://d1ppxineti4knh.cloudfront.net/static/email/logo_Image_primary.png"
                     alt="Google"
                     width="18"
                     height="18"
@@ -239,7 +239,7 @@ export function Footer() {
                   "
                 >
                   <img
-                    src="https://d1ppxineti4knh.cloudfront.net/static/email/logo_icon_primary.svg"
+                    src="https://d1ppxineti4knh.cloudfront.net/static/email/logo_Image_primary.png"
                     alt="Google"
                     width="18"
                     height="18"
@@ -331,9 +331,9 @@ export function Footer() {
                 "
               >
                 <img
-                  src="https://d1ppxineti4knh.cloudfront.net/static/email/logo_text.svg"
-                  alt="Google"
-                  height="24"
+                  src="https://d1ppxineti4knh.cloudfront.net/static/email/moonjin.png"
+                  alt="Moonjin"
+                  height="20"
                   style="overflow: hidden; object-fit: cover"
                 />
               </td>
