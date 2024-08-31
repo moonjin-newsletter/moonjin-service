@@ -1,9 +1,8 @@
 {
-  "name": "@moonjin/api-types",
+  "name": "@moonjin/editorjs-types",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "@moonjin/editorjs-types": "workspace:^",
     "tsconfig": "*"
   },
   "devDependencies": {

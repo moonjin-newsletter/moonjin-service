@@ -3116,7 +3116,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@moonjin/api-types@workspace:packages/api-types"
   dependencies:
-    "@moonjin/editorjs": "workspace:^"
+    "@moonjin/editorjs-types": "workspace:^"
+    tsconfig: "npm:*"
+    typescript: "npm:latest"
+  languageName: unknown
+  linkType: soft
+
+"@moonjin/editorjs-types@workspace:^, @moonjin/editorjs-types@workspace:packages/editorjs-types":
+  version: 0.0.0-use.local
+  resolution: "@moonjin/editorjs-types@workspace:packages/editorjs-types"
+  dependencies:
     tsconfig: "npm:*"
     typescript: "npm:latest"
   languageName: unknown
@@ -3126,6 +3135,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@moonjin/editorjs@workspace:packages/editorjs"
   dependencies:
+    "@moonjin/editorjs-types": "workspace:^"
     tsconfig: "npm:*"
     typescript: "npm:latest"
   languageName: unknown
@@ -13608,6 +13618,7 @@ __metadata:
     "@aws-sdk/client-s3": "npm:^3.540.0"
     "@aws-sdk/s3-request-presigner": "npm:^3.540.0"
     "@moonjin/editorjs": "workspace:^"
+    "@moonjin/editorjs-types": "workspace:^"
     "@nestia/core": "npm:^2.4.3"
     "@nestia/e2e": "npm:^0.4.0"
     "@nestia/sdk": "npm:^2.4.3"

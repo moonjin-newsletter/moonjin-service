@@ -1,4 +1,4 @@
-import { EditorBlockDto } from "../type";
+import {EditorBlockDto} from "@moonjin/editorjs-types";
 
 /**
  * @summary editorBlock을 html tag로 변환

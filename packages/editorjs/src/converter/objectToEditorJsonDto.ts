@@ -1,5 +1,6 @@
-import {EditorJsonDto} from "../type";
+
 import {AssertEditorJsonDto} from "./assertEditorJsonDto";
+import {EditorJsonDto} from "@moonjin/editorjs-types";
 
 
 /**

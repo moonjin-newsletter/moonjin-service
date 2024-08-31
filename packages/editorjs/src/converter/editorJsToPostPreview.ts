@@ -1,4 +1,4 @@
-import {EditorBlockDto} from "../type";
+import {EditorBlockDto} from "@moonjin/editorjs-types";
 
 /**
  * @summary EditorJson -> Post Preview (서버용)

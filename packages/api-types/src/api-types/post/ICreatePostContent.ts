@@ -1,4 +1,4 @@
-import {EditorJsonDto} from "@moonjin/editorjs";
+import {EditorJsonDto} from "@moonjin/editorjs-types";
 
 export interface ICreatePostContent{
     postId: number;

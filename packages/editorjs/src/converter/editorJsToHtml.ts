@@ -1,12 +1,13 @@
-import { EditorJsonDto } from "../type";
+
 import { EditorBlockToHtmlTag } from "./editorBlockToHtmlTag";
 import {EmailTemplate} from "../template/emailTemplate";
 import {NewsletterAllDataDto} from "@moonjin/api-types";
-
+import {EditorJsonDto} from "@moonjin/editorjs-types";
 
 /**
  * Convert EditorJs Json 데이터를 Html 문서로 변환
  * @param editorJsonData
+ * @param newsletterData
  * @constructor
  */
 export function EditorJsToHtml(editorJsonData: EditorJsonDto, newsletterData:NewsletterAllDataDto  ) {

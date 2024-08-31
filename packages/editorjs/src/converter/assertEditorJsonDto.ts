@@ -1,5 +1,4 @@
-import { EditorJsonDto} from "../type";
-
+import {EditorJsonDto} from "@moonjin/editorjs-types";
 
 /**
  * @summary object가 EditorJsonDto 형식인지 확인
