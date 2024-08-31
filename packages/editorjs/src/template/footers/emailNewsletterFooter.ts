@@ -66,8 +66,8 @@ export function EmailNewsletterFooter(link: string,user_nickname: string, user_d
                   "
                 >
                   <img
-                    src="https://d1ppxineti4knh.cloudfront.net/static/email/logo_icon_primary.svg"
-                    alt="Google"
+                    src="https://d1ppxineti4knh.cloudfront.net/static/email/logo_Image_primary.png"
+                    alt="Moonjin"
                     width="18"
                     height="18"
                     style="overflow: hidden; object-fit: cover"
@@ -157,8 +157,8 @@ export function EmailNewsletterFooter(link: string,user_nickname: string, user_d
                 "
               >
                 <img
-                  src="https://d1ppxineti4knh.cloudfront.net/static/email/logo_text.svg"
-                  alt="Google"
+                  src="https://d1ppxineti4knh.cloudfront.net/static/email/moonjin.png"
+                  alt="Moonjin"
                   height="24"
                   style="overflow: hidden; object-fit: cover"
                 />

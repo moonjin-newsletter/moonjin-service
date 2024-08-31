@@ -170,7 +170,7 @@ export function EmailNewsletterHeader(user_cover: string, user_nickname: string,
                   "
                 >
                   <img
-                    src="https://d1ppxineti4knh.cloudfront.net/static/email/logo_icon_primary.svg"
+                    src="https://d1ppxineti4knh.cloudfront.net/static/email/logo_Image_primary.png"
                     alt="Google"
                     width="18"
                     height="18"
