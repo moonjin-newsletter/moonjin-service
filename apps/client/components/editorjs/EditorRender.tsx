@@ -91,10 +91,23 @@ function renderEditorData(blocks: EditorBlockDto[]) {
 }
 
 function ListRender(items: any[], style: "ordered" | "unordered" | undefined) {
+  if (style === "ordered") {
+    return (
+      <ol className="list-decimal pl-4">
+        {items.map((item: any, index: any) => (
+          <>
+            <li key={index}>{item.content}</li>
+            {item.items &&
+              item.items.length > 0 &&
+              ListRender(item.items, style)}
+          </>
+        ))}
+      </ol>
+    );
+  }
+
   return (
-    <ul
-      className={`${style === "ordered" ? "list-decimal" : "list-disc"} pl-4`}
-    >
+    <ul className="list-disc pl-4">
       {items.map((item: any, index: any) => (
         <>
           <li key={index}>{item.content}</li>
