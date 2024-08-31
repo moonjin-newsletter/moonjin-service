@@ -1,6 +1,6 @@
 import { EditorJsonDto } from "../type";
 import { EditorBlockToHtmlTag } from "./editorBlockToHtmlTag";
-import { EmailTemp } from "../template";
+import {EmailTemplate} from "../template/emailTemplate";
 
 /**
  * Convert EditorJs Json 데이터를 Html 문서로 변환
@@ -32,5 +32,5 @@ export function EditorJsToHtml(editorJsonData: EditorJsonDto) {
     htmlFormer += EditorBlockToHtmlTag(block);
   });
 
-  return EmailTemp.Header() + htmlFormer + htmlLetter + EmailTemp.Footer();
+  return EmailTemplate.Header.EmailNewsletterHeader() + htmlFormer + htmlLetter + EmailTemplate.Footer.EmailNewsletterFooter();
 }
