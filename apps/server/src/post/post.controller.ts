@@ -23,8 +23,6 @@ import {USER_NOT_WRITER} from "../response/error/auth";
 import { SERIES_NOT_FOUND} from "../response/error/series";
 import {ICreatePostContent} from "./api-types/ICreatePostContent";
 import {PostContentDto} from "./dto";
-import {ExceptionList} from "../response/error/errorInstances";
-import {EditorJsToHtml} from "@moonjin/editorjs";
 import PostDtoMapper from "./postDtoMapper";
 import SeriesDtoMapper from "../series/seriesDtoMapper";
 import {Category} from "@moonjin/api-types";
@@ -187,16 +185,4 @@ export class PostController {
             series : null
         })
     }
-
-    @TypedRoute.Get(':id/html')
-    async getPostHtml(@TypedParam('id') postId : number): Promise<TryCatch<string, POST_CONTENT_NOT_FOUND | POST_NOT_FOUND>>
-    {
-        const postContent = await this.postService.getPostWithContentAndSeries(postId);
-        try{
-            return createResponseForm(EditorJsToHtml(postContent.postContent.content));
-        }catch (error){
-            throw ExceptionList.FORBIDDEN_FOR_POST;
-        }
-    }
-
 }

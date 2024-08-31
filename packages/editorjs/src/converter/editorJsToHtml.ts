@@ -1,16 +1,16 @@
 
 import { EditorBlockToHtmlTag } from "./editorBlockToHtmlTag";
 import {EmailTemplate} from "../template/emailTemplate";
-import {NewsletterAllDataDto} from "@moonjin/api-types";
+import { PostWithContentAndSeriesAndWriterDto} from "@moonjin/api-types";
 import {EditorJsonDto} from "@moonjin/editorjs-types";
 
 /**
  * Convert EditorJs Json 데이터를 Html 문서로 변환
  * @param editorJsonData
- * @param newsletterData
+ * @param metaData
  * @constructor
  */
-export function EditorJsToHtml(editorJsonData: EditorJsonDto, newsletterData:NewsletterAllDataDto  ) {
+export function EditorJsToHtml(editorJsonData: EditorJsonDto, metaData:PostWithContentAndSeriesAndWriterDto, newsletterId: number) {
   let htmlFormer: string = `<tr>
       <td>
         <table
@@ -34,17 +34,17 @@ export function EditorJsToHtml(editorJsonData: EditorJsonDto, newsletterData:New
   editorJsonData.blocks.forEach((block) => {
     htmlFormer += EditorBlockToHtmlTag(block);
   });
-  const sentAt = newsletterData.newsletter.sentAt.toString().slice(0,10).replace('-',',');
+  const sentAt = new Date().setHours(new Date().getHours() + 9).toString().slice(0,10).replace('-',',');
 
   return EmailTemplate.Header.EmailNewsletterHeader(
-      newsletterData.writer.user.image, newsletterData.writer.user.nickname, newsletterData.writer.writerInfo.moonjinId + "@moonjin.site",
-      newsletterData.post.title, newsletterData.series?.title?? null, sentAt,
-      `https://moonjin.site/@${newsletterData.writer.writerInfo.moonjinId}/newsletter/${newsletterData.newsletter.id}`,
+      metaData.user.image, metaData.user.nickname, metaData.writerInfo.moonjinId + "@moonjin.site",
+      metaData.post.title, metaData.series?.title?? null, sentAt,
+      `https://moonjin.site/@${metaData.writerInfo.moonjinId}/newsletter/${newsletterId}`,
   )
       + htmlFormer + htmlLetter + EmailTemplate.Footer.EmailNewsletterFooter(
-      `https://moonjin.site/@${newsletterData.writer.writerInfo.moonjinId}/newsletter/${newsletterData.newsletter.id}`,
-      newsletterData.writer.user.nickname,
-      newsletterData.writer.user.description,
-        newsletterData.writer.writerInfo.moonjinId
+      `https://moonjin.site/@${metaData.writerInfo.moonjinId}/newsletter/${newsletterId}`,
+      metaData.user.nickname,
+      metaData.user.description,
+        metaData.writerInfo.moonjinId
   );
 }

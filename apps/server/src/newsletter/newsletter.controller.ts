@@ -92,7 +92,7 @@ export class NewsletterController {
             senderMailAddress : postWithPostContentAndSeriesAndWriter.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
             senderName: user.nickname,
             subject: "[테스트 뉴스레터] "+postWithPostContentAndSeriesAndWriter.post.title,
-            html: EditorJsToHtml(postContent)
+            html: EditorJsToHtml(postContent, postWithPostContentAndSeriesAndWriter,0)
         })
 
         return createResponseForm({

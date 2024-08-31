@@ -161,7 +161,7 @@ export class NewsletterService {
                 senderName : postWithContentAndSeriesAndWriter.user.nickname,
                 senderMailAddress : postWithContentAndSeriesAndWriter.writerInfo.moonjinId + "@" + process.env.MAILGUN_DOMAIN,
                 subject : newsletterTitle,
-                html : EditorJsToHtml(postWithContentAndSeriesAndWriter.postContent.content),
+                html : EditorJsToHtml(postWithContentAndSeriesAndWriter.postContent.content,postWithContentAndSeriesAndWriter, newsletter.id),
                 emailList : receiverEmailList
             };
             await this.mailService.sendNewsLetterWithHtml(newsletterSendInfo);
