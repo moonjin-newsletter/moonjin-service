@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import type { EditorBlockDto } from "@moonjin/editorjs";
+import type { EditorBlockDto } from "@moonjin/editorjs-types";
 
 type ListItem = {
   content: string;

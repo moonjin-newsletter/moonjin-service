@@ -6,10 +6,19 @@
  * @param title
  * @param series_title
  * @param date
+ * @param link
  * @constructor
  */
-export function EmailNewsletterHeader(user_cover: string, user_nickname: string, user_email: string, title: string, series_title : string | null, date:string, link: string) {
-    return `<table
+export function EmailNewsletterHeader(
+  user_cover: string,
+  user_nickname: string,
+  user_email: string,
+  title: string,
+  series_title: string | null,
+  date: string,
+  link: string,
+) {
+  return `<table
   role="presentation"
   border="0"
   cellpadding="0"

@@ -38,8 +38,8 @@ export function EditorBlockToHtmlTag(block: EditorBlockDto) {
 function ListRender(items: any[], style: "ordered" | "unordered" | undefined) {
   let convertedHtml =
     style === "ordered"
-      ? "<ol style='margin: 8px 0 8px 0;'>"
-      : "<ul style='margin: 8px 0 8px 0;'>";
+      ? "<ol style='margin: 8px 0 8px 0; font-size: 16px;'>"
+      : "<ul style='margin: 8px 0 8px 0; font-size: 16px;'>";
   items.forEach((li) => {
     convertedHtml += `<li>${li.content}</li>`;
     if (li.items && li.items.length > 0) {
