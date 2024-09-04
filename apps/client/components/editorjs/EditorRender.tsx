@@ -44,7 +44,7 @@ export default function EditorRender({
   return (
     <article
       id="editor-output"
-      className="text-grayscale-600 font-light leading-7 tracking-wide"
+      className="text-grayscale-600 font-light leading-7 tracking-wide relative z-0"
     >
       {content}
     </article>
@@ -74,9 +74,16 @@ function renderEditorData(blocks: EditorBlockDto[]) {
         return <hr className="my-5" />;
       case "image":
         return (
-          <figure key={index} className="my-4">
-            <img src={block.data.file.url} alt={block.data.caption} />
-            <figcaption className="text-center">
+          <figure key={index} className={` my-4 flex flex-col`}>
+            <img
+              className={`${block.data.withBackground ? "w-2/3 mx-auto" : ""} ${
+                block.data.withBorder ? "border border-grayscale-200" : ""
+              } `}
+              src={block.data.file.url}
+              alt={block.data.caption}
+            />
+
+            <figcaption className="text-center text-sm text-grayscale-500 mt-0.5">
               {block.data.caption}
             </figcaption>
           </figure>

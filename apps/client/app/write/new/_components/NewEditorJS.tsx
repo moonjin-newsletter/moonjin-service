@@ -140,7 +140,7 @@ export default function NewEditorJS() {
 
   return (
     <div className=" w-full    flex flex-col items-center">
-      <section className="w-full  flex justify-between text-grayscale-600 fixed top-0 py-6 px-8">
+      <section className="w-full flex justify-between text-grayscale-600 fixed top-0 py-6 px-8 z-10">
         <a
           href={"/"}
           className="flex items-center font-semibold gap-x-2.5 font-libre"
