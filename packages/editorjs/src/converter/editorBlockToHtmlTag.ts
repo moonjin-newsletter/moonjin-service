@@ -1,4 +1,4 @@
-import {EditorBlockDto} from "@moonjin/editorjs-types";
+import { EditorBlockDto } from "@moonjin/editorjs-types";
 
 /**
  * @summary editorBlock을 html tag로 변환
@@ -14,17 +14,36 @@ export function EditorBlockToHtmlTag(block: EditorBlockDto) {
     case "paragraph":
       return `<p style="color: #1a1a1a; font-size:16px;line-height:26px;word-break:break-word;overflow-wrap: break-word; margin:16px 0px 16px 0px; text-align: left;">${block.data.text}</p>`;
     case "image":
-      return `<img class="img-fluid" src="${block.data.file.url}" title="${
-        block.data.caption
-      }" width=${
-        block.data.stretched ? "100%" : "60%"
-      } style="margin: 0 auto;" /><br /><em style="color:#f7f7f7; font-weight: normal; font-size: 12px">${
-        block.data.caption
-      }</em>`;
+      return `
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tbody>
+                    <tr>
+                        <td align="center" width="${
+                          block.data.withBackground ? "20%" : "0"
+                        }"></td>
+                        <td align="center" style="${
+                          block.data.withBorder
+                            ? "border: 1px lightgray solid;"
+                            : ""
+                        }">
+                        <img class="img-fluid" src="${
+                          block.data.file.url
+                        }" title="${
+                          block.data.caption
+                        }" width="100%" style="margin: 0 auto;"  alt="image"/>
+                        </td>
+                        <td align="center" width="${
+                          block.data.withBackground ? "20%" : "0"
+                        }"></td>
+                    </tr>
+                </tbody>
+               </table>
+
+`;
     case "list":
       return ListRender(block.data.items, block.data.style);
     case "delimiter":
-      return "<hr style='border:1px solid ' />";
+      return "<hr style='border:1px #b7b7b7 solid' />";
 
     case "checklist":
     case "linkTool":

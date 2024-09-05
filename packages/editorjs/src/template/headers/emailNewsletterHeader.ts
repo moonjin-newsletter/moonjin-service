@@ -54,7 +54,7 @@ export function EmailNewsletterHeader(
                     style="
                       border-radius: 50%;
                       overflow: hidden;
-                      border: 1px gray solid;
+                      border: 1px lightgray solid;
                       object-fit: cover;
                     "
                   />
@@ -87,11 +87,17 @@ export function EmailNewsletterHeader(
             <tr>
               <td height="40" style="font-size: 0; line-height: 0">&nbsp;</td>
             </tr>
-            <tr>
-              <td align="center" style="color: #7b0000; font-size: 14px">
-                ${series_title}
-              </td>
-            </tr>
+            ${
+              series_title
+                ? `<tr>
+    
+                <td align="center" style="color: #7b0000; font-size: 14px">
+                    ${series_title}
+                </td>
+            </tr>`
+                : ""
+            }
+         
 
             <tr>
               <td align="center">
@@ -185,7 +191,7 @@ export function EmailNewsletterHeader(
                     height="18"
                     style="overflow: hidden; object-fit: cover"
                   />
-                  <span style="">웹사이트에서 보기</span>
+                  <span style="margin-left: 6px">웹사이트에서 보기</span>
                 </a>
               </td>
             </tr>

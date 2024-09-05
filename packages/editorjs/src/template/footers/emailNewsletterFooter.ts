@@ -6,8 +6,13 @@
  * @param user_moonjinId
  * @constructor
  */
-export function EmailNewsletterFooter(link: string,user_nickname: string, user_description : string, user_moonjinId: string) {
-    return `<tr>
+export function EmailNewsletterFooter(
+  link: string,
+  user_nickname: string,
+  user_description: string,
+  user_moonjinId: string,
+) {
+  return `<tr>
       <td height="50"></td>
     </tr>
     <tr>
@@ -72,7 +77,7 @@ export function EmailNewsletterFooter(link: string,user_nickname: string, user_d
                     height="18"
                     style="overflow: hidden; object-fit: cover"
                   />
-                  <span style="">웹사이트에서 보기</span>
+                  <span style="margin-left: 6px">웹사이트에서 보기</span>
                 </a>
               </td>
             </tr>

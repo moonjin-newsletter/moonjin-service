@@ -7,7 +7,6 @@ import { fileUpload } from "../../lib/file/fileUpload";
 import { FileTypeEnum } from "@moonjin/api-types";
 
 export const EDITOR_JS_TOOLS = {
-  header: Header,
   underline: Underline,
   // quote: Quote,
   delimiter: Delimiter,
@@ -17,6 +16,16 @@ export const EDITOR_JS_TOOLS = {
   //   endpoint: "http://localhost:8008/fetchUrl", // Your backend endpoint for url data fetching,
   // },
   // },
+  header: {
+    class: Header,
+    shortcut: "CMD+SHIFT+H",
+    inlineToolbar: true,
+    config: {
+      placeholder: "제목을 입력하세요",
+      levels: [1, 2, 3],
+      defaultLevel: 1,
+    },
+  },
   list: {
     class: NestedList,
     inlineToolbar: true,
