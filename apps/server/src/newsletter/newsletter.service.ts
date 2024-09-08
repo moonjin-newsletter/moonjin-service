@@ -447,6 +447,7 @@ export class NewsletterService {
                     createdAt: this.utilService.getCurrentDateInKorea()
                 }
             })
+            await this.synchronizeNewsletterLikeCount(newsletterId);
         }catch (error){}
     }
 
@@ -463,6 +464,7 @@ export class NewsletterService {
                     userId
                 }
             })
+            await this.synchronizeNewsletterLikeCount(newsletterId);
         }catch (error){}
     }
 
@@ -622,6 +624,31 @@ export class NewsletterService {
             await this.writerInfoService.synchronizeNewsLetter(newsletter.post.writerId)
         }catch (error) {
             throw ExceptionList.NEWSLETTER_NOT_FOUND;
+        }
+    }
+
+    /**
+     * @summary 뉴스레터 좋아요 수 동기화
+     * @param newsletterId
+     * @throws NEWSLETTER_NOT_FOUND
+     */
+    async synchronizeNewsletterLikeCount(newsletterId: number): Promise<void>{
+        try{
+            const likes = await this.prismaService.newsletterLike.count({
+                where: {
+                    newsletterId
+                }
+            })
+            await this.prismaService.newsletter.update({
+                where: {
+                    id: newsletterId
+                },
+                data: {
+                    likes
+                }
+            })
+        }catch (error){
+            throw ExceptionList.NEWSLETTER_NOT_FOUND
         }
     }
 }

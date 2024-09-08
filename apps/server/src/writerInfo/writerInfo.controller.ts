@@ -1,5 +1,5 @@
 import { Controller, Res, UseGuards } from '@nestjs/common';
-import {TypedBody, TypedRoute} from "@nestia/core";
+import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
 import {TryCatch} from "../response/tryCatch";
 import {USER_NOT_WRITER} from "@moonjin/api-types";
 import {WriterInfoService} from "./writerInfo.service";
@@ -86,5 +86,12 @@ export class WriterInfoController {
         res.cookie('refreshToken', refreshToken,this.cookieOptions)
         res.send(createResponseForm(newUser));
         return createResponseForm(newUser);
+    }
+
+    @TypedRoute.Get(":writerId/synch/profile")
+    async synchWriterInfo(@TypedParam("writerId") writerId:number){
+        await this.writerService.synchronizeNewsLetter(writerId);
+        await this.writerService.synchronizeSeries(writerId);
+        return createResponseForm("동기화 완료");
     }
 }
