@@ -160,6 +160,7 @@ export class SeriesController {
         await this.seriesService.assertSeriesOwner(seriesId, user.id);
         await this.seriesService.assertSeriesEmpty(seriesId);
         await this.seriesService.deleteSeries(seriesId);
+        await this.writerInfoService.synchronizeSeries(user.id);
         return createResponseForm({
             message: "시리즈 삭제 성공"
         });
