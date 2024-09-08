@@ -5,8 +5,12 @@ import ImageTool from "@editorjs/image";
 import Underline from "@editorjs/underline";
 import { fileUpload } from "../../lib/file/fileUpload";
 import { FileTypeEnum } from "@moonjin/api-types";
+import { ToolConstructable, ToolSettings } from "@editorjs/editorjs";
 
-export const EDITOR_JS_TOOLS = {
+export const EDITOR_JS_TOOLS:
+  | { [p: string]: ToolConstructable | ToolSettings }
+  | undefined
+  | any = {
   underline: Underline,
   // quote: Quote,
   delimiter: Delimiter,
@@ -26,6 +30,7 @@ export const EDITOR_JS_TOOLS = {
       defaultLevel: 1,
     },
   },
+
   list: {
     class: NestedList,
     inlineToolbar: true,
