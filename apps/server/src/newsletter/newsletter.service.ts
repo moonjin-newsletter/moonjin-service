@@ -93,7 +93,7 @@ export class NewsletterService {
     async sendNewsLetter(postId: number, writerId: number,newsletterTitle: string){
         // 1. 해당 글이 보낼 수 있는 상태인지 확인
         const postWithContentAndSeriesAndWriter = await this.assertNewsletterCanBeSent(writerId, postId);
-        console.log("sendable")
+        let isNewsletterSent = false;
 
         // 2. 구독자 목록 가져오기
         const receiverList = await this.subscribeService.getAllSubscriberByWriterId(writerId);
@@ -105,11 +105,8 @@ export class NewsletterService {
         const receiverEmailList = Array.from(receiverEmailSet);
         const receiverIdList = receiverList.subscriberList.map(subscriber => subscriber.user.id);
 
-        console.log(receiverEmailList);
-
         try{
             const sentAt = this.utilService.getCurrentDateInKorea();
-            console.log(sentAt)
             const newsletter = await this.prismaService.newsletter.create({
                 data : {
                     id : postId,
@@ -165,11 +162,24 @@ export class NewsletterService {
                 emailList : receiverEmailList
             };
             await this.mailService.sendNewsLetterWithHtml(newsletterSendInfo);
+            isNewsletterSent = true;
             if(postWithContentAndSeriesAndWriter.post.seriesId > 0)
                 await this.seriesService.updateSeriesNewsletterCount(postWithContentAndSeriesAndWriter.post.seriesId);
             await this.writerInfoService.synchronizeNewsLetter(writerId);
             return newsletter;
         }catch (error){
+            console.log(error)
+            if(!isNewsletterSent){ // 뉴스레터 전송 실패 시 롤백
+                await this.prismaService.newsletter.delete({
+                    where : {
+                        id : postId
+                    },
+                    include : {
+                        newsletterSend : true,
+                        webNewsletter : true
+                    }
+                })
+            }
             throw ExceptionList.SEND_NEWSLETTER_ERROR;
         }
     }
