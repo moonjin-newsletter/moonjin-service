@@ -23,7 +23,7 @@ export function EditorBlockToHtmlTag(block: EditorBlockDto) {
                         }"></td>
                         <td align="center" style="${
                           block.data.withBorder
-                            ? "border: 1px lightgray solid;"
+                            ? "border: 1px solid #efefef;"
                             : ""
                         }">
                         <img class="img-fluid" src="${

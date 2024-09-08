@@ -7,6 +7,7 @@ import { fileUpload } from "../../lib/file/fileUpload";
 import { FileTypeEnum } from "@moonjin/api-types";
 import { ToolConstructable, ToolSettings } from "@editorjs/editorjs";
 
+// @TODO: 타입 정의 필요
 export const EDITOR_JS_TOOLS:
   | { [p: string]: ToolConstructable | ToolSettings }
   | undefined

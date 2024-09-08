@@ -1,6 +1,3 @@
-.image-tool__image {
-    background-color: transparent !important;
-}
 
 h1.ce-header{
     @apply text-3xl font-bold py-2
@@ -35,3 +32,43 @@ h6.ce-header{
     background-color: #efefef;
 
 }
+
+.image-tool__image {
+    background-color: transparent !important;
+}
+
+.image-tool__image-picture {
+    width: 100%!important;
+    max-width: 100%!important;
+    margin: 0 auto!important
+}
+
+.image-tool--withBackground .image-tool__image-picture {
+    width: auto!important;
+    max-width: 100%!important;
+    margin: 0 auto!important
+}
+
+.image-tool--withBackground .image-tool__image {
+    width: 60%!important;
+    margin: 0 auto 10px!important;
+    padding: 0!important;
+    background: transparent!important
+}
+
+.image-tool--withBorder .image-tool__image {
+    border: none!important
+}
+
+.image-tool--withBorder .image-tool__image .image-tool__image-picture {
+    border: 1px solid #efefef !important
+}
+
+.image-tool__link-area {
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    --tw-text-opacity: 1;
+    color: rgb(15 23 42 / var(--tw-text-opacity))
+}
+
+
