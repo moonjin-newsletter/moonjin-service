@@ -1,22 +1,27 @@
 "use client";
-import type { SeriesDto, WriterPublicCardDto } from "@moonjin/api-types";
+import type {
+  SeriesDto,
+  SubscribingResponseDto,
+  WriterPublicCardDto,
+} from "@moonjin/api-types";
 import Image from "next/image";
 import Link from "next/link";
 import { IoClose } from "react-icons/io5";
-import { BiLike } from "react-icons/bi";
-import { More } from "@components/icons";
 import { MdOutlineLibraryBooks } from "react-icons/md";
+import SubModalProvider from "@components/modal/SubModalProvider";
 
 export default function SeriesProfile({
   seriesInfo,
   writerInfo,
+  subInfo,
 }: {
   seriesInfo: SeriesDto;
   writerInfo: WriterPublicCardDto;
+  subInfo: SubscribingResponseDto | null;
 }) {
   return (
     <header className="w-full flex  gap-y-10  animate-fade gap-x-6">
-      <section className="w-full h-[310px] flex gap-x-2">
+      <section className="w-fit h-[310px] flex gap-x-2">
         <Image
           src={seriesInfo.cover}
           alt={"시리즈 커버이미지"}
@@ -40,7 +45,7 @@ export default function SeriesProfile({
         {/*  </div>*/}
         {/*</div>*/}
       </section>
-      <section className="flex flex-col  ">
+      <section className="flex flex-col w-full ">
         <div className="w-full flex justify-end">
           <Link
             href={`/@${writerInfo.writerInfo.moonjinId}?tab=시리즈`}
@@ -62,20 +67,32 @@ export default function SeriesProfile({
         </div>
         <div className="w-full flex justify-between mt-auto">
           <div className="flex items-center gap-x-4   ">
-            <div className="flex items-center gap-x-2 text-primary">
-              <BiLike className="text-xl" />
-              <span className="text-base">{seriesInfo.likes}</span>
-            </div>
+            {/*<div className="flex items-center gap-x-2 text-primary">*/}
+            {/*  <BiLike className="text-xl" />*/}
+            {/*  <span className="text-base">{seriesInfo.likes}</span>*/}
+            {/*</div>*/}
             <div className="flex items-center gap-x-2 text-grayscale-400">
               <MdOutlineLibraryBooks className="text-xl" />
-              <span className="text-base">{seriesInfo.newsletterCount}</span>
+              <span className="text-base">
+                {seriesInfo.newsletterCount}개의 뉴스레터
+              </span>
             </div>
           </div>
           <div className="flex items-center gap-x-3">
-            <button className="px-5 py-2.5 text-sm font-medium text-white bg-black/80 rounded-full">
-              작가 구독하기
-            </button>
-            <More />
+            <SubModalProvider
+              subInfo={subInfo}
+              writerInfo={writerInfo}
+              subChildren={
+                <div className="py-2 px-4 rounded-full text-sm bg-grayscale-600 text-white">
+                  작가 구독하기
+                </div>
+              }
+              unSubChildren={
+                <div className="py-2 px-4 rounded-full text-sm bg-primary text-white">
+                  구독 중
+                </div>
+              }
+            />
           </div>
         </div>
       </section>
