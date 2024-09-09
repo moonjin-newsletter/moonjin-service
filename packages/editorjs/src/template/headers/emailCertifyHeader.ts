@@ -91,7 +91,7 @@ export function EmailCertifyHeader(redirectUrl: string) {
               <td align="center">
                 <a
                   target="_blank"
-                  href="{{ $url }}"
+                  href="${redirectUrl}"
                   style="
                     display: block;
                     width: fit-content;
