@@ -30,7 +30,7 @@ import { fileUpload } from "@lib/file/fileUpload";
 import { CategoryList } from "@components/category/CategoryList";
 import { overlay } from "overlay-kit";
 
-export default function NewEditorJS({
+export default function SavedEditorJS({
   letterId,
   letterData,
 }: {

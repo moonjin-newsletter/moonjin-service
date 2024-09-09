@@ -66,6 +66,22 @@ function renderEditorData(blocks: EditorBlockDto[]) {
         return (
           <Tag
             key={index}
+            className={`
+                text-grayscale-800  font-semibold py-2
+                ${
+                  block.data.level === 1
+                    ? "text-2xl"
+                    : block.data.level === 2
+                    ? "text-xl"
+                    : block.data.level === 3
+                    ? "text-lg"
+                    : block.data.level === 4
+                    ? "text-base"
+                    : block.data.level === 5
+                    ? "text-sm"
+                    : "text-xs"
+                }
+            `}
             dangerouslySetInnerHTML={{ __html: block.data.text }}
           />
         );

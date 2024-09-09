@@ -19,11 +19,7 @@ export default async function Page({ params }: pageProps) {
   const letterId = parseInt(params.id, 10);
   const { data: letterData } = await ssr
     .get(`post/${letterId}`)
-    .then((res) =>
-      res.json<
-        ResponseForm<PostWithContentDto | PostWithContentAndSeriesDto>
-      >(),
-    )
+    .json<ResponseForm<PostWithContentDto | PostWithContentAndSeriesDto>>()
     .catch((err) => redirect("/write/new"));
 
   return (
