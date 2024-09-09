@@ -8,7 +8,7 @@ import { FaRegCommentDots } from "react-icons/fa";
 export function PublishedLetterCard({ letter }: { letter: NewsletterCardDto }) {
   return (
     <Link
-      href={`/write/${letter.post.id}/edit`}
+      href={`/@${letter.writer.moonjinId}/post/${letter.newsletter.id}`}
       className="flex items-center w-full group justify-between gap-x-5 border-b py-6 h-fit overflow-hidden"
     >
       <div className="min-h-[120px] flex flex-col w-full h-full grow">

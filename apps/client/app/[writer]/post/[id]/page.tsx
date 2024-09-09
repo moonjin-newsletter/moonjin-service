@@ -18,6 +18,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import SubModalProvider from "@components/modal/SubModalProvider";
 import LikeButton from "./_components/LikeButton";
+import UpdateSection from "./_components/UpdateSection";
 
 type pageProps = {
   params: {
@@ -52,10 +53,11 @@ export default async function Page({ params }: pageProps) {
 
       <main className="max-w-[688px] w-full pt-20 pb-10">
         <section className="flex w-full flex-col">
-          <div className="w-full">
+          <div className="w-full flex justify-between items-center">
             <div className="py-1 px-3 rounded-full bg-primary/5 text-primary w-fit text-sm">
               {nInfo.post.category}
             </div>
+            <UpdateSection moonjinId={moonjinId} nId={nId} />
           </div>
           <h1 className="text-[26px] font-medium mt-4 font-serif ">
             {nInfo.post.title}
