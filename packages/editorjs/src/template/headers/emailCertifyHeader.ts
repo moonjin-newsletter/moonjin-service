@@ -77,7 +77,7 @@ export function EmailCertifyHeader(redirectUrl: string) {
                     color: #999999;
                     font-weight: 400;
                     line-height: 1.6em;
-                    letter-spacing: 3%;
+                    
                   "
                   >안녕하세요, 문진을 이용해 주셔서 감사합니다.<br />인증을
                   위해 아래의 버튼을 클릭해주세요.</span
