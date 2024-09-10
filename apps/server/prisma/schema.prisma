@@ -82,7 +82,7 @@ model SubscribeExternal {
 model Post {
   id            Int      @id @default(autoincrement())
   title         String   @db.VarChar(32)
-  subtitle      String   @default("") @db.VarChar(128)
+  subtitle      String   @default("") @db.VarChar(256)
   writerId      Int
   preview       String   @default("") @db.VarChar(512)
   category      Int      @default(-1)

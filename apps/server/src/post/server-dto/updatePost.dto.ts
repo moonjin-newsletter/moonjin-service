@@ -6,5 +6,6 @@ export interface UpdatePostDto {
     content: EditorJsonDto;
     category: number;
     cover: string | null;
+    subtitle: string;
     seriesId? : number;
 }
