@@ -25,7 +25,7 @@ export function UnreleasedNewsletterCard({
             {value.post.title}
           </strong>
           <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400">
-            {value.post.preview}
+            {value.post.subtitle}
           </span>
         </div>
         <div className="text-[#999999] text-sm mt-3 flex items-center gap-x-1.5">

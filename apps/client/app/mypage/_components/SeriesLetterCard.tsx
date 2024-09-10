@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import { type NewsletterCardDto, NewsletterDto } from "@moonjin/api-types";
+import { type NewsletterCardDto } from "@moonjin/api-types";
 
 export default function SeriesLetterCard({
   value,
@@ -22,7 +22,7 @@ export default function SeriesLetterCard({
             {value.post.title}
           </strong>
           <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400">
-            {value.post.preview}
+            {value.post.subtitle}
           </span>
         </div>
         <div className="mt-4 gap-x-4 flex items-center text-sm text-grayscale-400">

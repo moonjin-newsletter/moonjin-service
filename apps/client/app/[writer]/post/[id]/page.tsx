@@ -62,6 +62,9 @@ export default async function Page({ params }: pageProps) {
           <h1 className="text-[26px] font-medium mt-4 font-serif ">
             {nInfo.post.title}
           </h1>
+          <h2 className=" mt-2 font-serif text-grayscale-500 ">
+            {nInfo.post.subtitle}
+          </h2>
 
           <div className="flex items-center w-full mt-8">
             <div className="flex items-center justify-between w-full">
@@ -215,7 +218,7 @@ function RelatedPostCard({ pInfo }: { pInfo: NewsletterCardDto }) {
         </div>
         <h3 className=" font-semibold line-clamp-1">{pInfo.post.title}</h3>
         <p className="line-clamp-1 text-grayscale-500 text-sm">
-          {pInfo.post.preview}
+          {pInfo.post.subtitle}
         </p>
         <div className="flex items-center">
           {/*<Image*/}

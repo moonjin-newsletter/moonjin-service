@@ -22,7 +22,7 @@ export function PublishedLetterCard({ letter }: { letter: NewsletterCardDto }) {
         </h2>
         <div className="mt-0.5 w-full h-full grow flex flex-col gap-y-2">
           <div className=" w-full flex  text-sm text-grayscale-400">
-            <span className="line-clamp-2">{letter.post.preview}</span>
+            <span className="line-clamp-2">{letter.post.subtitle}</span>
           </div>
 
           <div className="mt-auto flex items-center gap-x-3 text-[#999999] text-sm">

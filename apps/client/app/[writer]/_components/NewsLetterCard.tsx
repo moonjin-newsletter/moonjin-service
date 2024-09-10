@@ -25,7 +25,7 @@ export default function NewsLetterCard({
           {newsletterInfo.post.title}
         </h2>
         <div className="mt-0.5 w-full flex  text-sm text-grayscale-400">
-          <span className="line-clamp-2">{newsletterInfo.post.preview}</span>
+          <span className="line-clamp-2">{newsletterInfo.post.subtitle}</span>
         </div>
         <div className="mt-3 flex items-center gap-x-3 text-[#999999] text-sm">
           <div className="flex items-center gap-x-1 ">
