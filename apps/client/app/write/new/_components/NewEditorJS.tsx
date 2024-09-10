@@ -48,8 +48,8 @@ export default function NewEditorJS() {
   const { data: seriesList } =
     useSWR<ResponseForm<SeriesDto[]>>("series/me/summary");
 
-  const title = watch("title");
   register("title", { required: "제목을 입력해주세요" });
+  register("subtitle", { required: "부제목을 입력해주세요" });
 
   function onClickSave(value: any) {
     const toastSave = toast.loading("저장 중");
@@ -92,7 +92,8 @@ export default function NewEditorJS() {
                 unmount={unmount}
                 seriesList={seriesList}
                 outputData={outputData}
-                title={title}
+                title={value.title}
+                subtitle={value.subtitle}
                 mySeriesInfo={mySeries?.data?.data}
               />
             );
@@ -154,8 +155,12 @@ export default function NewEditorJS() {
             </div>
           )}
           <button
-            onClick={handleSubmit(onClickSubmit, () => {
-              toast.error("제목을 입력해주세요");
+            onClick={handleSubmit(onClickSubmit, (errors) => {
+              if (errors?.title?.message) {
+                toast.error(errors.title.message as string);
+              } else if (errors?.subtitle?.message) {
+                toast.error(errors.subtitle.message as string);
+              }
             })}
             className="border hover:-translate-y-1 transition duration-300 ease-in-out gap-x-1 flex items-center text-sm font-medium border-primary py-1.5 px-2 text-primary rounded-full"
           >
@@ -183,9 +188,16 @@ export default function NewEditorJS() {
           onChange={(e) => setValue("title", e.target.value)}
           placeholder="제목을 입력해주세요"
           maxLength={32}
-          className="w-full py-2 font-serif text-grayscale-500 text-2xl outline-none focus:ring-0 border-none"
+          className="w-full py-2 font-serif text-grayscale-600 font-medium text-[26px] outline-none focus:ring-0 border-none"
         />
 
+        <input
+          type="text"
+          onChange={(e) => setValue("subtitle", e.target.value)}
+          placeholder="부제목을 입력해주세요(최대 40자)"
+          maxLength={40}
+          className="w-full pb-4 font-serif text-grayscale-600  text-lg outline-none focus:ring-0 border-none"
+        />
         <hr className="border border-grayscale-100" />
       </section>
     </div>
@@ -196,12 +208,14 @@ function OverlaySetting({
   unmount,
   seriesList,
   title,
+  subtitle,
   outputData,
   mySeriesInfo,
 }: {
   unmount: () => void;
   seriesList: any | null;
-  title: any | null;
+  title: string;
+  subtitle: string;
   outputData: any;
   mySeriesInfo?: any;
 }) {
@@ -222,6 +236,7 @@ function OverlaySetting({
       .post("post", {
         json: {
           title: title,
+          subtitle: subtitle,
           content: outputData,
           cover: value.cover,
           seriesId: value?.series?.id,

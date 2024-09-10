@@ -34,13 +34,12 @@ export default function UpdateEditorJS({
   } = useForm({
     defaultValues: {
       title: letterData.post.title,
+      subtitle: letterData.post.subtitle,
     },
   });
 
   // const { data: seriesList } =
   //   useSWR<ResponseForm<SeriesDto[]>>("series/me/summary");
-
-  register("title", { required: "제목을 입력해주세요" });
 
   function onClickDelete() {
     if (window.confirm("작성 중인 글을 삭제하시겠습니까?")) {
@@ -54,7 +53,7 @@ export default function UpdateEditorJS({
     }
   }
 
-  function onClickUpdate(value: any) {
+  function onClickUpdate(value: { title: string; subtitle: string }) {
     if (editor)
       editor
         .save()
@@ -62,7 +61,7 @@ export default function UpdateEditorJS({
           csr
             .patch(`newsletter/${letterId}`, {
               json: {
-                title: value.title,
+                ...value,
                 content: outputData,
               },
             })
@@ -130,8 +129,12 @@ export default function UpdateEditorJS({
           )}
 
           <button
-            onClick={handleSubmit(onClickUpdate, () => {
-              toast.error("제목을 입력해주세요");
+            onClick={handleSubmit(onClickUpdate, (errors) => {
+              if (errors?.title?.message) {
+                toast.error(errors.title.message as string);
+              } else if (errors?.subtitle?.message) {
+                toast.error(errors.subtitle.message as string);
+              }
             })}
             className="border hover:-translate-y-1 transition duration-300 ease-in-out gap-x-1 flex items-center text-sm font-medium border-primary py-1.5 px-2 text-primary rounded-full"
           >
@@ -151,13 +154,20 @@ export default function UpdateEditorJS({
             # {letterData.series.title}
           </span>
         )}
+        <input
+          type="text"
+          {...register("title", { required: "제목을 입력해주세요" })}
+          placeholder="제목을 입력해주세요"
+          maxLength={32}
+          className="w-full py-2 font-serif text-grayscale-600  font-medium text-[26px] outline-none focus:ring-0 border-none"
+        />
 
         <input
           type="text"
-          {...register("title")}
-          placeholder="제목을 입력해주세요"
-          maxLength={32}
-          className="w-full py-2 font-serif text-grayscale-500 text-2xl outline-none focus:ring-0 border-none"
+          {...register("subtitle", { required: "부제목을 입력해주세요" })}
+          placeholder="부제목을 입력해주세요(최대 40자)"
+          maxLength={40}
+          className="w-full pb-4 font-serif text-grayscale-600  text-lg outline-none focus:ring-0 border-none"
         />
 
         <hr className="border border-grayscale-100" />
