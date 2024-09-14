@@ -8,7 +8,7 @@ import { range } from "@toss/utils";
 
 export default function SeriesSection() {
   return (
-    <section className="flex pt-40 pb-10 flex-col  items-center w-full">
+    <section className="flex pt-40  flex-col  items-center w-full">
       <h2 className="font-serif  text-2xl font-bold text-grayscale-700">
         Moonjin Series
       </h2>
@@ -45,10 +45,10 @@ function SeriesLayout({ layout }: { layout: any }) {
     <div className="mt-4 w-fit flex gap-x-1 rounded-lg overflow-hidden">
       <Link
         href=""
-        className="w-80 h-[450px] bg-gray-600 relative overflow-hidden group"
+        className="w-[248px] h-[450px] bg-gray-600 relative overflow-hidden group"
       >
-        <div className="absolute py-8 top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50">
-          <span className="text-lg mt-auto font-semibold leading-relaxed">
+        <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
+          <span className="text-lg font-semibold leading-relaxed pt-4">
             {postData[0].title}
           </span>
           <div className="text-sm text-grayscale-0/60">
@@ -57,7 +57,7 @@ function SeriesLayout({ layout }: { layout: any }) {
           <div className="text-sm text-grayscale-0/50 font-light">
             {postData[0].createdAt}
           </div>
-          <div className="font-semibold border-b border-white/80 py-1 mt-28 ">
+          <div className="absolute bottom-6 font-semibold border-b border-white/80 hidden group-hover:flex animate-fade">
             View all series
           </div>
         </div>
@@ -70,23 +70,23 @@ function SeriesLayout({ layout }: { layout: any }) {
           className="w-full h-full object-cover group-hover:scale-105 transition duration-200 ease-in-out"
         />
       </Link>
-      <div className="w-60 h-[450px] overflow-hidden flex flex-col gap-y-1">
+      <div className="w-[248px] h-[450px] overflow-hidden flex flex-col gap-y-1">
         <Link
           href=""
           className="w-full h-1/2 bg-gray-600 relative overflow-hidden group "
         >
-          <div className="absolute py-8 top-0 left-0 bg-black/20  z-10 text-white flex flex-col items-center w-full h-full px-12 group-hover:bg-black/50 group-hover:transition">
-            <span className="text-lg mt-auto font-semibold leading-relaxed">
-              {postData[1].title}
+          <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
+            <span className="text-lg font-semibold leading-relaxed pt-4">
+              {postData[0].title}
             </span>
             <div className="text-sm text-grayscale-0/60">
-              By.{postData[1].writer}
+              By.{postData[0].writer}
             </div>
             <div className="text-sm text-grayscale-0/50 font-light">
-              {postData[1].createdAt}
+              {postData[0].createdAt}
             </div>
-            <div className="font-semibold border-b border-white/80 py-1  mt-2">
-              바로가기
+            <div className="absolute bottom-6 font-semibold border-b border-white/80 hidden group-hover:flex animate-fade">
+              View all series
             </div>
           </div>
           <Image
@@ -101,18 +101,18 @@ function SeriesLayout({ layout }: { layout: any }) {
           href=""
           className="w-full h-1/2 bg-gray-600 overflow-hidden relative group"
         >
-          <div className="absolute py-8 top-0 left-0 bg-black/10 group-hover:transition group-hover:bg-black/50  z-10 text-white flex flex-col items-center w-full h-full px-12 ">
-            <span className="text-lg mt-auto font-semibold leading-relaxed">
-              {postData[2].title}
+          <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
+            <span className="text-lg font-semibold leading-relaxed pt-4">
+              {postData[0].title}
             </span>
             <div className="text-sm text-grayscale-0/60">
-              By.{postData[1].writer}
+              By.{postData[0].writer}
             </div>
             <div className="text-sm text-grayscale-0/50 font-light">
-              {postData[1].createdAt}
+              {postData[0].createdAt}
             </div>
-            <div className="font-semibold border-b border-white/80 py-1  mt-2">
-              바로가기
+            <div className="absolute bottom-6 font-semibold border-b border-white/80 hidden group-hover:flex animate-fade">
+              View all series
             </div>
           </div>
           <Image
@@ -126,19 +126,19 @@ function SeriesLayout({ layout }: { layout: any }) {
       </div>
       <Link
         href=""
-        className="w-52 h-[450px] bg-gray-600 overflow-hidden group relative"
+        className="w-[248px] h-[450px] bg-gray-600 overflow-hidden group relative"
       >
-        <div className="absolute py-8 top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50">
-          <span className="text-lg mt-auto font-semibold leading-relaxed">
-            {postData[3].title}
+        <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
+          <span className="text-lg font-semibold leading-relaxed pt-4">
+            {postData[0].title}
           </span>
           <div className="text-sm text-grayscale-0/60">
-            By.{postData[3].writer}
+            By.{postData[0].writer}
           </div>
           <div className="text-sm text-grayscale-0/50 font-light">
-            {postData[3].createdAt}
+            {postData[0].createdAt}
           </div>
-          <div className="font-semibold border-b border-white/80 py-1 mt-28 ">
+          <div className="absolute bottom-6 font-semibold border-b border-white/80 hidden group-hover:flex animate-fade">
             View all series
           </div>
         </div>
@@ -150,32 +150,61 @@ function SeriesLayout({ layout }: { layout: any }) {
           className="w-full h-full object-cover peer-hover:scale-105 transition duration-150 ease-in-out"
         />
       </Link>
-      <Link
-        href=""
-        className="w-52 h-[450px] bg-gray-600 overflow-hidden relative group"
-      >
-        <div className="absolute py-8 top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50">
-          <span className="text-lg mt-auto font-semibold leading-relaxed">
-            {postData[4].title}
-          </span>
-          <div className="text-sm text-grayscale-0/60">
-            By.{postData[4].writer}
+
+      <div className="w-[248px] h-[450px] overflow-hidden flex flex-col gap-y-1">
+        <Link
+          href=""
+          className="w-full h-1/2 bg-gray-600 relative overflow-hidden group "
+        >
+          <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
+            <span className="text-lg font-semibold leading-relaxed pt-4">
+              {postData[0].title}
+            </span>
+            <div className="text-sm text-grayscale-0/60">
+              By.{postData[0].writer}
+            </div>
+            <div className="text-sm text-grayscale-0/50 font-light">
+              {postData[0].createdAt}
+            </div>
+            <div className="absolute bottom-6 font-semibold border-b border-white/80 hidden group-hover:flex animate-fade">
+              View all series
+            </div>
           </div>
-          <div className="text-sm text-grayscale-0/50 font-light">
-            {postData[4].createdAt}
+          <Image
+            src={postData[1].thumbnail[0]}
+            width={320}
+            height={320}
+            alt="게시물이미지"
+            className="w-full h-full object-cover group-hover:scale-105 transition duration-200 ease-in-out"
+          />
+        </Link>
+        <Link
+          href=""
+          className="w-full h-1/2 bg-gray-600 overflow-hidden relative group"
+        >
+          <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
+            <span className="text-lg font-semibold leading-relaxed pt-4">
+              {postData[0].title}
+            </span>
+            <div className="text-sm text-grayscale-0/60">
+              By.{postData[0].writer}
+            </div>
+            <div className="text-sm text-grayscale-0/50 font-light">
+              {postData[0].createdAt}
+            </div>
+            <div className="absolute bottom-6 font-semibold border-b border-white/80 hidden group-hover:flex animate-fade">
+              View all series
+            </div>
           </div>
-          <div className="font-semibold border-b border-white/80 py-1 mt-28 ">
-            View all series
-          </div>
-        </div>
-        <Image
-          src={postData[4].thumbnail[0]}
-          width={320}
-          height={320}
-          alt="게시물이미지"
-          className="w-full h-full object-cover peer-hover:scale-105 transition duration-150 ease-in-out"
-        />
-      </Link>
+          <Image
+            src={postData[2].thumbnail[0]}
+            width={320}
+            height={320}
+            alt="게시물이미지"
+            className="w-full h-full object-cover group-hover:scale-105 transition duration-200 ease-in-out"
+          />
+        </Link>
+      </div>
     </div>
   );
 }

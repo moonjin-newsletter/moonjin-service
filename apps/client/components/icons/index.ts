@@ -20,8 +20,10 @@ import PencilSimpleLine from "./pencil-simple-line.svg";
 import More from "./more.svg";
 import LogoSymbolGray from "./logo-symbol-gray.svg";
 import LogoStrokeBlack from "./logo-stroke-black.svg";
+import Graphic1 from "./graphic-1.svg";
 
 export {
+  Graphic1,
   Kakao,
   Google,
   Naver,

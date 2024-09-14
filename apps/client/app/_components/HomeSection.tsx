@@ -10,7 +10,7 @@ import Link from "next/link";
 export default function HomeSection() {
   const { Carousel, prevEvent, nextEvent } = useCarousel({
     length: homeData.length - 1,
-    width: 740,
+    width: 600,
   });
 
   return (
