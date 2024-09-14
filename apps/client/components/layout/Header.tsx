@@ -47,13 +47,13 @@ export default function Header({
           <I.Logo fill="#7b0000" height="29" viewBox="0 0 149 39" width="139" />
         </Link>
         <div className="flex h-full text-sm font-medium ml-10 gap-x-8 items-center text-grayscale-600">
-          <Link className="flex items-center  h-full" href="">
+          <Link className="flex items-center  h-full" href="/about">
             소개하기
           </Link>
-          <Link className="flex items-center  h-full" href="">
+          <Link className="flex items-center  h-full" href="/series">
             시리즈 뉴스레터
           </Link>
-          <Link className="flex items-center  h-full" href="">
+          <Link className="flex items-center  h-full" href="/newsletter">
             전체 뉴스레터
           </Link>
         </div>

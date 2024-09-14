@@ -9,6 +9,7 @@ import SeriesSection from "./_components/SeriesSection";
 
 import { Category } from "@moonjin/api-types";
 import { Graphic1, LogoSymbolGray } from "@components/icons";
+import Footer from "@components/layout/Footer";
 
 export default async function Page() {
   return (
@@ -81,6 +82,7 @@ export default async function Page() {
           </div>
         </section>
       </div>
+      <Footer />
     </main>
   );
 }
