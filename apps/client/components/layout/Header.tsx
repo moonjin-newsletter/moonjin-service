@@ -44,7 +44,12 @@ export default function Header({
     >
       <div className="flex w-[1006px] h-full items-center  font-normal">
         <Link className="flex  items-center h-full text-white" href="/">
-          <I.Logo fill="#7b0000" height="29" viewBox="0 0 149 39" width="139" />
+          <I.Logo
+            className="text-primary"
+            height="29"
+            viewBox="0 0 149 39"
+            width="139"
+          />
         </Link>
         <div className="flex h-full text-sm font-medium ml-10 gap-x-8 items-center text-grayscale-600">
           <Link className="flex items-center  h-full" href="/about">

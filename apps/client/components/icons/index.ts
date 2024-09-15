@@ -21,9 +21,11 @@ import More from "./more.svg";
 import LogoSymbolGray from "./logo-symbol-gray.svg";
 import LogoStrokeBlack from "./logo-stroke-black.svg";
 import Graphic1 from "./graphic-1.svg";
+import Graphic2 from "./graphic-2.svg";
 
 export {
   Graphic1,
+  Graphic2,
   Kakao,
   Google,
   Naver,
