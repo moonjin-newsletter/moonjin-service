@@ -101,6 +101,15 @@ model Post {
   @@index([seriesId])
 }
 
+model NewsletterCuration {
+  newsletterId Int @id
+  order        Int
+
+  newsletter Newsletter @relation(fields: [newsletterId], references: [id])
+
+  @@index([newsletterId])
+}
+
 model PostContent {
   id        Int      @id @default(autoincrement())
   postId    Int
@@ -122,11 +131,12 @@ model Newsletter {
   comments      Int      @default(0)
   sentAt        DateTime @default(now())
 
-  post           Post             @relation(fields: [postId], references: [id])
-  postContent    PostContent      @relation(fields: [postContentId], references: [id])
-  newsletterSend NewsletterSend[]
-  webNewsletter  WebNewsletter[]
-  NewsletterLike NewsletterLike[]
+  post               Post                @relation(fields: [postId], references: [id])
+  postContent        PostContent         @relation(fields: [postContentId], references: [id])
+  newsletterSend     NewsletterSend[]
+  webNewsletter      WebNewsletter[]
+  NewsletterLike     NewsletterLike[]
+  newsletterCuration NewsletterCuration?
 
   @@index([postId])
 }

@@ -7,7 +7,8 @@ import {ISendNewsLetter} from "./api-types/ISendNewsLetter";
 import {Try, TryCatch} from "../response/tryCatch";
 import {
     FORBIDDEN_FOR_POST,
-    NEWSLETTER_CATEGORY_NOT_FOUND, NEWSLETTER_NOT_FOUND,
+    NEWSLETTER_CATEGORY_NOT_FOUND,
+    NEWSLETTER_NOT_FOUND,
     POST_CONTENT_NOT_FOUND,
     POST_NOT_FOUND
 } from "../response/error/post";
@@ -35,6 +36,31 @@ export class NewsletterController {
         private readonly newsletterService: NewsletterService,
         private readonly mailService: MailService
     ) {}
+
+
+    /**
+     * @summary 뉴스레터 큐레이션 리스트 가져오기
+     * @returns NewsletterCardDto[]
+     * @throws NEWSLETTER_NOT_FOUND
+     */
+    @TypedRoute.Get("curation/all")
+    async getNewsletterCurationList():Promise<NewsletterCardDto[]>{
+        const newsletterList = await this.newsletterService.getNewsletterCurationList();
+        return newsletterList.map(newsletter => {
+            const {post, ...newsletterData} = newsletter;
+            const {series, writerInfo, ...postData} = post;
+            return {
+                newsletter: NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
+                post: PostDtoMapper.PostToPostDto(postData),
+                series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
+                writer: {
+                    userId: post.writerInfo.userId,
+                    moonjinId: post.writerInfo.moonjinId,
+                    nickname: post.writerInfo.user.nickname
+                },
+            }
+        });
+    }
 
     /**
      * @summary 해당 글을 뉴스레터로 발송
@@ -342,6 +368,5 @@ export class NewsletterController {
             series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
             writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterProfileDto(writerInfo)
         })
-
     }
 }

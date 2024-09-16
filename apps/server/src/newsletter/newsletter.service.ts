@@ -651,4 +651,69 @@ export class NewsletterService {
             throw ExceptionList.NEWSLETTER_NOT_FOUND
         }
     }
+
+    /**
+     * @summary 뉴스레터 큐레이션 목록 가져오기
+     * @return NewsletterWithPostWithWriterAndSeries[] (10개)
+     * @description 뉴스레터 큐레이션 10개 가져오기, 부족하면 인기 뉴스레터에서 가져오기
+     */
+    async getNewsletterCurationList(): Promise<NewsletterWithPostWithWriterAndSeries[]>{
+        const NEWSLETTER_CURATION_COUNT = 10;
+        try{
+            const newsletterCurationList = await this.prismaService.newsletterCuration.findMany({
+                include: {
+                    newsletter : {
+                        include: {
+                            post : {
+                                include : {
+                                    writerInfo : {
+                                        include : {
+                                            user : true
+                                        }
+                                    },
+                                    series : true
+                                }
+                            },
+                        }
+                    }
+                },
+                orderBy :{
+                    order : 'asc'
+                },
+                take: NEWSLETTER_CURATION_COUNT
+            })
+            const recentNewsletterList = await this.getPopularNewsletterList(NEWSLETTER_CURATION_COUNT - newsletterCurationList.length);
+            return recentNewsletterList.concat(newsletterCurationList.map(newsletterCuration => newsletterCuration.newsletter));
+        }catch (error){
+            console.log(error)
+            throw ExceptionList.NEWSLETTER_NOT_FOUND;
+        }
+    }
+
+    /**
+     * @summary 인기 뉴스레터 목록 가져오기
+     * @param take
+     * @return NewsletterWithPostWithWriterAndSeries[]
+     */
+    async getPopularNewsletterList(take: number):Promise<NewsletterWithPostWithWriterAndSeries[]>{
+        if(take <= 0) return [];
+        return this.prismaService.newsletter.findMany({
+            include: {
+                post : {
+                    include : {
+                        writerInfo : {
+                            include : {
+                                user : true
+                            }
+                        },
+                        series : true
+                    }
+                }
+            },
+            orderBy : {
+                likes : 'desc'
+            },
+            take
+        })
+    }
 }
