@@ -3,7 +3,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import * as I from "components/icons";
 import csr from "../../lib/fetcher/csr";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import useSWR from "swr";
 import { checkType } from "@utils/checkUser";
 import useScroll from "@utils/hooks/useScroll";
@@ -20,7 +20,10 @@ export default function Header({
     mutate,
   } = useSWR<ResponseForm<UserOrWriterDto>>("user");
   const router = useRouter();
+  const pathname = usePathname();
   const scroll = useScroll();
+
+  console.log(pathname, "pathname");
 
   function onClickLogout() {
     csr
@@ -52,13 +55,28 @@ export default function Header({
           />
         </Link>
         <div className="flex h-full text-sm font-medium ml-10 gap-x-8 items-center text-grayscale-600">
-          <Link className="flex items-center  h-full" href="/about">
+          <Link
+            className={`${
+              pathname === "/about" && "text-primary"
+            } flex items-center  h-full`}
+            href="/about"
+          >
             소개하기
           </Link>
-          <Link className="flex items-center  h-full" href="/series">
+          <Link
+            className={`${
+              pathname === "/series" && "text-primary"
+            } flex items-center  h-full`}
+            href="/series"
+          >
             시리즈 뉴스레터
           </Link>
-          <Link className="flex items-center  h-full" href="/newsletter">
+          <Link
+            className={`${
+              pathname === "/newsletter" && "text-primary"
+            } flex items-center  h-full`}
+            href="/newsletter"
+          >
             전체 뉴스레터
           </Link>
         </div>

@@ -10,6 +10,7 @@ import SeriesSection from "./_components/SeriesSection";
 import { Category } from "@moonjin/api-types";
 import { Graphic1, LogoSymbolGray } from "@components/icons";
 import Footer from "@components/layout/Footer";
+import VerticalCard from "@components/card/VerticalCard";
 
 export default async function Page() {
   return (
@@ -52,7 +53,12 @@ export default async function Page() {
                 <div className="grid grid-cols-4 mt-12 gap-x-7 gap-y-12  w-full">
                   {postData.map((post, idx) => (
                     <div key={idx}>
-                      <PostCard post={post} />
+                      <VerticalCard
+                        title={post.title}
+                        href={""}
+                        thumbnail={post.thumbnail[0]}
+                        description={""}
+                      />
                     </div>
                   ))}
                 </div>
