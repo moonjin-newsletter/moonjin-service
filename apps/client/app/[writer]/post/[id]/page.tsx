@@ -19,6 +19,7 @@ import { cookies } from "next/headers";
 import SubModalProvider from "@components/modal/SubModalProvider";
 import LikeButton from "./_components/LikeButton";
 import UpdateSection from "./_components/UpdateSection";
+import Footer from "@components/layout/Footer";
 
 type pageProps = {
   params: {
@@ -51,7 +52,7 @@ export default async function Page({ params }: pageProps) {
     <div className="w-full flex flex-col items-center">
       <PostHeader nInfo={nInfo} />
 
-      <main className="max-w-[688px] w-full pt-20 pb-10">
+      <main className="max-w-[688px] w-full pt-20 pb-20">
         <section className="flex w-full flex-col">
           <div className="w-full flex justify-between items-center">
             <div className="py-1 px-3 rounded-full bg-primary/5 text-primary w-fit text-sm">
@@ -199,6 +200,7 @@ export default async function Page({ params }: pageProps) {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }

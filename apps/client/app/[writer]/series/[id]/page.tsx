@@ -11,6 +11,7 @@ import SeriesList from "./_components/SeriesList";
 import ssr from "@lib/fetcher/ssr";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import Footer from "@components/layout/Footer";
 
 type pageProps = {
   params: {
@@ -41,8 +42,8 @@ export default async function Page({ params }: pageProps) {
   return (
     <div className="bg-grayscale-100 min-h-screen">
       <WriterHeader />
-      <main className="w-full flex flex-col items-center  ">
-        <section className="max-w-[800px] w-full flex flex-col mx-auto mt-10 pb-8 bg-white px-12 pt-14 rounded-2xl shadow">
+      <main className="w-full flex flex-col items-center pb-20 ">
+        <section className="max-w-[800px] w-full flex flex-col mx-auto mt-10 bg-white px-12 pt-14 rounded-2xl shadow">
           <SeriesProfile
             subInfo={subInfo}
             seriesInfo={seriesInfo}
@@ -51,6 +52,7 @@ export default async function Page({ params }: pageProps) {
           <SeriesList moonjinId={moonjinId} seriesId={seriesId} />
         </section>
       </main>
+      <Footer />
     </div>
   );
 }
