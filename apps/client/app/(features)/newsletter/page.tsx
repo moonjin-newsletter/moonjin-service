@@ -1,7 +1,7 @@
 import Header from "@components/layout/Header";
 import Footer from "@components/layout/Footer";
 import Image from "next/image";
-import Graphic from "./graphic-all.png";
+import Graphic from "@public/static/images/graphic-all.png";
 import CategoryTab from "../../_components/CategoryTab";
 import { Category } from "@moonjin/api-types";
 import { postData } from "../../_data";
@@ -11,7 +11,7 @@ export default function Page() {
   return (
     <>
       <Header />
-      <main className="w-full min-h-screen pt-28 pb-20 flex justify-center">
+      <main className="w-full min-h-screen pt-28 pb-32 flex justify-center">
         <section className="w-full flex flex-col items-center max-w-[1006px]">
           <Image src={Graphic} alt="Series" width={200} height={200} />
           <h1 className="text-2xl font-bold mt-4 font-serif text-primary">

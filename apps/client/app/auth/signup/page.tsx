@@ -7,7 +7,7 @@ import csr from "../../../lib/fetcher/csr";
 import { ErrorCodeEnum } from "@moonjin/api-types";
 import Image from "next/image";
 import Header from "@components/layout/Header";
-import Graphic from "../../../public/static/graphic_1.png";
+import Graphic from "../../../public/static/images/graphic_1.png";
 
 export default function Page() {
   const {

@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 import * as Tb from "react-icons/tb";
 import Image from "next/image";
-import Graphic from "public/static/graphic_1.png";
+import Graphic from "../../../public/static/images/graphic_1.png";
 import Header from "@components/layout/Header";
 
 const authUrl = (type: string) => {

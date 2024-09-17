@@ -12,7 +12,7 @@ import Image from "next/image";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
 import Header from "@components/layout/Header";
-import Graphic from "../../../public/static/graphic_1.png";
+import Graphic from "../../../public/static/images/graphic_1.png";
 
 export default function Page() {
   const router = useRouter();

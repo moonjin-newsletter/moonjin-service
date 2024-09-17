@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import * as Tb from "react-icons/tb";
 import Header from "@components/layout/Header";
-import Graphic from "../../../public/static/graphic_1.png";
+import Graphic from "../../../public/static/images/graphic_1.png";
 
 export default function Page() {
   const params = useSearchParams();
