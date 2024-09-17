@@ -18,7 +18,7 @@ export default function Page() {
             Moonjin Newsletter
           </h1>
           <p className="text-grayscale-500 text-center text-sm mt-2 font-serif">
-            문진의 작가분들의 고민과 이야기를 읽어보세요.
+            문진 작가분들의 고민과 이야기를 읽어보세요.
           </p>
           <div className="w-full mt-24 flex flex-col items-center text-sm">
             <CategoryTab
