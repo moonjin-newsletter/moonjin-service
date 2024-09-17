@@ -42,7 +42,7 @@ export default function Footer() {
               <p className="text-grayscale-300 text-sm">
                 더 궁금하신게 있으신가요?
                 <br />
-                이메일을 남겨주시면 빠르게 연락을 드릴께요.
+                이메일을 남겨주시면 빠르게 연락드리겠습니다
               </p>
             </div>
 
