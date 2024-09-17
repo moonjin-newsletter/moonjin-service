@@ -24,7 +24,7 @@ export default function HomeSection() {
         </h1>
         <p className="text-grayscale-600 mt-10 break-keep">
           이곳은 삶의 고민과 사색 그리고 경험을 아카이브 하는 공간입니다.
-          문진에서 다양한 뉴스레터를 만나보세요.
+          문진에서 다양한 뉴스레터를 만나보세요
         </p>
         <button className="py-2.5 w-fit px-6 bg-grayscale-700 text-white rounded-lg mt-8">
           뉴스레터 구독하기
