@@ -6,7 +6,7 @@ import {UserAuthDto} from "../auth/dto";
 import {ISendNewsLetter} from "./api-types/ISendNewsLetter";
 import {Try, TryCatch} from "../response/tryCatch";
 import {
-    FORBIDDEN_FOR_POST,
+    FORBIDDEN_FOR_POST, NEWSLETTER_ALREADY_EXIST,
     NEWSLETTER_CATEGORY_NOT_FOUND,
     NEWSLETTER_NOT_FOUND,
     POST_CONTENT_NOT_FOUND,
@@ -29,6 +29,7 @@ import {GetPagination} from "../common/pagination/decorator/GetPagination.decora
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {IUpdateNewsletter} from "./api-types/IUpdateNewsletter";
 import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
+import {ICreateNewsLetterCuration} from "./api-types/ICreateNewsLetterCuration";
 
 @Controller('newsletter')
 export class NewsletterController {
@@ -43,10 +44,10 @@ export class NewsletterController {
      * @returns NewsletterCardDto[]
      * @throws NEWSLETTER_NOT_FOUND
      */
-    @TypedRoute.Get("curation/all")
-    async getNewsletterCurationList():Promise<NewsletterCardDto[]>{
+    @TypedRoute.Get("curation/weekly")
+    async getNewsletterCurationList():Promise<TryCatch<NewsletterCardDto[], NEWSLETTER_NOT_FOUND>>{
         const newsletterList = await this.newsletterService.getNewsletterCurationList();
-        return newsletterList.map(newsletter => {
+        return createResponseForm(newsletterList.map(newsletter => {
             const {post, ...newsletterData} = newsletter;
             const {series, writerInfo, ...postData} = post;
             return {
@@ -59,7 +60,19 @@ export class NewsletterController {
                     nickname: post.writerInfo.user.nickname
                 },
             }
-        });
+        }));
+    }
+
+    /**
+     * @summary 뉴스레터 큐레이션 리스트 생성
+     * @param body
+     * @returns {createdNewsletterCurationNumber: number}
+     * @throws NEWSLETTER_ALREADY_EXIST
+     */
+    @TypedRoute.Post("curation/weekly")
+    async postNewsletterCurationList(@TypedBody() body : ICreateNewsLetterCuration):Promise<TryCatch<ResponseMessage & {createdNewsletterCurationCount: number}, NEWSLETTER_ALREADY_EXIST>>{
+        const createdNewsletterCurationCount = await this.newsletterService.createNewsletterCuration(body.newsletterIdList.slice(0,10));
+        return createResponseForm({message : createdNewsletterCurationCount + "개의 뉴스레터 큐레이션 리스트를 생성했습니다.",createdNewsletterCurationCount});
     }
 
     /**

@@ -108,6 +108,25 @@ export class SeriesController {
         }))
     }
 
+
+    /**
+     * @summary 인기 있는 시리즈 가져오기
+     * @returns SeriesWithWriterDto[]
+     * @throws SERIES_NOT_FOUND
+     */
+    @TypedRoute.Get("popular")
+    async getPopularSeries(): Promise<Try<SeriesWithWriterDto[]>> {
+        const SERIES_CURATION_COUNT = 6;
+        const seriesWithWriterList = await this.seriesService.getPopularSeries(SERIES_CURATION_COUNT);
+        return createResponseForm(seriesWithWriterList.map(series => {
+            const {writerInfo, ...seriesData} = series;
+            return {
+                series: SeriesDtoMapper.SeriesToSeriesDto(seriesData),
+                writer: UserDtoMapper.UserToUserProfileDto(writerInfo.user)
+            }
+        }))
+    }
+
     /**
      * @summary 시리즈 수정 API
      * @param user

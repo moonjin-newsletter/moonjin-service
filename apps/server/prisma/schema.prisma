@@ -101,11 +101,11 @@ model Post {
   @@index([seriesId])
 }
 
-model NewsletterCuration {
+model NewsletterCurationWeekly {
   newsletterId Int @id
   order        Int
 
-  newsletter Newsletter @relation(fields: [newsletterId], references: [id])
+  newsletter Newsletter? @relation(fields: [newsletterId], references: [id])
 
   @@index([newsletterId])
 }
@@ -131,12 +131,12 @@ model Newsletter {
   comments      Int      @default(0)
   sentAt        DateTime @default(now())
 
-  post               Post                @relation(fields: [postId], references: [id])
-  postContent        PostContent         @relation(fields: [postContentId], references: [id])
-  newsletterSend     NewsletterSend[]
-  webNewsletter      WebNewsletter[]
-  NewsletterLike     NewsletterLike[]
-  newsletterCuration NewsletterCuration?
+  post                     Post                      @relation(fields: [postId], references: [id])
+  postContent              PostContent               @relation(fields: [postContentId], references: [id])
+  newsletterSend           NewsletterSend[]
+  webNewsletter            WebNewsletter[]
+  NewsletterLike           NewsletterLike[]
+  newsletterCurationWeekly NewsletterCurationWeekly?
 
   @@index([postId])
 }

@@ -365,4 +365,37 @@ export class SeriesService {
             throw ExceptionList.SERIES_NOT_FOUND
         }
     }
+
+    /**
+     * @summary 인기 있는 시리즈 가져오기
+     * @param take
+     * @returns SeriesWithWriter[]
+     * @throws SERIES_NOT_FOUND
+     */
+    async getPopularSeries(take: number): Promise<SeriesWithWriter[]>{
+        try{
+            return this.prismaService.series.findMany({
+                where: {
+                    newsletterCount : {
+                        gt : 0
+                    },
+                    deleted: false
+                },
+                include:{
+                    writerInfo: {
+                        include: {
+                            user: true
+                        }
+                    }
+                },
+                orderBy: {
+                    likes: 'desc'
+                },
+                take
+            })
+        }catch (error){
+            console.log(error)
+            throw ExceptionList.SERIES_NOT_FOUND
+        }
+    }
 }

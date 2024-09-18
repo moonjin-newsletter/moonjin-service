@@ -655,12 +655,20 @@ export class NewsletterService {
     /**
      * @summary 뉴스레터 큐레이션 목록 가져오기
      * @return NewsletterWithPostWithWriterAndSeries[] (10개)
-     * @description 뉴스레터 큐레이션 10개 가져오기, 부족하면 인기 뉴스레터에서 가져오기
+     * @description 뉴스레터 큐레이션 10개 가져오기 (삭제된 뉴스레터 제외), 부족하면 인기 뉴스레터에서 가져오기
+     * @throws NEWSLETTER_NOT_FOUND
      */
     async getNewsletterCurationList(): Promise<NewsletterWithPostWithWriterAndSeries[]>{
         const NEWSLETTER_CURATION_COUNT = 10;
         try{
-            const newsletterCurationList = await this.prismaService.newsletterCuration.findMany({
+            const newsletterCurationList = await this.prismaService.newsletterCurationWeekly.findMany({
+                where:{
+                    newsletter:{
+                        post: {
+                            deleted : false
+                        }
+                    }
+                },
                 include: {
                     newsletter : {
                         include: {
@@ -683,7 +691,12 @@ export class NewsletterService {
                 take: NEWSLETTER_CURATION_COUNT
             })
             const recentNewsletterList = await this.getPopularNewsletterList(NEWSLETTER_CURATION_COUNT - newsletterCurationList.length);
-            return recentNewsletterList.concat(newsletterCurationList.map(newsletterCuration => newsletterCuration.newsletter));
+            const resultList : NewsletterWithPostWithWriterAndSeries[] = [];
+            newsletterCurationList.forEach(newsletterCuration => {
+                if(newsletterCuration.newsletter)
+                    resultList.push(newsletterCuration.newsletter)
+            })
+            return resultList.concat(recentNewsletterList);
         }catch (error){
             console.log(error)
             throw ExceptionList.NEWSLETTER_NOT_FOUND;
@@ -715,5 +728,31 @@ export class NewsletterService {
             },
             take
         })
+    }
+
+    /**
+     * @summary 뉴스레터 큐레이션 생성
+     * @param newsletterIdList
+     * @return number
+     * @throws NEWSLETTER_ALREADY_EXIST
+     */
+    async createNewsletterCuration(newsletterIdList : number[]):Promise<number>{
+        try{
+            const newsletterCurationList = newsletterIdList.slice(0,10).map((newsletterId, index) => {
+                return {
+                    newsletterId,
+                    order : index
+                }
+            })
+            const clearCuration = this.prismaService.newsletterCurationWeekly.deleteMany({});
+            const createCuration = this.prismaService.newsletterCurationWeekly.createMany({
+                data : newsletterCurationList
+            })
+            await this.prismaService.$transaction([clearCuration,createCuration])
+            return newsletterCurationList.length
+        }catch (error){
+            console.log(error)
+            throw ExceptionList.NEWSLETTER_ALREADY_EXIST;
+        }
     }
 }
