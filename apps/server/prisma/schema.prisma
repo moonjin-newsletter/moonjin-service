@@ -27,6 +27,7 @@ model User {
   letter2        Letter[]         @relation(name: "receiver")
   WebNewsletter  WebNewsletter[]
   NewsletterLike NewsletterLike[]
+  seriesLike     SeriesLike[]
 }
 
 model Oauth {
@@ -219,10 +220,24 @@ model Series {
   lastUpdatedAt   DateTime @default(now())
   deleted         Boolean  @default(false)
 
-  writerInfo WriterInfo @relation(fields: [writerId], references: [userId])
+  writerInfo WriterInfo   @relation(fields: [writerId], references: [userId])
   post       Post[]
+  seriesLike SeriesLike[]
 
   @@index([writerId])
+}
+
+model SeriesLike {
+  seriesId  Int
+  userId    Int
+  createdAt DateTime
+
+  series Series @relation(fields: [seriesId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@id([seriesId, userId])
+  @@index([seriesId])
+  @@index([userId])
 }
 
 model Letter {
