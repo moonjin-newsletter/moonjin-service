@@ -576,9 +576,9 @@ export class NewsletterService {
      * @param body
      */
     async updateNewsletter(newsletterId : number, body: IUpdateNewsletter){
-        const postContent = await this.postService.uploadPostContent({postId: newsletterId, content: body.content});
         try{
-            await this.prismaService.newsletter.update({
+            const postContent = await this.postService.uploadPostContent({postId: newsletterId, content: body.content});
+            const updateNewsletter = this.prismaService.newsletter.update({
                 where : {
                     id : newsletterId,
                 },
@@ -586,14 +586,16 @@ export class NewsletterService {
                     postContentId: postContent.id,
                 }
             })
-            await this.prismaService.post.update({
+            const updatePost = this.prismaService.post.update({
                 where : {
                     id : newsletterId
                 },
                 data : {
                     title: body.title,
+                    subtitle: body.subtitle,
                 }
             })
+            await this.prismaService.$transaction([updateNewsletter, updatePost])
         }catch (error){
             throw ExceptionList.NEWSLETTER_NOT_FOUND;
         }
