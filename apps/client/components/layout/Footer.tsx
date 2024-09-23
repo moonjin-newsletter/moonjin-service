@@ -21,9 +21,9 @@ export default function Footer() {
             />
           </div>
           <div className="flex flex-col text-grayscale-400 text-sm gap-y-1">
-            <p>
-              주소 : 서울특별시 강남구 테헤란로 427, 4층 (역삼동, 더플레이스)
-            </p>
+            {/*<p>*/}
+            {/*  주소 : 서울특별시 강남구 테헤란로 427, 4층 (역삼동, 더플레이스)*/}
+            {/*</p>*/}
             <p>대표자 : 김윤하</p>
             <p>Tel : 010-9105-2990</p>
             <p>Email : support@moonjin.site</p>
@@ -31,10 +31,20 @@ export default function Footer() {
         </div>
         <div className="flex flex-col w0fit h-full justify-between">
           <div className="flex items-center text-grayscale-300 gap-x-4 text-sm">
-            <Link href="">이용약관</Link>
-            <Link href="">개인정보 처리방침</Link>
-            <Link href="">자주 묻는 질문</Link>
-            <Link href="">불편 제보</Link>
+            <Link
+              target={"_blank"}
+              href="https://moonjin.notion.site/10a8d6d4b48880b6ba63dc497909a933"
+            >
+              이용약관
+            </Link>
+            <Link
+              target={"_blank"}
+              href="https://moonjin.notion.site/10a8d6d4b4888066b283d6ab924da055"
+            >
+              개인정보 처리방침
+            </Link>
+            {/*<Link href="">자주 묻는 질문</Link>*/}
+            <Link href="">문의하기</Link>
           </div>
           <div className="">
             <div className="flex items-center gap-x-4">
@@ -42,7 +52,7 @@ export default function Footer() {
               <p className="text-grayscale-300 text-sm">
                 더 궁금하신게 있으신가요?
                 <br />
-                이메일을 남겨주시면 빠르게 연락드리겠습니다
+                문의하기를 통해 문진에게 알려주세요
               </p>
             </div>
 
