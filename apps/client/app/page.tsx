@@ -7,17 +7,22 @@ import Header from "@components/layout/Header";
 import HomeSection from "./_components/HomeSection";
 import SeriesSection from "./_components/SeriesSection";
 
-import { Category } from "@moonjin/api-types";
+import { Category, NewsletterCardDto, ResponseForm } from "@moonjin/api-types";
 import { Graphic1, LogoSymbolGray } from "@components/icons";
 import Footer from "@components/layout/Footer";
 import VerticalCard from "@components/card/VerticalCard";
+import { nfetch } from "@lib/fetcher/noAuth";
 
 export default async function Page() {
+  const { data: topLetterList } = await nfetch<
+    ResponseForm<NewsletterCardDto[]>
+  >("newsletter/curation/weekly");
+
   return (
     <main className=" w-full min-h-screen  ">
       <Header initialColor="bg-white" />
       <div className="relative flex flex-col items-center justify-center w-full h-full min-h-screen overflow-hidden">
-        <HomeSection />
+        <HomeSection topLetterList={topLetterList} />
         <SeriesSection />
         <section className="flex pt-52  flex-col  items-center w-full max-w-[1006px]">
           <h2 className="font-serif  text-2xl font-bold text-grayscale-700">

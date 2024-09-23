@@ -3,13 +3,27 @@
 import { LogoIcon } from "@components/icons";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import useCarousel from "@components/carousel/useCarousel";
-import { homeData } from "../_data";
+
 import Image from "next/image";
 import Link from "next/link";
+import { NewsletterCardDto } from "@moonjin/api-types";
 
-export default function HomeSection() {
+function chunkArray<T>(arr: T[], chunkSize: number) {
+  const result = [];
+  for (let i = 0; i < arr.length; i += chunkSize) {
+    result.push(arr.slice(i, i + chunkSize));
+  }
+  return result;
+}
+
+export default function HomeSection({
+  topLetterList,
+}: {
+  topLetterList: NewsletterCardDto[];
+}) {
+  const chunkedData = chunkArray(topLetterList, 2);
   const { Carousel, prevEvent, nextEvent } = useCarousel({
-    length: homeData.length - 1,
+    length: chunkedData.length - 1,
     width: 600,
   });
 
@@ -55,7 +69,7 @@ export default function HomeSection() {
                 주<br />의<br /> 인<br />
                 기<br />글<br />
               </h2>
-              {homeData.map((value, index) => (
+              {chunkedData.map((value, index) => (
                 <li
                   key={index}
                   id={`${index}`}
@@ -75,14 +89,14 @@ export default function HomeSection() {
   );
 }
 
-function CarouselCard({ postInfo }: { postInfo: any }) {
+function CarouselCard({ postInfo }: { postInfo: NewsletterCardDto }) {
   return (
     <Link
       href={"/@andy91052990/post/2"}
       className="flex max-w-[440px] w-[440px] overflow-hidden  gap-x-6"
     >
       <Image
-        src={postInfo?.thumbnail[0]}
+        src={postInfo.post.cover}
         alt={"썸네일 이미지"}
         width={200}
         height={258}
@@ -90,16 +104,16 @@ function CarouselCard({ postInfo }: { postInfo: any }) {
       />
       <div className="flex w-full flex-col  h-full">
         <div className="w-fit py-1.5 px-2 text-xs font-medium bg-grayscale-700 text-white rounded-full flex items-center justify-center">
-          {postInfo.category[0]}
+          {postInfo.post.category}
         </div>
         <h2 className="font-serif text-lg font-semibold mt-3 ">
-          {postInfo.title}
+          {postInfo.post.title}
         </h2>
         <span className=" mt-4 text-sm text-grayscale-600">
-          {postInfo.subtitle}
+          {postInfo.post.subtitle}
         </span>
         <span className="font-libre mt-10 text-sm text-grayscale-500">
-          Written by.{postInfo.writer}
+          Written by.{postInfo.writer.nickname}
         </span>
       </div>
     </Link>
