@@ -92,7 +92,7 @@ export default function HomeSection({
 function CarouselCard({ postInfo }: { postInfo: NewsletterCardDto }) {
   return (
     <Link
-      href={"/@andy91052990/post/2"}
+      href={`/@${postInfo.writer.moonjinId}/post/${postInfo.post.id}`}
       className="flex max-w-[440px] w-[440px] overflow-hidden  gap-x-6"
     >
       <Image
