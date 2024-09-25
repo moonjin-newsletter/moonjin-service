@@ -23,6 +23,7 @@ import {SUBSCRIBE_ALREADY_ERROR} from "../response/error/subscribe";
 import {EMAIL_ALREADY_EXIST} from "../response/error/auth";
 import {NEWSLETTER_NOT_FOUND} from "../response/error/post";
 import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
+import {WriterService} from "./writer.service";
 
 @Controller('writer')
 export class WriterController {
@@ -31,6 +32,7 @@ export class WriterController {
         private readonly newsletterService: NewsletterService,
         private readonly seriesService: SeriesService,
         private readonly subscribeService: SubscribeService,
+        private readonly writerService:WriterService
     ) {}
 
 
@@ -185,5 +187,16 @@ export class WriterController {
             series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
             writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterProfileDto(writerInfo)
         })
+    }
+
+    /**
+     * @summary 인기 작가 조회
+     * @returns WriterProfileDto[]
+     * @throws WRITER_NOT_FOUND
+     */
+    @TypedRoute.Get("list/popular")
+    async getPopularWriters(@GetPagination() paginationOptions: PaginationOptionsDto) : Promise<Try<WriterProfileDto[]>>{
+        const writerList = await this.writerService.getPopularWriters(paginationOptions.take);
+        return createResponseForm(writerList.map(writer => WriterInfoDtoMapper.WriterInfoWithUserToWriterProfileDto(writer)));
     }
 }

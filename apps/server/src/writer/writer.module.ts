@@ -6,6 +6,7 @@ import {SubscribeModule} from "../subscribe/subscribe.module";
 import {WriterInfoModule} from "../writerInfo/writerInfo.module";
 import {SeriesModule} from "../series/series.module";
 import {UserModule} from "../user/user.module";
+import {PrismaModule} from "../prisma/prisma.module";
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import {UserModule} from "../user/user.module";
       SubscribeModule,
       WriterInfoModule,
       SeriesModule,
-      UserModule
+      UserModule,
+      PrismaModule
   ],
   controllers: [WriterController],
   providers: [WriterService]
