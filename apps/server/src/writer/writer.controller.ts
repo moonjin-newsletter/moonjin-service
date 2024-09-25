@@ -192,7 +192,6 @@ export class WriterController {
     /**
      * @summary 인기 작가 조회
      * @returns WriterProfileDto[]
-     * @throws WRITER_NOT_FOUND
      */
     @TypedRoute.Get("list/popular")
     async getPopularWriters(@GetPagination() paginationOptions: PaginationOptionsDto) : Promise<Try<WriterProfileDto[]>>{

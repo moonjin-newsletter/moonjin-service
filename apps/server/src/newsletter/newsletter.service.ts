@@ -757,4 +757,41 @@ export class NewsletterService {
             throw ExceptionList.NEWSLETTER_ALREADY_EXIST;
         }
     }
+
+    /**
+     * @summary 최근 뉴스레터 목록 가져오기
+     * @param category
+     * @param paginationOptions
+     */
+    async getRecentNewsletterList(category? : string, paginationOptions? : PaginationOptionsDto): Promise<NewsletterWithPostWithWriterAndSeries[]>{
+        const categoryNumber = Category.getNumberByCategory(category);
+        return this.prismaService.newsletter.findMany({
+            where: {
+                post: {
+                    deleted: false,
+                    category : categoryNumber != -1 ? categoryNumber : undefined
+                }
+            },
+            include: {
+                post : {
+                    include : {
+                        writerInfo : {
+                            include : {
+                                user : true
+                            }
+                        },
+                        series : true
+                    }
+                }
+            },
+            orderBy : {
+                sentAt : 'desc'
+            },
+            skip: paginationOptions?.skip,
+            take: paginationOptions?.take,
+            cursor: paginationOptions?.cursor ? {
+                id : paginationOptions.cursor
+            } : undefined
+        })
+    }
 }

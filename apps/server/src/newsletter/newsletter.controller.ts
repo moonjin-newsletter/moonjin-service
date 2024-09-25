@@ -30,6 +30,8 @@ import {PaginationOptionsDto} from "../common/pagination/dto";
 import {IUpdateNewsletter} from "./api-types/IUpdateNewsletter";
 import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
 import {ICreateNewsLetterCuration} from "./api-types/ICreateNewsLetterCuration";
+import {ISearchNewsletter} from "./api-types/ISearchNewsletter";
+import {NewsletterWithPostWithWriterAndSeries} from "./prisma/NewsletterWithPostWithWriterAndSeries.prisma.type";
 
 @Controller('newsletter')
 export class NewsletterController {
@@ -38,6 +40,43 @@ export class NewsletterController {
         private readonly mailService: MailService
     ) {}
 
+    /**
+     * @summary 최신 뉴스레터 리스트 가져오기
+     * @param query
+     * @param paginationOptions
+     */
+    @TypedRoute.Get("list")
+    async getRecentNewsletterList(@TypedQuery() query : ISearchNewsletter,@GetPagination() paginationOptions : PaginationOptionsDto):Promise<Try<NewsletterCardDto[]>>{
+        let newsletterList: NewsletterWithPostWithWriterAndSeries[];
+        if(query.sort == "recent"){
+            newsletterList = await this.newsletterService.getRecentNewsletterList(query.category,paginationOptions);
+        }else{
+            // TODO : 인기순 정렬 구현해야함
+            newsletterList = await this.newsletterService.getRecentNewsletterList(query.category,paginationOptions);
+        }
+        const newsletterCardList = newsletterList.map(newsletter => {
+            const { post, ...newsletterData} = newsletter;
+            const {series,writerInfo, ...postData} = post;
+            return {
+                newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
+                post : PostDtoMapper.PostToPostDto(postData),
+                series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
+                writer : {
+                    userId : post.writerInfo.userId,
+                    moonjinId : post.writerInfo.moonjinId,
+                    nickname : post.writerInfo.user.nickname
+                },
+            }});
+        return createResponseForm(newsletterCardList, {
+            next : {
+                pageNo : paginationOptions.pageNo + 1,
+                cursor : newsletterCardList.length > 0 ? newsletterCardList[newsletterCardList.length - 1].newsletter.id : 0
+            },
+            isLastPage : newsletterCardList.length < paginationOptions.take,
+            totalCount : newsletterCardList.length
+        });
+
+    }
 
     /**
      * @summary 뉴스레터 큐레이션 리스트 가져오기
