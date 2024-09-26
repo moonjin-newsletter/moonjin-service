@@ -13,6 +13,8 @@ import Footer from "@components/layout/Footer";
 import VerticalCard from "@components/card/VerticalCard";
 import { nfetch } from "@lib/fetcher/noAuth";
 
+export const revalidate = 600;
+
 export default async function Page() {
   const { data: topLetterList } = await nfetch<
     ResponseForm<NewsletterCardDto[]>

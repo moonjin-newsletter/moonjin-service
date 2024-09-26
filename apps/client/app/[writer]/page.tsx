@@ -12,7 +12,7 @@ type pageProps = {
   };
 };
 
-export const revalidate = 0;
+export const revalidate = 600;
 
 export default async function Page({ params }: pageProps) {
   const [, moonjinId] = decodeURI(params.writer).split("%40");

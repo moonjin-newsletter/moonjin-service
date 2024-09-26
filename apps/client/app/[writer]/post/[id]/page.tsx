@@ -29,6 +29,13 @@ type pageProps = {
 };
 
 export const revalidate = 0;
+//
+// export async function generateStaticParams() {
+//   return [
+//     { writer: "@andy91052990", id: "1" },
+//     { writer: "@andy91052990", id: "2" },
+//   ];
+// }
 
 export default async function Page({ params }: pageProps) {
   const [, moonjinId] = decodeURI(params.writer).split("%40");

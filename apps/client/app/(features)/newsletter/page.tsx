@@ -7,6 +7,8 @@ import { Category } from "@moonjin/api-types";
 import { postData } from "../../_data";
 import VerticalCard from "@components/card/VerticalCard";
 
+export const revalidate = 600;
+
 export default function Page() {
   return (
     <>

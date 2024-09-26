@@ -32,6 +32,8 @@ const seriesList = [
   },
 ];
 
+export const revalidate = 600;
+
 export default function Page() {
   return (
     <>
