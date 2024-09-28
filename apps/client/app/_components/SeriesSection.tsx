@@ -5,8 +5,13 @@ import { postData } from "../_data";
 import Image from "next/image";
 import { Tab } from "@headlessui/react";
 import { range } from "@toss/utils";
+import type { SeriesWithWriterDto } from "@moonjin/api-types";
 
-export default function SeriesSection() {
+export default function SeriesSection({
+  seriesList,
+}: {
+  seriesList: SeriesWithWriterDto[];
+}) {
   return (
     <section className="flex pt-40  flex-col  items-center w-full">
       <h2 className="font-serif  text-2xl font-bold text-grayscale-700">
@@ -16,11 +21,11 @@ export default function SeriesSection() {
         문진만의 다양한 시리즈 뉴스레터들을 만나보세요
       </h4>
       <div className="w-full mt-5 flex flex-col items-center text-sm">
-        <Tab.Group>
+        <Tab.Group onChange={(index) => console.log(index)}>
           <Tab.Panels>
             {range(0, 4).map((value, index) => (
               <Tab.Panel key={index}>
-                <SeriesLayout layout={null} />
+                <SeriesLayout series={null} />
               </Tab.Panel>
             ))}
           </Tab.Panels>
@@ -40,7 +45,7 @@ export default function SeriesSection() {
   );
 }
 
-function SeriesLayout({ layout }: { layout: any }) {
+function SeriesLayout({ series }: { series: any }) {
   return (
     <div className="mt-4 w-fit flex gap-x-1 rounded-lg overflow-hidden">
       <Link

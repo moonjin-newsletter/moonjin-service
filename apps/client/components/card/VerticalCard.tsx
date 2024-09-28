@@ -1,18 +1,24 @@
 import Link from "next/link";
 import Image from "next/image";
+import { WriterProfileInCardDto } from "@moonjin/api-types";
+import { format } from "date-fns";
 
 type VerticalCardProps = {
   title: string;
-  description: string;
+  subtitle: string;
+  createdAt: Date;
   thumbnail: string;
   href: string;
+  writer: WriterProfileInCardDto;
 };
 
 export default function VerticalCard({
   title,
-  description,
+  subtitle,
   thumbnail,
+  createdAt,
   href,
+  writer,
 }: VerticalCardProps) {
   return (
     <Link href={href} className="w-[232px] flex flex-col  gap-y-4">
@@ -30,25 +36,22 @@ export default function VerticalCard({
         <strong className="text-left font-bold text-lg">{title}</strong>
 
         <div className="text-[13px] line-clamp-3 text-grayscale-500 ">
-          비상계엄하의 군사재판은 군인·군무원의 범죄나 군사에 관한 간첩죄의
-          경우와 초병·초소·유독음식물공급·포로에 비상계엄하의 군사재판은
-          군인·군무원의 범죄나 군사에 관한 간첩죄의 경우와
-          초병·초소·유독음식물공급·포로에
+          {subtitle}
         </div>
       </div>
 
       <div className="flex items-center gap-x-2">
         <Image
-          src=""
+          src={""}
           alt="작가이미지"
           className="w-7 h-7 rounded-full object-cover bg-gray-400"
         />
         <p className="text-sm text-grayscale-500">
           <span className="font-serif font-medium">by.</span>
-          작가이름
+          {writer.nickname}
         </p>
         <span className="text-sm font-light text-grayscale-500 ml-auto">
-          2023.01.02
+          {format(new Date(createdAt), "yyyy.MM.dd")}
         </span>
       </div>
     </Link>

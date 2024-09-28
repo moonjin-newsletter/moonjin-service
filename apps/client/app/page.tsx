@@ -1,16 +1,20 @@
 import Image from "next/image";
 import CategoryTab from "./_components/CategoryTab";
-import { postData, writerData } from "./_data";
 import Link from "next/link";
 
 import Header from "@components/layout/Header";
 import HomeSection from "./_components/HomeSection";
 import SeriesSection from "./_components/SeriesSection";
 
-import { Category, NewsletterCardDto, ResponseForm } from "@moonjin/api-types";
+import {
+  Category,
+  type NewsletterCardDto,
+  type ResponseForm,
+  type SeriesWithWriterDto,
+  WriterProfileDto,
+} from "@moonjin/api-types";
 import { Graphic1, LogoSymbolGray } from "@components/icons";
 import Footer from "@components/layout/Footer";
-import VerticalCard from "@components/card/VerticalCard";
 import { nfetch } from "@lib/fetcher/noAuth";
 
 export const revalidate = 600;
@@ -19,13 +23,18 @@ export default async function Page() {
   const { data: topLetterList } = await nfetch<
     ResponseForm<NewsletterCardDto[]>
   >("newsletter/curation/weekly");
+  const { data: popularSeriesList } =
+    await nfetch<ResponseForm<SeriesWithWriterDto[]>>("series/popular");
+  const { data: writerList } = await nfetch<ResponseForm<WriterProfileDto[]>>(
+    "writer/list/popular",
+  );
 
   return (
     <main className=" w-full min-h-screen  ">
       <Header initialColor="bg-white" />
       <div className="relative flex flex-col items-center justify-center w-full h-full min-h-screen overflow-hidden">
         <HomeSection topLetterList={topLetterList} />
-        <SeriesSection />
+        <SeriesSection seriesList={popularSeriesList} />
         <section className="flex pt-52  flex-col  items-center w-full max-w-[1006px]">
           <h2 className="font-serif  text-2xl font-bold text-grayscale-700">
             Moonjin Writers
@@ -36,9 +45,9 @@ export default async function Page() {
 
           <div className="w-full max-w-[1006px] mt-8 flex flex-col items-center text-sm">
             <div className="flex mt-12 gap-x-[26px] gap-y-10 flex-wrap w-full">
-              {writerData.slice(0, 4).map((writer, idx) => (
+              {writerList.slice(0, 4).map((writer, idx) => (
                 <div key={idx}>
-                  <WriterCard data={writer} />
+                  <WriterCard writer={writer} />
                 </div>
               ))}
             </div>
@@ -55,21 +64,9 @@ export default async function Page() {
 
           <div className="w-full mt-8 flex flex-col items-center text-sm">
             <CategoryTab
+              requestUrl={"newsletter/list"}
               tabList={Category.list}
-              layout={
-                <div className="grid grid-cols-4 mt-12 gap-x-7 gap-y-12  w-full">
-                  {postData.map((post, idx) => (
-                    <div key={idx}>
-                      <VerticalCard
-                        title={post.title}
-                        href={""}
-                        thumbnail={post.thumbnail[0]}
-                        description={""}
-                      />
-                    </div>
-                  ))}
-                </div>
-              }
+              cardType={"newsletter"}
             />
           </div>
         </section>
@@ -100,12 +97,15 @@ export default async function Page() {
   );
 }
 
-function WriterCard({ data }: { data: any }) {
+function WriterCard({ writer }: { writer: WriterProfileDto }) {
   return (
-    <Link href="" className="w-[232px] flex flex-col items-center px-2">
+    <Link
+      href={`/@${writer.writerInfo.moonjinId}`}
+      className="w-[232px] flex flex-col items-center px-2 h-full grow"
+    >
       <div className="relative ">
         <Image
-          src={data.thumbnail}
+          src={writer.user.image}
           width={112}
           height={112}
           alt="작가이미지"
@@ -113,15 +113,14 @@ function WriterCard({ data }: { data: any }) {
         />
         <div className="absolute left-8 bottom-[1px] bg-primary rounded-[50%] w-24 h-4 overflow-hidden z-0" />
       </div>
-      <h3 className="text-2xl font-semibold mt-4">Writer</h3>
+      <h3 className="text-2xl font-semibold mt-4">{writer.user.nickname}</h3>
 
-      <div className="text-sm text-grayscale-400 font-light mt-2">
-        비상계엄하의 군사재판은 군인·군무원의 범죄나 군사에 관한 간첩죄의 경우와
-        초병·초소·유독음식물공급·포로에
+      <div className="text-sm text-grayscale-400 font-light mt-2 line-clamp-3">
+        {writer.user.description}
       </div>
 
-      <button className="py-2 mt-4 px-6 font-medium text-sm rounded-lg bg-grayscale-700/95 text-white">
-        구독하기
+      <button className="py-2 mt-8 px-6 font-medium text-sm rounded-lg bg-grayscale-700/95 text-white">
+        방문하기
       </button>
     </Link>
   );

@@ -23,8 +23,6 @@ export default function Header({
   const pathname = usePathname();
   const scroll = useScroll();
 
-  console.log(pathname, "pathname");
-
   function onClickLogout() {
     csr
       .post("auth/logout")

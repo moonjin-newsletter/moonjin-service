@@ -21,7 +21,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        libre: ["var(--font-libre)"],
+        libre: ["var(--font-libre)", "serif"],
         serif: ["var(--font-noto-serif)", "Noto Serif KR", "serif"],
       },
       colors: {
