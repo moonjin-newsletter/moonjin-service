@@ -152,7 +152,7 @@ function SeriesLayout({ series }: { series: any }) {
           width={320}
           height={320}
           alt="게시물이미지"
-          className="w-full h-full object-cover peer-hover:scale-105 transition duration-150 ease-in-out"
+          className="w-full h-full object-cover group-hover:scale-105 transition duration-150 ease-in-out"
         />
       </Link>
 
