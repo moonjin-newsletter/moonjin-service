@@ -4,8 +4,6 @@ import Image from "next/image";
 import Graphic from "@public/static/images/graphic-all.png";
 import CategoryTab from "../../_components/CategoryTab";
 import { Category } from "@moonjin/api-types";
-import { postData } from "../../_data";
-import VerticalCard from "@components/card/VerticalCard";
 
 export const revalidate = 600;
 
@@ -24,21 +22,9 @@ export default function Page() {
           </p>
           <div className="w-full mt-24 flex flex-col items-center text-sm">
             <CategoryTab
+              requestUrl={"newsletter/list"}
               tabList={Category.list}
-              layout={
-                <div className="grid grid-cols-4 mt-12 gap-x-7 gap-y-12  w-full">
-                  {postData.map((post, idx) => (
-                    <div key={idx}>
-                      <VerticalCard
-                        title={post.title}
-                        href={""}
-                        thumbnail={post.thumbnail[0]}
-                        description={""}
-                      />
-                    </div>
-                  ))}
-                </div>
-              }
+              cardType={"newsletter"}
             />
           </div>
         </section>

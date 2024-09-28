@@ -6,7 +6,6 @@ import SeriesCarousel from "./_components/SeriesCarousel";
 import CategoryTab from "../../_components/CategoryTab";
 import { Category } from "@moonjin/api-types";
 import { postData } from "../../_data";
-import VerticalCard from "@components/card/VerticalCard";
 
 const seriesList = [
   {
@@ -106,21 +105,9 @@ export default function Page() {
         <section className="w-full flex flex-col items-center max-w-[1006px] mt-24">
           <div className="w-full  flex flex-col items-center text-sm">
             <CategoryTab
+              requestUrl={"newsletter/list"}
               tabList={Category.list}
-              layout={
-                <div className="grid grid-cols-4 mt-12 gap-x-7 gap-y-12  w-full">
-                  {postData.map((post, idx) => (
-                    <div key={idx}>
-                      <VerticalCard
-                        title={post.title}
-                        href={""}
-                        thumbnail={post.thumbnail[0]}
-                        description={""}
-                      />
-                    </div>
-                  ))}
-                </div>
-              }
+              cardType={"newsletter"}
             />
           </div>
         </section>
