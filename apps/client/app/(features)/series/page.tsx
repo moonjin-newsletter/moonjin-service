@@ -48,17 +48,14 @@ export default function Page() {
           </p>
         </section>
 
-        <section
-          style={{
-            backgroundImage: "url(/static/images/background-series.png)",
-            backgroundSize: "cover",
-            backgroundPosition: "top",
-            backgroundRepeat: "no-repeat",
-            width: "100%",
-            height: "1380px",
-          }}
-          className="w-full h-auto gap-y-28 pt-36 pb-32 mt-24 flex flex-col items-center text-sm relative"
-        >
+        <section className=" gap-y-28 pt-36 pb-32 mt-24 flex flex-col items-center text-sm relative">
+          <Image
+            src={"/static/images/background-series.png"}
+            alt="백그라운드 이미지"
+            width={1920}
+            height={1630}
+            className="absolute top-0 left-1/2 -translate-x-1/2 min-w-[100vw] object-fill w-full h-[1380px] max-h-[1380px] z-[-1]"
+          />
           <SeriesCarousel seriesList={seriesList} />
           <div className="flex">
             <h2 className="font-serif text-2xl pl-5 pr-14 leading-9">
