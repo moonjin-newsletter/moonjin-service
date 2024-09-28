@@ -83,11 +83,11 @@ export default async function Page() {
               흩날리지 않게 문진을 올려주세요.
             </span>
             <Link
-              href=""
+              href="/auth/login"
               className="py-2.5 px-6 bg-grayscale-600 text-white rounded-lg mt-10 flex items-center gap-x-1.5"
             >
               <LogoSymbolGray />
-              작가 시작하기
+              문진 시작하기
             </Link>
           </div>
         </section>

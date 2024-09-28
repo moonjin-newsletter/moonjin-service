@@ -55,8 +55,9 @@ export default function Page() {
             backgroundPosition: "top",
             backgroundRepeat: "no-repeat",
             width: "100%",
+            height: "1380px",
           }}
-          className="w-full gap-y-28 pt-32 pb-32 mt-24 flex flex-col items-center text-sm relative"
+          className="w-full h-auto gap-y-28 pt-36 pb-32 mt-24 flex flex-col items-center text-sm relative"
         >
           <SeriesCarousel seriesList={seriesList} />
           <div className="flex">
@@ -102,7 +103,7 @@ export default function Page() {
             </ul>
           </div>
         </section>
-        <section className="w-full flex flex-col items-center max-w-[1006px] mt-24">
+        <section className="w-full flex flex-col items-center max-w-[1006px] mt-32">
           <div className="w-full  flex flex-col items-center text-sm">
             <CategoryTab
               requestUrl={"newsletter/list"}
