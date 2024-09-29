@@ -45,26 +45,30 @@ export default function CategoryTab({
         <Tab.Panels>
           {tabList.map((value, index) => (
             <Tab.Panel key={index}>
-              <>
-                <div className="grid grid-cols-4 mt-12 gap-x-7 gap-y-12  w-full">
-                  {categoryPostList?.map((card, idx) => (
-                    <div key={idx}>
-                      {cardType === "series" ? (
-                        ""
-                      ) : (
-                        <VerticalCard
-                          title={card.post.title}
-                          subtitle={card.post.subtitle}
-                          createdAt={card.post.createdAt}
-                          href={`/@${card.writer.moonjinId}/post/${card.post.id}`}
-                          thumbnail={card.post.cover}
-                          writer={card.writer}
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </>
+              {isLoading ? (
+                <div className="min-h-[376px] w-full"></div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-4 mt-12 gap-x-7 gap-y-12  w-full">
+                    {categoryPostList?.map((card, idx) => (
+                      <div key={idx}>
+                        {cardType === "series" ? (
+                          ""
+                        ) : (
+                          <VerticalCard
+                            title={card.post.title}
+                            subtitle={card.post.subtitle}
+                            createdAt={card.post.createdAt}
+                            href={`/@${card.writer.moonjinId}/post/${card.post.id}`}
+                            thumbnail={card.post.cover}
+                            writer={card.writer}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </Tab.Panel>
           ))}
         </Tab.Panels>
