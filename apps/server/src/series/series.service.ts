@@ -368,11 +368,11 @@ export class SeriesService {
 
     /**
      * @summary 인기 있는 시리즈 가져오기
-     * @param take
+     * @param paginationOptions
      * @returns SeriesWithWriter[]
      * @throws SERIES_NOT_FOUND
      */
-    async getPopularSeries(take: number): Promise<SeriesWithWriter[]>{
+    async getPopularSeries(paginationOptions: PaginationOptionsDto): Promise<SeriesWithWriter[]>{
         try{
             return this.prismaService.series.findMany({
                 where: {
@@ -391,7 +391,11 @@ export class SeriesService {
                 orderBy: {
                     likes: 'desc'
                 },
-                take
+                skip: paginationOptions?.skip,
+                take: paginationOptions?.take,
+                cursor: paginationOptions?.cursor ? {
+                    id : paginationOptions.cursor
+                } : undefined
             })
         }catch (error){
             console.log(error)

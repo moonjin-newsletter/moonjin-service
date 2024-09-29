@@ -77,11 +77,7 @@ export class WriterController {
                 newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
                 post : PostDtoMapper.PostToPostDto(postData),
                 series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
-                writer : {
-                    userId : writerInfo.userId,
-                    moonjinId : writerInfo.moonjinId,
-                    nickname : writerInfo.user.nickname
-                },
+                writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterInfoInCardDto(writerInfo)
             }
         })
         return createResponseForm(newsletterCardList, {
@@ -148,11 +144,7 @@ export class WriterController {
                 newsletter: NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
                 post: PostDtoMapper.PostToPostDto(postData),
                 series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
-                writer: {
-                    userId: writerInfo.userId,
-                    moonjinId: writerInfo.moonjinId,
-                    nickname: writerInfo.user.nickname
-                },
+                writer: WriterInfoDtoMapper.WriterInfoWithUserToWriterInfoInCardDto(writerInfo)
             }
         }), {
             next: {
@@ -193,9 +185,17 @@ export class WriterController {
      * @summary 인기 작가 조회
      * @returns WriterProfileDto[]
      */
-    @TypedRoute.Get("list/popular")
+    @TypedRoute.Get("popular")
     async getPopularWriters(@GetPagination() paginationOptions: PaginationOptionsDto) : Promise<Try<WriterProfileDto[]>>{
         const writerList = await this.writerService.getPopularWriters(paginationOptions.take);
-        return createResponseForm(writerList.map(writer => WriterInfoDtoMapper.WriterInfoWithUserToWriterProfileDto(writer)));
+        const popularWriterList = writerList.map(writer => WriterInfoDtoMapper.WriterInfoWithUserToWriterProfileDto(writer));
+        return createResponseForm(popularWriterList, {
+            next: {
+                pageNo: paginationOptions.pageNo + 1,
+                cursor: popularWriterList.length > 0 ? popularWriterList[popularWriterList.length - 1].writerInfo.userId : 0
+            },
+            isLastPage: popularWriterList.length < paginationOptions.take,
+            totalCount: popularWriterList.length
+        });
     }
 }
