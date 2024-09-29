@@ -23,7 +23,8 @@ export class WriterInfoDtoMapper {
         return {
             userId: writerInfoWithUser.user.id,
             moonjinId : writerInfoWithUser.moonjinId,
-            nickname : writerInfoWithUser.user.nickname
+            nickname : writerInfoWithUser.user.nickname,
+            profileImage : writerInfoWithUser.user.image
         }
     }
 

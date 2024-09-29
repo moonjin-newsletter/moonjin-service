@@ -61,11 +61,7 @@ export class NewsletterController {
                 newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
                 post : PostDtoMapper.PostToPostDto(postData),
                 series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
-                writer : {
-                    userId : post.writerInfo.userId,
-                    moonjinId : post.writerInfo.moonjinId,
-                    nickname : post.writerInfo.user.nickname
-                },
+                writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterInfoInCardDto(writerInfo)
             }});
         return createResponseForm(newsletterCardList, {
             next : {
@@ -93,11 +89,7 @@ export class NewsletterController {
                 newsletter: NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
                 post: PostDtoMapper.PostToPostDto(postData),
                 series: series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
-                writer: {
-                    userId: post.writerInfo.userId,
-                    moonjinId: post.writerInfo.moonjinId,
-                    nickname: post.writerInfo.user.nickname
-                },
+                writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterInfoInCardDto(writerInfo)
             }
         }));
     }
@@ -196,11 +188,7 @@ export class NewsletterController {
                 newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
                 post : PostDtoMapper.PostToPostDto(postData),
                 series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
-                writer : {
-                    userId : writerInfo.userId,
-                    moonjinId : writerInfo.moonjinId,
-                    nickname : writerInfo.user.nickname
-                }
+                writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterInfoInCardDto(writerInfo)
             }
         }));
     }
@@ -221,11 +209,7 @@ export class NewsletterController {
             newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
             post : PostDtoMapper.PostToPostDto(postData),
             series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
-            writer : {
-                userId : newsletterCard.post.writerInfo.userId,
-                moonjinId : newsletterCard.post.writerInfo.moonjinId,
-                nickname : newsletterCard.post.writerInfo.user.nickname
-            }
+            writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterInfoInCardDto(writerInfo)
         });
     }
 
@@ -245,11 +229,7 @@ export class NewsletterController {
                 newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
                 post : PostDtoMapper.PostToPostDto(postData),
                 series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
-                writer : {
-                    userId : post.writerInfo.userId,
-                    moonjinId : post.writerInfo.moonjinId,
-                    nickname : post.writerInfo.user.nickname
-                },
+                writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterInfoInCardDto(writerInfo)
             }
         })
 
@@ -271,11 +251,7 @@ export class NewsletterController {
                 newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
                 post : PostDtoMapper.PostToPostDto(postData),
                 series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
-                writer : {
-                    userId : post.writerInfo.userId,
-                    moonjinId : post.writerInfo.moonjinId,
-                    nickname : post.writerInfo.user.nickname
-                },
+                writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterInfoInCardDto(writerInfo)
             }
         })
         return createResponseForm(newsletterCardList);
@@ -345,11 +321,7 @@ export class NewsletterController {
                 newsletter : NewsletterDtoMapper.newsletterToNewsletterDto(newsletterData),
                 post : PostDtoMapper.PostToPostDto(postData),
                 series : series ? SeriesDtoMapper.SeriesToSeriesDto(series) : null,
-                writer : {
-                    userId : post.writerInfo.userId,
-                    moonjinId : post.writerInfo.moonjinId,
-                    nickname : post.writerInfo.user.nickname
-                },
+                writer : WriterInfoDtoMapper.WriterInfoWithUserToWriterInfoInCardDto(writerInfo)
             }});
         return createResponseForm(recommendNewsletterCardList, {
             next : {
