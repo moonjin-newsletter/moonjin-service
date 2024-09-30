@@ -44,7 +44,7 @@ export default function Footer() {
               개인정보 처리방침
             </Link>
             {/*<Link href="">자주 묻는 질문</Link>*/}
-            <Link target={"_blank"} href="http://pf.kakao.com/_xhQgIn">
+            <Link target={"_blank"} href="https://tally.so/r/wAqzzk">
               문의하기
             </Link>
           </div>

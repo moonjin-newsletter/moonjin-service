@@ -74,7 +74,7 @@ export function EmailFooter() {
                     <tr align="center">
                       <td>
                         <a
-                          href="https://pf.kakao.com/_xhQgIn"
+                          href="https://tally.so/r/wAqzzk"
                           target="_blank"
                           style="color: #7b0000"
                           >문의하기</a
@@ -109,20 +109,6 @@ export function EmailFooter() {
                                     style="width: 32px; height: 32px"
                                   />
                                 </a>
-                              </td>
-                              <td style="width: 32px">
-                                <a
-                                  href="https://pf.kakao.com/_xhQgIn"
-                                  target="_blank"
-                                  style="display: block"
-                                >
-                                  <img
-                                    src="https://d1ppxineti4knh.cloudfront.net/static/email/footer_kakao.png"
-                                    alt="Moonjin"
-                                    width="32"
-                                    height="32"
-                                    style="width: 32px; height: 32px"
-                                /></a>
                               </td>
                               <td style="width: 32px">
                                 <a
