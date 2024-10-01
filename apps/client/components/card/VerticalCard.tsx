@@ -20,6 +20,7 @@ export default function VerticalCard({
   href,
   writer,
 }: VerticalCardProps) {
+  console.log(writer);
   return (
     <Link href={href} className="w-[232px] flex flex-col  gap-y-4">
       <div className="relative ">
@@ -42,7 +43,9 @@ export default function VerticalCard({
 
       <div className="flex items-center gap-x-2">
         <Image
-          src={""}
+          src={writer.profileImage}
+          width={28}
+          height={28}
           alt="작가이미지"
           className="w-7 h-7 rounded-full object-cover bg-gray-400"
         />

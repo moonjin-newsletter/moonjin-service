@@ -27,7 +27,6 @@ export const metadata: Metadata = {
     description: "어제, 오늘 그리고 내일의 이야기, 문진 뉴스레터",
     url: "https://dev.moonjin.site",
     siteName: "moonjin",
-    images: "https://moonjin.site/og-image.png",
   },
   category: "newsletter",
   keywords: ["뉴스레터", "문진", "글", "이야기"],
