@@ -11,8 +11,10 @@ import type { ResponseForm, UserOrWriterDto } from "@moonjin/api-types";
 
 export default function Header({
   initialColor = "bg-transparent",
+  initialBorder = "border-none",
 }: {
   initialColor?: string;
+  initialBorder?: string;
 }) {
   const {
     data: userInfo,
@@ -39,7 +41,7 @@ export default function Header({
     <header
       className={`${
         scroll.y === 0
-          ? initialColor + " " + "border-none"
+          ? initialBorder + " " + initialColor
           : "bg-white/90 border-b"
       }  transition duration-300 fixed z-50 top-0 left-0 w-full flex h-16  items-center justify-center  border-grayscale-200`}
     >
@@ -125,7 +127,7 @@ export default function Header({
             <LoadingUI />
           ) : (
             <Link
-              className="py-2.5 h-fit px-6 text-white text-sm bg-[#7b0000] rounded-lg"
+              className="py-2.5 h-fit px-5 text-white text-sm bg-[#7b0000] rounded-lg"
               href="/auth/login"
             >
               로그인
