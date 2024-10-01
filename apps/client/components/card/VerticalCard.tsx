@@ -20,7 +20,6 @@ export default function VerticalCard({
   href,
   writer,
 }: VerticalCardProps) {
-  console.log(writer);
   return (
     <Link href={href} className="w-[232px] flex flex-col  gap-y-4">
       <div className="relative ">
