@@ -1,8 +1,7 @@
-
 import { EditorBlockToHtmlTag } from "./editorBlockToHtmlTag";
-import {EmailTemplate} from "../template/emailTemplate";
-import { PostWithContentAndSeriesAndWriterDto} from "@moonjin/api-types";
-import {EditorJsonDto} from "@moonjin/editorjs-types";
+import { EmailTemplate } from "../template/emailTemplate";
+import { PostWithContentAndSeriesAndWriterDto } from "@moonjin/api-types";
+import { EditorJsonDto } from "@moonjin/editorjs-types";
 
 /**
  * Convert EditorJs Json 데이터를 Html 문서로 변환
@@ -10,7 +9,11 @@ import {EditorJsonDto} from "@moonjin/editorjs-types";
  * @param metaData
  * @constructor
  */
-export function EditorJsToHtml(editorJsonData: EditorJsonDto, metaData:PostWithContentAndSeriesAndWriterDto, newsletterId: number) {
+export function EditorJsToHtml(
+  editorJsonData: EditorJsonDto,
+  metaData: PostWithContentAndSeriesAndWriterDto,
+  newsletterId: number,
+) {
   let htmlFormer: string = `<tr>
       <td>
         <table
@@ -34,17 +37,31 @@ export function EditorJsToHtml(editorJsonData: EditorJsonDto, metaData:PostWithC
   editorJsonData.blocks.forEach((block) => {
     htmlFormer += EditorBlockToHtmlTag(block);
   });
-  const sentAt = new Date().setHours(new Date().getHours() + 9).toString().slice(0,10).replace('-',',');
+  const sentAt = new Date()
+    .setHours(new Date().getHours() + 9)
+    .toString()
+    .slice(0, 10)
+    .replace("-", ",");
 
-  return EmailTemplate.Header.EmailNewsletterHeader(
-      metaData.user.image, metaData.user.nickname, metaData.writerInfo.moonjinId + "@moonjin.site",
-      metaData.post.title, metaData.series?.title?? null, sentAt,
-      `https://moonjin.site/@${metaData.writerInfo.moonjinId}/newsletter/${newsletterId}`,
-  )
-      + htmlFormer + htmlLetter + EmailTemplate.Footer.EmailNewsletterFooter(
-      `https://moonjin.site/@${metaData.writerInfo.moonjinId}/newsletter/${newsletterId}`,
+  return (
+    EmailTemplate.Header.EmailNewsletterHeader(
+      metaData.user.image,
       metaData.user.nickname,
-      metaData.user.description,
-        metaData.writerInfo.moonjinId
+      metaData.writerInfo.moonjinId + "@moonjin.site",
+      metaData.post.title,
+      metaData.series?.title ?? null,
+      sentAt,
+      `https://moonjin.site/@${metaData.writerInfo.moonjinId}/newsletter/${newsletterId}`,
+    ) +
+    htmlFormer +
+    htmlLetter +
+    EmailTemplate.Footer.EmailFeedback() +
+    EmailTemplate.Footer.EmailFooter()
   );
+  //     EmailTemplate.Footer.EmailNewsletterFooter(
+  //     `https://moonjin.site/@${metaData.writerInfo.moonjinId}/newsletter/${newsletterId}`,
+  //     metaData.user.nickname,
+  //     metaData.user.description,
+  //       metaData.writerInfo.moonjinId
+  // );
 }

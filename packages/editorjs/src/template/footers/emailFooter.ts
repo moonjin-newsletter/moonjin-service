@@ -12,7 +12,6 @@ export function EmailFooter() {
             margin: 0 auto;
             background-color: #ffffff;
             border-radius: 0 0 24px 24px;
-            padding: 0 40px 24px 40px;
           "
         >
           <tbody>
@@ -40,7 +39,7 @@ export function EmailFooter() {
                           alt="Moonjin"
                           width="183"
                           height="69"
-                          style="width: 148; height: 56px"
+                          style="width: 148px; height: 56px"
                         />
                       </td>
                     </tr>

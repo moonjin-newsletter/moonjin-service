@@ -151,6 +151,9 @@ export function EmailNewsletterHeader(
               <td>
                 <hr
                   style="
+                    height: 1px;
+                    width: 100%;
+                    margin: 16px 0;
                     border-width: 1px 0 0 0;
                     border-style: solid;
                     border-color: #d6d6d6;
