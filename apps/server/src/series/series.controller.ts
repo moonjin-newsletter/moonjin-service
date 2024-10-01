@@ -1,5 +1,5 @@
 import { Controller, UseGuards } from '@nestjs/common';
-import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
+import {TypedBody, TypedParam, TypedQuery, TypedRoute} from "@nestia/core";
 import {User} from "../auth/decorator/user.decorator";
 import {UserAuthDto} from "../auth/dto";
 import {ICreateSeries} from "./api-types/ICreateSeries";
@@ -18,6 +18,7 @@ import {Category} from "@moonjin/api-types";
 import {WriterInfoService} from "../writerInfo/writerInfo.service";
 import {GetPagination} from "../common/pagination/decorator/GetPagination.decorator";
 import {PaginationOptionsDto} from "../common/pagination/dto";
+import {ISearchSeries} from "./api-types/ISearchSeries";
 
 @Controller('series')
 export class SeriesController {
@@ -117,8 +118,33 @@ export class SeriesController {
      * @throws SERIES_NOT_FOUND
      */
     @TypedRoute.Get("popular")
-    async getPopularSeries(@GetPagination() paginationOptions: PaginationOptionsDto): Promise<Try<SeriesWithWriterDto[]>> {
-        const seriesWithWriterList = await this.seriesService.getPopularSeries(paginationOptions);
+    async getPopularSeries(@TypedQuery() query : ISearchSeries,@GetPagination() paginationOptions: PaginationOptionsDto): Promise<Try<SeriesWithWriterDto[]>> {
+        const seriesWithWriterList = await this.seriesService.getPopularSeries(query.category, paginationOptions);
+        const popularSeriesList = seriesWithWriterList.map(series => {
+            const {writerInfo, ...seriesData} = series;
+            return {
+                series: SeriesDtoMapper.SeriesToSeriesDto(seriesData),
+                writer: UserDtoMapper.UserToUserProfileDto(writerInfo.user)
+            }
+        });
+        return createResponseForm(popularSeriesList,{
+            next : {
+                pageNo : paginationOptions.pageNo + 1,
+                cursor : popularSeriesList.length > 0 ? popularSeriesList[popularSeriesList.length - 1].series.id : 0
+            },
+            isLastPage : popularSeriesList.length < paginationOptions.take,
+            totalCount : popularSeriesList.length
+        });
+    }
+
+    /**
+     * @summary 인기 있는 시리즈 가져오기
+     * @returns SeriesWithWriterDto[]
+     * @throws SERIES_NOT_FOUND
+     */
+    @TypedRoute.Get("recent")
+    async getRecentSeries(@TypedQuery() query : ISearchSeries, @GetPagination() paginationOptions: PaginationOptionsDto): Promise<Try<SeriesWithWriterDto[]>> {
+        const seriesWithWriterList = await this.seriesService.getRecentSeries(query.category, paginationOptions);
         const popularSeriesList = seriesWithWriterList.map(series => {
             const {writerInfo, ...seriesData} = series;
             return {

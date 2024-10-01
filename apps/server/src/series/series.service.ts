@@ -368,18 +368,21 @@ export class SeriesService {
 
     /**
      * @summary 인기 있는 시리즈 가져오기
+     * @param category
      * @param paginationOptions
      * @returns SeriesWithWriter[]
      * @throws SERIES_NOT_FOUND
      */
-    async getPopularSeries(paginationOptions: PaginationOptionsDto): Promise<SeriesWithWriter[]>{
+    async getPopularSeries(category? : string, paginationOptions?: PaginationOptionsDto): Promise<SeriesWithWriter[]>{
         try{
+            const categoryNumber = Category.getNumberByCategory(category);
             return this.prismaService.series.findMany({
                 where: {
                     newsletterCount : {
                         gt : 0
                     },
-                    deleted: false
+                    deleted: false,
+                    category : categoryNumber != -1 ? categoryNumber : undefined
                 },
                 include:{
                     writerInfo: {
@@ -390,6 +393,46 @@ export class SeriesService {
                 },
                 orderBy: {
                     likes: 'desc'
+                },
+                skip: paginationOptions?.skip,
+                take: paginationOptions?.take,
+                cursor: paginationOptions?.cursor ? {
+                    id : paginationOptions.cursor
+                } : undefined
+            })
+        }catch (error){
+            console.log(error)
+            throw ExceptionList.SERIES_NOT_FOUND
+        }
+    }
+
+    /**
+     * @summary 최신 시리즈 가져오기
+     * @param category
+     * @param paginationOptions
+     * @returns SeriesWithWriter[]
+     * @throws SERIES_NOT_FOUND
+     */
+    async getRecentSeries(category? : string,paginationOptions?: PaginationOptionsDto): Promise<SeriesWithWriter[]>{
+        try{
+            const categoryNumber = Category.getNumberByCategory(category);
+            return this.prismaService.series.findMany({
+                where: {
+                    newsletterCount : {
+                        gt : 0
+                    },
+                    deleted: false,
+                    category : categoryNumber != -1 ? categoryNumber : undefined
+                },
+                include:{
+                    writerInfo: {
+                        include: {
+                            user: true
+                        }
+                    }
+                },
+                orderBy: {
+                    createdAt: 'desc'
                 },
                 skip: paginationOptions?.skip,
                 take: paginationOptions?.take,
