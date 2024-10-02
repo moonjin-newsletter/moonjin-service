@@ -23,8 +23,8 @@ export default function HomeSection({
 }) {
   const chunkedData = chunkArray(topLetterList, 2);
   const { Carousel, prevEvent, nextEvent } = useCarousel({
-    length: chunkedData.length - 1,
-    width: 600,
+    length: chunkedData.length,
+    width: 560,
   });
 
   return (
