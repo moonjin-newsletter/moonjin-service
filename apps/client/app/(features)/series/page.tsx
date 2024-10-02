@@ -37,7 +37,7 @@ export default function Page() {
   return (
     <>
       <Header />
-      <main className="w-full min-h-screen pt-28 pb-32 flex flex-col items-center">
+      <main className="w-full min-h-screen max-w-[100vw] overflow-hidden pt-28 pb-32 flex flex-col items-center">
         <section className="w-full flex flex-col items-center max-w-[1006px]">
           <Image src={Graphic} alt="Series" width={200} height={200} />
           <h1 className="text-2xl font-bold mt-4 font-serif text-primary">
