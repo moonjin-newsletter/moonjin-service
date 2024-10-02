@@ -202,7 +202,5 @@ export function EmailNewsletterHeader(
         </table>
       </td>
     </tr>
-    <tr>
-      <td height="50"></td>
-    </tr>`;
+    `;
 }

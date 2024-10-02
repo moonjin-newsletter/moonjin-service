@@ -29,6 +29,9 @@ export function EditorJsToHtml(
 
   const htmlLetter: string = ` </td>
             </tr>
+            <tr>
+                <td height="16"></td>
+            </tr>
           </tbody>
         </table>
       </td>
@@ -55,6 +58,14 @@ export function EditorJsToHtml(
     ) +
     htmlFormer +
     htmlLetter +
+    EmailTemplate.Utils.EmailDivider() +
+    EmailTemplate.Footer.EmailWriterProfile(
+      metaData.user.image,
+      metaData.user.nickname,
+      metaData.user.description,
+      `https://moonjin.site/@${metaData.writerInfo.moonjinId}`,
+    ) +
+    EmailTemplate.Utils.EmailDivider() +
     EmailTemplate.Footer.EmailFeedback() +
     EmailTemplate.Footer.EmailFooter()
   );
