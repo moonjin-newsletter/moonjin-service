@@ -106,6 +106,7 @@ export default function Page() {
               requestUrl={"newsletter/list"}
               tabList={Category.list}
               cardType={"newsletter"}
+              infiniteScroll={true}
             />
           </div>
         </section>
