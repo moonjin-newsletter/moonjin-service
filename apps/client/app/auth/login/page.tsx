@@ -79,34 +79,40 @@ export default function Page() {
                 className="min-w-[320px] mt-8 flex w-full flex-col  gap-y-4 "
                 onSubmit={handleSubmit(onClickLogin)}
               >
-                <input
-                  type="email"
-                  placeholder="이메일"
-                  className="w-full h-10 border border-grayscale-200 rounded-lg px-2 placeholder:text-grayscale-400 placeholder:text-sm focus:outline-none"
-                  {...register("email", { required: "이메일을 입력해주세요" })}
-                />
-                {errors.email?.message && (
-                  <div className="flex items-center  text-rose-500 gap-x-1">
-                    <Tb.TbAlertCircle />
-                    <span className="text-xs text-rose-500 ">{`${errors.email?.message}`}</span>
-                  </div>
-                )}
-                <input
-                  type="password"
-                  placeholder="비밀번호"
-                  className="w-full h-10 border border-grayscale-200 placeholder:text-grayscale-400 rounded-lg px-2 placeholder:text-sm"
-                  {...register("password", {
-                    required: "비밀번호를 입력해주세요",
-                    minLength: 1,
-                    maxLength: 16,
-                  })}
-                />
-                {errors.password?.message && (
-                  <div className="flex items-center  text-rose-500 gap-x-1">
-                    <Tb.TbAlertCircle />
-                    <span className="text-xs text-rose-500 ">{`${errors.password?.message}`}</span>
-                  </div>
-                )}
+                <div>
+                  <input
+                    type="email"
+                    placeholder="이메일"
+                    className="w-full h-10 border border-grayscale-200 rounded-lg px-2 placeholder:text-grayscale-400 placeholder:text-sm focus:outline-none"
+                    {...register("email", {
+                      required: "이메일을 입력해주세요",
+                    })}
+                  />
+                  {errors.email?.message && (
+                    <div className="flex items-center mt-1 text-rose-500 gap-x-1">
+                      <Tb.TbAlertCircle />
+                      <span className="text-xs text-rose-500 ">{`${errors.email?.message}`}</span>
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <input
+                    type="password"
+                    placeholder="비밀번호"
+                    className="w-full h-10 border border-grayscale-200 placeholder:text-grayscale-400 rounded-lg px-2 placeholder:text-sm"
+                    {...register("password", {
+                      required: "비밀번호를 입력해주세요",
+                      minLength: 1,
+                      maxLength: 16,
+                    })}
+                  />
+                  {errors.password?.message && (
+                    <div className="flex items-center mt-1 text-rose-500 gap-x-1">
+                      <Tb.TbAlertCircle />
+                      <span className="text-xs text-rose-500 ">{`${errors.password?.message}`}</span>
+                    </div>
+                  )}
+                </div>
                 <button
                   type="submit"
                   className="w-full h-10 rounded-full bg-primary text-white"

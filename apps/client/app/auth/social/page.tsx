@@ -1,6 +1,6 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { LogoLeft, LogoStrokeBlack } from "components/icons";
 import csr from "../../../lib/fetcher/csr";
 import { ErrorCodeEnum } from "@moonjin/api-types";
@@ -9,6 +9,7 @@ import { useSearchParams } from "next/navigation";
 import * as Tb from "react-icons/tb";
 import Header from "@components/layout/Header";
 import Graphic from "../../../public/static/images/graphic_1.png";
+import toast from "react-hot-toast";
 
 export default function Page() {
   const params = useSearchParams();
@@ -24,6 +25,8 @@ export default function Page() {
   const role = watch("role");
 
   async function onClickSignup(data: any) {
+    if (data.termsCheck !== true) return toast.error("약관에 동의해주세요");
+
     const auth = {
       ...data,
       role: parseInt(data.role),
@@ -191,6 +194,33 @@ export default function Page() {
                       )}
                     </div>
                   ) : null}
+                  <div className="flex items-center mt-4">
+                    <input
+                      id="termsCheck"
+                      type="checkbox"
+                      className="w-4 h-4 text-primary  border-gray-400 focus:ring-0  dark:bg-gray-700 rounded"
+                    />
+                    <label
+                      htmlFor="termsCheck"
+                      className="text-sm ml-2 text-grayscale-600"
+                    >
+                      문진&nbsp;
+                      <a
+                        href="https://moonjin.notion.site/10a8d6d4b48880b6ba63dc497909a933"
+                        className="underline"
+                      >
+                        이용약관
+                      </a>
+                      &nbsp;및&nbsp;
+                      <a
+                        href="https://moonjin.notion.site/10a8d6d4b4888066b283d6ab924da055"
+                        className="underline"
+                      >
+                        개인정보 처리방침
+                      </a>
+                      에 동의합니다.
+                    </label>
+                  </div>
                 </div>
                 <button
                   type="submit"
