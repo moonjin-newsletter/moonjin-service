@@ -26,7 +26,7 @@ export default async function Page() {
   const { data: popularSeriesList } =
     await nfetch<ResponseForm<SeriesWithWriterDto[]>>("series/popular");
   const { data: writerList } = await nfetch<ResponseForm<WriterProfileDto[]>>(
-    "writer/list/popular",
+    "writer/popular",
   );
 
   return (
