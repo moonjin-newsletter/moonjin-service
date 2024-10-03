@@ -725,6 +725,11 @@ export class NewsletterService {
                     }
                 }
             },
+            where : {
+                post : {
+                    deleted : false
+                }
+            },
             orderBy : {
                 likes : 'desc'
             },
@@ -765,33 +770,39 @@ export class NewsletterService {
      */
     async getRecentNewsletterList(category? : string, paginationOptions? : PaginationOptionsDto): Promise<NewsletterWithPostWithWriterAndSeries[]>{
         const categoryNumber = Category.getNumberByCategory(category);
-        return this.prismaService.newsletter.findMany({
-            where: {
-                post: {
-                    deleted: false,
-                    category : categoryNumber != -1 ? categoryNumber : undefined
-                }
-            },
-            include: {
-                post : {
-                    include : {
-                        writerInfo : {
-                            include : {
-                                user : true
-                            }
-                        },
-                        series : true
+        try{
+            return await this.prismaService.newsletter.findMany({
+                where: {
+                    post: {
+                        deleted: false,
+                        category : categoryNumber != -1 ? categoryNumber : undefined
                     }
-                }
-            },
-            orderBy : {
-                sentAt : 'desc'
-            },
-            skip: paginationOptions?.skip,
-            take: paginationOptions?.take,
-            cursor: paginationOptions?.cursor ? {
-                id : paginationOptions.cursor
-            } : undefined
-        })
+                },
+                include: {
+                    post : {
+                        include : {
+                            writerInfo : {
+                                include : {
+                                    user : true
+                                }
+                            },
+                            series : true
+                        }
+                    }
+                },
+                orderBy : {
+                    sentAt : 'desc'
+                },
+                skip: paginationOptions?.skip,
+                take: paginationOptions?.take,
+                cursor: paginationOptions?.cursor ? {
+                    id : paginationOptions.cursor
+                } : undefined
+            })
+        }catch (error){
+            console.log(error)
+            return [];
+        }
+
     }
 }
