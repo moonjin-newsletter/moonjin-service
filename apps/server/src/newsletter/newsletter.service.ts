@@ -805,4 +805,55 @@ export class NewsletterService {
         }
 
     }
+
+    /**
+     * @summary 인기있는 시리즈의 뉴스레터 목록 가져오기
+     * @param category
+     * @param paginationOptions
+     */
+    async getPopularSeriesNewsletterList(category? : string, paginationOptions? : PaginationOptionsDto): Promise<NewsletterWithPostWithWriterAndSeries[]>{
+        const categoryNumber = Category.getNumberByCategory(category);
+        try{
+            return await this.prismaService.newsletter.findMany({
+                where: {
+                    post: {
+                        seriesId : {
+                            gt : 0
+                        },
+                        series: {},
+                        deleted: false,
+                        category : categoryNumber != -1 ? categoryNumber : undefined
+                    }
+                },
+                include: {
+                    post : {
+                        include : {
+                            writerInfo : {
+                                include : {
+                                    user : true
+                                }
+                            },
+                            series : true
+                        }
+                    }
+                },
+                orderBy : {
+                    post: {
+                        series: {
+                            likes: 'desc'
+                        }
+                    }
+                },
+                skip: paginationOptions?.skip,
+                take: paginationOptions?.take,
+                cursor: paginationOptions?.cursor ? {
+                    id : paginationOptions.cursor
+                } : undefined
+            })
+        }catch (error){
+            console.log(error)
+            return [];
+        }
+
+    }
 }

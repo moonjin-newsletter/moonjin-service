@@ -50,9 +50,11 @@ export class NewsletterController {
         let newsletterList: NewsletterWithPostWithWriterAndSeries[];
         if(query.sort == "recent"){
             newsletterList = await this.newsletterService.getRecentNewsletterList(query.category,paginationOptions);
-        }else{
+        }else if(query.sort == "popular"){
             // TODO : 인기순 정렬 구현해야함
             newsletterList = await this.newsletterService.getRecentNewsletterList(query.category,paginationOptions);
+        }else{
+            newsletterList = await this.newsletterService.getPopularSeriesNewsletterList(query.category,paginationOptions);
         }
         const newsletterCardList = newsletterList.map(newsletter => {
             const { post, ...newsletterData} = newsletter;
@@ -71,8 +73,8 @@ export class NewsletterController {
             isLastPage : newsletterCardList.length < paginationOptions.take,
             totalCount : newsletterCardList.length
         });
-
     }
+
 
     /**
      * @summary 뉴스레터 큐레이션 리스트 가져오기

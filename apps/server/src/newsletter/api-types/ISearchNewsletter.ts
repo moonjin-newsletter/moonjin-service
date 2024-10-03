@@ -1,4 +1,4 @@
 export interface ISearchNewsletter {
     category?: string;
-    sort: 'recent' | 'popular';
+    sort: 'recent' | 'popular' | 'popular-series';
 }

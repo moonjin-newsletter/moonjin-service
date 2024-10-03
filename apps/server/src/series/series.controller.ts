@@ -138,7 +138,7 @@ export class SeriesController {
     }
 
     /**
-     * @summary 인기 있는 시리즈 가져오기
+     * @summary 최신 시리즈 가져오기
      * @returns SeriesWithWriterDto[]
      * @throws SERIES_NOT_FOUND
      */
@@ -219,4 +219,5 @@ export class SeriesController {
             message: "시리즈 삭제 성공"
         });
     }
+
 }
