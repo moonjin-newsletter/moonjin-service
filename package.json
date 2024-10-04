@@ -13,14 +13,8 @@
     "build:client": "turbo run build --filter=client"
   },
   "devDependencies": {
-    "@types/add": "^2",
-    "@typescript-eslint/eslint-plugin": "^6.10.0",
-    "@typescript-eslint/parser": "^6.10.0",
-    "dotenv-cli": "^7.3.0",
-    "eslint": "^8.53.0",
+    "dotenv-cli": "^7.4.2",
     "lru-cache": "^10.0.2",
-    "prettier": "^3.0.3",
-    "tsconfig": "*",
     "turbo": "latest"
   },
   "name": "moonjin-service",
@@ -28,10 +22,5 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ],
-  "dependencies": {
-    "add": "^2.0.6",
-    "client": "workspace:^",
-    "workspace": "^0.0.1-preview.1"
-  }
+  ]
 }
