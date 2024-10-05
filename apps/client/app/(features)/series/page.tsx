@@ -4,36 +4,27 @@ import Graphic from "@public/static/images/graphic-series.png";
 import Image from "next/image";
 import SeriesCarousel from "./_components/SeriesCarousel";
 import CategoryTab from "../../_components/CategoryTab";
-import { Category } from "@moonjin/api-types";
-import { postData } from "../../_data";
-
-const seriesList = [
-  {
-    thumbnail: "https://via.placeholder.com/200",
-    title: "의사들이 아이패드를 휴대하지 않는 이유",
-    description:
-      "비상계엄하의 군사재판은 군인·군무원의 범죄나 군사에 관한 간첩죄의 경우와 초병·초소·유독음식물공급·포로에 관한 죄중 법률이 정한 경우에 한하여 단심으로 할 수 있다.",
-  },
-  {
-    thumbnail: "https://via.placeholder.com/200",
-    title: "Series Title",
-    description: "Series Description",
-  },
-  {
-    thumbnail: "https://via.placeholder.com/200",
-    title: "Series Title",
-    description: "Series Description",
-  },
-  {
-    thumbnail: "https://via.placeholder.com/200",
-    title: "Series Title",
-    description: "Series Description",
-  },
-];
+import {
+  Category,
+  type ResponseForm,
+  type SeriesWithWriterDto,
+} from "@moonjin/api-types";
+import { nfetch } from "@lib/fetcher/noAuth";
 
 export const revalidate = 600;
 
-export default function Page() {
+export default async function Page() {
+  const { data: popularSeriesList } = await nfetch<
+    ResponseForm<SeriesWithWriterDto[]>
+  >("series/popular?take=10");
+
+  const popularNewsletterList: any[] = [];
+  // const { data: popularNewsletterList } = await nfetch<
+  //   ResponseForm<NewsletterCardDto[]>
+  // >("newsletter/list?take=3");
+  //
+  // console.log(popularNewsletterList[0]);
+
   return (
     <>
       <Header />
@@ -56,7 +47,7 @@ export default function Page() {
             height={1630}
             className="absolute top-0 left-1/2 -translate-x-1/2 min-w-[100vw] object-fill w-full h-[1380px] max-h-[1380px] z-[-1]"
           />
-          <SeriesCarousel seriesList={seriesList} />
+          <SeriesCarousel seriesList={popularSeriesList} />
           <div className="flex">
             <h2 className="font-serif text-2xl pl-5 pr-14 leading-9">
               이<br />
@@ -64,17 +55,13 @@ export default function Page() {
               기<br />글<br />
             </h2>
             <ul className="flex gap-x-8">
-              {[
-                { category: "", title: "", description: "", thumbnail: "" },
-                { category: "", title: "", description: "", thumbnail: "" },
-                { category: "", title: "", description: "", thumbnail: "" },
-              ].map((post, index) => (
+              {popularNewsletterList?.map((n, index) => (
                 <li
                   key={index}
                   className="p-8 size-fit  flex flex-col bg-grayscale-700/5 max-w-[290px] rounded-lg"
                 >
                   <Image
-                    src={postData[0].thumbnail[0]}
+                    src={n.post.cover}
                     alt={"titel"}
                     width={260}
                     height={260}
@@ -82,17 +69,16 @@ export default function Page() {
                   />
                   <div className="break-keep mt-6">
                     <div className="px-3 py-1 rounded-full bg-grayscale-600 text-sm  text-white w-fit">
-                      고민|사색
+                      {n.post.category}
                     </div>
                     <h1 className="text-lg font-serif font-semibold mt-3  text-grayscale-700">
-                      시리즈입니다.
+                      {n.post.title}
                     </h1>
                     <p className="text-grayscale-500 line-clamp-4 text-sm mt-4 font-serif">
-                      이것은 설명입니다. 이것은 설명입니다.이것은
-                      설명입니다.이것은 설명입니다.이것은 설명입니다.
+                      {n.post.subtitle}
                     </p>
                     <p className="text-grayscale-500 text-sm mt-8 font-serif">
-                      Written by.고기형
+                      Written by.{n.writer.nickname}
                     </p>
                   </div>
                 </li>
