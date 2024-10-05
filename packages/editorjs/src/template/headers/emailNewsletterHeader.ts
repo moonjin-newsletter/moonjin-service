@@ -45,7 +45,7 @@ export function EmailNewsletterHeader(
           <tbody>
             <tr>
               <td align="center" style="width: 100%; padding: 32px 0 8px 0">
-                <a href="https://dev.moonjin.site">
+                <a href="https://moonjin.site">
                   <img
                     src="${user_cover}"
                     alt="Google"

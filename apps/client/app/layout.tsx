@@ -18,7 +18,7 @@ const notoSerifKR = Noto_Serif_KR({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://dev.moonjin.site"),
+  metadataBase: new URL("https://moonjin.site"),
   title: "moonjin",
   description:
     "어제, 오늘 그리고 내일의 이야기가 담긴 문진에서 뉴스레터로 여러분의 이야기를 전달하세요.",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "moonjin",
     description: "어제, 오늘 그리고 내일의 이야기, 문진 뉴스레터",
-    url: "https://dev.moonjin.site",
+    url: "https://moonjin.site",
     siteName: "moonjin",
   },
   category: "newsletter",

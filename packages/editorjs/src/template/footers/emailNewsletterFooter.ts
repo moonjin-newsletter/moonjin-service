@@ -129,7 +129,7 @@ export function EmailNewsletterFooter(
                 "
               >
                 <a
-                  href="https://dev.moonjin.site/@${user_moonjinId}"
+                  href="https://moonjin.site/@${user_moonjinId}"
                   style="
                     color: #7a7a7a;
                     text-decoration: none;
@@ -179,7 +179,7 @@ export function EmailNewsletterFooter(
                 "
               >
                 문진에서 뉴스레터 시작하기
-                <a style="text-decoration: underline" href="https://dev.moonjin.site">바로가기</a>
+                <a style="text-decoration: underline" href="https://moonjin.site">바로가기</a>
               </td>
             </tr>
           </tbody>
