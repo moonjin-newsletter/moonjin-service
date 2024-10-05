@@ -19,18 +19,25 @@ const notoSerifKR = Noto_Serif_KR({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://moonjin.site"),
-  title: "moonjin",
-  description:
-    "어제, 오늘 그리고 내일의 이야기가 담긴 문진에서 뉴스레터로 여러분의 이야기를 전달하세요.",
+  title: "문진",
+  description: "어제, 오늘 그리고 내일의 이야기를 담는 공간, 문진 뉴스레터",
   openGraph: {
     type: "website",
-    title: "moonjin",
-    description: "어제, 오늘 그리고 내일의 이야기, 문진 뉴스레터",
+    title: "문진",
+    description: "어제, 오늘 그리고 내일의 이야기를 담는 공간, 문진 뉴스레터",
     url: "https://moonjin.site",
-    siteName: "moonjin",
+    siteName: "문진",
   },
   category: "newsletter",
-  keywords: ["뉴스레터", "문진", "글", "이야기"],
+  keywords: [
+    "뉴스레터",
+    "문진",
+    "글",
+    "이야기",
+    "moonjin",
+    "메일",
+    "인기 뉴스레터",
+  ],
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
