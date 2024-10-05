@@ -25,7 +25,7 @@ export default async function Page() {
   >("newsletter/curation/weekly");
   const { data: popularSeriesList } = await nfetch<
     ResponseForm<SeriesWithWriterDto[]>
-  >("series/popular?take=24");
+  >("series/list?sort=recent&take=24");
   const { data: writerList } =
     await nfetch<ResponseForm<WriterProfileDto[]>>("writer/popular");
 

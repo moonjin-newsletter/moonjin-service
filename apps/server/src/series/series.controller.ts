@@ -13,12 +13,13 @@ import {USER_NOT_WRITER} from "../response/error/auth";
 import {IUpdateSeries} from "./api-types/IUpdateSeries";
 import {CREATE_SERIES_ERROR, FORBIDDEN_FOR_SERIES, SERIES_NOT_EMPTY, SERIES_NOT_FOUND} from "../response/error/series";
 import SeriesDtoMapper from "./seriesDtoMapper";
-import UserDtoMapper from "../user/userDtoMapper";
 import {Category} from "@moonjin/api-types";
 import {WriterInfoService} from "../writerInfo/writerInfo.service";
 import {GetPagination} from "../common/pagination/decorator/GetPagination.decorator";
 import {PaginationOptionsDto} from "../common/pagination/dto";
 import {ISearchSeries} from "./api-types/ISearchSeries";
+import {SeriesWithWriter} from "./prisma/seriesWithWriter.prisma.type";
+import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
 
 @Controller('series')
 export class SeriesController {
@@ -59,7 +60,7 @@ export class SeriesController {
             const {writerInfo, ...seriesData} = series;
             return {
                 series: SeriesDtoMapper.SeriesToSeriesDto(seriesData),
-                writer: UserDtoMapper.UserToUserProfileDto(writerInfo.user)
+                writer: WriterInfoDtoMapper.WriterInfoWithUserToWriterUserProfileDto(writerInfo)
             }
         }))
     }
@@ -106,50 +107,30 @@ export class SeriesController {
             const {writerInfo, ...seriesData} = series;
             return {
                 series: SeriesDtoMapper.SeriesToSeriesDto(seriesData),
-                writer: UserDtoMapper.UserToUserProfileDto(writerInfo.user)
+                writer: WriterInfoDtoMapper.WriterInfoWithUserToWriterUserProfileDto(writerInfo)
             }
         }))
     }
 
 
     /**
-     * @summary 인기 있는 시리즈 가져오기
+     * @summary 인기/최신 시리즈 가져오기
      * @returns SeriesWithWriterDto[]
      * @throws SERIES_NOT_FOUND
      */
-    @TypedRoute.Get("popular")
+    @TypedRoute.Get("list")
     async getPopularSeries(@TypedQuery() query : ISearchSeries,@GetPagination() paginationOptions: PaginationOptionsDto): Promise<Try<SeriesWithWriterDto[]>> {
-        const seriesWithWriterList = await this.seriesService.getPopularSeries(query.category, paginationOptions);
+        let seriesWithWriterList : SeriesWithWriter[];
+        if(query.sort === 'popular'){
+            seriesWithWriterList = await this.seriesService.getPopularSeries(query.category, paginationOptions);
+        }else{
+            seriesWithWriterList = await this.seriesService.getRecentSeries(query.category, paginationOptions);
+        }
         const popularSeriesList = seriesWithWriterList.map(series => {
             const {writerInfo, ...seriesData} = series;
             return {
                 series: SeriesDtoMapper.SeriesToSeriesDto(seriesData),
-                writer: UserDtoMapper.UserToUserProfileDto(writerInfo.user)
-            }
-        });
-        return createResponseForm(popularSeriesList,{
-            next : {
-                pageNo : paginationOptions.pageNo + 1,
-                cursor : popularSeriesList.length > 0 ? popularSeriesList[popularSeriesList.length - 1].series.id : 0
-            },
-            isLastPage : popularSeriesList.length < paginationOptions.take,
-            totalCount : popularSeriesList.length
-        });
-    }
-
-    /**
-     * @summary 최신 시리즈 가져오기
-     * @returns SeriesWithWriterDto[]
-     * @throws SERIES_NOT_FOUND
-     */
-    @TypedRoute.Get("recent")
-    async getRecentSeries(@TypedQuery() query : ISearchSeries, @GetPagination() paginationOptions: PaginationOptionsDto): Promise<Try<SeriesWithWriterDto[]>> {
-        const seriesWithWriterList = await this.seriesService.getRecentSeries(query.category, paginationOptions);
-        const popularSeriesList = seriesWithWriterList.map(series => {
-            const {writerInfo, ...seriesData} = series;
-            return {
-                series: SeriesDtoMapper.SeriesToSeriesDto(seriesData),
-                writer: UserDtoMapper.UserToUserProfileDto(writerInfo.user)
+                writer: WriterInfoDtoMapper.WriterInfoWithUserToWriterUserProfileDto(writerInfo)
             }
         });
         return createResponseForm(popularSeriesList,{

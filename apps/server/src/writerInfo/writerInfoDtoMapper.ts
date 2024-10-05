@@ -1,5 +1,5 @@
 import {WriterInfoWithUser} from "../user/prisma/writerInfoWithUser.prisma.type";
-import { WriterInfoDto, WriterProfileDto, WriterProfileInCardDto} from "./dto";
+import {WriterInfoDto, WriterProfileDto, WriterProfileInCardDto, WriterUserProfileDto} from "./dto";
 import UserDtoMapper from "../user/userDtoMapper";
 import {WriterInfo} from "@prisma/client";
 
@@ -16,6 +16,14 @@ export class WriterInfoDtoMapper {
         return {
             user : UserDtoMapper.UserToUserProfileDto(writerInfoWithUser.user),
             writerInfo : this.WriterInfoToWriterInfoDto(writerInfo)
+        }
+    }
+
+    public static WriterInfoWithUserToWriterUserProfileDto(writerInfoWithUser: WriterInfoWithUser): WriterUserProfileDto{
+        const { user, ...writerInfo} = writerInfoWithUser;
+        return {
+            ...UserDtoMapper.UserToUserProfileDto(writerInfoWithUser.user),
+            moonjinId : writerInfo.moonjinId
         }
     }
 
