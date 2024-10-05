@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import * as process from 'process';
 import { swaggerBoot } from './swagger/swaggerBoot';
 import cookieParser from "cookie-parser";
+import console from "console";
 
 async function bootstrap() {
 
@@ -15,6 +16,7 @@ async function bootstrap() {
     credentials: true,
     preflightContinue: false,
   });
+  console.log('Server is running... enableCors On : ',process.env.CLIENT_URL);
 
   await app.listen(Number(process.env.SERVER_PORT));
 }
