@@ -23,11 +23,11 @@ export default async function Page() {
   const { data: topLetterList } = await nfetch<
     ResponseForm<NewsletterCardDto[]>
   >("newsletter/curation/weekly");
-  const { data: popularSeriesList } =
-    await nfetch<ResponseForm<SeriesWithWriterDto[]>>("series/popular");
-  const { data: writerList } = await nfetch<ResponseForm<WriterProfileDto[]>>(
-    "writer/popular",
-  );
+  const { data: popularSeriesList } = await nfetch<
+    ResponseForm<SeriesWithWriterDto[]>
+  >("series/popular?take=24");
+  const { data: writerList } =
+    await nfetch<ResponseForm<WriterProfileDto[]>>("writer/popular");
 
   return (
     <main className=" w-full min-h-screen  ">
