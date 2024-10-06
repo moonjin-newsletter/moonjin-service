@@ -89,7 +89,7 @@ export default function Page() {
               />
               <form
                 onSubmit={handleSubmit(onClickSignup)}
-                className="w-full h-fit flex flex-col items-start  min-w-[320px]"
+                className="w-[360px] h-fit flex flex-col items-start  max-w-[360px]"
               >
                 <div className="w-full flex mt-4 flex-col">
                   <span className="text-sm">회원구분</span>
@@ -198,6 +198,9 @@ export default function Page() {
                     <input
                       id="termsCheck"
                       type="checkbox"
+                      {...register("termsCheck", {
+                        required: "약관에 동의해주세요",
+                      })}
                       className="w-4 h-4 text-primary  border-gray-400 focus:ring-0  dark:bg-gray-700 rounded"
                     />
                     <label

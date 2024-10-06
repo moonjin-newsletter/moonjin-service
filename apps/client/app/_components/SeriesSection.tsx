@@ -37,12 +37,12 @@ export default function SeriesSection({
             ))}
           </Tab.Panels>
           <Tab.List className="w-full mt-6 flex justify-center">
-            {range(1, seriesList.length).map((value, index) => (
+            {range(0, chunkedSeriesList.length).map((value, index) => (
               <Tab
                 className="mx-2.5 py-1  text-sm font-semibold aria-selected:border-b-2 border-primary aria-selected:text-primary text-gray-600 outline-none"
                 key={index}
               >
-                0{value}
+                0{value + 1}
               </Tab>
             ))}
           </Tab.List>
@@ -56,7 +56,7 @@ function SeriesLayout({ sortedList }: { sortedList: SeriesWithWriterDto[] }) {
   return (
     <div className="mt-4 w-fit flex gap-x-1 rounded-lg overflow-hidden">
       <Link
-        href={`/@${sortedList[0].writer.id}/series/${sortedList[0].series.id}`}
+        href={`/@${sortedList[0].writer.moonjinId}/series/${sortedList[0].series.id}`}
         className="w-[248px] h-[450px] bg-gray-600 relative overflow-hidden group"
       >
         <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">

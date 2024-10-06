@@ -46,7 +46,7 @@ export default function Page() {
         </section>
         <section className="w-full py-20 bg-white flex flex-col items-center relative overflow-hidden">
           <ThirdTtile />
-          <p className="font-serif text-xl text-grayscale-600 text-center mt-6 leading-relaxed">
+          <p className="font-serif text-lg text-grayscale-600 text-center mt-6 leading-relaxed">
             ‘문진’은 책이나 종이가 바람에 날리지 않도록 눌러두는 물건입니다.
             <br />
             문진은 바쁘게 흘러가는 삶을 잠시 눌러두고 멈추어서 고민하고 사색할

@@ -21,6 +21,7 @@ export default function Page() {
   const role = watch("role");
 
   async function onClickSignup(data: any) {
+    console.log(data);
     if (data.password !== data.passwordCheck)
       return toast.error("비밀번호를 확인해주세요");
 
@@ -240,6 +241,9 @@ export default function Page() {
                     <input
                       id="termsCheck"
                       type="checkbox"
+                      {...register("termsCheck", {
+                        required: "약관에 동의해주세요",
+                      })}
                       className="w-4 h-4 text-primary  border-gray-400 focus:ring-0  dark:bg-gray-700 rounded"
                     />
                     <label

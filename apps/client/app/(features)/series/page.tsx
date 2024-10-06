@@ -16,7 +16,7 @@ export const revalidate = 600;
 export default async function Page() {
   const { data: popularSeriesList } = await nfetch<
     ResponseForm<SeriesWithWriterDto[]>
-  >("series/popular?take=10");
+  >("series/list?take=10");
 
   const popularNewsletterList: any[] = [];
   // const { data: popularNewsletterList } = await nfetch<

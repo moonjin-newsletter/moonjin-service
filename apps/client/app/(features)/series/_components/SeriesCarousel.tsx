@@ -28,7 +28,7 @@ export default function SeriesCarousel({ seriesList }: SeriesCarouselProps) {
           <>
             {seriesList.map((series, index) => (
               <Link
-                href={`/@${series.writer.id}/series/${series.series.id}`}
+                href={`/@${series.writer.moonjinId}/series/${series.series.id}`}
                 key={index}
                 className="flex items-center gap-x-60 justify-between w-[1006px] max-w-[1006px] bg-white rounded-xl px-14 py-10 "
               >
