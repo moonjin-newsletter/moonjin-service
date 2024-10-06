@@ -56,7 +56,7 @@ function SeriesLayout({ sortedList }: { sortedList: SeriesWithWriterDto[] }) {
   return (
     <div className="mt-4 w-fit flex gap-x-1 rounded-lg overflow-hidden">
       <Link
-        href={`/@${sortedList[0].writer.id}/series/${sortedList[0].series.id}`}
+        href={`/@${sortedList[0].writer.moonjinId}/series/${sortedList[0].series.id}`}
         className="w-[248px] h-[450px] bg-gray-600 relative overflow-hidden group"
       >
         <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
