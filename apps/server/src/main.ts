@@ -10,8 +10,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   swaggerBoot(app);
   app.use(cookieParser());
+
   app.enableCors({
-    origin: process.env.CLIENT_URL,
+    origin: [process.env.CLIENT_URL + '', process.env.CLIENT_DEV_URL + ''],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     preflightContinue: false,
