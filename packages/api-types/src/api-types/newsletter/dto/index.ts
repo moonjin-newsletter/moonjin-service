@@ -6,3 +6,4 @@ export * from './newsletterSendResult.dto';
 export * from './newsletterUserInteraction.dto';
 export * from './newsletterAllData.dto';
 export * from './newsletterLikeResponse.dto';
+export * from './searchOption.dto';

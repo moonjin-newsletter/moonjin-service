@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 import {ExceptionList} from "../response/error/errorInstances";
-import {NewsletterSummaryDto} from "./dto";
+import {NewsletterSummaryDto, SearchNewsletterOptionDto} from "./dto";
 import NewsletterDtoMapper from "./newsletterDtoMapper";
 import {PostWithContentAndSeriesAndWriterDto} from "../post/dto";
 import {PostService} from "../post/post.service";
@@ -692,7 +692,17 @@ export class NewsletterService {
                 },
                 take: NEWSLETTER_CURATION_COUNT
             })
-            const recentNewsletterList = await this.getPopularNewsletterList(NEWSLETTER_CURATION_COUNT - newsletterCurationList.length);
+            const searchNewsletterOption = {
+                category : "",
+                seriesOnly : false,
+                sort : "popular"
+            }
+            const paginationOptions = {
+                skip : 0,
+                pageNo : 1,
+                take : NEWSLETTER_CURATION_COUNT - newsletterCurationList.length
+            }
+            const recentNewsletterList = await this.getNewsletterList(searchNewsletterOption,paginationOptions);
             const resultList : NewsletterWithPostWithWriterAndSeries[] = [];
             newsletterCurationList.forEach(newsletterCuration => {
                 if(newsletterCuration.newsletter)
@@ -703,38 +713,6 @@ export class NewsletterService {
             console.log(error)
             throw ExceptionList.NEWSLETTER_NOT_FOUND;
         }
-    }
-
-    /**
-     * @summary 인기 뉴스레터 목록 가져오기
-     * @param take
-     * @return NewsletterWithPostWithWriterAndSeries[]
-     */
-    async getPopularNewsletterList(take: number):Promise<NewsletterWithPostWithWriterAndSeries[]>{
-        if(take <= 0) return [];
-        return this.prismaService.newsletter.findMany({
-            include: {
-                post : {
-                    include : {
-                        writerInfo : {
-                            include : {
-                                user : true
-                            }
-                        },
-                        series : true
-                    }
-                }
-            },
-            where : {
-                post : {
-                    deleted : false
-                }
-            },
-            orderBy : {
-                likes : 'desc'
-            },
-            take
-        })
     }
 
     /**
@@ -764,18 +742,24 @@ export class NewsletterService {
     }
 
     /**
-     * @summary 최근 뉴스레터 목록 가져오기
-     * @param category
+     * @summary 뉴스레터 목록 가져오기
+     * @param searchNewsletterOption
      * @param paginationOptions
      */
-    async getRecentNewsletterList(category? : string, paginationOptions? : PaginationOptionsDto): Promise<NewsletterWithPostWithWriterAndSeries[]>{
+    async getNewsletterList( searchNewsletterOption : SearchNewsletterOptionDto, paginationOptions? : PaginationOptionsDto): Promise<NewsletterWithPostWithWriterAndSeries[]>{
+        const {category, seriesOnly, sort} = searchNewsletterOption;
         const categoryNumber = Category.getNumberByCategory(category);
         try{
             return await this.prismaService.newsletter.findMany({
                 where: {
                     post: {
                         deleted: false,
-                        category : categoryNumber != -1 ? categoryNumber : undefined
+                        category : categoryNumber != -1 ? categoryNumber : undefined,
+                        series: {
+                            id : seriesOnly ? {
+                                gt : 0
+                            } : undefined
+                        }
                     }
                 },
                 include: {
@@ -790,8 +774,10 @@ export class NewsletterService {
                         }
                     }
                 },
-                orderBy : {
+                orderBy : (sort == "recent") ? {
                     sentAt : 'desc'
+                } : {
+                    likes : 'desc',
                 },
                 skip: paginationOptions?.skip,
                 take: paginationOptions?.take,
@@ -803,7 +789,6 @@ export class NewsletterService {
             console.log(error)
             return [];
         }
-
     }
 
     /**

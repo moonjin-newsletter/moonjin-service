@@ -31,7 +31,6 @@ import {IUpdateNewsletter} from "./api-types/IUpdateNewsletter";
 import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
 import {ICreateNewsLetterCuration} from "./api-types/ICreateNewsLetterCuration";
 import {ISearchNewsletter} from "./api-types/ISearchNewsletter";
-import {NewsletterWithPostWithWriterAndSeries} from "./prisma/NewsletterWithPostWithWriterAndSeries.prisma.type";
 
 @Controller('newsletter')
 export class NewsletterController {
@@ -47,15 +46,14 @@ export class NewsletterController {
      */
     @TypedRoute.Get("list")
     async getRecentNewsletterList(@TypedQuery() query : ISearchNewsletter,@GetPagination() paginationOptions : PaginationOptionsDto):Promise<Try<NewsletterCardDto[]>>{
-        let newsletterList: NewsletterWithPostWithWriterAndSeries[];
-        if(query.sort == "recent"){
-            newsletterList = await this.newsletterService.getRecentNewsletterList(query.category,paginationOptions);
-        }else if(query.sort == "popular"){
-            // TODO : 인기순 정렬 구현해야함
-            newsletterList = await this.newsletterService.getRecentNewsletterList(query.category,paginationOptions);
-        }else{
-            newsletterList = await this.newsletterService.getPopularSeriesNewsletterList(query.category,paginationOptions);
+        if(!query.seriesOnly) query.seriesOnly = false;
+        const searchOption = {
+            category : query.category,
+            seriesOnly : query.seriesOnly,
+            sort : query.sort
         }
+        let newsletterList = await this.newsletterService.getNewsletterList(searchOption,paginationOptions);
+
         const newsletterCardList = newsletterList.map(newsletter => {
             const { post, ...newsletterData} = newsletter;
             const {series,writerInfo, ...postData} = post;
