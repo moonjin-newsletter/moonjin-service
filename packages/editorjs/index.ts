@@ -7,3 +7,5 @@ export * from "./src/converter/assertEditorJsonDto"
 
 // template
 export * from "./src/template/emailTemplate"
+export * from "./src/template/headers"
+export * from "./src/template/footers"

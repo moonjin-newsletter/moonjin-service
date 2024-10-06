@@ -4,6 +4,7 @@ import { newsLetterDto, sendNewsLetterWithHtmlDto } from './dto';
 import * as process from "process";
 import FormData from "form-data";
 import {ExceptionList} from "../response/error/errorInstances";
+import {EmailCertifyHeader, EmailFooter} from "@moonjin/editorjs";
 
 @Injectable()
 export class MailService {
@@ -26,14 +27,13 @@ export class MailService {
     code : string
   ): Promise<void> {
     const accessLink = process.env.SERVER_URL + "/auth/signup/email/verification?code=" + code;
+    const html = EmailCertifyHeader(accessLink) + EmailFooter();
     try {
       await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
         from: `문진 <admin@${this.MAILGUN_DOMAIN}>`,
         to: [email],
         subject: '[문진] 회원가입 인증 메일입니다.',
-        html: `
-        <h2>메일 인증을 위해 해당 링크를 클릭해주세요 <a href="${accessLink}">메일 인증하기</a></h2>
-        `,
+        html,
         'o:tracking': 'yes',
       });
     } catch (error) {
