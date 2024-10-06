@@ -89,7 +89,7 @@ export default function Page() {
               />
               <form
                 onSubmit={handleSubmit(onClickSignup)}
-                className="w-full h-fit flex flex-col items-start  min-w-[320px]"
+                className="w-[360px] h-fit flex flex-col items-start  max-w-[360px]"
               >
                 <div className="w-full flex mt-4 flex-col">
                   <span className="text-sm">회원구분</span>
