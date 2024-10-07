@@ -37,7 +37,12 @@ export default function SeriesSection({
             ))}
           </Tab.Panels>
           <Tab.List className="w-full mt-6 flex justify-center">
-            {range(0, chunkedSeriesList.length).map((value, index) => (
+            {range(
+              0,
+              seriesList.length % chunkSize > 0
+                ? chunkedSeriesList.length - 1
+                : chunkedSeriesList.length,
+            ).map((value, index) => (
               <Tab
                 className="mx-2.5 py-1  text-sm font-semibold aria-selected:border-b-2 border-primary aria-selected:text-primary text-gray-600 outline-none"
                 key={index}
