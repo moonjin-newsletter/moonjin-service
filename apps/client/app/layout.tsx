@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Libre_Baskerville, Noto_Serif_KR } from "next/font/google";
 import ClientProvider from "./ClientProvider";
+import { Analytics } from "@vercel/analytics/react";
 
 const libre = Libre_Baskerville({
   subsets: ["latin"],
@@ -81,6 +82,7 @@ export default function RootLayout({
           {children}
           {/*<Footer />*/}
         </ClientProvider>
+        <Analytics />
       </body>
     </html>
   );
