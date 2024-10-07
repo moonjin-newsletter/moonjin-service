@@ -12,7 +12,9 @@ export function EditorBlockToHtmlTag(block: EditorBlockDto) {
     case "embed":
       return `<div><iframe width="560" height="315" src="${block.data.embed}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
     case "paragraph":
-      return `<p style="color: #1a1a1a; font-size:16px;line-height:26px;word-break:break-word;overflow-wrap: break-word; margin:16px 0px 16px 0px; text-align: left;">${block.data.text}</p>`;
+      return `<p style="color: #1a1a1a; font-size:16px;line-height:26px;word-break:break-word;overflow-wrap: break-word; margin:16px 0px 16px 0px; text-align: left;">${
+        block.data.text || "&nbsp;"
+      }</p>`;
     case "image":
       return `
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">

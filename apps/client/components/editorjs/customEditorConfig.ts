@@ -3,7 +3,8 @@ import NestedList from "@editorjs/nested-list";
 import Delimiter from "@editorjs/delimiter";
 import ImageTool from "@editorjs/image";
 import Underline from "@editorjs/underline";
-import { fileUpload } from "../../lib/file/fileUpload";
+import Paragraph from "@editorjs/paragraph";
+import { fileUpload } from "@lib/file/fileUpload";
 import { FileTypeEnum } from "@moonjin/api-types";
 import { ToolConstructable, ToolSettings } from "@editorjs/editorjs";
 
@@ -12,6 +13,11 @@ export const EDITOR_JS_TOOLS:
   | { [p: string]: ToolConstructable | ToolSettings }
   | undefined
   | any = {
+  paragraph: {
+    class: Paragraph,
+    inlineToolbar: true,
+    config: { preserveBlank: true },
+  },
   underline: Underline,
   // quote: Quote,
   delimiter: Delimiter,

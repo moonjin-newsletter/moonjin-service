@@ -58,7 +58,7 @@ function renderEditorData(blocks: EditorBlockDto[]) {
         return (
           <p
             key={index}
-            dangerouslySetInnerHTML={{ __html: block.data.text }}
+            dangerouslySetInnerHTML={{ __html: block.data.text || "&nbsp;" }}
           />
         );
       case "header":

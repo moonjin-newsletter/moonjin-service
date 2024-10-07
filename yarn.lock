@@ -2533,6 +2533,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@editorjs/paragraph@npm:^2.11.6":
+  version: 2.11.6
+  resolution: "@editorjs/paragraph@npm:2.11.6"
+  dependencies:
+    "@codexteam/icons": "npm:^0.0.4"
+  checksum: cd67f7b2264b91fb4d6d146308b6837a4d8442c7e6e09853e13f643fca06d123b4f71208cd39b937611984b6932945d16b0fd0ddb1abca33d5bea5d915d58184
+  languageName: node
+  linkType: hard
+
 "@editorjs/quote@npm:^2.6.0":
   version: 2.6.0
   resolution: "@editorjs/quote@npm:2.6.0"
@@ -6873,6 +6882,7 @@ __metadata:
     "@editorjs/image": "npm:^2.9.0"
     "@editorjs/link": "npm:^2.6.2"
     "@editorjs/nested-list": "npm:^1.4.2"
+    "@editorjs/paragraph": "npm:^2.11.6"
     "@editorjs/quote": "npm:^2.6.0"
     "@editorjs/simple-image": "npm:^1.6.0"
     "@editorjs/underline": "npm:^1.1.0"
