@@ -84,7 +84,7 @@ function SeriesLayout({ sortedList }: { sortedList: SeriesWithWriterDto[] }) {
       </Link>
       <div className="w-[248px] h-[450px] overflow-hidden flex flex-col gap-y-1">
         <Link
-          href={`/@${sortedList[1].writer.id}/series/${sortedList[1].series.id}`}
+          href={`/@${sortedList[1].writer.moonjinId}/series/${sortedList[1].series.id}`}
           className="w-full h-1/2 bg-gray-600 relative overflow-hidden group "
         >
           <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
@@ -110,7 +110,7 @@ function SeriesLayout({ sortedList }: { sortedList: SeriesWithWriterDto[] }) {
           />
         </Link>
         <Link
-          href={`/@${sortedList[2].writer.id}/series/${sortedList[2].series.id}`}
+          href={`/@${sortedList[2].writer.moonjinId}/series/${sortedList[2].series.id}`}
           className="w-full h-1/2 bg-gray-600 overflow-hidden relative group"
         >
           <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
@@ -137,7 +137,7 @@ function SeriesLayout({ sortedList }: { sortedList: SeriesWithWriterDto[] }) {
         </Link>
       </div>
       <Link
-        href={`/@${sortedList[3].writer.id}/series/${sortedList[3].series.id}`}
+        href={`/@${sortedList[3].writer.moonjinId}/series/${sortedList[3].series.id}`}
         className="w-[248px] h-[450px] bg-gray-600 overflow-hidden group relative"
       >
         <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
@@ -165,7 +165,7 @@ function SeriesLayout({ sortedList }: { sortedList: SeriesWithWriterDto[] }) {
 
       <div className="w-[248px] h-[450px] overflow-hidden flex flex-col gap-y-1">
         <Link
-          href={`/@${sortedList[4].writer.id}/series/${sortedList[4].series.id}`}
+          href={`/@${sortedList[4].writer.moonjinId}/series/${sortedList[4].series.id}`}
           className="w-full h-1/2 bg-gray-600 relative overflow-hidden group "
         >
           <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
@@ -191,7 +191,7 @@ function SeriesLayout({ sortedList }: { sortedList: SeriesWithWriterDto[] }) {
           />
         </Link>
         <Link
-          href={`/@${sortedList[5].writer.id}/series/${sortedList[5].series.id}`}
+          href={`/@${sortedList[5].writer.moonjinId}/series/${sortedList[5].series.id}`}
           className="w-full h-1/2 bg-gray-600 overflow-hidden relative group"
         >
           <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
