@@ -3,13 +3,7 @@
 import { useForm } from "react-hook-form";
 import csr from "../../../lib/fetcher/csr";
 import * as process from "process";
-import {
-  Google,
-  Kakao,
-  LogoLeft,
-  LogoStrokeBlack,
-  Naver,
-} from "@components/icons";
+import { Google, Kakao, LogoLeft, LogoStrokeBlack } from "@components/icons";
 import Link from "next/link";
 import * as Tb from "react-icons/tb";
 import Image from "next/image";
@@ -132,7 +126,7 @@ export default function Page() {
                 </Link>
                 {/*<p className="mt-2 font-medium">OR</p>*/}
               </div>
-              <div className="flex w-full h-fit mt-4 justify-center gap-x-8 items-center">
+              <div className="flex w-full h-fit mt-4 justify-center gap-x-7 items-center">
                 <Link
                   href={authUrl("kakao")}
                   className="h-fit w-fit flex items-center justify-center rounded-full border border-yellow-200 "
@@ -145,12 +139,12 @@ export default function Page() {
                 >
                   <Google />
                 </Link>
-                <Link
-                  href={authUrl("naver")}
-                  className="h-fit w-fit flex items-center justify-center rounded-full border border-green-500 "
-                >
-                  <Naver />
-                </Link>
+                {/*<Link*/}
+                {/*  href={authUrl("naver")}*/}
+                {/*  className="h-fit w-fit flex items-center justify-center rounded-full border border-green-500 "*/}
+                {/*>*/}
+                {/*  <Naver />*/}
+                {/*</Link>*/}
               </div>
             </section>
           </div>
