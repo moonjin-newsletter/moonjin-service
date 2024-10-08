@@ -6,7 +6,6 @@ import { MdOutlineAlternateEmail } from "react-icons/md";
 import { PiUserCircle } from "react-icons/pi";
 import { FiShare2 } from "react-icons/fi";
 import { IoChatbubblesOutline, IoClose } from "react-icons/io5";
-import { IoIosClose } from "react-icons/io";
 
 import Link from "next/link";
 import { commaizeNumber } from "@toss/utils";
@@ -80,7 +79,8 @@ export default function WriterInfoModal({
         </div>
         <div className="w-full flex  mt-10 gap-x-3 text-grayscale-600 ">
           <Link
-            href=""
+            href="https://tally.so/r/wAqzzk"
+            target={"_blank"}
             className="border rounded-full py-2 px-4 font-medium text-sm border-grayscale-600 flex items-center gap-x-1.5"
           >
             <IoChatbubblesOutline className="text-lg" />

@@ -1,6 +1,5 @@
 "use client";
 
-import { ReactElement } from "react";
 import { toast } from "react-hot-toast";
 
 function setUrl(url: string | null, userId: number | null) {
@@ -31,20 +30,20 @@ export default function WebShareButton({
   const webShare = async () => {
     const copyUrl = setUrl(url, null);
 
-    if (navigator.share) {
-      navigator
-        .share({
-          title: title + "\n" ?? "[moonjin]\n",
-          text: subtitle + "\n" ?? "삶과 경험이 모이는 공간\n",
-          url: copyUrl,
-        })
-        .then(() => console.log("Successful share"))
-        .catch((error) => console.error("Error sharing", error));
-    } else {
-      navigator.clipboard
-        .writeText(copyUrl)
-        .then(() => toast.success("URL 복사 성공"));
-    }
+    // if (navigator.share) {
+    //   navigator
+    //     .share({
+    //       title: title + "\n" ?? "[moonjin]\n",
+    //       text: subtitle + "\n" ?? "삶과 경험이 모이는 공간\n",
+    //       url: copyUrl,
+    //     })
+    //     .then(() => console.log("Successful share"))
+    //     .catch((error) => console.error("Error sharing", error));
+    // } else {
+    navigator.clipboard
+      .writeText(copyUrl)
+      .then(() => toast.success("URL 복사 성공"));
+    // }
   };
 
   return (

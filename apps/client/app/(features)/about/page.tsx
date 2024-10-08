@@ -56,9 +56,11 @@ export default function Page() {
             있습니다.
             <br />
           </p>
-          {/*<div className="w-[1006px] absolute left-1/2 -translate-x-1/2 bottom-0">*/}
-          {/*  <ThirdLine1 />*/}
-          {/*</div>*/}
+          <div className="w-full">
+            <div></div>
+            <div className="max-w-[1006px]"></div>
+            <div></div>
+          </div>
         </section>
         <section className="bg-grayscale-700 py-20"></section>
         <section className="w-full flex flex-col items-center text-grayscale-700 border-grayscale-400 leading-relaxed break-keep">
