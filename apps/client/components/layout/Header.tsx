@@ -82,7 +82,9 @@ export default function Header({
         </div>
 
         <div className="flex h-full items-center ml-auto">
-          {userInfo ? (
+          {isLoading ? (
+            <LoadingUI />
+          ) : userInfo ? (
             <div className="w-fit h-full   items-center flex  relative text-grayscale-600">
               <Link
                 className="border gap-x-2 flex items-center border-grayscale-600 text-sm font-medium py-2 px-3 mx-3 rounded-full"
@@ -123,8 +125,6 @@ export default function Header({
                 <I.SignOut />
               </button>
             </div>
-          ) : isLoading ? (
-            <LoadingUI />
           ) : (
             <Link
               className="py-2.5 h-fit px-5 text-white text-sm bg-[#7b0000] rounded-lg"
