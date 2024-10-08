@@ -66,7 +66,6 @@ export default async function Page() {
             <CategoryTab
               requestUrl={"newsletter/list"}
               tabList={Category.list}
-              cardType={"newsletter"}
               infiniteScroll={false}
             />
           </div>
