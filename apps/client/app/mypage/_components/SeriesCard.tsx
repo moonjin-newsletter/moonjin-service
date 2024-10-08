@@ -12,10 +12,12 @@ export function SeriesCardForReader({
   height: number;
 }) {
   return (
-    <Link href={""} className="flex group flex-col w-fit h-fit pb-6 ">
-      <div
-        className={`w-auto min-w-[190px]  min-h-[${height}px]  relative overflow-hidden rounded-lg`}
-      >
+    <Link
+      style={{ width: width }}
+      href={""}
+      className={` flex group flex-col w-fit h-fit pb-6 `}
+    >
+      <div className={`relative w-fit h-fit overflow-hidden rounded-lg`}>
         <Image
           width={width ?? 190}
           height={height ?? 230}
@@ -34,7 +36,7 @@ export function SeriesCardForReader({
         </div>
       </div>
 
-      <div className="flex flex-col mt-2">
+      <div className="w-full flex flex-col mt-2">
         <div className="text-lg line-clamp-1 font-bold text-grayscale-700">
           {seriesInfo.series.title}
         </div>

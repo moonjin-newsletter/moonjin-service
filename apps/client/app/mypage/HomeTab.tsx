@@ -20,8 +20,7 @@ export default function HomeTab({
   newsletterList: NewsletterCardDto[];
   myNewsletterList?: NewsletterCardDto[];
 }) {
-  const tabList =
-    userType === "작가" ? ["발행글", "구독한 뉴스레터"] : ["구독한 뉴스레터"];
+  const tabList = userType === "작가" ? ["발행글", "구독함"] : ["구독함"];
   return (
     <>
       <Tab.Group defaultIndex={0}>
