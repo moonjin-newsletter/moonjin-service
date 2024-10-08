@@ -1,15 +1,19 @@
-import {  Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import Mailgun from 'mailgun.js';
 import { newsLetterDto, sendNewsLetterWithHtmlDto } from './dto';
-import * as process from "process";
-import FormData from "form-data";
-import {ExceptionList} from "../response/error/errorInstances";
-import {EmailCertifyHeader, EmailFooter} from "@moonjin/editorjs";
+import * as process from 'process';
+import FormData from 'form-data';
+import { ExceptionList } from '../response/error/errorInstances';
+import { EmailCertifyHeader, EmailFooter } from '@moonjin/editorjs';
 
 @Injectable()
 export class MailService {
-  private MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN ? process.env.MAILGUN_DOMAIN : "mailgun-domain";
-  private MAILGUN_API_KEY = process.env.MAILGUN_API_KEY_FOR_SENDING ? process.env.MAILGUN_API_KEY_FOR_SENDING : "mailgun-api-key";
+  private MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN
+    ? process.env.MAILGUN_DOMAIN
+    : 'mailgun-domain';
+  private MAILGUN_API_KEY = process.env.MAILGUN_API_KEY_FOR_SENDING
+    ? process.env.MAILGUN_API_KEY_FOR_SENDING
+    : 'mailgun-api-key';
   private mailgunClient = new Mailgun(FormData).client({
     username: 'api',
     key: this.MAILGUN_API_KEY,
@@ -22,12 +26,10 @@ export class MailService {
    * @param code
    * @throws MAIL_NOT_EXISTS
    */
-  async sendSignupVerificationMail(
-    email: string,
-    code : string
-  ): Promise<void> {
-    const accessLink = process.env.SERVER_URL + "/auth/signup/email/verification?code=" + code;
-    const html = EmailCertifyHeader(accessLink) + EmailFooter();
+  async sendSignupVerificationMail(email: string, code: string): Promise<void> {
+    const accessLink =
+      process.env.SERVER_URL + '/auth/signup/email/verification?code=' + code;
+    const html = EmailCertifyHeader(accessLink, EmailFooter());
     try {
       await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
         from: `문진 <admin@${this.MAILGUN_DOMAIN}>`,
@@ -50,10 +52,11 @@ export class MailService {
    * @throws EMAIL_NOT_EXIST
    */
   async sendMailForPasswordChangePage(
-      email: string,
-      code : string
+    email: string,
+    code: string
   ): Promise<void> {
-    const accessLink = process.env.SERVER_URL + "/auth/password/email/verification?code=" + code;
+    const accessLink =
+      process.env.SERVER_URL + '/auth/password/email/verification?code=' + code;
     try {
       await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
         from: `문진 <admin@${this.MAILGUN_DOMAIN}>`,
@@ -77,11 +80,9 @@ export class MailService {
    * @param code
    * @throws EMAIL_NOT_EXIST
    */
-  async sendMailForPasswordChange(
-      email: string,
-      code : string
-  ): Promise<void> {
-    const accessLink = process.env.SERVER_URL + "/user/password/change?code=" + code;
+  async sendMailForPasswordChange(email: string, code: string): Promise<void> {
+    const accessLink =
+      process.env.SERVER_URL + '/user/password/change?code=' + code;
     try {
       await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
         from: `문진 <admin@${this.MAILGUN_DOMAIN}>`,
@@ -115,7 +116,7 @@ export class MailService {
       return true;
     } catch (error) {
       console.log(error);
-      throw ExceptionList.EMAIL_NOT_EXIST
+      throw ExceptionList.EMAIL_NOT_EXIST;
     }
   }
 
@@ -124,9 +125,11 @@ export class MailService {
    * @param mailInfo
    * @throws SEND_NEWSLETTER_ERROR
    */
-  async sendNewsLetterWithHtml(mailInfo: sendNewsLetterWithHtmlDto): Promise<void> {
+  async sendNewsLetterWithHtml(
+    mailInfo: sendNewsLetterWithHtmlDto
+  ): Promise<void> {
     try {
-      const recipientVariables= this.getRecipientVariables(mailInfo.emailList);
+      const recipientVariables = this.getRecipientVariables(mailInfo.emailList);
       await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
         from: `${mailInfo.senderName} <${mailInfo.senderMailAddress}>`,
         to: mailInfo.emailList,
@@ -134,7 +137,7 @@ export class MailService {
         'recipient-variables': JSON.stringify(recipientVariables),
         html: mailInfo.html,
         'o:tracking': 'yes',
-        "v:newsletter-id": mailInfo.newsletterId.toString(),
+        'v:newsletter-id': mailInfo.newsletterId.toString(),
       });
     } catch (error) {
       console.log(error);
@@ -142,19 +145,22 @@ export class MailService {
     }
   }
 
-  async getEventsByMessagesSendResult(messageId: string){
+  async getEventsByMessagesSendResult(messageId: string) {
     return await this.mailgunClient.events.get(this.MAILGUN_DOMAIN, {
-        'message-id': messageId,
-        // end: "1716987800.9048312"
-    })
+      'message-id': messageId,
+      // end: "1716987800.9048312"
+    });
   }
 
-  getRecipientVariables(emailList : string[]) {
-    let idx=0;
-    return Object.assign({}, ...emailList.map((email) => {
-      idx++;
-      return {[email]: {"id": idx}}
-    }));
+  getRecipientVariables(emailList: string[]) {
+    let idx = 0;
+    return Object.assign(
+      {},
+      ...emailList.map(email => {
+        idx++;
+        return { [email]: { id: idx } };
+      })
+    );
   }
 
   /**
@@ -167,9 +173,9 @@ export class MailService {
       await this.mailgunClient.routes.create({
         expression: `match_recipient("${moonjinId}@${this.MAILGUN_DOMAIN}")`,
         action: [`forward("${email}")`],
-      })
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 }

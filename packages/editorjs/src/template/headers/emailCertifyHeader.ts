@@ -1,4 +1,4 @@
-export function EmailCertifyHeader(redirectUrl: string) {
+export function EmailCertifyHeader(redirectUrl: string, footer: string) {
   return `
   <table
   role="presentation"
@@ -106,19 +106,17 @@ export function EmailCertifyHeader(redirectUrl: string) {
               </td>
             </tr>
             <tr>
-              <td height="20"></td>
+              <td height="40"></td>
             </tr>
-            <tr>
-              <td>
-                <hr style="border: 1px solid #e9e9e9; border-bottom: #e9e9e9" />
-              </td>
-            </tr>
+<!--            <tr>-->
+<!--              <td>-->
+<!--                <hr style="border: 1px solid #e9e9e9; border-bottom: #e9e9e9" />-->
+<!--              </td>-->
+<!--            </tr>-->
+            ${footer}
           </tbody>
         </table>
       </td>
-    </tr>
-    <tr>
-      <td height="50"></td>
     </tr>
   </tbody>
 </table>
