@@ -6,10 +6,12 @@ import SeriesCarousel from "./_components/SeriesCarousel";
 import CategoryTab from "../../_components/CategoryTab";
 import {
   Category,
+  type NewsletterCardDto,
   type ResponseForm,
   type SeriesWithWriterDto,
 } from "@moonjin/api-types";
 import { nfetch } from "@lib/fetcher/noAuth";
+import Link from "next/link";
 
 export const revalidate = 600;
 
@@ -18,12 +20,11 @@ export default async function Page() {
     ResponseForm<SeriesWithWriterDto[]>
   >("series/list?sort=popular&take=10");
 
-  const popularNewsletterList: any[] = [];
-  // const { data: popularNewsletterList } = await nfetch<
-  //   ResponseForm<NewsletterCardDto[]>
-  // >("newsletter/list?take=3");
-  //
-  // console.log(popularNewsletterList[0]);
+  const { data: popularNewsletterList } = await nfetch<
+    ResponseForm<NewsletterCardDto[]>
+  >("newsletter/list?take=3&sort=popular&seriesOnly=true");
+
+  console.log(popularNewsletterList[0]);
 
   return (
     <>
@@ -45,7 +46,7 @@ export default async function Page() {
             alt="백그라운드 이미지"
             width={1920}
             height={1630}
-            className="absolute top-0 left-1/2 -translate-x-1/2 min-w-[100vw] object-fill w-full h-[1380px] max-h-[1380px] z-[-1]"
+            className="absolute top-0 left-1/2 -translate-x-1/2 min-w-[100vw] object-fill w-full h-[1320px] max-h-[1320px] z-[-1]"
           />
           <SeriesCarousel seriesList={popularSeriesList} />
           <div className="flex">
@@ -54,9 +55,10 @@ export default async function Page() {
               주<br />의<br /> 인<br />
               기<br />글<br />
             </h2>
-            <ul className="flex gap-x-8">
+            <div className="flex gap-x-8">
               {popularNewsletterList?.map((n, index) => (
-                <li
+                <Link
+                  href={`/@${n.writer.moonjinId}/post/${n.post.id}`}
                   key={index}
                   className="p-8 size-fit  flex flex-col bg-grayscale-700/5 max-w-[290px] rounded-lg"
                 >
@@ -65,7 +67,7 @@ export default async function Page() {
                     alt={"titel"}
                     width={260}
                     height={260}
-                    className={"rounded-lg size-[260px]"}
+                    className="rounded-lg size-[260px] object-cover"
                   />
                   <div className="break-keep mt-6">
                     <div className="px-3 py-1 rounded-full bg-grayscale-600 text-sm  text-white w-fit">
@@ -81,17 +83,17 @@ export default async function Page() {
                       Written by.{n.writer.nickname}
                     </p>
                   </div>
-                </li>
+                </Link>
               ))}
-            </ul>
+            </div>
           </div>
         </section>
         <section className="w-full flex flex-col items-center max-w-[1006px] mt-32">
           <div className="w-full  flex flex-col items-center text-sm">
             <CategoryTab
               requestUrl={"newsletter/list"}
+              requestSeriesOnly={true}
               tabList={Category.list}
-              cardType={"newsletter"}
               infiniteScroll={true}
             />
           </div>

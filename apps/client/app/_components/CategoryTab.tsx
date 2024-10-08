@@ -12,15 +12,17 @@ import SWRInfiniteScroll, {
 
 export default function CategoryTab({
   tabList,
-  cardType,
+
   requestUrl,
   requestSort = "recent",
+  requestSeriesOnly = false,
   infiniteScroll = false,
 }: {
   tabList: string[];
-  cardType: "newsletter" | "series";
+
   requestUrl: string;
   requestSort?: "recent" | "popular";
+  requestSeriesOnly?: boolean;
   infiniteScroll?: boolean;
 }) {
   const [category, setCategory] = useState<string>(tabList[0]);
@@ -28,7 +30,7 @@ export default function CategoryTab({
 
   const swr = useSWRInfinite<ResponseForm<NewsletterCardDto[]>>(
     getKey(
-      `${requestUrl}?category=${category}&sort=${requestSort}&take=${PAGE_SIZE}`,
+      `${requestUrl}?category=${category}&sort=${requestSort}&take=${PAGE_SIZE}&seriesOnly=${requestSeriesOnly}`,
     ),
   );
 
@@ -73,18 +75,15 @@ export default function CategoryTab({
                     {(page) =>
                       page.data.map((card, i) => (
                         <>
-                          {cardType === "series" ? (
-                            ""
-                          ) : (
-                            <VerticalCard
-                              title={card.post.title}
-                              subtitle={card.post.subtitle}
-                              createdAt={card.post.createdAt}
-                              href={`/@${card.writer.moonjinId}/post/${card.post.id}`}
-                              thumbnail={card.post.cover}
-                              writer={card.writer}
-                            />
-                          )}
+                          <VerticalCard
+                            title={card.post.title}
+                            subtitle={card.post.subtitle}
+                            createdAt={card.post.createdAt}
+                            href={`/@${card.writer.moonjinId}/post/${card.post.id}`}
+                            thumbnail={card.post.cover}
+                            writer={card.writer}
+                            series={card?.series}
+                          />
                         </>
                       ))
                     }

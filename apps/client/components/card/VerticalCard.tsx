@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { WriterProfileInCardDto } from "@moonjin/api-types";
+import { SeriesDto, WriterProfileInCardDto } from "@moonjin/api-types";
 import { format } from "date-fns";
 
 type VerticalCardProps = {
@@ -10,6 +10,7 @@ type VerticalCardProps = {
   thumbnail: string;
   href: string;
   writer: WriterProfileInCardDto;
+  series?: SeriesDto | null;
 };
 
 export default function VerticalCard({
@@ -19,6 +20,7 @@ export default function VerticalCard({
   createdAt,
   href,
   writer,
+  series,
 }: VerticalCardProps) {
   return (
     <Link href={href} className="w-[232px] flex flex-col  gap-y-4">
@@ -33,7 +35,10 @@ export default function VerticalCard({
       </div>
 
       <div className="flex flex-col gap-y-2">
-        <strong className="text-left font-bold text-lg">{title}</strong>
+        <span className="text-primary underline text-sm font-light ">
+          {series?.title}
+        </span>
+        <strong className="text-left font-semibold text-lg">{title}</strong>
 
         <div className="text-[13px] line-clamp-3 text-grayscale-500 ">
           {subtitle}
