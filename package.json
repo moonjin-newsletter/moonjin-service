@@ -7,15 +7,12 @@
     "dev": "./env-deploy.sh && turbo run dev",
     "lint": "turbo run lint",
     "deploy": "./env-deploy.sh && pm2 start npm --name moonjin-service -- start",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "preinstall": "turbo run preinstall",
-    "build:packages": "turbo run build --filter=@moonjin/api-types --filter=@moonjin/editorjs --filter=@moonjin/editorjs-types",
-    "build:client": "turbo run build --filter=client"
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
     "dotenv-cli": "^7.4.2",
     "lru-cache": "^10.0.2",
-    "turbo": "latest"
+    "turbo": "^2.1.3"
   },
   "name": "moonjin-service",
   "packageManager": "yarn@4.5.0",

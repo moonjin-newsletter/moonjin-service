@@ -33,9 +33,7 @@ jobs:
             git pull origin dev
             npm --help
             yarn install
-            yarn preinstall
-            yarn build:packages
-            yarn build --filter=server
+            yarn build --filter=server...
             cd apps/server
             pm2 kill
             yarn pm2:deploy
