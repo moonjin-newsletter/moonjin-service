@@ -1,4 +1,4 @@
-name: Deploy moonjin/server to Cloud Run
+name: Deploy moonjin/server to Elastic Beanstalk
 
 on:
   push:
