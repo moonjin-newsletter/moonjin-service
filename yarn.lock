@@ -3212,7 +3212,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@moonjin/api-types@workspace:packages/api-types":
+"@moonjin/api-types@workspace:^, @moonjin/api-types@workspace:packages/api-types":
   version: 0.0.0-use.local
   resolution: "@moonjin/api-types@workspace:packages/api-types"
   dependencies:
@@ -3234,6 +3234,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@moonjin/editorjs@workspace:packages/editorjs"
   dependencies:
+    "@moonjin/api-types": "workspace:^"
     "@moonjin/editorjs-types": "workspace:^"
     typescript: "npm:latest"
   languageName: unknown

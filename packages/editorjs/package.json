@@ -6,6 +6,7 @@
     "@moonjin/editorjs-types": "workspace:^"
   },
   "devDependencies": {
+    "@moonjin/api-types": "workspace:^",
     "typescript": "latest"
   },
   "scripts": {

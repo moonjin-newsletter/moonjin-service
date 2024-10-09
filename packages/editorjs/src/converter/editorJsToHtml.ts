@@ -1,7 +1,7 @@
 import { EditorBlockToHtmlTag } from "./editorBlockToHtmlTag";
 import { EmailTemplate } from "../template/emailTemplate";
-import { PostWithContentAndSeriesAndWriterDto } from "@moonjin/api-types";
-import { EditorJsonDto } from "@moonjin/editorjs-types";
+import type { PostWithContentAndSeriesAndWriterDto } from "@moonjin/api-types";
+import type { EditorJsonDto } from "@moonjin/editorjs-types";
 
 /**
  * Convert EditorJs Json 데이터를 Html 문서로 변환
