@@ -8,6 +8,7 @@ on:
   workflow_dispatch:
 
 env:
+  AWS_ACCOUNT_ID: 058264256125
   APP_NAME: moonjin-server
   REGION: ap-northeast-2
 
@@ -38,7 +39,7 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           push: false
-          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ env.APP_NAME }}:latest
+          tags: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ env.APP_NAME }}:latest
           file: apps/server/Dockerfile
 
 #      # Deploy to Lightsail
