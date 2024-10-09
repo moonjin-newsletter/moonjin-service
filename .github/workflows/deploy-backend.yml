@@ -50,13 +50,12 @@ jobs:
 #            --label ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ env.APP_NAME }}
 #            --image ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ env.APP_NAME }}:latest
 
-#      # Deploy to Elastic Beanstalk
-#      - uses: einaregilsson/beanstalk-deploy@v22
-#        with:
-#          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          region: ${{ env.REGION }}
-#          application_name: ${{ env.APP_NAME }}
-#          environment_name: ${{ env.APP_NAME }}
-#          version_label: ${{ github.sha }}
-#          deployment_package: Dockerrun.aws.json
+      # Deploy to Elastic Beanstalk
+      - uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ${{ env.REGION }}
+          application_name: ${{ env.APP_NAME }}
+          environment_name: ${{ env.APP_NAME }}
+          version_label: ${{ github.sha }}
