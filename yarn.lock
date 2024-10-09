@@ -3217,7 +3217,6 @@ __metadata:
   resolution: "@moonjin/api-types@workspace:packages/api-types"
   dependencies:
     "@moonjin/editorjs-types": "workspace:^"
-    tsconfig: "npm:*"
     typescript: "npm:latest"
   languageName: unknown
   linkType: soft
@@ -7001,7 +7000,6 @@ __metadata:
     tailwind-scrollbar: "npm:^3.1.0"
     tailwindcss: "npm:^3.4.1"
     ts-pattern: "npm:^5.0.8"
-    tsconfig: "npm:*"
     typescript: "npm:^5.4.4"
   languageName: unknown
   linkType: soft
@@ -14732,7 +14730,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig@npm:*, tsconfig@workspace:packages/tsconfig":
+"tsconfig@workspace:packages/tsconfig":
   version: 0.0.0-use.local
   resolution: "tsconfig@workspace:packages/tsconfig"
   languageName: unknown
