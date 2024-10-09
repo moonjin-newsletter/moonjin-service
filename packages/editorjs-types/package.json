@@ -2,9 +2,6 @@
   "name": "@moonjin/editorjs-types",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "dependencies": {
-    "tsconfig": "*"
-  },
   "devDependencies": {
     "typescript": "latest"
   },
