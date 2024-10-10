@@ -25,7 +25,7 @@ export function EditorJsToHtml(
         >
           <tbody>
             <tr>
-              <td align="left">`;
+              <td align="left" style="font-size: 16px; line-height:1.625 ">`;
 
   const htmlLetter: string = ` </td>
             </tr>

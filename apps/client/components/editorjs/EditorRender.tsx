@@ -93,16 +93,20 @@ function renderEditorData(blocks: EditorBlockDto[]) {
   });
 }
 
-function ListRender(items: any[], style: "ordered" | "unordered" | undefined) {
+function ListRender(
+  items: any[],
+  style: "ordered" | "unordered" | undefined,
+  depth = 0,
+) {
   if (style === "ordered") {
     return (
-      <ol className="list-decimal pl-4">
+      <ol className={`${depth === 0 ? "list-decimal" : "list-roman"} pl-4`}>
         {items.map((item: any, index: any) => (
           <>
             <li key={index}>{item.content}</li>
             {item.items &&
               item.items.length > 0 &&
-              ListRender(item.items, style)}
+              ListRender(item.items, style, depth + 1)}
           </>
         ))}
       </ol>
@@ -110,11 +114,13 @@ function ListRender(items: any[], style: "ordered" | "unordered" | undefined) {
   }
 
   return (
-    <ul className="list-disc pl-4">
+    <ul className={`${depth === 0 ? "list-disc" : "list-square"} pl-4`}>
       {items.map((item: any, index: any) => (
         <>
           <li key={index}>{item.content}</li>
-          {item.items && item.items.length > 0 && ListRender(item.items, style)}
+          {item.items &&
+            item.items.length > 0 &&
+            ListRender(item.items, style, depth + 1)}
         </>
       ))}
     </ul>
