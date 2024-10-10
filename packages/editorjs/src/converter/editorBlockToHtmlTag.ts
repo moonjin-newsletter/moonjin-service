@@ -8,11 +8,11 @@ import { EditorBlockDto } from "@moonjin/editorjs-types";
 export function EditorBlockToHtmlTag(block: EditorBlockDto) {
   switch (block.type) {
     case "header":
-      return `<h${block.data.level} style="display: block; color: #1a1a1a;   margin: 16px 0px 9px 0px; text-align: left;">${block.data.text}</h${block.data.level}>`;
+      return `<h${block.data.level} style="display: block; color: #1a1a1a;   margin: 8px 0 8px 0; text-align: left;">${block.data.text}</h${block.data.level}>`;
     case "embed":
       return `<div><iframe width="560" height="315" src="${block.data.embed}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
     case "paragraph":
-      return `<p style="color: #1a1a1a; font-size:16px;line-height:26px;word-break:break-word;overflow-wrap: break-word; margin:16px 0px 16px 0px; text-align: left;">${
+      return `<p style="color: #1a1a1a; font-size:16px;line-height:26px;word-break:break-word;overflow-wrap: break-word; margin:8px 0 8px 0; text-align: left;">${
         block.data.text || "&nbsp;"
       }</p>`;
     case "image":
@@ -45,7 +45,7 @@ export function EditorBlockToHtmlTag(block: EditorBlockDto) {
     case "list":
       return ListRender(block.data.items, block.data.style);
     case "delimiter":
-      return "<hr style='border:1px #b7b7b7 solid' />";
+      return "<hr style='border-width: 1px 0 0 0; border-color: #E9E9E9; width: 100%; margin: 20px 0' />";
 
     case "checklist":
     case "linkTool":
@@ -56,11 +56,15 @@ export function EditorBlockToHtmlTag(block: EditorBlockDto) {
   }
 }
 
-function ListRender(items: any[], style: "ordered" | "unordered" | undefined) {
+function ListRender(
+  items: any[],
+  style: "ordered" | "unordered" | undefined,
+  depth: number = 0,
+) {
   let convertedHtml =
     style === "ordered"
-      ? "<ol style='margin: 8px 0 8px 0; font-size: 16px;'>"
-      : "<ul style='margin: 8px 0 8px 0; font-size: 16px;'>";
+      ? `<ol type='${depth === 0 ? "1" : "i"}' style='margin: 8px 0 8px 6px; font-size: 16px; padding-left: 12px; list-style-position: outside; '>`
+      : `<ul  style='margin: 8px 0 8px 6px; font-size: 16px; padding-left: 12px; list-style-position: outside; '>`;
   items.forEach((li) => {
     convertedHtml += `<li>${li.content}</li>`;
     if (li.items && li.items.length > 0) {
