@@ -5,10 +5,10 @@ name: Deploy moonjin to Amazon ECS
 on:
   push:
     branches: [ "dev" ]
-    paths: [ "apps/server/**" ]
+    paths: [ "apps/server/**","packages/**" ]
   pull_request:
     branches: [ "dev" ]
-    paths: [ "apps/server/**" ]
+    paths: [ "apps/server/**","packages/**" ]
   workflow_dispatch:
 
 # permissions:
