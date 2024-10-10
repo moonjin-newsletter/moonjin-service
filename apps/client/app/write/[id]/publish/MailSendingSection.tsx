@@ -23,11 +23,17 @@ export default function MailSendingSection({
 }) {
   const router = useRouter();
   const { data: userInfo } = useSWR<ResponseForm<WriterDto>>("user");
-  const [testAddUser, setTestAddUser] = useState<any[]>([]);
+  const [testAddUserList, setTestAddUserList] = useState<any[]>([]);
   const [title, setTitle] = useState(
     `${seriesTitle ? `[${seriesTitle}] ` : ""}${letterTitle}`,
   );
-  const { handleSubmit, setValue, watch, register } = useForm({
+  const {
+    handleSubmit,
+    setValue,
+    watch,
+    register,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       testUser: null,
     },
@@ -35,18 +41,18 @@ export default function MailSendingSection({
   const testUser = watch("testUser");
 
   function AddTestUser() {
-    if (testAddUser.length > 4) toast.error("최대인원을 초과했습니다");
+    if (testAddUserList.length > 4) toast.error("최대인원을 초과했습니다");
     else {
-      setTestAddUser((prev) => [...prev, testUser]);
+      setTestAddUserList((prev) => [...prev, testUser]);
       return setValue("testUser", null);
     }
   }
 
   async function sendTestLetter() {
-    if (testAddUser.length > 0) {
+    if (testAddUserList.length > 0) {
       await csr
         .post(`newsletter/${letterId}/test`, {
-          json: { receiverEmails: testAddUser },
+          json: { receiverEmails: testAddUserList },
         })
         .then((res) => toast.success("메일함을 확인하세요"))
         .catch((err) => toast.error("메일 전송오류"));
@@ -82,7 +88,10 @@ export default function MailSendingSection({
             최대 추가 인원: 5명
           </span>
         </div>
-        <div className="w-full mt-2 flex gap-x-2.5 items-center h-12">
+        <form
+          onSubmit={handleSubmit(AddTestUser)}
+          className="w-full mt-2 flex gap-x-2.5 items-center h-12"
+        >
           <input
             {...register("testUser")}
             type="email"
@@ -90,14 +99,14 @@ export default function MailSendingSection({
             className="ring-0 w-full  outline-none focus:border-slate-400 focus:ring-0 h-full bg-grayscale-100 border border-grayscale-300 placeholder:text-grayscale-500 rounded"
           />
           <button
-            onClick={AddTestUser}
+            type="submit"
             className="h-full text-sm rounded whitespace-nowrap text-white bg-grayscale-700/90 px-4"
           >
             추가
           </button>
-        </div>
+        </form>
         <div className="flex mt-4 gap-x-2.5 gap-y-1.5 flex-wrap">
-          {testAddUser.map((name, index) => (
+          {testAddUserList.map((name, index) => (
             <div
               key={index}
               className="px-4 text-primary flex items-center gap-x-2 py-2 bg-grayscale-100  rounded-full"
@@ -108,8 +117,8 @@ export default function MailSendingSection({
               </div>
               <button
                 onClick={() => {
-                  setTestAddUser(
-                    testAddUser.filter((value, id) => id !== index),
+                  setTestAddUserList(
+                    testAddUserList.filter((value, id) => id !== index),
                   );
                 }}
               >
