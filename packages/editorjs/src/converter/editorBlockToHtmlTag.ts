@@ -15,6 +15,10 @@ export function EditorBlockToHtmlTag(block: EditorBlockDto) {
       return `<p style="color: #1a1a1a; font-size:16px;line-height:26px;word-break:break-word;overflow-wrap: break-word; margin:8px 0 8px 0; text-align: left;">${
         block.data.text || "&nbsp;"
       }</p>`;
+    case "list":
+      return ListRender(block.data.items, block.data.style);
+    case "delimiter":
+      return "<hr style='border-width: 1px 0 0 0; border-color: #E9E9E9; width: 100%; margin: 20px 0' />";
     case "image":
       return `
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -42,11 +46,6 @@ export function EditorBlockToHtmlTag(block: EditorBlockDto) {
                </table>
 
 `;
-    case "list":
-      return ListRender(block.data.items, block.data.style);
-    case "delimiter":
-      return "<hr style='border-width: 1px 0 0 0; border-color: #E9E9E9; width: 100%; margin: 20px 0' />";
-
     case "checklist":
     case "linkTool":
     case "quote":
