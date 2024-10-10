@@ -13647,7 +13647,7 @@ __metadata:
     ts-jest: "npm:^29.2.5"
     ts-loader: "npm:^9.4.3"
     ts-node: "npm:^10.9.2"
-    ts-patch: "npm:^3.1.2"
+    ts-patch: "npm:^3.2.1"
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.3.2"
     typia: "npm:^5.3.7"
@@ -14658,9 +14658,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-patch@npm:^3.1.2":
-  version: 3.1.2
-  resolution: "ts-patch@npm:3.1.2"
+"ts-patch@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "ts-patch@npm:3.2.1"
   dependencies:
     chalk: "npm:^4.1.2"
     global-prefix: "npm:^3.0.0"
@@ -14671,7 +14671,7 @@ __metadata:
   bin:
     ts-patch: bin/ts-patch.js
     tspc: bin/tspc.js
-  checksum: 10c0/773f55de5cae7592af85ba9216b8b5baee9cd440ac085466152bcce7fbcfaeab0f2774b013f97a399f833a4c409646acc9579d7bb6c1f9b969b08bc492038a56
+  checksum: 10c0/c214e0218f905c6445830821d400280c9b127fa41f2984bbad59c1f19eda7b6a0529457af7bc6d80fdfa38289207d5b5e2f40912c33758a243ca2064ed0aa137
   languageName: node
   linkType: hard
 
