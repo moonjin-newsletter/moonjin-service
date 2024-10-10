@@ -54,7 +54,7 @@ export function EditorJsToHtml(
       metaData.post.title,
       metaData.series?.title ?? null,
       sentAt,
-      `https://moonjin.site/@${metaData.writerInfo.moonjinId}/newsletter/${newsletterId}`,
+      `https://moonjin.site/@${metaData.writerInfo.moonjinId}/post/${newsletterId}`,
     ) +
     htmlFormer +
     htmlLetter +
