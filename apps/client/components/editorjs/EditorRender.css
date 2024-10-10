@@ -1,8 +1,9 @@
-a {
-    color: inherit;
+
+#editor-output a {
+    color : inherit;
     text-decoration: underline;
 }
 
-b{
-    font-weight: 600;
+#editor-output b{
+    font-weight: 700;
 }

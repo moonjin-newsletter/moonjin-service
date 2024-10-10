@@ -7,32 +7,6 @@ type ListItem = {
   items: Array<ListItem>;
 };
 
-export type BlockType = {
-  type: string;
-  data: {
-    text?: string;
-    level?: number;
-    caption?: string;
-    url?: string;
-    file?: {
-      url?: string;
-    };
-    stretched?: boolean;
-    withBackground?: boolean;
-    withBorder?: boolean;
-    items?: Array<string> | Array<ListItem>;
-    style?: string;
-    code?: string;
-    service?: "vimeo" | "youtube";
-    source?: string;
-    embed?: string;
-    width?: number;
-    height?: number;
-    alignment?: "left" | "right" | "center" | "justify";
-    align?: "left" | "right" | "center" | "justify";
-  };
-};
-
 export default function EditorRender({
   blocks,
   children,
@@ -45,7 +19,7 @@ export default function EditorRender({
   return (
     <article
       id="editor-output"
-      className="text-grayscale-600 font-light leading-7 tracking-wide relative z-0"
+      className="text-grayscale-600 font-light leading-7 tracking-wide relative z-0  max-w-full"
     >
       {content}
     </article>
