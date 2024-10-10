@@ -24,8 +24,6 @@ export default async function Page() {
     ResponseForm<NewsletterCardDto[]>
   >("newsletter/list?take=3&sort=popular&seriesOnly=true");
 
-  console.log(popularNewsletterList[0]);
-
   return (
     <>
       <Header />
