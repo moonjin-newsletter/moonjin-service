@@ -1,7 +1,7 @@
 import { EditorBlockToHtmlTag } from "./editorBlockToHtmlTag";
 import { EmailTemplate } from "../template/emailTemplate";
-import { PostWithContentAndSeriesAndWriterDto } from "@moonjin/api-types";
-import { EditorJsonDto } from "@moonjin/editorjs-types";
+import type { PostWithContentAndSeriesAndWriterDto } from "@moonjin/api-types";
+import type { EditorJsonDto } from "@moonjin/editorjs-types";
 
 /**
  * Convert EditorJs Json 데이터를 Html 문서로 변환
@@ -25,7 +25,7 @@ export function EditorJsToHtml(
         >
           <tbody>
             <tr>
-              <td align="left">`;
+              <td align="left" style="font-size: 16px; line-height:1.625 ">`;
 
   const htmlLetter: string = ` </td>
             </tr>
@@ -54,7 +54,7 @@ export function EditorJsToHtml(
       metaData.post.title,
       metaData.series?.title ?? null,
       sentAt,
-      `https://moonjin.site/@${metaData.writerInfo.moonjinId}/newsletter/${newsletterId}`,
+      `https://moonjin.site/@${metaData.writerInfo.moonjinId}/post/${newsletterId}`,
     ) +
     htmlFormer +
     htmlLetter +

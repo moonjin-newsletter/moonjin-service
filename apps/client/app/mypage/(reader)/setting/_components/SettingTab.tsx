@@ -5,7 +5,6 @@ import { Fragment, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
 import {
-  ErrorCodeEnum,
   FileTypeEnum,
   IChangeWriterProfile,
   ResponseForm,
@@ -143,9 +142,9 @@ function ProfileLayout({ userInfo }: { userInfo?: any }) {
         window.location.reload();
       })
       .catch((err) => {
-        if (err.code === ErrorCodeEnum.NICKNAME_ALREADY_EXIST)
-          toast.error("이미 존재하는 이메일입니다");
-        else toast.error("닉네임 변경에 실패하였습니다");
+        if (err?.data?.message) {
+          toast.error(err.data.message);
+        } else toast.error("프로필 변경에 실패했습니다");
       });
   }
 
@@ -181,7 +180,6 @@ function WriterProfileLayout({
 }: {
   userInfo?: ResponseForm<UserOrWriterDto>;
 }) {
-  console.log(userInfo);
   const {
     formState: { errors, isValid },
     handleSubmit,
@@ -206,9 +204,9 @@ function WriterProfileLayout({
         window.location.reload();
       })
       .catch((err) => {
-        if (err.code === ErrorCodeEnum.NICKNAME_ALREADY_EXIST)
-          toast.error("이미 존재하는 이메일입니다");
-        else toast.error("닉네임 변경에 실패하였습니다");
+        if (err?.data?.message) {
+          toast.error(err.data.message);
+        } else toast.error("프로필 변경에 실패했습니다");
       });
   }
 

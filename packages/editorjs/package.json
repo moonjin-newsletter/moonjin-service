@@ -3,10 +3,10 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "@moonjin/editorjs-types": "workspace:^",
-    "tsconfig": "*"
+    "@moonjin/editorjs-types": "workspace:^"
   },
   "devDependencies": {
+    "@moonjin/api-types": "workspace:^",
     "typescript": "latest"
   },
   "scripts": {

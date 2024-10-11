@@ -1,0 +1,9 @@
+
+#editor-output a {
+    color : inherit;
+    text-decoration: underline;
+}
+
+#editor-output b{
+    font-weight: 700;
+}

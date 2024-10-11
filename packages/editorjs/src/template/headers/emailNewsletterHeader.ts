@@ -45,10 +45,10 @@ export function EmailNewsletterHeader(
           <tbody>
             <tr>
               <td align="center" style="width: 100%; padding: 32px 0 8px 0">
-                <a href="https://moonjin.site">
+                <div >
                   <img
                     src="${user_cover}"
-                    alt="Google"
+                    alt="user"
                     width="60"
                     height="60"
                     style="
@@ -58,13 +58,12 @@ export function EmailNewsletterHeader(
                       object-fit: cover;
                     "
                   />
-                </a>
+                </div>
               </td>
             </tr>
             <tr>
               <td align="center">
-                <a
-                  href=""
+                <div
                   style="
                     text-decoration: none;
                     font-weight: 700;
@@ -72,7 +71,7 @@ export function EmailNewsletterHeader(
                   "
                 >
                   ${user_nickname}
-                </a>
+                </div>
               </td>
             </tr>
             <tr>
@@ -173,6 +172,7 @@ export function EmailNewsletterHeader(
               >
                 <a
                   href="${link}"
+                  target="_blank"
                   style="
                     display: inline-flex;
                     align-items: center;

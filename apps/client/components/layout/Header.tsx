@@ -55,14 +55,14 @@ export default function Header({
           />
         </Link>
         <div className="flex h-full text-sm font-medium ml-10 gap-x-8 items-center text-grayscale-600">
-          <Link
-            className={`${
-              pathname === "/about" && "text-primary"
-            } flex items-center  h-full`}
-            href="/about"
-          >
-            소개하기
-          </Link>
+          {/*<Link*/}
+          {/*  className={`${*/}
+          {/*    pathname === "/about" && "text-primary"*/}
+          {/*  } flex items-center  h-full`}*/}
+          {/*  href="/about"*/}
+          {/*>*/}
+          {/*  소개하기*/}
+          {/*</Link>*/}
           <Link
             className={`${
               pathname === "/series" && "text-primary"

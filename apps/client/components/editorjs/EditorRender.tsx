@@ -1,35 +1,10 @@
 import { ReactNode } from "react";
 import type { EditorBlockDto } from "@moonjin/editorjs-types";
+import "./EditorRender.css";
 
 type ListItem = {
   content: string;
   items: Array<ListItem>;
-};
-
-export type BlockType = {
-  type: string;
-  data: {
-    text?: string;
-    level?: number;
-    caption?: string;
-    url?: string;
-    file?: {
-      url?: string;
-    };
-    stretched?: boolean;
-    withBackground?: boolean;
-    withBorder?: boolean;
-    items?: Array<string> | Array<ListItem>;
-    style?: string;
-    code?: string;
-    service?: "vimeo" | "youtube";
-    source?: string;
-    embed?: string;
-    width?: number;
-    height?: number;
-    alignment?: "left" | "right" | "center" | "justify";
-    align?: "left" | "right" | "center" | "justify";
-  };
 };
 
 export default function EditorRender({
@@ -44,7 +19,7 @@ export default function EditorRender({
   return (
     <article
       id="editor-output"
-      className="text-grayscale-600 font-light leading-7 tracking-wide relative z-0"
+      className="text-grayscale-600 font-light leading-7 tracking-wide relative z-0  max-w-full"
     >
       {content}
     </article>
@@ -72,14 +47,14 @@ function renderEditorData(blocks: EditorBlockDto[]) {
                   block.data.level === 1
                     ? "text-2xl"
                     : block.data.level === 2
-                    ? "text-xl"
-                    : block.data.level === 3
-                    ? "text-lg"
-                    : block.data.level === 4
-                    ? "text-base"
-                    : block.data.level === 5
-                    ? "text-sm"
-                    : "text-xs"
+                      ? "text-xl"
+                      : block.data.level === 3
+                        ? "text-lg"
+                        : block.data.level === 4
+                          ? "text-base"
+                          : block.data.level === 5
+                            ? "text-sm"
+                            : "text-xs"
                 }
             `}
             dangerouslySetInnerHTML={{ __html: block.data.text }}
@@ -98,7 +73,7 @@ function renderEditorData(blocks: EditorBlockDto[]) {
             >
               <img
                 className={`${
-                  block.data.withBackground ? "w-2/3 mx-auto" : ""
+                  block.data.withBackground ? "w-2/3 mx-auto" : "w-full"
                 } `}
                 src={block.data.file.url}
                 alt={block.data.caption}
@@ -118,16 +93,20 @@ function renderEditorData(blocks: EditorBlockDto[]) {
   });
 }
 
-function ListRender(items: any[], style: "ordered" | "unordered" | undefined) {
+function ListRender(
+  items: any[],
+  style: "ordered" | "unordered" | undefined,
+  depth = 0,
+) {
   if (style === "ordered") {
     return (
-      <ol className="list-decimal pl-4">
+      <ol className={`${depth === 0 ? "list-decimal" : "list-roman"} pl-4`}>
         {items.map((item: any, index: any) => (
           <>
             <li key={index}>{item.content}</li>
             {item.items &&
               item.items.length > 0 &&
-              ListRender(item.items, style)}
+              ListRender(item.items, style, depth + 1)}
           </>
         ))}
       </ol>
@@ -135,11 +114,13 @@ function ListRender(items: any[], style: "ordered" | "unordered" | undefined) {
   }
 
   return (
-    <ul className="list-disc pl-4">
+    <ul className={`${depth === 0 ? "list-disc" : "list-square"} pl-4`}>
       {items.map((item: any, index: any) => (
         <>
           <li key={index}>{item.content}</li>
-          {item.items && item.items.length > 0 && ListRender(item.items, style)}
+          {item.items &&
+            item.items.length > 0 &&
+            ListRender(item.items, style, depth + 1)}
         </>
       ))}
     </ul>

@@ -1,0 +1,62 @@
+name: Deploy moonjin/server to Elastic Beanstalk
+
+on:
+  push:
+    branches: [ "dev" ]
+    paths:
+      - "apps/server/**"
+  workflow_dispatch:
+
+env:
+  AWS_ACCOUNT_ID: 058264256125
+  APP_NAME: moonjin-server
+  REGION: ap-northeast-2
+
+permissions:
+  id-token: write
+  contents: read
+  actions: read
+
+jobs:
+  build-with-docker-engine:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      # Configure AWS credentials
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.REGION }}
+
+      # Docker login, build, push
+      - uses: aws-actions/amazon-ecr-login@v2
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          push: false
+          tags: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ env.APP_NAME }}:latest
+          file: apps/server/Dockerfile
+
+#      # Deploy to Lightsail
+#      - name: Deploy to Lightsail
+#        run: |
+#          aws lightsail push-container-image \
+#            --region ${{ env.REGION }} \
+#            --service-name ${{ env.APP_NAME }} \
+#            --label ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ env.APP_NAME }}
+#            --image ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ env.APP_NAME }}:latest
+
+      # Deploy to Elastic Beanstalk
+      - uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ${{ env.REGION }}
+          application_name: ${{ env.APP_NAME }}
+          environment_name: ${{ env.APP_NAME }}
+          version_label: ${{ github.sha }}

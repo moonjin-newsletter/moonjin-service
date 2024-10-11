@@ -19,6 +19,13 @@ module.exports = {
     fontFamily: {
       sans: ["Pretendard", "-apple-system", "sans-serif"],
     },
+    listStyleType: {
+      none: "none",
+      disc: "disc",
+      decimal: "decimal",
+      square: "square",
+      roman: "lower-roman",
+    },
     extend: {
       fontFamily: {
         libre: ["var(--font-libre)", "serif"],
