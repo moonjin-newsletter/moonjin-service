@@ -11,8 +11,6 @@ import Header from "@components/layout/Header";
 import Graphic from "../../../public/static/images/graphic_1.png";
 import toast from "react-hot-toast";
 
-export const dynamic = "force-dynamic";
-
 export default function Page() {
   const params = useSearchParams();
 
