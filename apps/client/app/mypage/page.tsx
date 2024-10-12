@@ -44,7 +44,7 @@ export default async function Page() {
             작가님만의 공간을 사색과 경험들로 채워보세요!
           </span>
           <div className="ml-auto underline flex items-center text-[13px] font-medium">
-            작가 공간 바로가기 <IoIosArrowForward />
+            작가의 서재 바로가기 <IoIosArrowForward />
           </div>
         </Link>
       )}
