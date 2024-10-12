@@ -43,7 +43,7 @@ export default async function Page({ params }: pageProps) {
     <div className="bg-grayscale-100 min-h-screen">
       <WriterHeader />
       <main className="w-full flex flex-col items-center pb-20 ">
-        <section className="max-w-[800px] w-full flex flex-col mx-auto mt-10 bg-white px-12 pt-14 rounded-2xl shadow">
+        <section className="max-w-[800px] w-full flex flex-col mx-auto mt-10 bg-white px-12 pt-14 pb-10 rounded-xl shadow">
           <SeriesProfile
             subInfo={subInfo}
             seriesInfo={seriesInfo}
