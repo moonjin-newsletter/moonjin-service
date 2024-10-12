@@ -28,21 +28,6 @@ export default function SeriesProfile({
           height={310}
           className="w-[240px] min-w-[240px] h-[310px]  object-cover shadow rounded peer"
         />
-        {/*<div className="flex flex-col w-[240px] h-full gap-y-6 py-4 px-5 shadow  ">*/}
-        {/*  <div className="flex flex-col gap-y-2">*/}
-        {/*    <span className="text-[13px] text-gray-500">작가</span>*/}
-        {/*    <h2 className="font-semibold">{writerInfo.user.nickname}</h2>*/}
-        {/*    <h3 className="text-sm  text-primary">*/}
-        {/*      {writerInfo.writerInfo.moonjinId}@moonjin.site*/}
-        {/*    </h3>*/}
-        {/*  </div>*/}
-        {/*  <div className="flex flex-col gap-y-2">*/}
-        {/*    <span className="text-[13px] text-gray-500">작가소개</span>*/}
-        {/*    <p className="text-sm text-gray-500">*/}
-        {/*      {writerInfo.user.description}*/}
-        {/*    </p>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
       </section>
       <section className="flex flex-col w-full ">
         <Link
@@ -72,7 +57,7 @@ export default function SeriesProfile({
           </div>
         </div>
         <div className="w-full mt-4">
-          <strong className="text-base font-light text-grayscale-400 leading-relaxed break-keep">
+          <strong className="text-sm font-light text-grayscale-500 leading-relaxed break-keep">
             {seriesInfo.description}
           </strong>
         </div>
