@@ -24,7 +24,7 @@ export function UnreleasedNewsletterCard({
           <strong className="group-hover:underline text-lg text-grayscale-600 font-medium">
             {value.post.title}
           </strong>
-          <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400">
+          <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400 font-light">
             {value.post.subtitle}
           </span>
         </div>
@@ -40,7 +40,7 @@ export function UnreleasedNewsletterCard({
         alt="뉴스레터 썸네일"
         width={120}
         height={120}
-        className="size-[120px] min-w-[120px]  bg-gray-100 rounded object-cover"
+        className="size-[120px] min-w-[120px]  bg-gray-100 rounded object-cover border border-grayscale-100"
       />
     </Link>
   );
