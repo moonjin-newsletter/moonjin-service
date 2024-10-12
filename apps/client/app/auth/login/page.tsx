@@ -9,6 +9,7 @@ import * as Tb from "react-icons/tb";
 import Image from "next/image";
 import Graphic from "../../../public/static/images/graphic_1.png";
 import Header from "@components/layout/Header";
+import toast from "react-hot-toast";
 
 const authUrl = (type: string) => {
   return `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/oauth?social=${type}`;
@@ -28,7 +29,13 @@ export default function Page() {
       .then((res) => {
         window.location.href = "/";
       })
-      .catch((err) => alert("로그인 실패"));
+      .catch((err) => {
+        if (err.data.message) {
+          toast.error(err.data.message);
+        } else {
+          toast.error("로그인 실패");
+        }
+      });
   }
 
   return (
