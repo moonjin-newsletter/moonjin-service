@@ -14,7 +14,7 @@ export function SeriesCardForReader({
   return (
     <Link
       style={{ width: width }}
-      href={""}
+      href={`/@${seriesInfo.writer.moonjinId}/series/${seriesInfo.series.id}`}
       className={` flex group flex-col w-fit h-fit pb-6 `}
     >
       <div className={`relative w-fit h-fit overflow-hidden rounded-lg`}>
