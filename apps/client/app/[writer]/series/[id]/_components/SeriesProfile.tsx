@@ -5,10 +5,9 @@ import type {
   WriterPublicCardDto,
 } from "@moonjin/api-types";
 import Image from "next/image";
-import Link from "next/link";
-import { IoClose } from "react-icons/io5";
 import { MdOutlineLibraryBooks } from "react-icons/md";
 import SubModalProvider from "@components/modal/SubModalProvider";
+import Link from "next/link";
 
 export default function SeriesProfile({
   seriesInfo,
@@ -46,22 +45,34 @@ export default function SeriesProfile({
         {/*</div>*/}
       </section>
       <section className="flex flex-col w-full ">
-        <div className="w-full flex justify-end">
-          <Link
-            href={`/@${writerInfo.writerInfo.moonjinId}?tab=시리즈`}
-            className="flex items-center justify center size-fit ml-auto p-2 border border-grayscale-300 rounded-full"
-          >
-            <IoClose className="text-xl text-grayscale-500" />
-          </Link>
-        </div>
-        <div className="flex items-center gap-x-4 mt-8">
-          <h1 className="text-2xl font-semibold">{seriesInfo.title}</h1>
+        <Link
+          href={`/@${writerInfo.writerInfo.moonjinId}`}
+          className="flex items-center gap-x-2 group "
+        >
+          <div className="flex  gap-x-1 text-sm text-grayscale-500">
+            <span className="font-serif font-medium">By.</span>
+            {/*<Image*/}
+            {/*  src={writerInfo.user.image}*/}
+            {/*  alt={"작가 프로필이미지"}*/}
+            {/*  width={32}*/}
+            {/*  height={32}*/}
+            {/*  className="w-[24px] h-[24px] rounded-full object-cover border border-grayscale-200"*/}
+            {/*/>*/}
+            <h2 className="group-hover:underline">
+              {writerInfo.user.nickname}
+            </h2>
+          </div>
+        </Link>
+        <div className="flex items-center gap-x-4 mt-4">
+          <h1 className="text-2xl font-semibold text-grayscale-600">
+            {seriesInfo.title}
+          </h1>
           <div className="px-4 py-1 text-[13px] border rounded-full border-grayscale-200 text-grayscale-400">
             {seriesInfo.category}
           </div>
         </div>
         <div className="w-full mt-4">
-          <strong className="text-base font-normal text-grayscale-400 break-keep">
+          <strong className="text-base font-light text-grayscale-400 leading-relaxed break-keep">
             {seriesInfo.description}
           </strong>
         </div>
@@ -73,7 +84,7 @@ export default function SeriesProfile({
             {/*</div>*/}
             <div className="flex items-center gap-x-2 text-grayscale-400">
               <MdOutlineLibraryBooks className="text-xl" />
-              <span className="text-base">
+              <span className="text-base font-light">
                 {seriesInfo.newsletterCount}개의 뉴스레터
               </span>
             </div>
