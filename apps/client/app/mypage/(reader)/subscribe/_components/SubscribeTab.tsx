@@ -49,7 +49,7 @@ export default function SubscribeTab({
                 </>
               ))
             ) : (
-              <EmptyCard text={"구독중인 뉴스레터가 없습니다"} />
+              <EmptyCard text={"수신한 뉴스레터가 없습니다"} />
             )}
           </section>
         </Tab.Panel>
@@ -67,7 +67,7 @@ export default function SubscribeTab({
                 ))}
               </div>
             ) : (
-              <EmptyCard text={"구독중인 시리즈가 없습니다"} />
+              <EmptyCard text={"구독 중인 시리즈가 없습니다"} />
             )}
           </section>
         </Tab.Panel>
