@@ -11,7 +11,7 @@ import {
   type NewsletterCardDto,
   type ResponseForm,
   type SeriesWithWriterDto,
-  WriterProfileDto,
+  type WriterProfileDto,
 } from "@moonjin/api-types";
 import Footer from "@components/layout/Footer";
 import { nfetch } from "@lib/fetcher/noAuth";
