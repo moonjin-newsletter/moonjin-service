@@ -25,7 +25,7 @@ export default async function StartSection() {
         {!userInfo ? (
           <Link
             href={"/auth/login"}
-            className="py-2.5 px-6 bg-grayscale-600 text-white rounded-lg mt-10 flex items-center gap-x-1.5"
+            className="py-2.5 px-6 bg-grayscale-600 text-white rounded-lg mt-10 flex items-center gap-x-2.5"
           >
             <LogoSymbolGray />
             문진 시작하기
@@ -33,7 +33,7 @@ export default async function StartSection() {
         ) : checkType(userInfo.data.user.role) === "작가" ? (
           <Link
             href={"/write/new"}
-            className="py-2.5 px-6 bg-grayscale-600 text-white rounded-lg mt-10 flex items-center gap-x-1.5"
+            className="py-2.5 px-6 bg-grayscale-600 text-white rounded-lg mt-10 flex items-center gap-x-2.5"
           >
             <LogoSymbolGray />
             문진 글쓰기
@@ -41,7 +41,7 @@ export default async function StartSection() {
         ) : (
           <Link
             href={"/auth/apply"}
-            className="py-2.5 px-6 bg-grayscale-600 text-white rounded-lg mt-10 flex items-center gap-x-1.5"
+            className="py-2.5 px-6 bg-grayscale-600 text-white rounded-lg mt-10 flex items-center gap-x-2.5"
           >
             <LogoSymbolGray />
             작가 시작하기

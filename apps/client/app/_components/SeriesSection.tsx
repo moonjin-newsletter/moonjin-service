@@ -24,7 +24,7 @@ export default function SeriesSection({
       <h2 className="font-serif  text-2xl font-bold text-grayscale-700">
         Moonjin Series
       </h2>
-      <h4 className="text-gray-500 text-sm mt-2">
+      <h4 className="text-grayscale-400 text-sm mt-2">
         문진만의 다양한 시리즈 뉴스레터들을 만나보세요
       </h4>
       <div className="w-full mt-5 flex flex-col items-center text-sm">
@@ -62,10 +62,10 @@ function SeriesLayout({ sortedList }: { sortedList: SeriesWithWriterDto[] }) {
     <div className="mt-4 w-fit flex gap-x-1 rounded-lg overflow-hidden">
       <Link
         href={`/@${sortedList[0].writer.moonjinId}/series/${sortedList[0].series.id}`}
-        className="w-[248px] h-[450px] bg-gray-600 relative overflow-hidden group"
+        className="w-[248px] h-[450px] text-center bg-gray-600 relative overflow-hidden group"
       >
         <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
-          <span className="text-lg font-semibold leading-relaxed pt-4">
+          <span className="text-lg font-semibold  leading-relaxed pt-4">
             {sortedList[0].series.title}
           </span>
           <div className="text-sm text-grayscale-0/60">
@@ -90,10 +90,10 @@ function SeriesLayout({ sortedList }: { sortedList: SeriesWithWriterDto[] }) {
       <div className="w-[248px] h-[450px] overflow-hidden flex flex-col gap-y-1">
         <Link
           href={`/@${sortedList[1].writer.moonjinId}/series/${sortedList[1].series.id}`}
-          className="w-full h-1/2 bg-gray-600 relative overflow-hidden group "
+          className="w-full h-1/2 bg-gray-600 text-center relative overflow-hidden group "
         >
           <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
-            <span className="text-lg font-semibold leading-relaxed pt-4">
+            <span className="text-lg font-semibold text-center leading-relaxed pt-4">
               {sortedList[1].series.title}
             </span>
             <div className="text-sm text-grayscale-0/60">
@@ -116,10 +116,10 @@ function SeriesLayout({ sortedList }: { sortedList: SeriesWithWriterDto[] }) {
         </Link>
         <Link
           href={`/@${sortedList[2].writer.moonjinId}/series/${sortedList[2].series.id}`}
-          className="w-full h-1/2 bg-gray-600 overflow-hidden relative group"
+          className="w-full h-1/2 bg-gray-600 text-center overflow-hidden text-center relative group"
         >
           <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
-            <span className="text-lg font-semibold leading-relaxed pt-4">
+            <span className="text-lg font-semibold  leading-relaxed pt-4">
               {sortedList[2].series.title}
             </span>
             <div className="text-sm text-grayscale-0/60">
@@ -143,7 +143,7 @@ function SeriesLayout({ sortedList }: { sortedList: SeriesWithWriterDto[] }) {
       </div>
       <Link
         href={`/@${sortedList[3].writer.moonjinId}/series/${sortedList[3].series.id}`}
-        className="w-[248px] h-[450px] bg-gray-600 overflow-hidden group relative"
+        className="w-[248px] h-[450px] bg-gray-600 text-center overflow-hidden group relative"
       >
         <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
           <span className="text-lg font-semibold leading-relaxed pt-4">
@@ -171,7 +171,7 @@ function SeriesLayout({ sortedList }: { sortedList: SeriesWithWriterDto[] }) {
       <div className="w-[248px] h-[450px] overflow-hidden flex flex-col gap-y-1">
         <Link
           href={`/@${sortedList[4].writer.moonjinId}/series/${sortedList[4].series.id}`}
-          className="w-full h-1/2 bg-gray-600 relative overflow-hidden group "
+          className="w-full h-1/2 bg-gray-600 text-center relative overflow-hidden group "
         >
           <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
             <span className="text-lg font-semibold leading-relaxed pt-4">
@@ -197,7 +197,7 @@ function SeriesLayout({ sortedList }: { sortedList: SeriesWithWriterDto[] }) {
         </Link>
         <Link
           href={`/@${sortedList[5].writer.moonjinId}/series/${sortedList[5].series.id}`}
-          className="w-full h-1/2 bg-gray-600 overflow-hidden relative group"
+          className="w-full h-1/2 bg-gray-600 text-center overflow-hidden relative group"
         >
           <div className="absolute top-0 left-0 bg-black/20 z-10 text-white flex flex-col items-center w-full h-full px-12 transition group-hover:bg-black/50 justify-center">
             <span className="text-lg font-semibold leading-relaxed pt-4">

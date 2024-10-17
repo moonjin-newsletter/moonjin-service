@@ -36,7 +36,7 @@ export default function HomeSection({
           <br />
           Newsletter
         </h1>
-        <p className="text-grayscale-600 mt-10 break-keep">
+        <p className="text-grayscale-600 mt-10 break-keep leading-relaxed ">
           이곳은 삶의 고민과 사색 그리고 경험을 아카이브 하는 공간입니다. 다양한
           뉴스레터를 만나보세요.
         </p>
@@ -47,7 +47,7 @@ export default function HomeSection({
           뉴스레터 보러가기
         </Link>
 
-        <div className="mt-20 flex items-center gap-x-1">
+        <div className="mt-[116px] flex items-center gap-x-1">
           <button
             onClick={prevEvent}
             className="h-10 w-10 border  border-grayscale-300 p-auto flex items-center justify-center"
@@ -67,7 +67,7 @@ export default function HomeSection({
         <div className="h-fit px-5 py-14 bg-grayscale-100 rounded-l-xl animate-fade">
           <Carousel>
             <>
-              <h2 className="font-serif text-2xl pl-5 pr-14 leading-9">
+              <h2 className="font-serif text-2xl pl-5 pr-12 leading-9">
                 이<br />
                 주<br />의<br /> 인<br />
                 기<br />글<br />
@@ -79,7 +79,7 @@ export default function HomeSection({
                   className="flex flex-col gap-y-10 gap-x-5"
                 >
                   <CarouselCard postInfo={value[0]} />
-                  <div className="pl-[120px] flex">
+                  <div className="pl-[100px] flex">
                     <CarouselCard postInfo={value[1]} />
                   </div>
                 </li>
@@ -96,7 +96,7 @@ function CarouselCard({ postInfo }: { postInfo: NewsletterCardDto }) {
   return (
     <Link
       href={`/@${postInfo.writer.moonjinId}/post/${postInfo.post.id}`}
-      className="flex max-w-[440px] w-[440px] overflow-hidden  gap-x-6"
+      className="flex break-keep max-w-[440px] w-[440px] overflow-hidden  gap-x-6"
     >
       <Image
         src={postInfo.post.cover}
@@ -105,8 +105,8 @@ function CarouselCard({ postInfo }: { postInfo: NewsletterCardDto }) {
         height={258}
         className="w-[200px] h-[258px] min-w-[200px] rounded object-cover"
       />
-      <div className="flex w-full flex-col  h-full">
-        <div className="w-fit py-1.5 px-2 text-xs font-medium bg-grayscale-700 text-white rounded-full flex items-center justify-center">
+      <div className="flex w-full mt-4 flex-col  h-full">
+        <div className="w-fit py-1.5 px-3 text-xs font-medium bg-grayscale-700 text-white rounded-full flex items-center justify-center">
           {postInfo.post.category}
         </div>
         <h2 className="font-serif text-lg font-semibold mt-3 ">
@@ -115,7 +115,7 @@ function CarouselCard({ postInfo }: { postInfo: NewsletterCardDto }) {
         <span className=" mt-4 text-sm text-grayscale-600">
           {postInfo.post.subtitle}
         </span>
-        <span className="font-libre mt-10 text-sm text-grayscale-500">
+        <span className="font-libre mt-8 text-sm text-grayscale-500">
           Written by.{postInfo.writer.nickname}
         </span>
       </div>

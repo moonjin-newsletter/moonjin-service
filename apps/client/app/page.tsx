@@ -39,7 +39,7 @@ export default async function Page() {
           <h2 className="font-serif  text-2xl font-bold text-grayscale-700">
             Moonjin Writers
           </h2>
-          <h4 className="text-gray-500 text-sm mt-2">
+          <h4 className="text-grayscale-400 text-sm mt-2">
             문진의 새로운 작가를 만나보세요
           </h4>
 
@@ -58,7 +58,7 @@ export default async function Page() {
           <h2 className="font-serif  text-2xl font-bold text-grayscale-700">
             Moonjin Newsletters
           </h2>
-          <h4 className="text-gray-500 text-sm mt-2">
+          <h4 className="text-grayscale-400 text-sm mt-2">
             문진의 다양한 뉴스레터들을 만나보세요
           </h4>
 
@@ -94,7 +94,7 @@ function WriterCard({ writer }: { writer: WriterProfileDto }) {
         />
         <div className="absolute left-8 bottom-[1px] bg-primary rounded-[50%] w-24 h-4 overflow-hidden z-0" />
       </div>
-      <h3 className="text-2xl font-semibold mt-4">{writer.user.nickname}</h3>
+      <h3 className="text-xl font-semibold mt-5">{writer.user.nickname}</h3>
 
       <div className="text-sm text-grayscale-400 font-light mt-2 line-clamp-3">
         {writer.user.description}

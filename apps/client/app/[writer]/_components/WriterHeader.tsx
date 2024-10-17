@@ -65,12 +65,18 @@ export default function WriterHeader() {
             </div>
           ) : (
             <Link
-              className="py-1.5 h-fit flex items-center gap-x-2 px-2.5 text-grayscale-600 text-sm border border-grayscale-500 rounded-full"
+              className="py-2.5 h-fit px-5  text-sm border border-primary text-primary  rounded-full"
               href="/auth/login"
             >
-              <I.PencilSimpleLine />
-              시작하기
+              로그인
             </Link>
+            // <Link
+            //   className="py-1.5 h-fit flex items-center gap-x-2 px-2.5 text-grayscale-600 text-sm border border-grayscale-500 rounded-full"
+            //   href="/auth/login"
+            // >
+            //   {/*<I.PencilSimpleLine />*/}
+            //   시작하기
+            // </Link>
           )}
         </div>
       </section>
