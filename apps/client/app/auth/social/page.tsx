@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import React, { useEffect } from "react";
 import { LogoLeft, LogoStrokeBlack } from "components/icons";
 import csr from "../../../lib/fetcher/csr";
-import { ErrorCodeEnum } from "@moonjin/api-types";
+import { ErrorCodeEnum, ISocialSignup } from "@moonjin/api-types";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import * as Tb from "react-icons/tb";
@@ -27,8 +27,9 @@ export default function Page() {
   async function onClickSignup(data: any) {
     if (data.termsCheck !== true) return toast.error("약관에 동의해주세요");
 
-    const auth = {
-      ...data,
+    const auth: ISocialSignup = {
+      nickname: data.nickname,
+      moonjinId: data?.moonjinId,
       role: parseInt(data.role),
     };
 
