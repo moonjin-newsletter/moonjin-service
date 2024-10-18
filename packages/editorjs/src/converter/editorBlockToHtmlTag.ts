@@ -27,21 +27,28 @@ export function EditorBlockToHtmlTag(block: EditorBlockDto) {
                         <td align="center" width="${
                           block.data.withBackground ? "20%" : "0"
                         }"></td>
-                        <td align="center" style="${
+                        <td align="center" style="">
+                        <img  src="${
+                          block.data.file.url
+                        }" title="${block.data.caption}"
+                         alt="image"
+                         width="100%" style="margin: 0 auto;
+                        
+                        ${
                           block.data.withBorder
                             ? "border: 1px solid #efefef;"
                             : ""
-                        }">
-                        <img class="img-fluid" src="${
-                          block.data.file.url
-                        }" title="${
+                        }
+                        "  />
+                        <figcaption style="margin-top:10px;text-align:center;color:#757575;font-size:14px;line-height:20px">${
                           block.data.caption
-                        }" width="100%" style="margin: 0 auto;"  alt="image"/>
+                        }</figcaption>
                         </td>
                         <td align="center" width="${
                           block.data.withBackground ? "20%" : "0"
                         }"></td>
                     </tr>
+                
                 </tbody>
                </table>
 
