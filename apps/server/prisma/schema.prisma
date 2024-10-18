@@ -44,6 +44,7 @@ model WriterInfo {
   newsletterCount Int      @default(0)
   seriesCount     Int      @default(0)
   followerCount   Int      @default(0)
+  priority        Int      @default(0)
   deleted         Boolean  @default(false)
 
   user              User                @relation(fields: [userId], references: [id])
@@ -218,6 +219,7 @@ model Series {
   newsletterCount Int      @default(0)
   likes           Int      @default(0)
   createdAt       DateTime
+  priority        Int      @default(0)
   lastUpdatedAt   DateTime @default(now())
   deleted         Boolean  @default(false)
 
