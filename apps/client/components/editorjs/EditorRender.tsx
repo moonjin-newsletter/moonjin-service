@@ -66,20 +66,19 @@ function renderEditorData(blocks: EditorBlockDto[]) {
       case "image":
         return (
           <figure key={index} className={` my-4 flex flex-col`}>
-            <div
-              className={`${
-                block.data.withBorder ? "border border-grayscale-200" : ""
-              }  w-full`}
-            >
+            <div className={`w-full`}>
               <img
                 className={`${
                   block.data.withBackground ? "w-2/3 mx-auto" : "w-full"
-                } `}
+                } 
+                ${block.data.withBorder ? "border border-grayscale-200" : ""}
+                
+                `}
                 src={block.data.file.url}
                 alt={block.data.caption}
               />
             </div>
-            <figcaption className="text-center text-sm text-grayscale-500 mt-0.5">
+            <figcaption className="text-center text-sm text-grayscale-400 mt-2">
               {block.data.caption}
             </figcaption>
           </figure>
