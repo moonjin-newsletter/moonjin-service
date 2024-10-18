@@ -57,14 +57,13 @@ export class MailService {
   ): Promise<void> {
     const accessLink =
       process.env.SERVER_URL + '/auth/password/email/verification?code=' + code;
+    const html = EmailCertifyHeader(accessLink, EmailFooter());
     try {
       await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
         from: `문진 <admin@${this.MAILGUN_DOMAIN}>`,
         to: [email],
         subject: '[문진] 패스워드 변경을 위한 인증 메일입니다.',
-        html: `
-        <h2>메일 인증을 위해 해당 링크를 클릭해주세요 <a href="${accessLink}">메일 인증하기</a></h2>
-        `,
+        html,
         'o:tracking': 'yes',
       });
     } catch (error) {
@@ -83,14 +82,13 @@ export class MailService {
   async sendMailForPasswordChange(email: string, code: string): Promise<void> {
     const accessLink =
       process.env.SERVER_URL + '/user/password/change?code=' + code;
+    const html = EmailCertifyHeader(accessLink, EmailFooter());
     try {
       await this.mailgunClient.messages.create(this.MAILGUN_DOMAIN, {
         from: `문진 <admin@${this.MAILGUN_DOMAIN}>`,
         to: [email],
         subject: '[문진] 패스워드 변경을 위한 인증 메일입니다.',
-        html: `
-        <h2>메일 인증을 위해 해당 링크를 클릭해주세요 <a href="${accessLink}">패스워드 변경하기</a></h2>
-        `,
+        html:html,
         'o:tracking': 'yes',
       });
     } catch (error) {

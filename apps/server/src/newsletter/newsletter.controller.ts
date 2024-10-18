@@ -66,7 +66,8 @@ export class NewsletterController {
         return createResponseForm(newsletterCardList, {
             next : {
                 pageNo : paginationOptions.pageNo + 1,
-                cursor : newsletterCardList.length > 0 ? newsletterCardList[newsletterCardList.length - 1].newsletter.id : 0
+                cursor : newsletterCardList.length > 0 ? newsletterCardList[newsletterCardList.length - 1].newsletter.id : 0,
+                take: paginationOptions.take
             },
             isLastPage : newsletterCardList.length < paginationOptions.take,
             totalCount : newsletterCardList.length
@@ -326,7 +327,8 @@ export class NewsletterController {
         return createResponseForm(recommendNewsletterCardList, {
             next : {
                 pageNo : paginationOptions.pageNo + 1,
-                    cursor : recommendNewsletterCardList.length > 0 ? recommendNewsletterCardList[recommendNewsletterCardList.length - 1].newsletter.id : 0
+                cursor : recommendNewsletterCardList.length > 0 ? recommendNewsletterCardList[recommendNewsletterCardList.length - 1].newsletter.id : 0,
+                take: paginationOptions.take
             },
             isLastPage : recommendNewsletterCardList.length < paginationOptions.take,
                 totalCount : recommendNewsletterCardList.length

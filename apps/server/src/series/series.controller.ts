@@ -136,7 +136,8 @@ export class SeriesController {
         return createResponseForm(popularSeriesList,{
             next : {
                 pageNo : paginationOptions.pageNo + 1,
-                cursor : popularSeriesList.length > 0 ? popularSeriesList[popularSeriesList.length - 1].series.id : 0
+                cursor : popularSeriesList.length > 0 ? popularSeriesList[popularSeriesList.length - 1].series.id : 0,
+                take: paginationOptions.take
             },
             isLastPage : popularSeriesList.length < paginationOptions.take,
             totalCount : popularSeriesList.length

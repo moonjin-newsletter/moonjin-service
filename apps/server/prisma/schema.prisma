@@ -130,6 +130,7 @@ model Newsletter {
   clicks        Int      @default(0)
   likes         Int      @default(0)
   comments      Int      @default(0)
+  priority      Int      @default(0)
   sentAt        DateTime @default(now())
 
   post                     Post                      @relation(fields: [postId], references: [id])
