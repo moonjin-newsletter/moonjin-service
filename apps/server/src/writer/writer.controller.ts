@@ -83,7 +83,8 @@ export class WriterController {
         return createResponseForm(newsletterCardList, {
                 next : {
                     pageNo : paginationOptions.pageNo + 1,
-                    cursor : newsletterCardList.length > 0 ? newsletterCardList[newsletterCardList.length - 1].newsletter.id : 0
+                    cursor : newsletterCardList.length > 0 ? newsletterCardList[newsletterCardList.length - 1].newsletter.id : 0,
+                    take: paginationOptions.take
                 },
                 isLastPage : newsletterCardList.length < paginationOptions.take,
                 totalCount : newsletterCardList.length
@@ -102,7 +103,8 @@ export class WriterController {
         return createResponseForm(seriesCardList,{
             next : {
                 pageNo : paginationOptions.pageNo + 1,
-                cursor : seriesCardList.length > 0 ? seriesCardList[seriesCardList.length - 1].id : 0
+                cursor : seriesCardList.length > 0 ? seriesCardList[seriesCardList.length - 1].id : 0,
+                take: paginationOptions.take
             },
             isLastPage : seriesCardList.length < paginationOptions.take,
             totalCount : seriesCardList.length
@@ -149,7 +151,8 @@ export class WriterController {
         }), {
             next: {
                 pageNo: paginationOptions.pageNo + 1,
-                cursor: newsletterWithPostWithWriterAndSeries.length > 0 ? newsletterWithPostWithWriterAndSeries[newsletterWithPostWithWriterAndSeries.length - 1].id : 0
+                cursor: newsletterWithPostWithWriterAndSeries.length > 0 ? newsletterWithPostWithWriterAndSeries[newsletterWithPostWithWriterAndSeries.length - 1].id : 0,
+                take: paginationOptions.take
             },
             isLastPage: newsletterWithPostWithWriterAndSeries.length < paginationOptions.take,
             totalCount: newsletterWithPostWithWriterAndSeries.length
@@ -192,7 +195,8 @@ export class WriterController {
         return createResponseForm(popularWriterList, {
             next: {
                 pageNo: paginationOptions.pageNo + 1,
-                cursor: popularWriterList.length > 0 ? popularWriterList[popularWriterList.length - 1].writerInfo.userId : 0
+                cursor: popularWriterList.length > 0 ? popularWriterList[popularWriterList.length - 1].writerInfo.userId : 0,
+                take: paginationOptions.take
             },
             isLastPage: popularWriterList.length < paginationOptions.take,
             totalCount: popularWriterList.length
