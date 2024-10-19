@@ -107,7 +107,7 @@ export function EmailNewsletterHeader(
                     font-family: serif;
                     font-weight: bold;
                     font-size: 28px;
-                    max-width: 500px;
+                    max-width: 560px;
                     word-break: keep-all;
                     line-height: 1.5;
                     color: #333333;
