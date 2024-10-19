@@ -14,7 +14,7 @@ model User {
   email       String   @unique @db.VarChar(64)
   password    String?  @db.VarChar(64)
   nickname    String   @unique @db.VarChar(16)
-  createdAt   DateTime
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
   description String   @default("") @db.VarChar(256)
   image       String   @db.VarChar(128)
   role        Int      @default(0)
@@ -40,7 +40,7 @@ model Oauth {
 model WriterInfo {
   userId          Int      @id @unique
   moonjinId       String   @unique @db.VarChar(32)
-  createdAt       DateTime
+  createdAt       DateTime @default(now()) @db.Timestamptz(3)
   newsletterCount Int      @default(0)
   seriesCount     Int      @default(0)
   followerCount   Int      @default(0)
@@ -58,7 +58,7 @@ model Subscribe {
   followerId Int
   writerId   Int
   level      Int      @default(0)
-  createdAt  DateTime
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
   hide       Boolean  @default(false)
 
   user       User       @relation(fields: [followerId], references: [id])
@@ -73,7 +73,7 @@ model SubscribeExternal {
   writerId        Int
   subscriberEmail String   @db.VarChar(64)
   subscriberName  String   @db.VarChar(32)
-  createdAt       DateTime
+  createdAt       DateTime @default(now()) @db.Timestamptz(3)
 
   writerInfo WriterInfo @relation(fields: [writerId], references: [userId])
 
@@ -89,8 +89,8 @@ model Post {
   preview       String   @default("") @db.VarChar(512)
   category      Int      @default(-1)
   cover         String   @db.VarChar(128)
-  createdAt     DateTime
-  lastUpdatedAt DateTime @default(now())
+  createdAt     DateTime @default(now()) @db.Timestamptz(3)
+  lastUpdatedAt DateTime @default(now()) @db.Timestamptz(3)
   seriesId      Int      @default(0)
   deleted       Boolean  @default(false)
 
@@ -116,7 +116,7 @@ model PostContent {
   id        Int      @id @default(autoincrement())
   postId    Int
   content   String   @db.Text
-  createdAt DateTime
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
 
   post       Post        @relation(fields: [postId], references: [id])
   newsletter Newsletter?
@@ -132,7 +132,7 @@ model Newsletter {
   likes         Int      @default(0)
   comments      Int      @default(0)
   priority      Int      @default(0)
-  sentAt        DateTime @default(now())
+  sentAt        DateTime @default(now()) @db.Timestamptz(3)
 
   post                     Post                      @relation(fields: [postId], references: [id])
   postContent              PostContent               @relation(fields: [postContentId], references: [id])
@@ -148,7 +148,7 @@ model NewsletterSend {
   id           Int      @id @default(autoincrement())
   newsletterId Int
   title        String   @db.VarChar(128)
-  sentAt       DateTime
+  sentAt       DateTime @default(now()) @db.Timestamptz(3)
 
   newsletter     Newsletter       @relation(fields: [newsletterId], references: [id])
   mailNewsletter MailNewsletter[]
@@ -186,7 +186,7 @@ model NewsletterAnalytics {
   id               String
   mailNewsletterId Int
   event            Int
-  timestamp        DateTime
+  timestamp        DateTime @default(now()) @db.Timestamptz(3)
 
   mailNewsletter MailNewsletter @relation(fields: [mailNewsletterId], references: [id])
 
@@ -198,7 +198,7 @@ model NewsletterAnalytics {
 model NewsletterLike {
   newsletterId Int
   userId       Int
-  createdAt    DateTime
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
 
   newsletter Newsletter @relation(fields: [newsletterId], references: [id])
   user       User       @relation(fields: [userId], references: [id])
@@ -218,9 +218,9 @@ model Series {
   clicks          Int      @default(0)
   newsletterCount Int      @default(0)
   likes           Int      @default(0)
-  createdAt       DateTime
+  createdAt       DateTime @default(now()) @db.Timestamptz(3)
   priority        Int      @default(0)
-  lastUpdatedAt   DateTime @default(now())
+  lastUpdatedAt   DateTime @default(now()) @db.Timestamptz(3)
   deleted         Boolean  @default(false)
 
   writerInfo WriterInfo   @relation(fields: [writerId], references: [userId])
@@ -233,7 +233,7 @@ model Series {
 model SeriesLike {
   seriesId  Int
   userId    Int
-  createdAt DateTime
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
 
   series Series @relation(fields: [seriesId], references: [id])
   user   User   @relation(fields: [userId], references: [id])
@@ -249,8 +249,8 @@ model Letter {
   receiverId Int
   title      String    @db.VarChar(128)
   content    String    @db.Text
-  createdAt  DateTime
-  readAt     DateTime?
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+  readAt     DateTime? @db.Timestamptz(3)
   deleted    Boolean   @default(false)
 
   sender   User @relation(name: "sender", fields: [senderId], references: [id])
