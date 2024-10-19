@@ -6,7 +6,6 @@ import {
     SubscriberDto, ExternalSubscriberInfoDto,
 } from "./dto";
 import {AuthValidationService} from "../auth/auth.validation.service";
-import {UtilService} from "../util/util.service";
 import {ExceptionList} from "../response/error/errorInstances";
 import {SubscribingWriterInfoWithUser} from "./prisma/subscribingWriterInfoWithUser.prisma.type";
 import SubscribeDtoMapper from "./SubscribeDtoMapper";
@@ -18,7 +17,6 @@ export class SubscribeService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly authValidationService: AuthValidationService,
-        private readonly utilService: UtilService,
         private readonly writerInfoService: WriterInfoService
     ) {}
 
@@ -36,8 +34,7 @@ export class SubscribeService {
             const externalFollow = await this.prismaService.subscribeExternal.create({
                 data: {
                     writerId,
-                    ...externalSubscriber,
-                    createdAt: this.utilService.getCurrentDateInKorea()
+                    ...externalSubscriber
                 }
             })
             return SubscribeDtoMapper.SubscriberExternalToExternalSubscriberDto(externalFollow)
@@ -70,13 +67,11 @@ export class SubscribeService {
      */
     async addExternalSubscriberListByEmail(writerId: number,  externalSubscriberList : ExternalSubscriberInfoDto[]): Promise<SubscribeExternal[]> {
         if(externalSubscriberList.length === 0) return [];
-        const createdAt = this.utilService.getCurrentDateInKorea();
         const result = await this.prismaService.subscribeExternal.createManyAndReturn({
             data : externalSubscriberList.map(externalSubscriber => {
                 return {
                     writerId,
                     ...externalSubscriber,
-                    createdAt,
                 }
             }),
             skipDuplicates: true
@@ -101,8 +96,7 @@ export class SubscribeService {
             await this.prismaService.subscribe.create({
                 data: {
                     followerId,
-                    writerId,
-                    createdAt : this.utilService.getCurrentDateInKorea()
+                    writerId
                 }
             });
             await this.synchronizeSubscriber(writerId);

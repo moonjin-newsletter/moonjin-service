@@ -46,11 +46,9 @@ export class PostService {
                     preview: EditorJsToPostPreview(content.blocks),
                     writerId,
                     cover,
-                    createdAt: this.utilService.getCurrentDateInKorea(),
                     postContent: {
                         create: {
                             content: JSON.stringify(content),
-                            createdAt: this.utilService.getCurrentDateInKorea()
                         }
                     }
                 },
@@ -88,12 +86,10 @@ export class PostService {
                     ...postMetaData,
                     preview: EditorJsToPostPreview(content.blocks),
                     cover,
-                    lastUpdatedAt: this.utilService.getCurrentDateInKorea(),
                     category,
                     postContent: {
                         create: {
-                            content: JSON.stringify(content),
-                            createdAt: this.utilService.getCurrentDateInKorea()
+                            content: JSON.stringify(content)
                         }
                     }
                 },
@@ -226,8 +222,7 @@ export class PostService {
             const postContent = await this.prismaService.postContent.create({
                 data: {
                     postId : postContentData.postId,
-                    content : JSON.stringify(postContentData.content),
-                    createdAt : this.utilService.getCurrentDateInKorea(),
+                    content : JSON.stringify(postContentData.content)
                 },
             });
             await this.updatePostPreview(postContentData.postId,EditorJsToPostPreview(postContentData.content.blocks));

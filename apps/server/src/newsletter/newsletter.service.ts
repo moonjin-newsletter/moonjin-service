@@ -6,7 +6,6 @@ import NewsletterDtoMapper from "./newsletterDtoMapper";
 import {PostWithContentAndSeriesAndWriterDto} from "../post/dto";
 import {PostService} from "../post/post.service";
 import {SubscribeService} from "../subscribe/subscribe.service";
-import {UtilService} from "../util/util.service";
 import {sendNewsLetterWithHtmlDto} from "../mail/dto";
 import {MailService} from "../mail/mail.service";
 import {
@@ -31,7 +30,6 @@ export class NewsletterService {
         private readonly prismaService: PrismaService,
         private readonly mailService:MailService,
         private readonly postService: PostService,
-        private readonly utilService: UtilService,
         private readonly subscribeService: SubscribeService,
         private readonly seriesService : SeriesService,
         private readonly writerInfoService : WriterInfoService
@@ -106,13 +104,11 @@ export class NewsletterService {
         const receiverIdList = receiverList.subscriberList.map(subscriber => subscriber.user.id);
 
         try{
-            const sentAt = this.utilService.getCurrentDateInKorea();
             const newsletter = await this.prismaService.newsletter.create({
                 data : {
                     id : postId,
                     postId,
                     postContentId: postWithContentAndSeriesAndWriter.postContent.id,
-                    sentAt,
                     webNewsletter : {
                         createMany : {
                             data : receiverIdList.map(receiverId => {
@@ -126,7 +122,6 @@ export class NewsletterService {
                     newsletterSend: {
                         create: {
                             title: newsletterTitle,
-                            sentAt,
                             mailNewsletter: {
                                 createMany: {
                                     data: receiverEmailList.map(email => {
@@ -444,7 +439,6 @@ export class NewsletterService {
                 data : {
                     newsletterId,
                     userId,
-                    createdAt: this.utilService.getCurrentDateInKorea()
                 }
             })
             await this.synchronizeNewsletterLikeCount(newsletterId);

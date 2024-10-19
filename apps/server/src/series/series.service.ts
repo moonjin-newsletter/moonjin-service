@@ -27,7 +27,6 @@ export class SeriesService {
      * @throws CREATE_SERIES_ERROR
      */
     async createSeries(createSeriesData : CreateSeriesDto) : Promise<SeriesDto>{
-        const createdAt = this.utilService.getCurrentDateInKorea();
         const cover = this.utilService.processImageForCover(createSeriesData.cover);
         try {
             const createdSeries = await this.prismaService.series.create({
@@ -36,9 +35,7 @@ export class SeriesService {
                     writerId : createSeriesData.writerId,
                     category : createSeriesData.category,
                     description : createSeriesData.description ?? undefined,
-                    cover,
-                    createdAt,
-                    lastUpdatedAt :createdAt,
+                    cover
                 }
             })
             return SeriesDtoMapper.SeriesToSeriesDto(createdSeries);
