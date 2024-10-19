@@ -91,22 +91,23 @@ export function EmailNewsletterHeader(
             ${
               series_title
                 ? `<tr>
-                <td align="center" style="color: #7b0000; font-size: 14px">
+                <td align="center" style="color: #7b0000; font-size: 16px; line-height: 1.5;">
                     ${series_title}
                 </td>
             </tr>
             <tr>
-              <td height="10" style="font-size: 0; line-height: 0">&nbsp;</td>
-            </tr>
-`
+              <td height="12" style="font-size: 0; line-height: 0">&nbsp;</td>
+            </tr>`
                 : ""
             }
             <tr>
               <td align="center">
                 <h1
                   style="
-                    font-weight: 700;
+                  font-family: Georgia, 'Times New Roman', Times, serif;
+                    font-weight: bold;
                     font-size: 28px;
+                    line-height: 1.5;
                     color: #333333;
                     margin: 0;
                   "
@@ -116,15 +117,19 @@ export function EmailNewsletterHeader(
               </td>
             </tr>
             <tr>
+              <td height="8" style="font-size: 0; line-height: 0">&nbsp;</td>
+            </tr>
+            <tr>
                 <td align="center">
                     <h2 style="
+                    font-family: Georgia, 'Times New Roman', Times, serif;
                     font-size: 18px;
-                    font-weight: 400;
+                    font-weight: 500;
                     color: #999999;
-                    margin: 16px 0 0 0;
                     max-width: 480px;
                     word-break: keep-all;
                     line-height: 1.5;
+                    margin: 0;
                     ">
                     ${subtitle}
                     </h2>
