@@ -44,5 +44,8 @@ apps/*/.env.*
 # turbo
 .turbo
 
+# ide
+.idea
+
 # vercel
 .vercel
