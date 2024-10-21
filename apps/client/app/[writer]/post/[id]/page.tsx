@@ -3,11 +3,12 @@ import PostHeader from "../_components/PostHeader";
 import Image from "next/image";
 import { LogoSymbolGray } from "@components/icons";
 import { nfetch } from "@lib/fetcher/noAuth";
-import {
+import type {
   NewsletterAllDataDto,
   NewsletterCardDto,
   ResponseForm,
-  type SubscribingResponseDto,
+  SitemapResponseDto,
+  SubscribingResponseDto,
 } from "@moonjin/api-types";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -29,13 +30,18 @@ type pageProps = {
 };
 
 export const revalidate = 0;
-//
-// export async function generateStaticParams() {
-//   return [
-//     { writer: "@andy91052990", id: "1" },
-//     { writer: "@andy91052990", id: "2" },
-//   ];
-// }
+
+export async function generateStaticParams() {
+  const posts =
+    await nfetch<ResponseForm<SitemapResponseDto[]>>("newsletter/sitemap");
+
+  return posts.data.map((post) => ({
+    params: {
+      moonjinId: `${post.moonjinId}`,
+      nId: post.id.toString(),
+    },
+  }));
+}
 
 export default async function Page({ params }: pageProps) {
   const [, moonjinId] = decodeURI(params.writer).split("%40");
