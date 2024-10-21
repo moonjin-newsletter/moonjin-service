@@ -4,16 +4,16 @@ import { LogoStrokeBlack, LogoSymbolGray } from "@components/icons";
 import Link from "next/link";
 import { Button } from "@headlessui/react";
 import toast from "react-hot-toast";
+import { isMobileWeb } from "@toss/utils";
 
 export default function CheckMobile({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="w-full h-full">
-      <div className="sm:hidden">{children}</div>
-      <div className="w-full min-h-screen lg:hidden flex flex-col items-center justify-center px-12">
+  if (isMobileWeb())
+    return (
+      <div className="w-full min-h-screen flex flex-col items-center justify-center px-12">
         <LogoStrokeBlack
           width="44"
           height="44"
@@ -46,6 +46,7 @@ export default function CheckMobile({
           </Link>
         </div>
       </div>
-    </div>
-  );
+    );
+
+  return <>{children}</>;
 }
