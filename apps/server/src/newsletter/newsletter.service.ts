@@ -835,4 +835,33 @@ export class NewsletterService {
         }
 
     }
+
+    /**
+     * @summary 사이트맵용 뉴스테러 전체 목록 가져오기
+     * @return NewsletterWithPostWithWriterAndSeries[]
+     */
+    async getAllNewsletterListForSiteMap(){
+        return this.prismaService.newsletter.findMany({
+            where: {
+                post : {
+                    deleted : false
+                }
+            },
+            include: {
+                post: {
+                    include: {
+                        writerInfo: {
+                            include: {
+                                user: true
+                            }
+                        },
+                        series: true
+                    }
+                }
+            },
+            orderBy: {
+                id: 'desc'
+            }
+        })
+    }
 }

@@ -155,4 +155,21 @@ export class WriterInfoService {
             throw ExceptionList.USER_NOT_WRITER
         }
     }
+
+    /**
+     * @summary 모든 작가 정보 가져오기
+     */
+    async getAllWriterListForSitemap(){
+        return this.prismaService.writerInfo.findMany({
+            where: {
+                deleted: false,
+                user: {
+                    deleted: false
+                }
+            },
+            include:{
+                user: true
+            },
+        })
+    }
 }

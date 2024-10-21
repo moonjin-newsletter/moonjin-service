@@ -442,4 +442,25 @@ export class SeriesService {
             throw ExceptionList.SERIES_NOT_FOUND
         }
     }
+
+    /**
+     * @summary 시리즈 리스트 가져오기
+     */
+    async getAllSeriesListForSiteMap(){
+        return this.prismaService.series.findMany({
+            where: {
+                deleted: false
+            },
+            include:{
+                writerInfo: {
+                    include: {
+                        user: true
+                    }
+                }
+            },
+            orderBy: {
+                id: 'desc'
+            }
+        })
+    }
 }

@@ -20,6 +20,7 @@ import {PaginationOptionsDto} from "../common/pagination/dto";
 import {ISearchSeries} from "./api-types/ISearchSeries";
 import {SeriesWithWriter} from "./prisma/seriesWithWriter.prisma.type";
 import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
+import {SitemapResponseDto} from "../common";
 
 @Controller('series')
 export class SeriesController {
@@ -64,6 +65,21 @@ export class SeriesController {
             }
         }))
     }
+
+    /**
+     * @summary 시리즈 사이트맵 가져오기
+     */
+    @TypedRoute.Get('sitemap')
+    async getSeriesSiteMap():Promise<Try<SitemapResponseDto[]>>{
+        const seriesList = await this.seriesService.getAllSeriesListForSiteMap();
+        return createResponseForm(seriesList.map(series => {
+            return {
+                id: series.id,
+                moonjinId: series.writerInfo.moonjinId,
+            }
+        }))
+    }
+
 
     /**
      * @summary 내가 작성중인 시리즈 id로 가져오기
@@ -201,5 +217,4 @@ export class SeriesController {
             message: "시리즈 삭제 성공"
         });
     }
-
 }

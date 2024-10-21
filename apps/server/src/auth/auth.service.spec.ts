@@ -7,7 +7,7 @@
 // import {UtilModule} from "../util/util.module";
 // import {ConfigModule, ConfigService} from "@nestjs/config";
 // import {HttpModule} from "@nestjs/axios";
-// import {SignupDataDto,EnrollWriterDto} from "./dto";
+// import {SignupDataDto,EnrollWriterDto} from "./sitemap";
 // import {UserRoleEnum} from "./enum/userRole.enum";
 // import { JwtModule } from '@nestjs/jwt';
 // import typia from 'typia';
