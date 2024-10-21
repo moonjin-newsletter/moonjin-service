@@ -13,7 +13,7 @@ import {
 import { nfetch } from "@lib/fetcher/noAuth";
 import Link from "next/link";
 
-export const revalidate = 0;
+export const revalidate = 600;
 
 export default async function Page() {
   const { data: popularSeriesList } = await nfetch<
