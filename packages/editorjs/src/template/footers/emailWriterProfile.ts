@@ -13,15 +13,16 @@ export function EmailWriterProfile(
   user_description: string,
   user_link: string,
 ) {
-  return ` <tr>
-      <td>
+  return ` 
+    <tr>
+      <td align="center">
         <table
           role="presentation"
           border="0"
           cellpadding="0"
           cellspacing="0"
           width="100%"
-          style="padding: 48px 80px"
+          style="max-width: 440px; padding: 0 12px;"
         >
           <tbody>
             <tr>

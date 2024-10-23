@@ -7,7 +7,7 @@ export function EmailFeedback() {
           cellpadding="0"
           cellspacing="0"
           width="100%"
-          style="padding: 48px 80px"
+          style="max-width: 440px; padding: 0 12px;"
         >
           <tbody>
             <tr>
