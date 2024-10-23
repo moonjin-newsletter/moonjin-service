@@ -66,7 +66,7 @@ export default function UpdateEditorJS({
               },
             })
             .then((res) => {
-              toast.success("글을 저장했습니다");
+              toast.success("글을 저장했습니다. 잠시 후 수정됩니다");
               router.push(
                 `/@${letterData.writer.writerInfo.moonjinId}/post/${letterId}`,
               );
