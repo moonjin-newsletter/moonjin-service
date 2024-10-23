@@ -85,7 +85,9 @@ export default function RootLayout({
           type="text/css"
         />
       </head>
-      <body className={`min-h-screen text-grayscale-700 w-full `}>
+      <body
+        className={`min-h-screen text-grayscale-700 w-full min-w-[1006px] `}
+      >
         <ClientProvider>
           <CheckMobile>{children}</CheckMobile>
         </ClientProvider>

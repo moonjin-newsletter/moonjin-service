@@ -30,7 +30,7 @@ export default async function Page() {
     await nfetch<ResponseForm<WriterProfileDto[]>>("writer/popular");
 
   return (
-    <main className=" w-full min-h-screen  ">
+    <main className="w-full min-h-screen">
       <Header initialColor="bg-white" />
       <div className="relative flex flex-col items-center justify-center w-full h-full min-h-screen overflow-hidden">
         <HomeSection topLetterList={topLetterList} />
