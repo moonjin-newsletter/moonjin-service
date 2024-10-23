@@ -104,7 +104,7 @@ export function EmailNewsletterHeader(
               <td align="center">
                 <h1
                   style="
-                    font-family: serif;
+                    font-family: Nanum Myeongjo,serif;
                     font-weight: bold;
                     font-size: 26px;
                     max-width: 560px;
