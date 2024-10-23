@@ -2,7 +2,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { SeriesDto } from "@moonjin/api-types";
-import { BiLike } from "react-icons/bi";
 
 import { usePathname } from "next/navigation";
 import { MdOutlineLibraryBooks } from "react-icons/md";
@@ -31,14 +30,14 @@ export default function SeriesCard({ seriesInfo }: { seriesInfo: SeriesDto }) {
       </div>
       <div className="flex flex-col mt-2">
         <h2 className="line-clamp-1 font-medium text-lg">{seriesInfo.title}</h2>
-        <span className="text-[#999999] line-clamp-1 mt-1">
+        <span className="text-grayscale-500 text-sm font-light line-clamp-1 mt-1">
           {seriesInfo.description}
         </span>
-        <div className="flex items-center gap-x-3.5 mt-4 text-[#999999] text-sm">
-          <div className="flex items-center gap-x-1">
-            <BiLike />
-            <span>{seriesInfo.likes}</span>
-          </div>
+        <div className="flex items-center gap-x-3.5 mt-2 text-[#999999] text-sm">
+          {/*<div className="flex items-center gap-x-1">*/}
+          {/*  <BiLike />*/}
+          {/*  <span>{seriesInfo.likes}</span>*/}
+          {/*</div>*/}
           <div className="flex items-center gap-x-1">
             <MdOutlineLibraryBooks />
             <span>{seriesInfo.newsletterCount}</span>
