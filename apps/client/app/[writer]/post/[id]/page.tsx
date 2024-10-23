@@ -30,18 +30,6 @@ type pageProps = {
 
 export const revalidate = 60;
 
-// export async function generateStaticParams() {
-//   const posts =
-//     await nfetch<ResponseForm<SitemapResponseDto[]>>("newsletter/sitemap");
-//
-//   return posts.data.map((post) => ({
-//     params: {
-//       writer: `${post.moonjinId}`,
-//       id: post.id.toString(),
-//     },
-//   }));
-// }
-
 export default async function Page({ params }: pageProps) {
   const [, moonjinId] = decodeURI(params.writer).split("%40");
   const nId = parseInt(params.id, 10);
