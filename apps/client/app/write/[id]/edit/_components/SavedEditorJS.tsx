@@ -89,6 +89,7 @@ export default function SavedEditorJS({
                 await res.json<ResponseForm<PostWithContentDto>>();
               toast.success("글을 저장했습니다");
               router.push(`/write/${nInfo.post.id}/edit`);
+              router.refresh();
             })
             .catch(() => toast.error("글 저장에 실패하였습니다"));
         })

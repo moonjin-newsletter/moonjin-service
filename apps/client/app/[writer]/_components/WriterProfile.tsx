@@ -33,7 +33,7 @@ export default async function WriterProfile({
         alt={`작가 프로필 이미지: ${writerInfo.user.nickname}`}
         width={200}
         height={200}
-        className="w-[200px] min-w-[200px] h-[200px] object-cover bg-grayscale-200 rounded-lg  overflow-hidden shadow"
+        className="w-[200px] min-w-[200px] h-[200px] object-cover rounded-lg  overflow-hidden shadow"
       />
       <div className="flex grow flex-col w-full h-full">
         <h1 className="text-[28px] font-semibold">
