@@ -14,6 +14,7 @@ import csr from "../../../../../lib/fetcher/csr";
 import toast from "react-hot-toast";
 import { fileUpload } from "@lib/file/fileUpload";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function SettingTab() {
   const { data: userInfo } = useSWR<ResponseForm<UserOrWriterDto>>("user");
@@ -194,6 +195,7 @@ function WriterProfileLayout({
       image: userInfo?.data?.user?.image,
     },
   });
+  const router = useRouter();
   const userData = watch();
 
   function onClickSubmit(value: IChangeWriterProfile) {
@@ -201,7 +203,7 @@ function WriterProfileLayout({
       .patch("writer/profile", { json: value })
       .then((res) => {
         toast.success("프로필이 변경됐습니다");
-        window.location.reload();
+        router.refresh();
       })
       .catch((err) => {
         if (err?.data?.message) {
