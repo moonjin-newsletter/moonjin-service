@@ -3,11 +3,11 @@ import PostHeader from "../_components/PostHeader";
 import Image from "next/image";
 import { LogoSymbolGray } from "@components/icons";
 import { nfetch } from "@lib/fetcher/noAuth";
-import {
+import type {
   NewsletterAllDataDto,
   NewsletterCardDto,
   ResponseForm,
-  type SubscribingResponseDto,
+  SubscribingResponseDto,
 } from "@moonjin/api-types";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -28,14 +28,7 @@ type pageProps = {
   };
 };
 
-export const revalidate = 0;
-//
-// export async function generateStaticParams() {
-//   return [
-//     { writer: "@andy91052990", id: "1" },
-//     { writer: "@andy91052990", id: "2" },
-//   ];
-// }
+export const revalidate = 60;
 
 export default async function Page({ params }: pageProps) {
   const [, moonjinId] = decodeURI(params.writer).split("%40");

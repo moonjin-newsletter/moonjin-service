@@ -21,7 +21,6 @@ export default function Page() {
   const role = watch("role");
 
   async function onClickSignup(data: any) {
-    console.log(data);
     if (data.password !== data.passwordCheck)
       return toast.error("비밀번호를 확인해주세요");
 
@@ -34,7 +33,7 @@ export default function Page() {
       email: data.email,
       password: data.password,
       nickname: data.nickname,
-      moonjinId: data.moonjinId,
+      moonjinId: data?.moonjinId,
     };
 
     await csr

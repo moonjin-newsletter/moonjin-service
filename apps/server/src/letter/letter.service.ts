@@ -25,8 +25,7 @@ export class LetterService {
         try {
             const letter = await this.prismaService.letter.create({
                 data : {
-                    ...createLetterData,
-                    createdAt : this.utilService.getCurrentDateInKorea(),
+                    ...createLetterData
                 }
             });
             return LetterDtoMapper.letterToLetterDto(letter);

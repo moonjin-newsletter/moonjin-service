@@ -4,6 +4,7 @@
  * @param user_nickname
  * @param user_email
  * @param title
+ * @param subtitle
  * @param series_title
  * @param date
  * @param link
@@ -14,6 +15,7 @@ export function EmailNewsletterHeader(
   user_nickname: string,
   user_email: string,
   title: string,
+  subtitle: string,
   series_title: string | null,
   date: string,
   link: string,
@@ -89,24 +91,28 @@ export function EmailNewsletterHeader(
             ${
               series_title
                 ? `<tr>
-    
-                <td align="center" style="color: #7b0000; font-size: 14px">
+                <td align="center" style="color: #7b0000; font-size: 16px; line-height: 1.5;  ">
                     ${series_title}
                 </td>
+            </tr>
+            <tr>
+              <td height="12" style="font-size: 0; line-height: 0">&nbsp;</td>
             </tr>`
                 : ""
             }
-         
-
             <tr>
               <td align="center">
                 <h1
                   style="
-                    font-weight: 700;
-                    font-size: 24px;
+                    font-family: Nanum Myeongjo,serif;
+                    font-weight: bold;
+                    font-size: 26px;
+                    max-width: 560px;
+                    word-break: keep-all;
+                    line-height: 1.5;
                     color: #333333;
                     margin: 0;
-                    padding: 4px 0 0 0;
+                    letter-spacing: -0.025em;
                   "
                 >
                   ${title}
@@ -114,61 +120,34 @@ export function EmailNewsletterHeader(
               </td>
             </tr>
             <tr>
-              <td height="24" style="font-size: 0; line-height: 0">&nbsp;</td>
+              <td height="8" style="font-size: 0; line-height: 0">&nbsp;</td>
             </tr>
             <tr>
-              <td
-                style="
-                  font-size: 12px;
-                  color: #333333;
-                  margin: 0;
-                  padding: 8px 0 0 0;
-                "
-                align="center"
-              >
-                by. ${user_nickname}
-              </td>
+                <td align="center">
+                    <h2 style="
+                    font-family: Nanum Myeongjo,serif;
+                    font-size: 16px;
+                    font-weight: 500;
+                    color: #999999;
+                    max-width: 500px;
+                    word-break: keep-all;
+                    line-height: 1.5;
+                    margin: 0;
+                    ">
+                    ${subtitle}
+                    </h2>
+                </td>
             </tr>
-            <tr>
-              <td
-                style="
-                  font-size: 12px;
-                  color: #333333;
-                  margin: 0;
-                  padding: 4px 0 0 0;
-                "
-                align="center"
-              >
-                ${date}
-              </td>
-            </tr>
-
             <tr>
               <td height="40" style="font-size: 0; line-height: 0">&nbsp;</td>
-            </tr>
-            <tr>
-              <td>
-                <hr
-                  style="
-                    height: 1px;
-                    width: 100%;
-                    margin: 16px 0;
-                    border-width: 1px 0 0 0;
-                    border-style: solid;
-                    border-color: #d6d6d6;
-                  "
-                />
-              </td>
             </tr>
             <tr>
               <td
                 style="
                   width: 100%;
-                  padding: 0 0 16px 0;
                   border-radius: 0 0 12px 12px;
                 "
-                align="right"
-                \`
+                align="center"
               >
                 <a
                   href="${link}"
@@ -197,6 +176,25 @@ export function EmailNewsletterHeader(
                   <span style="margin-left: 6px">웹사이트에서 보기</span>
                 </a>
               </td>
+            </tr>
+            <tr>
+              <td height="24" style="font-size: 0; line-height: 0">&nbsp;</td>
+            </tr>
+            <tr>
+              <td>
+                <hr
+                  style="
+                    height: 1px;
+                    width: 100%;
+                    border-width: 1px 0 0 0;
+                    border-style: solid;
+                    border-color: #d6d6d6;
+                  "
+                />
+              </td>
+            </tr>
+            <tr>
+              <td height="40" style="font-size: 0; line-height: 0">&nbsp;</td>
             </tr>
           </tbody>
         </table>

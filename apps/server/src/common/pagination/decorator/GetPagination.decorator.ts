@@ -4,12 +4,13 @@ import {PaginationOptionsDto} from "../dto";
 export enum PaginationDefault {
     TAKE_DEFAULT = 10,
     SKIP_DEFAULT = 0,
+    PAGE_START_DEFAULT = 0
 }
 
 export const GetPagination = createParamDecorator(
     (_date:any,context: ExecutionContext) :PaginationOptionsDto=> {
     const request = context.switchToHttp().getRequest();
-    const pageNo = Number(request.query?.pageNo) || 1;
+    const pageNo = Number(request.query?.pageNo) || PaginationDefault.PAGE_START_DEFAULT;
     const cursor = Number(request.query?.cursor) || undefined;
     const take = Number(request.query?.take) || undefined;
 
@@ -24,7 +25,7 @@ export const GetPagination = createParamDecorator(
         return {
             take : take ? take : PaginationDefault.TAKE_DEFAULT,
             pageNo,
-            skip : (pageNo-1) * PaginationDefault.TAKE_DEFAULT
+            skip : (pageNo) * PaginationDefault.TAKE_DEFAULT
         }
     }
 });

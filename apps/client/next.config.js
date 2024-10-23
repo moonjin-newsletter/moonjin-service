@@ -42,6 +42,10 @@ module.exports = {
         protocol: "https",
         hostname: "d1ppxineti4knh.cloudfront.net",
       },
+      {
+        protocol: "https",
+        hostname: "d175sl6wyv2vlc.cloudfront.net",
+      },
     ],
   },
 };

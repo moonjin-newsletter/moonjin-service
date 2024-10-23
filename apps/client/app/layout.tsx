@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { Libre_Baskerville, Noto_Serif_KR } from "next/font/google";
 import ClientProvider from "./ClientProvider";
 import { Analytics } from "@vercel/analytics/react";
+import CheckMobile from "./_components/CheckMobile";
 
 const libre = Libre_Baskerville({
   subsets: ["latin"],
@@ -85,11 +86,10 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`flex min-h-screen flex-col text-grayscale-700 w-full min-w-[1006px] `}
+        className={`min-h-screen text-grayscale-700 w-full min-w-[1006px] `}
       >
         <ClientProvider>
-          {children}
-          {/*<Footer />*/}
+          <CheckMobile>{children}</CheckMobile>
         </ClientProvider>
         <Analytics />
       </body>

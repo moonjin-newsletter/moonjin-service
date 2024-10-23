@@ -48,8 +48,7 @@ export class AuthService {
                     password : hashedPassword,
                     role: UserRoleEnum.USER,
                     image,
-                    description : "문진 독자입니다.",
-                    createdAt : this.utilService.getCurrentDateInKorea()
+                    description : "문진 독자입니다."
                 }
             })
             return UserDtoMapper.UserToUserAuthDto(createdUser);
@@ -82,11 +81,9 @@ export class AuthService {
                     role: UserRoleEnum.WRITER,
                     image,
                     description,
-                    createdAt : this.utilService.getCurrentDateInKorea(),
                     writerInfo:{
                         create:{
-                            moonjinId,
-                            createdAt : this.utilService.getCurrentDateInKorea()
+                            moonjinId
                         }
                     }
                 }
@@ -114,8 +111,7 @@ export class AuthService {
             const {description, ...writerInfoToEnroll} =writerSignupData;
             const createWriterInfo = this.prismaService.writerInfo.create({
                 data:{
-                    ...writerInfoToEnroll,
-                    createdAt : this.utilService.getCurrentDateInKorea(),
+                    ...writerInfoToEnroll
                 },
             })
             const changeUserNickname = (newNickname) ? {nickname : newNickname} : {};
@@ -232,7 +228,6 @@ export class AuthService {
                     role : UserRoleEnum.USER,
                     image,
                     description: "문진 독자입니다.",
-                    createdAt : this.utilService.getCurrentDateInKorea(),
                     oauth:{
                         create:{
                             oauthId,
@@ -270,7 +265,6 @@ export class AuthService {
                     role : UserRoleEnum.WRITER,
                     image,
                     description,
-                    createdAt : this.utilService.getCurrentDateInKorea(),
                     oauth:{
                         create:{
                             oauthId,
@@ -280,7 +274,6 @@ export class AuthService {
                     writerInfo:{
                         create:{
                             moonjinId,
-                            createdAt : this.utilService.getCurrentDateInKorea()
                         }
                     }
                 }

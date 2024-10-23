@@ -52,6 +52,7 @@ export function EditorJsToHtml(
       metaData.user.nickname,
       metaData.writerInfo.moonjinId + "@moonjin.site",
       metaData.post.title,
+      metaData.post.subtitle,
       metaData.series?.title ?? null,
       sentAt,
       `https://moonjin.site/@${metaData.writerInfo.moonjinId}/post/${newsletterId}`,

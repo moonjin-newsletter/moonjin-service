@@ -7,7 +7,7 @@ export function EmailFeedback() {
           cellpadding="0"
           cellspacing="0"
           width="100%"
-          style="padding: 48px 80px"
+          style="max-width: 440px; padding: 0 12px;"
         >
           <tbody>
             <tr>
@@ -48,7 +48,7 @@ export function EmailFeedback() {
             <tr>
               <td align="center">
                 <span
-                  style="color: #999999; font-size: 14px; word-break: keep-all"
+                  style="color: #999999; font-size: 14px; word-break: keep-all;line-height: 1.5"
                 >
                   더 나은 뉴스레터를 만들기 위해 여러분의 소중한 피드백을
                   기다립니다! 칭찬도 좋고, 개선할 점도 환영이에요. 함께 성장하는

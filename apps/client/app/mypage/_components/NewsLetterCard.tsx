@@ -14,16 +14,16 @@ export default function NewsLetterCard({
       href={`/@${newsletterInfo.writer.moonjinId}/post/${newsletterInfo.newsletter.id}`}
       className="flex items-center w-full group justify-between gap-x-5 border-b py-6 h-fit overflow-hidden"
     >
-      <div className="min-h-[120px] flex flex-col w-full h-full grow">
+      <div className="min-h-[120px] flex flex-col w-full h-full grow gap-y-2">
         {newsletterInfo?.series && (
           <span className="text-[13px] w-fit text-primary border-primary border-b">
             {newsletterInfo?.series?.title}
           </span>
         )}
-        <h2 className="group-hover:underline mt-1.5 text-lg text-grayscale-600 font-medium">
+        <h2 className="group-hover:underline text-lg text-grayscale-600 font-semibold font-serif">
           {newsletterInfo.post.title}
         </h2>
-        <div className="mt-1 w-full h-full grow flex flex-col gap-y-2">
+        <div className=" w-full h-full grow flex flex-col gap-y-2">
           <div className=" w-full flex text-sm text-grayscale-400">
             <span className="line-clamp-2 font-light">
               {newsletterInfo.post.subtitle}

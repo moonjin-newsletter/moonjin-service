@@ -66,7 +66,7 @@ export default function Header({
           <Link
             className={`${
               pathname === "/series" && "text-primary"
-            } flex items-center  h-full`}
+            } flex items-center  h-full hover:font-semibold`}
             href="/series"
           >
             시리즈 뉴스레터
@@ -74,7 +74,7 @@ export default function Header({
           <Link
             className={`${
               pathname === "/newsletter" && "text-primary"
-            } flex items-center  h-full`}
+            } flex items-center  h-full hover:font-semibold`}
             href="/newsletter"
           >
             전체 뉴스레터
@@ -127,7 +127,7 @@ export default function Header({
             </div>
           ) : (
             <Link
-              className="py-2.5 h-fit px-5 text-white text-sm bg-[#7b0000] rounded-lg"
+              className="py-2.5 h-fit px-5 text-white text-sm bg-primary rounded-lg"
               href="/auth/login"
             >
               로그인

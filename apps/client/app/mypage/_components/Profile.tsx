@@ -56,7 +56,7 @@ export default function Profile({
               key={index}
             >
               <div className="w-fit whitespace-nowrap">{value.title}</div>
-              <span className="text-xl font-semibold text-grayscale-700">
+              <span className="text-xl font-medium text-grayscale-700">
                 {value.body && commaizeNumber(value.body)}
               </span>
             </div>

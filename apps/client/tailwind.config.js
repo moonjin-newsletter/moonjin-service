@@ -12,9 +12,9 @@ module.exports = {
   ],
   theme: {
     screens: {
-      mobile: { min: "0px", max: "600px" },
-      tablet: { min: "601px", max: "1023px" },
-      desktop: { min: "1024px" },
+      sm: { min: "0px", max: "1024px" },
+      // md: { min: "600px", max: "768px" },
+      lg: { min: "1024px" },
     },
     fontFamily: {
       sans: ["Pretendard", "-apple-system", "sans-serif"],

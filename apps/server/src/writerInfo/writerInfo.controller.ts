@@ -1,6 +1,6 @@
 import { Controller, Res, UseGuards } from '@nestjs/common';
 import {TypedBody, TypedParam, TypedRoute} from "@nestia/core";
-import {TryCatch} from "../response/tryCatch";
+import {Try, TryCatch} from "../response/tryCatch";
 import {USER_NOT_WRITER} from "@moonjin/api-types";
 import {WriterInfoService} from "./writerInfo.service";
 import {createResponseForm, ResponseMessage} from "../response/responseForm";
@@ -25,13 +25,14 @@ import {ICreateWriterInfo} from "./api-types/ICreateWriterInfo";
 import {UserRoleEnum} from "../auth/enum/userRole.enum";
 import {AuthService} from "../auth/auth.service";
 import {MailService} from "../mail/mail.service";
+import {SitemapResponseDto} from "../common";
 
 @Controller('writer')
 export class WriterInfoController {
     cookieOptions = httpsCookieOption;
 
     constructor(
-        private readonly writerService: WriterInfoService,
+        private readonly writerInfoService: WriterInfoService,
         private readonly jwtUtilService:JwtUtilService,
         private readonly authService:AuthService,
         private readonly mailService:MailService
@@ -80,7 +81,7 @@ export class WriterInfoController {
     @UseGuards(WriterAuthGuard)
     async changeWriterProfile(@User() user:UserAuthDto, @Res() res:Response, @TypedBody() newProfile : IChangeWriterProfile): Promise<TryCatch<UserDto,
         PROFILE_CHANGE_ERROR | NICKNAME_ALREADY_EXIST | USER_NOT_WRITER | USER_NOT_FOUND | MOONJIN_EMAIL_ALREADY_EXIST>> {
-        const newUser = await this.writerService.changeWriterProfile(user.id, newProfile);
+        const newUser = await this.writerInfoService.changeWriterProfile(user.id, newProfile);
         const {accessToken, refreshToken }= this.jwtUtilService.getAccessTokens(UserDtoMapper.UserDtoToUserAuthDto(newUser));
         res.cookie('accessToken', accessToken,this.cookieOptions)
         res.cookie('refreshToken', refreshToken,this.cookieOptions)
@@ -90,8 +91,22 @@ export class WriterInfoController {
 
     @TypedRoute.Get(":writerId/synch/profile")
     async synchWriterInfo(@TypedParam("writerId") writerId:number){
-        await this.writerService.synchronizeNewsLetter(writerId);
-        await this.writerService.synchronizeSeries(writerId);
+        await this.writerInfoService.synchronizeNewsLetter(writerId);
+        await this.writerInfoService.synchronizeSeries(writerId);
         return createResponseForm("동기화 완료");
+    }
+
+    /**
+     * @summary sitemap용 작가 전체정보 가져오기
+     */
+    @TypedRoute.Get("sitemap")
+    async getWriterSitemap():Promise<Try<SitemapResponseDto[]>>{
+        const sitemap = await this.writerInfoService.getAllWriterListForSitemap();
+        return createResponseForm(sitemap.map(writer => {
+            return {
+                id: writer.user.id,
+                moonjinId: writer.moonjinId,
+            }
+        }));
     }
 }

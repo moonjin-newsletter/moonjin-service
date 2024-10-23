@@ -27,7 +27,6 @@ export class SeriesService {
      * @throws CREATE_SERIES_ERROR
      */
     async createSeries(createSeriesData : CreateSeriesDto) : Promise<SeriesDto>{
-        const createdAt = this.utilService.getCurrentDateInKorea();
         const cover = this.utilService.processImageForCover(createSeriesData.cover);
         try {
             const createdSeries = await this.prismaService.series.create({
@@ -36,9 +35,7 @@ export class SeriesService {
                     writerId : createSeriesData.writerId,
                     category : createSeriesData.category,
                     description : createSeriesData.description ?? undefined,
-                    cover,
-                    createdAt,
-                    lastUpdatedAt :createdAt,
+                    cover
                 }
             })
             return SeriesDtoMapper.SeriesToSeriesDto(createdSeries);
@@ -444,5 +441,26 @@ export class SeriesService {
             console.log(error)
             throw ExceptionList.SERIES_NOT_FOUND
         }
+    }
+
+    /**
+     * @summary 시리즈 리스트 가져오기
+     */
+    async getAllSeriesListForSiteMap(){
+        return this.prismaService.series.findMany({
+            where: {
+                deleted: false
+            },
+            include:{
+                writerInfo: {
+                    include: {
+                        user: true
+                    }
+                }
+            },
+            orderBy: {
+                id: 'desc'
+            }
+        })
     }
 }

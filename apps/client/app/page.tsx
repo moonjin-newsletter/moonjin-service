@@ -11,7 +11,7 @@ import {
   type NewsletterCardDto,
   type ResponseForm,
   type SeriesWithWriterDto,
-  WriterProfileDto,
+  type WriterProfileDto,
 } from "@moonjin/api-types";
 import Footer from "@components/layout/Footer";
 import { nfetch } from "@lib/fetcher/noAuth";
@@ -30,7 +30,7 @@ export default async function Page() {
     await nfetch<ResponseForm<WriterProfileDto[]>>("writer/popular");
 
   return (
-    <main className=" w-full min-h-screen  ">
+    <main className="w-full min-h-screen">
       <Header initialColor="bg-white" />
       <div className="relative flex flex-col items-center justify-center w-full h-full min-h-screen overflow-hidden">
         <HomeSection topLetterList={topLetterList} />
@@ -39,7 +39,7 @@ export default async function Page() {
           <h2 className="font-serif  text-2xl font-bold text-grayscale-700">
             Moonjin Writers
           </h2>
-          <h4 className="text-gray-500 text-sm mt-2">
+          <h4 className="text-grayscale-400 text-sm mt-2">
             문진의 새로운 작가를 만나보세요
           </h4>
 
@@ -58,7 +58,7 @@ export default async function Page() {
           <h2 className="font-serif  text-2xl font-bold text-grayscale-700">
             Moonjin Newsletters
           </h2>
-          <h4 className="text-gray-500 text-sm mt-2">
+          <h4 className="text-grayscale-400 text-sm mt-2">
             문진의 다양한 뉴스레터들을 만나보세요
           </h4>
 
@@ -94,7 +94,7 @@ function WriterCard({ writer }: { writer: WriterProfileDto }) {
         />
         <div className="absolute left-8 bottom-[1px] bg-primary rounded-[50%] w-24 h-4 overflow-hidden z-0" />
       </div>
-      <h3 className="text-2xl font-semibold mt-4">{writer.user.nickname}</h3>
+      <h3 className="text-xl font-semibold mt-5">{writer.user.nickname}</h3>
 
       <div className="text-sm text-grayscale-400 font-light mt-2 line-clamp-3">
         {writer.user.description}
@@ -103,48 +103,6 @@ function WriterCard({ writer }: { writer: WriterProfileDto }) {
       <button className="py-2 mt-8 px-6 font-medium text-sm rounded-lg bg-grayscale-700/95 text-white">
         방문하기
       </button>
-    </Link>
-  );
-}
-
-function PostCard({ post }: { post: any }) {
-  return (
-    <Link href="" className="w-[232px] flex flex-col  gap-y-4">
-      <div className="relative ">
-        <Image
-          src={post.thumbnail[0]}
-          width={232}
-          height={232}
-          alt="작가이미지"
-          className="bg-grayscale-200  w-[232px] h-[232px]  rounded-lg  object-cover"
-        />
-      </div>
-
-      <div className="flex flex-col gap-y-2">
-        <strong className="text-left font-bold text-lg">{post.title}</strong>
-
-        <div className="text-[13px] line-clamp-3 text-grayscale-500 ">
-          비상계엄하의 군사재판은 군인·군무원의 범죄나 군사에 관한 간첩죄의
-          경우와 초병·초소·유독음식물공급·포로에 비상계엄하의 군사재판은
-          군인·군무원의 범죄나 군사에 관한 간첩죄의 경우와
-          초병·초소·유독음식물공급·포로에
-        </div>
-      </div>
-
-      <div className="flex items-center gap-x-2">
-        <Image
-          src=""
-          alt="작가이미지"
-          className="w-7 h-7 rounded-full object-cover bg-gray-400"
-        />
-        <p className="text-sm text-grayscale-500">
-          <span className="font-serif font-medium">by.</span>
-          작가이름
-        </p>
-        <span className="text-sm font-light text-grayscale-500 ml-auto">
-          2023.01.02
-        </span>
-      </div>
     </Link>
   );
 }

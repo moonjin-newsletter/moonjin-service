@@ -5,6 +5,7 @@ import WriterHeader from "./_components/WriterHeader";
 import { nfetch } from "@lib/fetcher/noAuth";
 import type { ResponseForm, WriterPublicCardDto } from "@moonjin/api-types";
 import Footer from "@components/layout/Footer";
+import { Metadata, ResolvingMetadata } from "next";
 
 type pageProps = {
   params: {
@@ -13,6 +14,38 @@ type pageProps = {
 };
 
 export const revalidate = 600;
+
+export async function generateMetadata(
+  { params }: pageProps,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const [, moonjinId] = decodeURI(params.writer).split("%40");
+
+  const writerInfo = await nfetch<ResponseForm<WriterPublicCardDto>>(
+    `writer/${moonjinId}/info/public`,
+  );
+
+  const previousImages = (await parent).openGraph?.images || [];
+
+  return {
+    title: writerInfo.data.user.nickname,
+    description: writerInfo.data.user.description,
+    keywords: [
+      "뉴스레터",
+      "문진",
+      "글",
+      "이야기",
+      "moonjin",
+      "메일",
+      "인기 뉴스레터",
+    ],
+    openGraph: {
+      title: writerInfo.data.user.nickname,
+      description: writerInfo.data.user.description,
+      images: [writerInfo.data.user.image, ...previousImages, "/og-image.png"],
+    },
+  };
+}
 
 export default async function Page({ params }: pageProps) {
   const [, moonjinId] = decodeURI(params.writer).split("%40");

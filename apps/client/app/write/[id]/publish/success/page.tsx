@@ -76,7 +76,7 @@ export default function Page({ params }: pageProps) {
                   alt={"레터 이미지"}
                   width={280}
                   height={280}
-                  className="rounded"
+                  className="rounded border border-grayscale-200"
                 />
               </div>
               <div className="w-fit flex flex-col">

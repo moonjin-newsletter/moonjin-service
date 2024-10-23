@@ -58,7 +58,7 @@ export default async function Page() {
                 <Link
                   href={`/@${n.writer.moonjinId}/post/${n.post.id}`}
                   key={index}
-                  className="p-8 size-fit  flex flex-col bg-grayscale-700/5 max-w-[290px] rounded-lg"
+                  className="p-6 size-fit  flex flex-col bg-grayscale-700/5 max-w-[290px] rounded-[12px]"
                 >
                   <Image
                     src={n.post.cover}
@@ -71,13 +71,13 @@ export default async function Page() {
                     <div className="px-3 py-1 rounded-full bg-grayscale-600 text-sm  text-white w-fit">
                       {n.post.category}
                     </div>
-                    <h1 className="text-lg font-serif font-semibold mt-3  text-grayscale-700">
+                    <h1 className="text-lg font-serif font-semibold mt-2  text-grayscale-700">
                       {n.post.title}
                     </h1>
-                    <p className="text-grayscale-500 line-clamp-4 text-sm mt-4 font-serif">
+                    <p className="text-grayscale-500 line-clamp-4 text-sm mt-3 font-serif">
                       {n.post.subtitle}
                     </p>
-                    <p className="text-grayscale-500 text-sm mt-8 font-serif">
+                    <p className="text-grayscale-500 text-sm mt-6 font-serif">
                       Written by.{n.writer.nickname}
                     </p>
                   </div>

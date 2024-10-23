@@ -31,6 +31,7 @@ import {IUpdateNewsletter} from "./api-types/IUpdateNewsletter";
 import {WriterInfoDtoMapper} from "../writerInfo/writerInfoDtoMapper";
 import {ICreateNewsLetterCuration} from "./api-types/ICreateNewsLetterCuration";
 import {ISearchNewsletter} from "./api-types/ISearchNewsletter";
+import {SitemapResponseDto} from "../common";
 
 @Controller('newsletter')
 export class NewsletterController {
@@ -66,7 +67,8 @@ export class NewsletterController {
         return createResponseForm(newsletterCardList, {
             next : {
                 pageNo : paginationOptions.pageNo + 1,
-                cursor : newsletterCardList.length > 0 ? newsletterCardList[newsletterCardList.length - 1].newsletter.id : 0
+                cursor : newsletterCardList.length > 0 ? newsletterCardList[newsletterCardList.length - 1].newsletter.id : 0,
+                take: paginationOptions.take
             },
             isLastPage : newsletterCardList.length < paginationOptions.take,
             totalCount : newsletterCardList.length
@@ -104,6 +106,21 @@ export class NewsletterController {
     async postNewsletterCurationList(@TypedBody() body : ICreateNewsLetterCuration):Promise<TryCatch<ResponseMessage & {createdNewsletterCurationCount: number}, NEWSLETTER_ALREADY_EXIST>>{
         const createdNewsletterCurationCount = await this.newsletterService.createNewsletterCuration(body.newsletterIdList.slice(0,10));
         return createResponseForm({message : createdNewsletterCurationCount + "개의 뉴스레터 큐레이션 리스트를 생성했습니다.",createdNewsletterCurationCount});
+    }
+
+    /**
+     * @summary 뉴스레터 사이트맵 가져오기
+     * @returns {id: number, moonjinId: string}[]
+     */
+    @TypedRoute.Get("sitemap")
+    async getNewsletterSitemap():Promise<Try<SitemapResponseDto[]>>{
+        const newsletterList = await this.newsletterService.getAllNewsletterListForSiteMap();
+        return createResponseForm(newsletterList.map(newsletter => {
+            return {
+                id: newsletter.id,
+                moonjinId : newsletter.post.writerInfo.moonjinId
+            }
+        }));
     }
 
     /**
@@ -326,7 +343,8 @@ export class NewsletterController {
         return createResponseForm(recommendNewsletterCardList, {
             next : {
                 pageNo : paginationOptions.pageNo + 1,
-                    cursor : recommendNewsletterCardList.length > 0 ? recommendNewsletterCardList[recommendNewsletterCardList.length - 1].newsletter.id : 0
+                cursor : recommendNewsletterCardList.length > 0 ? recommendNewsletterCardList[recommendNewsletterCardList.length - 1].newsletter.id : 0,
+                take: paginationOptions.take
             },
             isLastPage : recommendNewsletterCardList.length < paginationOptions.take,
                 totalCount : recommendNewsletterCardList.length

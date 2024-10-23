@@ -21,7 +21,7 @@ export function UnreleasedNewsletterCard({
             </span>
           )}
 
-          <strong className="group-hover:underline text-lg text-grayscale-600 font-medium">
+          <strong className="group-hover:underline text-lg text-grayscale-600 font-semibold font-serif">
             {value.post.title}
           </strong>
           <span className="line-clamp-2 leading-relaxed text-sm text-grayscale-400 font-light">
