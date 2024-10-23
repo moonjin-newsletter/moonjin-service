@@ -125,7 +125,7 @@ export function EmailNewsletterHeader(
             <tr>
                 <td align="center">
                     <h2 style="
-                    font-family: serif;
+                    font-family: Nanum Myeongjo,serif;
                     font-size: 16px;
                     font-weight: 500;
                     color: #999999;
