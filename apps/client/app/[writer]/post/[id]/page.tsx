@@ -37,8 +37,8 @@ export async function generateStaticParams() {
 
   return posts.data.map((post) => ({
     params: {
-      moonjinId: `${post.moonjinId}`,
-      nId: post.id.toString(),
+      writer: `${post.moonjinId}`,
+      id: post.id.toString(),
     },
   }));
 }
